@@ -32,7 +32,7 @@ jobs:
        
       - name: Préparer le package
         run: |
-          zip -r site.zip . \
+          zip -r site.zip ./ \
               -x "*.git*" ".github/*" "README.md"  # exclut les métadonnées GitHub
       
       - name: Login to Azure
