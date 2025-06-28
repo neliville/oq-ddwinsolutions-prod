@@ -4,10 +4,8 @@
 
     { "route": "/contact",    "serve": "/contact.html", "statusCode": 200 },
 
-    /*  blog root  */
     { "route": "/blog",       "serve": "/blog.html",    "statusCode": 200 },
-    /*  tous les articles sous /blog/xxx conservent le SEO
-        et retombent sur blog.html qui affichera l’article via JS */
+ 
     { "route": "/blog/*",     "serve": "/blog.html",    "statusCode": 200 },
 
     { "route": "/ishikawa",   "serve": "/ishikawa.html","statusCode": 200 },
