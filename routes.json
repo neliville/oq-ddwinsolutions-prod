@@ -1,11 +1,22 @@
 {
   "routes": [
-    { "route": "/","serve": "/index.html" },
-    { "route": "/contact", "serve": "/contact.html" },
-    { "route": "/blog",    "serve": "/blog.html" },
-    { "route": "/ishikawa","serve": "/ishikawa.html" },
-    { "route": "/5pourquoi","serve": "/5pourquoi.html" },
-    { "route": "/outils","serve": "/outils.html" }
+    { "route": "/",           "serve": "/index.html",   "statusCode": 200 },
 
-  ]
+    { "route": "/contact",    "serve": "/contact.html", "statusCode": 200 },
+
+    /*  blog root  */
+    { "route": "/blog",       "serve": "/blog.html",    "statusCode": 200 },
+    /*  tous les articles sous /blog/xxx conservent le SEO
+        et retombent sur blog.html qui affichera l’article via JS */
+    { "route": "/blog/*",     "serve": "/blog.html",    "statusCode": 200 },
+
+    { "route": "/ishikawa",   "serve": "/ishikawa.html","statusCode": 200 },
+    { "route": "/5pourquoi",  "serve": "/5pourquoi.html","statusCode": 200 },
+    { "route": "/outils",     "serve": "/outils.html",  "statusCode": 200 }
+  ],
+
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [ "/img/*", "/css/*", "/js/*", "/favicon.ico", "/robots.txt", "/sitemap.xml" ]
+  }
 }
