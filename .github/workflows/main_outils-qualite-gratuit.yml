@@ -46,13 +46,13 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
+      - name: Récupération du code
+        uses: actions/checkout@v4
+       
+      - name: Préparer le package
+        run: |
+          zip -r site.zip . \
+              -x "*.git*" ".github/*" "README.md"  # exclut les métadonnées GitHub
       
       - name: Login to Azure
         uses: azure/login@v2
