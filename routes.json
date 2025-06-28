@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "route": "/contact", "serve": "/contact.html" },
+    { "route": "/blog",    "serve": "/blog.html" },
+    { "route": "/ishikawa","serve": "/ishikawa.html" }
+  ]
+}
