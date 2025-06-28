@@ -13,7 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write #This is required for requesting the JWT
+      #id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
     steps:
@@ -22,8 +22,18 @@ jobs:
        
       - name: Préparer le package
         run: |
-          zip -r site.zip ./ \
-              -x "*.git*" ".github/*" "README.md"  # exclut les métadonnées GitHub
+          zip -r site.zip . -x '*.git*'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: site.zip
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-site
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -38,5 +48,4 @@ jobs:
         with:
           app-name: 'outils-qualite-gratuit'
           slot-name: 'Production'
-          package: site.zip
-          
+          package: site.zip          
