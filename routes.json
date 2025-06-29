@@ -10,6 +10,9 @@
 
     { "route": "/ishikawa",   "serve": "/ishikawa.html","statusCode": 200 },
     { "route": "/5pourquoi",  "serve": "/5pourquoi.html","statusCode": 200 },
+    { "route": "/politique-de-confidentialite",  "serve": "/politique-de-confidentialite.html","statusCode": 200 },
+    { "route": "/5pourquoi",  "serve": "/5pourquoi.html","statusCode": 200 },
+    
     { "route": "/outils",     "serve": "/outils.html",  "statusCode": 200 }
   ],
 
