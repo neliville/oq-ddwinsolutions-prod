@@ -44,9 +44,8 @@ body {
 
 /* Typography */
 .bg-gradient-primary {
-  background: var(--gradient-primary) !important;
+  background: linear-gradient(135deg,#4C55E0 0%,#643FCE 100%);
 }
-
 .bg-gradient-secondary {
   background: var(--gradient-secondary) !important;
 }
