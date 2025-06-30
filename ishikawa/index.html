@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme d'Ishikawa | Analyse des causes | OUTILS-QUALITÉ</title>
+    <meta name="description"
+        content="Créez votre diagramme d'Ishikawa interactif gratuitement. Analysez les causes racines avec notre outil professionnel. Export PDF, JPEG, JSON.">
+    <meta name="keywords"
+        content="ishikawa, diagramme causes effet, arête de poisson, analyse causes, amélioration continue">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Diagramme d'Ishikawa - Analyse des causes">
+    <meta property="og:description" content="Outil gratuit pour créer des diagrammes d'Ishikawa professionnels">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.outils-qualite.com/ishikawa/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/css/custom.css" rel="stylesheet">
+
+<script>
+var appInsights=window.appInsights||function(cfg){
+  function _queue(fn){t[fn]=function(){var a=arguments;t.queue.push(()=>t[fn].apply(t,a))}}
+  var t={config:cfg},d=document,s=d.createElement("script");
+  s.src="https://js.monitor.azure.com/scripts/b/ai.3.gbl.min.js";
+  d.head.appendChild(s); t.queue=[];
+  ["trackEvent","trackException","trackMetric","trackPageView","trackTrace",
+   "flush"].forEach(_queue);
+  return t;
+}({
+  connectionString:"InstrumentationKey=0c46e560-b6d3-491e-90bf-ce7e7ee309b1;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=98755778-d358-4868-8827-bd953d7dd864",
+  enableAutoRouteTracking:true
+});
+window.appInsights=appInsights;   // <– global, prêt à être appelé
+</script>
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/img/logo.png" alt="OUTILS-QUALITÉ" width="40" height="40" class="me-2">
+                <span class="fw-bold text-gradient">OUTILS-QUALITÉ</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/ishikawa/">Analyse des causes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/5pourquoi">Méthode 5 Pourquoi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/outils/">Outils</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact/">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-5 mt-4">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="header" data-aos="fade-up">
+                <h1>Diagramme d'Ishikawa</h1>
+                <p>Analysez les causes racines avec le diagramme en arête de poisson. Glissez-déposez les catégories
+                    pour organiser votre analyse.</p>
+            </div>
+
+            <div class="alert alert-info text-center" role="status">
+                🔧 Certaines <strong>catégories</strong> et causes sont déjà pré‑chargées pour vous aider à démarrer.
+                Vous pouvez <strong>déplacer</strong> librement chaque catégorie pour <strong>ajuster sa position</strong>. Pour une expérience complète, utilisez un grand écran !
+                <p>Vider les causes pour commencer une nouvelle analyse. </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls" data-aos="fade-up" data-aos-delay="100">
+                <input type="text" id="problemInput" class="problem-input"
+                    placeholder="Définissez le problème à analyser..." onchange="updateProblem()">
+
+                <button id="addCategoryBtn" class="btn btn-primary" onclick="addCategory()">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Ajouter une catégorie
+                </button>
+
+                <button class="btn btn-secondary" onclick="resetAllCauses()">
+                    <i class="fas fa-trash" aria-hidden="true"></i> Vider les causes
+                </button>
+
+                <div class="dropdown export-dropdown">
+
+                    <button class="dropdown-toggle">
+                        <i class="fas fa-download" aria-hidden="true"></i> Exporter
+                        <i class="fas fa-chevron-down ms-1" aria-hidden="true"></i>
+                    </button>
+                    <div class="export-dropdown-content" role="menu">
+                        <button onclick="exportPDF()">
+                            <i class="fas fa-file-pdf" aria-hidden="true"></i> Export PDF
+                        </button>
+                        <button onclick="exportJPEG()">
+                            <i class="fas fa-image" aria-hidden="true"></i> Export JPEG
+                        </button>
+                        <button onclick="exportJSON()">
+                            <i class="fas fa-code" aria-hidden="true"></i> Export JSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="d-block d-sm-none text-warning text-center">
+                ⚠️ Sur mobile, l’expérience est limitée. Nous recommandons d’utiliser un PC pour un confort optimal.
+            </p>
+
+
+            <!-- Diagram Container -->
+            <div class="diagram-container" data-aos="fade-up" data-aos-delay="200" id="diagramContainer">
+                <div class="fishbone" id="fishbone">
+                    <!-- SVG pour les lignes de connexion -->
+                    <svg class="connection-svg" id="connectionSvg"></svg>
+
+                    <!-- Épine dorsale -->
+                    <div class="spine"></div>
+
+                    <!-- Tête du poisson -->
+                    <div class="fish-head">
+                        <div class="fish-shape"></div>
+                    </div>
+
+                    <!-- Boîte du problème -->
+                    <div class="problem-box" id="problemBox" onclick="editProblem()" tabindex="0" role="button"
+                        aria-label="Cliquer pour modifier le problème">
+                        Utilisez ce modèle d'analyse pour optimiser l'amélioration des processus et identifier les
+                        causes racines.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal pour ajouter/modifier une catégorie -->
+    <div id="categoryModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="categoryModalTitle">
+        <div class="modal-content">
+            <span class="close" onclick="closeCategoryModal()" aria-label="Fermer">&times;</span>
+            <h2 id="categoryModalTitle">Ajouter une catégorie</h2>
+
+            <div class="form-group">
+                <label for="categorySelect">Catégorie prédéfinie :</label>
+                <select id="categorySelect">
+                    <option value="">-- Sélectionner une catégorie --</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="customCategoryGroup" style="display: none;">
+                <label for="categoryName">Nom personnalisé :</label>
+                <input type="text" id="categoryName" placeholder="Nom de la catégorie">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeCategoryModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCategoryModal()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter/modifier une cause -->
+    <div id="causeModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="causeModalTitle">
+        <div class="modal-content">
+            <span class="close" onclick="closeCauseModal()" aria-label="Fermer">&times;</span>
+            <h2 id="causeModalTitle">Ajouter une cause</h2>
+
+            <div class="form-group">
+                <label for="causeName">Description de la cause :</label>
+                <input type="text" id="causeName" placeholder="Décrivez la cause...">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeCauseModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCauseModal()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER ********************************************************************-->
+    <footer class="bg-dark text-white-50 pt-5 border-top border-secondary">
+        <div class="container-lg ">
+            <div class="row gy-4">
+
+                <!-- Col 1 : présentation courte -->
+                <div class="col-md-4">
+                    <h6 class="text-white mb-3">DDWin Solutions</h6>
+                    <p class="small">
+                        DDWIN Solutions c’est l’envie de rendre les outils digitaux plus accessibles aux entreprises qui
+                        veulent gagner en efficacité. Conseil, développement, automatisation : on avance à votre rythme,
+                        avec des solutions adaptées à votre terrain.
+                    </p>
+
+                    <!-- Icônes sociales Bootstrap Icons -->
+                    <div class="d-flex gap-2">
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.outils-qualite.com"
+                            target="_blank" rel="noopener" title="Partager sur LinkedIn"
+                            class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="linkedin" width="20" height="20"></i>
+                        </a>
+
+                        <!-- Twitter (désormais X) -->
+                        <a href="https://twitter.com/intent/tweet?url=https://www.outils-qualite.com&text=Découvrez%20des%20outils%20qualité%20gratuits%20!"
+                            target="_blank" rel="noopener" title="Partager sur Twitter"
+                            class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="twitter" width="20" height="20"></i>
+                        </a>
+
+                        <!-- E-mail -->
+                        <a href="mailto:?subject=Découvre%20ce%20site%20d'outils%20qualité&body=Voici%20un%20site%20gratuit%20avec%20des%20outils%20QSE%20: https://www.outils-qualite.com"
+                            title="Envoyer par mail" class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="mail" width="20" height="20"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Col 2 : Outils -->
+                <div class="col-6 col-md-2">
+                    <h6 class="text-white mb-3">Outils d’Analyse Gratuits</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li><a class="link-light text-decoration-none" href="/ishikawa/">Analyse des causes</a></li>
+                        <li><a class="link-light text-decoration-none" href="/5pourquoi/">Méthode des pourquoi</a></li>
+                        <li><a class="link-light text-decoration-none" href="/outils">Suite d’outils</a></li>
+                        <li class="link-light text-white">Analyse de Pareto (bientôt)</li>
+                        <li class="link-light text-white">Cartes de contrôle (bientôt)</li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 : Services -->
+                <div class="col-6 col-md-3">
+                    <h6 class="text-white mb-3">Services Informatiques</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li>Analyse &amp; Conception</li>
+                        <li>Développement sur mesure</li>
+                        <li>Maintenance et support</li>
+                        <li>Formation et accompagnement</li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 : Contact -->
+                <div class="col-md-3">
+                    <h6 class="text-white mb-3">Contact</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li> <i data-lucide="mail" width="20" height="20" class="me-2"></i>ddwinsolutions@gmail.com</li>
+                        <li> <i data-lucide="globe" width="20" height="20" class="me-2"></i>www.outils-qualite.com</li>
+                        <li> <i data-lucide="clock" width="20" height="20" class="me-2"></i>Lun-Ven : 9h00-18h00</li>
+                        <li> <i data-lucide="twitter" width="20" height="20" class="me-2"></i>Réponse sous 24 h</li>
+                    </ul>
+                </div>
+
+            </div><!-- ./row -->
+        </div><!-- ./container -->
+
+        <div class="border-top border-secondary text-center py-3 mt-4 small">
+            © 2024 DDWin Solutions. Tous droits réservés.
+            <span class="d-block d-md-inline">| Outils d’analyse gratuits et conseils informatiques</span> | <a
+                href="/politique-de-confidentialite/" class="link-light text-decoration-none">Politique de
+                confidentialité</a>
+
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+    <script type="module" src="/js/ishikawa.js"></script>
+</body>
+
+</html>

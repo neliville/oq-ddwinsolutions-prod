@@ -1,0 +1,27 @@
+{
+  "category": "amelioration-continue",
+  "title": "Amélioration Continue",
+  "description": "Articles sur les méthodes et outils d'amélioration continue",
+  "color": "success",
+  "icon": "trending-up",
+  "articles": [
+    {
+      "id": "introduction-amelioration-continue",
+      "title": "Introduction à l'amélioration continue",
+      "excerpt": "Découvrez les principes fondamentaux de l'amélioration continue et comment l'implémenter dans votre organisation.",
+      "date": "2025-01-15",
+      "readTime": "8 min",
+      "tags": ["amélioration continue", "kaizen", "lean"],
+      "featured": true
+    },
+    {
+      "id": "cycle-pdca-pratique",
+      "title": "Le cycle PDCA en pratique",
+      "excerpt": "Apprenez à utiliser le cycle Plan-Do-Check-Act pour structurer vos démarches d'amélioration continue.",
+      "date": "2025-01-10",
+      "readTime": "6 min",
+      "tags": ["PDCA", "cycle", "amélioration"],
+      "featured": false
+    }
+  ]
+}

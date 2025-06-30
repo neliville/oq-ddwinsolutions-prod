@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Méthode des 5 Pourquoi | Analyse des causes racines | OUTILS-QUALITÉ</title>
+    <meta name="description"
+        content="Utilisez la méthode des 5 Pourquoi pour identifier les causes racines. Outil gratuit et professionnel avec export PDF.">
+    <meta name="keywords" content="5 pourquoi, analyse causes racines, amélioration continue, résolution problèmes">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/img/logo.png" alt="OUTILS-QUALITÉ" width="40" height="40" class="me-2">
+                <span class="fw-bold text-gradient">OUTILS-QUALITÉ</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ishikawa/">Analyse des causes</a>
+                    </li>
+                    <li class=" nav-item">
+                        <a class="nav-link active" href="/5pourquoi">Méthode 5 Pourquoi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/outils/">Outils</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact/">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-5 mt-4">
+        <div class="container">
+            <!-- Header -->
+            <div class="header" data-aos="fade-up">
+                <h1>Méthode des 5 Pourquoi</h1>
+                <p>Identifiez la cause racine en posant successivement "Pourquoi ?" jusqu'à trouver l'origine du
+                    problème.</p>
+            </div>
+
+            <div class="alert alert-info rounded-3 mt-4" role="alert" data-aos="fade-up" data-aos-delay="90">
+                <strong>🧭 Début de l’analyse – bonne chance !</strong>
+                <p class="mb-1">
+                    1. Commencez par <strong>définir le problème</strong> clairement.
+                </p>
+                <p class="mb-1">
+                    2. Ensuite, posez votre <strong>1er « Pourquoi »</strong> et remplissez la réponse.
+                </p>
+                <p class="mb-0">
+                    Vous disposez de <strong>5 étapes « Pourquoi »</strong> maximum pour aller jusqu’à la <em>cause
+                        racine</em>.
+                </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls" data-aos="fade-up" data-aos-delay="100">
+                <button class="btn btn-primary" onclick="resetAnalysis()">
+                    <i class="fas fa-refresh" aria-hidden="true"></i> Nouvelle analyse
+                </button>
+
+                <button class="btn btn-secondary" onclick="addWhyStep()">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Ajouter un "Pourquoi"
+                </button>
+
+                <div class="dropdown export-dropdown">
+                    <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-download"></i> Exporter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" onclick="exportPDF()">Export PDF</button></li>
+                        <li><button class="dropdown-item" onclick="exportJPEG()">Export JPEG</button></li>
+                        <li><button class="dropdown-item" onclick="exportJSON()">Export JSON</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Five Why Container -->
+            <div class="five-why-container" data-aos="fade-up" data-aos-delay="200" id="fiveWhyContainer">
+                <!-- Problem Statement -->
+                <div class="problem-statement">
+                    <h3>Définition du problème</h3>
+                    <p>Décrivez clairement le problème que vous souhaitez analyser :</p>
+                    <input type="text" id="problemStatement"
+                        placeholder="Ex: La production s'est arrêtée pendant 2 heures..."
+                        onchange="updateProblemStatement()">
+                </div>
+
+                <!-- Why Chain -->
+                <div class="why-chain" id="whyChain">
+                    <!-- Les étapes "Pourquoi" seront générées dynamiquement -->
+                </div>
+
+                <!-- Root Cause -->
+                <div class="root-cause" id="rootCause" style="display: none;">
+                    <h3>Cause racine identifiée</h3>
+                    <p id="rootCauseText">La cause racine sera affichée ici une fois l'analyse terminée.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER ********************************************************************-->
+    <footer class="bg-dark text-white-50 pt-5 border-top border-secondary">
+        <div class="container-lg ">
+            <div class="row gy-4">
+
+                <!-- Col 1 : présentation courte -->
+                <div class="col-md-4">
+                    <h6 class="text-white mb-3">DDWin Solutions</h6>
+                    <p class="small">
+                        DDWIN Solutions c’est l’envie de rendre les outils digitaux plus accessibles aux entreprises qui
+                        veulent gagner en efficacité. Conseil, développement, automatisation : on avance à votre rythme,
+                        avec des solutions adaptées à votre terrain.
+                    </p>
+
+                    <!-- Icônes sociales Bootstrap Icons -->
+                    <div class="d-flex gap-2">
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.outils-qualite.com"
+                            target="_blank" rel="noopener" title="Partager sur LinkedIn"
+                            class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="linkedin" width="20" height="20"></i>
+                        </a>
+
+                        <!-- Twitter (désormais X) -->
+                        <a href="https://twitter.com/intent/tweet?url=https://www.outils-qualite.com&text=Découvrez%20des%20outils%20qualité%20gratuits%20!"
+                            target="_blank" rel="noopener" title="Partager sur Twitter"
+                            class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="twitter" width="20" height="20"></i>
+                        </a>
+
+                        <!-- E-mail -->
+                        <a href="mailto:?subject=Découvre%20ce%20site%20d'outils%20qualité&body=Voici%20un%20site%20gratuit%20avec%20des%20outils%20QSE%20: https://www.outils-qualite.com"
+                            title="Envoyer par mail" class="btn btn-outline-light btn-sm rounded-circle">
+                            <i data-lucide="mail" width="20" height="20"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Col 2 : Outils -->
+                <div class="col-6 col-md-2">
+                    <h6 class="text-white mb-3">Outils d’Analyse Gratuits</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li><a class="link-light text-decoration-none" href="/ishikawa/">Analyse des causes</a></li>
+                        <li><a class="link-light text-decoration-none" href="/5pourquoi/">Méthode des pourquoi</a></li>
+                        <li><a class="link-light text-decoration-none" href="/outils">Suite d’outils</a></li>
+                        <li class="link-light text-white">Analyse de Pareto (bientôt)</li>
+                        <li class="link-light text-white">Cartes de contrôle (bientôt)</li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 : Services -->
+                <div class="col-6 col-md-3">
+                    <h6 class="text-white mb-3">Services Informatiques</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li>Analyse &amp; Conception</li>
+                        <li>Développement sur mesure</li>
+                        <li>Maintenance et support</li>
+                        <li>Formation et accompagnement</li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 : Contact -->
+                <div class="col-md-3">
+                    <h6 class="text-white mb-3">Contact</h6>
+                    <ul class="list-unstyled small lh-lg">
+                        <li> <i data-lucide="mail" width="20" height="20" class="me-2"></i>ddwinsolutions@gmail.com</li>
+                        <li> <i data-lucide="globe" width="20" height="20" class="me-2"></i>www.outils-qualite.com</li>
+                        <li> <i data-lucide="clock" width="20" height="20" class="me-2"></i>Lun-Ven : 9h00-18h00</li>
+                        <li> <i data-lucide="twitter" width="20" height="20" class="me-2"></i>Réponse sous 24 h</li>
+                    </ul>
+                </div>
+
+            </div><!-- ./row -->
+        </div><!-- ./container -->
+
+        <div class="border-top border-secondary text-center py-3 mt-4 small">
+            © 2024 DDWin Solutions. Tous droits réservés.
+            <span class="d-block d-md-inline">| Outils d’analyse gratuits et conseils informatiques</span> | <a
+                href="/politique-de-confidentialite/" class="link-light text-decoration-none">Politique de
+                confidentialité</a>
+
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+    <script type="module" src="/js/fivewhy.js"></script>
+</body>
+
+</html>
