@@ -101,6 +101,13 @@ body {
   font-size: 1.25rem;
 }
 
+@media (prefers-color-scheme: dark) {
+  .navbar-brand span {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+}
+
 .nav-link {
   font-weight: 500;
   transition: var(--transition-fast);
