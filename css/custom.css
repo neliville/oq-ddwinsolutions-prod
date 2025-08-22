@@ -526,12 +526,7 @@ footer {
   margin-top: 0.5rem;
 }
 
-/* Affiche le menu au hover du conteneur OU du contenu */
-.export-dropdown:hover .export-dropdown-content,
-.export-dropdown-content:hover {
-  display: block;
-  animation: fadeInUp 0.3s ease;
-}
+/* Affichage du menu export-dropdown géré en JS (clic) */
 
 .export-dropdown-content button {
   display: block;
