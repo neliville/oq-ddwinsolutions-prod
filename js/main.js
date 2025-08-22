@@ -1,5 +1,24 @@
 // Main JavaScript functionality
 document.addEventListener("DOMContentLoaded", () => {
+  // Dropdown export-dropdown au clic
+  document.querySelectorAll('.export-dropdown').forEach(function(dropdown) {
+    const toggle = dropdown.querySelector('.dropdown-toggle');
+    const content = dropdown.querySelector('.export-dropdown-content');
+    if (toggle && content) {
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+        content.classList.toggle('active');
+      });
+      // Clic en dehors : ferme le dropdown
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target)) {
+          content.style.display = 'none';
+          content.classList.remove('active');
+        }
+      });
+    }
+  });
   // Initialize Lucide icons
   const lucide = window.lucide // Declare lucide variable
   if (lucide) {
