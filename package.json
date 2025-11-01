@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@stimulus-components/dialog": "^1.0.1"
+  }
+}

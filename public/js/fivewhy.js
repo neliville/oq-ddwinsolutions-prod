@@ -5,6 +5,8 @@ const fiveWhyData = {
   rootCause: "",
 }
 
+// Note: L'ajout automatique a été désactivé - l'utilisateur doit cliquer sur le bouton
+
 const LOG_ENDPOINT = "https://prod-14.northeurope.logic.azure.com:443/workflows/e5f6c53b8fee498b910fd8ead7abe254/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=2CfWC8Xg8UCHtKiOt4MyodWfnTSRu2foSzsZxnl9Biw"
 
 function trackExport(tool, format) {
@@ -45,17 +47,31 @@ function initializeFiveWhy() {
 }
 
 // Fonction pour afficher les notifications
+// Variable pour stocker la référence de la notification actuelle
+let currentToast = null
+
 function showNotification(message, type = "success") {
   const Toastify = window.Toastify // Declare Toastify variable
+  
+  // Fermer la notification précédente si elle existe
+  if (currentToast) {
+    currentToast.hideToast()
+    currentToast = null
+  }
+  
   if (typeof Toastify !== "undefined") {
-    Toastify({
+    currentToast = Toastify({
       text: message,
       duration: 3000,
       gravity: "top",
       position: "right",
       backgroundColor: type === "success" ? "#2ecc71" : type === "error" ? "#e74c3c" : "#3498db",
       stopOnFocus: true,
-    }).showToast()
+      callback: function() {
+        currentToast = null
+      }
+    })
+    currentToast.showToast()
   } else {
     alert(message)
   }
@@ -82,7 +98,9 @@ function renderWhyChain() {
   fiveWhyData.whySteps.forEach((step, index) => {
     const stepDiv = document.createElement("div")
     stepDiv.className = "why-step"
-    stepDiv.innerHTML = `
+    
+    // Générer le HTML avec le modal intégré pour chaque étape
+    const stepHtml = `
             <div class="why-number">
                 <span>${index + 1}</span>
             </div>
@@ -92,10 +110,9 @@ function renderWhyChain() {
                     <input 
                         type="text" 
                         id="question-${index}" 
-                        value="${step.question}" 
+                        value="${step.question.replace(/"/g, '&quot;')}" 
                         placeholder="Pourquoi...?"
                         onchange="updateWhyStep(${index}, 'question', this.value)"
-                        ${index === 0 && fiveWhyData.problemStatement ? "readonly" : ""}
                     >
                 </div>
                 <div class="why-answer">
@@ -104,25 +121,78 @@ function renderWhyChain() {
                         id="answer-${index}" 
                         placeholder="Parce que..."
                         onchange="updateWhyStep(${index}, 'answer', this.value)"
-                        oninput="checkForNextStep(${index})"
-                    >${step.answer}</textarea>
+                        oninput="updateWhyStep(${index}, 'answer', this.value); checkForNextStep(${index})"
+                    >${step.answer.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
                 </div>
                 ${
                   index > 0
                     ? `
-                    <button class="remove-step-btn" onclick="removeWhyStep(${index})" aria-label="Supprimer cette étape">
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                    </button>
+                    <div data-controller="dialog" id="deleteStepModal-${index}" style="display: inline;">
+                        <button class="remove-step-btn" type="button" data-action="click->dialog#open" aria-label="Supprimer cette étape">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                        <dialog data-dialog-target="dialog" class="delete-confirmation-dialog" data-step-index="${index}">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2"></i>
+                                        Confirmation de suppression
+                                    </h5>
+                                    <button type="button" class="btn-close" data-action="dialog#close" aria-label="Fermer"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Êtes-vous sûr de vouloir supprimer cette étape ? Cette action est irréversible.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-action="dialog#close">Annuler</button>
+                                    <button type="button" class="btn btn-danger" onclick="confirmRemoveWhyStep(${index}); this.closest('dialog').close();">
+                                        <i data-lucide="trash-2" width="18" height="18" class="me-1"></i>
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </dialog>
+                    </div>
                 `
                     : ""
                 }
             </div>
         `
+    
+    stepDiv.innerHTML = stepHtml
     whyChain.appendChild(stepDiv)
   })
 
+  // Réinitialiser les icônes Lucide après le rendu
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons()
+  }
+  
+  // Forcer Stimulus à détecter les nouveaux contrôleurs Dialog
+  // Stimulus détecte automatiquement, mais on force pour s'assurer que ça fonctionne
+  setTimeout(() => {
+    if (window.Stimulus) {
+      // Sélectionner tous les nouveaux éléments avec data-controller="dialog"
+      const dialogElements = whyChain.querySelectorAll('[data-controller="dialog"]')
+      dialogElements.forEach(element => {
+        // Stimulus devrait détecter automatiquement, mais on force le chargement
+        try {
+          window.Stimulus.load(element)
+        } catch (e) {
+          // Si load() n'existe pas, Stimulus détectera automatiquement
+          console.debug('Stimulus auto-détection activée pour', element)
+        }
+      })
+    }
+  }, 10)
+
   // Vérifier si on doit afficher la cause racine
   checkRootCause()
+  
+  // Mettre à jour la visibilité du bouton d'ajout après le rendu
+  setTimeout(() => {
+    updateAddButtonVisibility()
+  }, 50)
 }
 
 function updateWhyStep(index, field, value) {
@@ -133,18 +203,48 @@ function updateWhyStep(index, field, value) {
 }
 
 function checkForNextStep(index) {
-  const currentStep = fiveWhyData.whySteps[index]
-  const isLastStep = index === fiveWhyData.whySteps.length - 1
-  const hasAnswer = currentStep && currentStep.answer.trim()
+  // Récupérer la valeur actuelle du textarea pour être sûr d'avoir la dernière valeur
+  const answerElement = document.getElementById(`answer-${index}`)
+  const currentAnswer = answerElement ? answerElement.value.trim() : ''
+  
+  // Mettre à jour les données avec la valeur actuelle
+  if (fiveWhyData.whySteps[index]) {
+    fiveWhyData.whySteps[index].answer = currentAnswer
+  }
+  
+  // Mettre à jour la visibilité du bouton d'ajout pour indiquer qu'une nouvelle étape peut être ajoutée
+  updateAddButtonVisibility()
+  
+  // Ne plus ajouter automatiquement - l'utilisateur doit cliquer sur le bouton
+}
 
-  // Si c'est la dernière étape et qu'elle a une réponse, proposer d'ajouter une nouvelle étape
-  if (isLastStep && hasAnswer && fiveWhyData.whySteps.length < 10) {
-    // Ajouter automatiquement une nouvelle étape si elle n'existe pas déjà
-    setTimeout(() => {
-      if (fiveWhyData.whySteps.length === index + 1) {
-        addWhyStep()
-      }
-    }, 500)
+// Fonction pour mettre à jour la visibilité et le style du bouton d'ajout
+function updateAddButtonVisibility() {
+  const addButton = document.getElementById('addWhyStepButton')
+  if (!addButton) return
+  
+  const lastStep = fiveWhyData.whySteps[fiveWhyData.whySteps.length - 1]
+  const hasLastAnswer = lastStep && lastStep.answer && lastStep.answer.trim().length > 0
+  const canAddMore = fiveWhyData.whySteps.length < 10
+  
+  if (hasLastAnswer && canAddMore) {
+    // Mettre en évidence le bouton si une réponse existe dans la dernière étape
+    addButton.classList.remove('btn-secondary')
+    addButton.classList.add('btn-primary', 'pulse-animation')
+    addButton.innerHTML = '<i class="fas fa-plus-circle me-2"></i> Ajouter un "Pourquoi" <i class="fas fa-arrow-right ms-2"></i>'
+    addButton.disabled = false
+  } else if (!canAddMore) {
+    // Limite atteinte
+    addButton.classList.remove('btn-primary', 'pulse-animation')
+    addButton.classList.add('btn-secondary')
+    addButton.innerHTML = '<i class="fas fa-ban me-2"></i> Limite atteinte (10 étapes max)'
+    addButton.disabled = true
+  } else {
+    // Pas de réponse dans la dernière étape - bouton moins visible mais toujours cliquable
+    addButton.classList.remove('btn-primary', 'pulse-animation')
+    addButton.classList.add('btn-secondary')
+    addButton.innerHTML = '<i class="fas fa-plus me-2"></i> Ajouter un "Pourquoi"'
+    addButton.disabled = false
   }
 }
 
@@ -169,6 +269,9 @@ function addWhyStep() {
 
   renderWhyChain()
   showNotification("Nouvelle étape ajoutée")
+  
+  // Mettre à jour la visibilité du bouton d'ajout
+  updateAddButtonVisibility()
 
   // Focus sur la nouvelle réponse
   setTimeout(() => {
@@ -185,11 +288,40 @@ function removeWhyStep(index) {
     return
   }
 
-  if (confirm("Êtes-vous sûr de vouloir supprimer cette étape ?")) {
-    fiveWhyData.whySteps.splice(index, 1)
-    renderWhyChain()
-    showNotification("Étape supprimée")
+  // Le modal sera ouvert automatiquement par Stimulus Dialog via l'attribut data-action
+  // Cette fonction n'est plus utilisée directement, mais conservée pour compatibilité
+  const deleteStepModal = document.getElementById(`deleteStepModal-${index}`)
+  if (deleteStepModal) {
+    const dialog = deleteStepModal.querySelector('[data-dialog-target="dialog"]')
+    if (dialog && !dialog.open) {
+      dialog.showModal()
+    }
+    return
   }
+  
+  // Fallback sur confirm si le modal n'est pas disponible
+  if (confirm("Êtes-vous sûr de vouloir supprimer cette étape ?")) {
+    confirmRemoveWhyStep(index)
+  }
+}
+
+// Fonction pour confirmer la suppression d'une étape (appelée par le modal)
+function confirmRemoveWhyStep(stepIndex) {
+  if (stepIndex === 0) {
+    showNotification("Impossible de supprimer la première étape", "error")
+    return
+  }
+
+  fiveWhyData.whySteps.splice(stepIndex, 1)
+  renderWhyChain()
+  showNotification("Étape supprimée")
+  
+  // Fermer tous les modals ouverts
+  document.querySelectorAll('[data-dialog-target="dialog"]').forEach(dialog => {
+    if (dialog.open) {
+      dialog.close()
+    }
+  })
 }
 
 function checkRootCause() {
@@ -415,12 +547,13 @@ function exportJSON() {
   const dataBlob = new Blob([dataStr], { type: "application/json" })
   const url = URL.createObjectURL(dataBlob)
   const link = document.createElement("a")
+  const filename = `5pourquoi-${Date.now()}.json`
   link.href = url
-  link.download = `5pourquoi-${Date.now()}.json`
+  link.download = filename
   link.click()
   URL.revokeObjectURL(url)
 
-      showNotification(`Le JSON ${filename} a bien été téléchargé`, "success")
+  showNotification(`Le JSON ${filename} a bien été téléchargé`, "success")
 
   trackExport("5pourquoi","JSON");
 
@@ -445,9 +578,11 @@ document.addEventListener("keydown", (e) => {
 window.updateProblemStatement = updateProblemStatement
 window.addWhyStep = addWhyStep
 window.removeWhyStep = removeWhyStep
+window.confirmRemoveWhyStep = confirmRemoveWhyStep
 window.resetAnalysis = resetAnalysis
 window.exportPDF = exportPDF
 window.exportJPEG = exportJPEG
 window.exportJSON = exportJSON
 window.updateWhyStep = updateWhyStep
 window.checkForNextStep = checkForNextStep
+window.updateAddButtonVisibility = updateAddButtonVisibility

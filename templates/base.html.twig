@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Outils Qualité Gratuits : Analyse & Rapports Express | OUTILS-QUALITÉ{% endblock %}</title>
+    
+    {% block meta_description %}
+    <meta name="description"
+        content="Outils qualité gratuits et interactif en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
+    {% endblock %}
+    
+    <meta name="keywords"
+        content="diagramme Ishikawa, fishbone diagram, 5 Pourquoi,
+               méthode des 5 pourquoi, analyse des causes racines,
+               root cause analysis, outil qualité gratuit,
+               amélioration continue, PDCA, Pareto, résolution
+               de problèmes, export PDF Ishikawa, export JPEG, Pareto, 8D, 
+               outil Ishikawa interactif, Outil qualité,
+               audit qualité, méthode Lean, contrôle qualité, qualité ISO 9001, outils qualité ISO 9001, résolution problèmes, analyse causes, ISO 9001, lean, amélioration continue">
+
+    <!-- Balise Open Graph -->
+    <meta property="og:title" content="{% block og_title %}Outils Qualité Gratuits | OUTILS-QUALITÉ{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, export PDF. Outils 100% gratuits.{% endblock %}">
+    <meta property="og:url" content="https://www.outils-qualite.com">
+    <meta property="og:image" content="https://www.outils-qualite.com{{ asset('img/logo.png') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('img/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+            'analytics_storage': 'denied',
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied'
+        });
+    </script>
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PNCNWR54');</script>
+    <!-- End Google Tag Manager -->
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNCNWR54"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    <!-- Navigation -->
+    {% include 'components/navbar.html.twig' %}
+
+    <!-- Main Content -->
+    {% block body %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+
+    <!-- Footer -->
+    {% include 'components/footer.html.twig' %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- AssetMapper JavaScript -->
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+
+    {% block javascripts %}
+    {% endblock %}
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
+        // Initialize AOS
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: "ease-in-out",
+                once: true,
+                offset: 100,
+            });
+        }
+    </script>
+</body>
+
+</html>

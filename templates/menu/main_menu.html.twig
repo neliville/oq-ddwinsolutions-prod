@@ -1,0 +1,10 @@
+<ul class="navbar-nav ms-auto">
+    {% for item in item.children %}
+        <li class="{{ item.extras.class|default('nav-item') }}{{ item is knp_menu_current or item is knp_menu_ancestor ? ' active' : '' }}">
+            <a class="{{ item.linkAttributes.class|default('nav-link') }}" href="{{ item.uri }}">
+                {{ item.label }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+

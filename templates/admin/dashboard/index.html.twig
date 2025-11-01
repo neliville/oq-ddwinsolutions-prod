@@ -1,0 +1,171 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Tableau de bord Administration | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="Tableau de bord de l'administration - OUTILS-QUALITÉ">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1">Tableau de bord</h1>
+                <p class="text-muted mb-0">Vue d'ensemble de votre application</p>
+            </div>
+            <div>
+                <button class="btn btn-primary">
+                    <i data-lucide="plus" width="18" height="18" class="me-2"></i>
+                    Créer
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+                                <i data-lucide="users" width="24" height="24"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success">↑ 36.8%</span>
+                        </div>
+                        <h3 class="fw-bold mb-1">-</h3>
+                        <p class="text-muted mb-0 small">Utilisateurs</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="bg-success bg-opacity-10 text-success rounded-3 p-3">
+                                <i data-lucide="file-text" width="24" height="24"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success">↑ 36.8%</span>
+                        </div>
+                        <h3 class="fw-bold mb-1">-</h3>
+                        <p class="text-muted mb-0 small">Créations</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="bg-info bg-opacity-10 text-info rounded-3 p-3">
+                                <i data-lucide="mail" width="24" height="24"></i>
+                            </div>
+                            <span class="badge bg-danger bg-opacity-10 text-danger">↓ 36.8%</span>
+                        </div>
+                        <h3 class="fw-bold mb-1">-</h3>
+                        <p class="text-muted mb-0 small">Messages</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3">
+                                <i data-lucide="newspaper" width="24" height="24"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success">↑ 12.5%</span>
+                        </div>
+                        <h3 class="fw-bold mb-1">-</h3>
+                        <p class="text-muted mb-0 small">Abonnés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Overview Section -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">Vue d'ensemble</h5>
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>Derniers 7 jours</option>
+                                <option>Derniers 30 jours</option>
+                                <option>Derniers 90 jours</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Placeholder pour graphique -->
+                        <div class="bg-light rounded-3 p-5 text-center" style="min-height: 300px;">
+                            <i data-lucide="bar-chart" width="48" height="48" class="text-muted mb-3"></i>
+                            <p class="text-muted mb-0">Graphique des statistiques à venir</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card border-0 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Activité récente</h5>
+                        <div class="text-center py-4">
+                            <i data-lucide="activity" width="48" height="48" class="text-muted mb-3"></i>
+                            <p class="text-muted mb-0">Aucune activité récente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Quick Actions -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Actions rapides</h5>
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_ishikawa_index') }}" class="btn btn-outline-primary">
+                                <i data-lucide="git-branch" width="18" height="18" class="me-2"></i>
+                                Créer un diagramme Ishikawa
+                            </a>
+                            <a href="{{ path('app_fivewhy_index') }}" class="btn btn-outline-info">
+                                <i data-lucide="help-circle" width="18" height="18" class="me-2"></i>
+                                Nouvelle analyse 5 Pourquoi
+                            </a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" class="btn btn-outline-success">
+                                <i data-lucide="file-plus" width="18" height="18" class="me-2"></i>
+                                Nouvel article
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="card border-0 shadow-sm bg-light" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-3">
+                            <i data-lucide="info" width="20" height="20" class="me-2 text-primary"></i>
+                            Information
+                        </h5>
+                        <p class="text-muted mb-0 small">
+                            L'espace d'administration sera progressivement enrichi avec les fonctionnalités de gestion :
+                            utilisateurs, articles de blog, messages de contact, abonnés à la newsletter, statistiques, etc.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}

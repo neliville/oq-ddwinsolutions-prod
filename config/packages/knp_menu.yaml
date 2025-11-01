@@ -1,0 +1,5 @@
+knp_menu:
+    default_renderer: twig
+    twig:
+        template: knp_menu.html.twig
+

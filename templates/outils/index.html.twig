@@ -1,0 +1,227 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Outils Qualité Gratuits : Analyse & Rapports Express | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}
+<meta name="description"
+    content="Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-5 mt-4">
+    <div class="container">
+        <!-- Header --> 
+        <div class="header text-center bg-gradient-light rounded-3 py-5 mb-5" data-aos="fade-up">
+            <h1 class="display-4 fw-bold mb-3">Tous nos outils qualité</h1>
+            <p class="lead text-muted">Une collection complète d'outils professionnels pour l'amélioration continue</p>
+            <p class="mb-0">
+                Choisissez l'outil qui correspond à votre besoin pour démarrer votre analyse.
+                D'autres outils passionnants arrivent bientôt 👀
+            </p>
+        </div>
+
+        <!-- Tools Grid -->
+        <div class="row py-3 g-4">
+            <!-- Ishikawa -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="card tool-card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
+                                <i data-lucide="git-branch" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Diagramme d'Ishikawa</h4>
+                                <p class="text-muted mb-3">Analysez les causes racines avec le diagramme en arête de
+                                    poisson. Parfait pour identifier tous les facteurs contribuant à un problème.
+                                </p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">Analyse des
+                                        causes</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success">Export PDF</span>
+                                    <span class="badge bg-info bg-opacity-10 text-info">Drag & Drop</span>
+                                </div>
+                                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                                    <i data-lucide="arrow-right" width="16" height="16" class="me-2"></i>
+                                    Utiliser l'outil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5 Pourquoi -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card tool-card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-success bg-opacity-10 text-success rounded-3 p-3 me-3">
+                                <i data-lucide="help-circle" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Méthode des 5 Pourquoi</h4>
+                                <p class="text-muted mb-3">Identifiez la cause racine en posant successivement "Pourquoi ?" jusqu'à trouver l'origine du problème.</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-success bg-opacity-10 text-success">Cause racine</span>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">Export PDF</span>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning">Guide intégré</span>
+                                </div>
+                                <a href="{{ path('app_fivewhy_index') }}" class="btn btn-success">
+                                    <i data-lucide="arrow-right" width="16" height="16" class="me-2"></i>
+                                    Utiliser l'outil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pareto (Bientôt) -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
+                                <i data-lucide="bar-chart-3" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Diagramme de Pareto</h4>
+                                <p class="text-muted mb-3">Identifiez les 20% de causes qui génèrent 80% des problèmes. Analysez vos données et visualisez les priorités.</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                                </div>
+                                <button class="btn btn-secondary" disabled>
+                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
+                                    À venir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cartes de contrôle (Bientôt) -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
+                                <i data-lucide="trending-up" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Cartes de contrôle</h4>
+                                <p class="text-muted mb-3">Surveillez la stabilité de vos processus avec les cartes de contrôle statistiques. Détectez les variations anormales.</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                                </div>
+                                <button class="btn btn-secondary" disabled>
+                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
+                                    À venir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AMDEC (Bientôt) -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
+                                <i data-lucide="target" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Matrice AMDEC</h4>
+                                <p class="text-muted mb-3">Analysez les modes de défaillance et leurs effets critiques. Évaluez les risques et priorisez les actions correctives.</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                                </div>
+                                <button class="btn btn-secondary" disabled>
+                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
+                                    À venir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5W2H (Bientôt) -->
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
+                                <i data-lucide="layers" width="24" height="24"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-semibold mb-2">Plan d'action 5W2H</h4>
+                                <p class="text-muted mb-3">Structurez vos plans d'action avec la méthode 5W2H (Who, What, When, Where, Why, How, How much).</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                                </div>
+                                <button class="btn btn-secondary" disabled>
+                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
+                                    À venir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm bg-light">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold mb-3">Fonctionnalités communes</h3>
+                                <p class="text-muted">Tous nos outils partagent ces caractéristiques professionnelles</p>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="100">
+                                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 d-inline-flex mb-3">
+                                        <i data-lucide="download" width="24" height="24"></i>
+                                    </div>
+                                    <h5 class="fw-semibold mb-2">Export multiple</h5>
+                                    <p class="text-muted small">PDF, JPEG, JSON</p>
+                                </div>
+
+                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="200">
+                                    <div class="feature-icon bg-success bg-opacity-10 text-success rounded-3 p-3 d-inline-flex mb-3">
+                                        <i data-lucide="smartphone" width="24" height="24"></i>
+                                    </div>
+                                    <h5 class="fw-semibold mb-2">Responsive</h5>
+                                    <p class="text-muted small">Mobile, tablette, desktop</p>
+                                </div>
+
+                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="300">
+                                    <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3 d-inline-flex mb-3">
+                                        <i data-lucide="zap" width="24" height="24"></i>
+                                    </div>
+                                    <h5 class="fw-semibold mb-2">Temps réel</h5>
+                                    <p class="text-muted small">Modifications instantanées</p>
+                                </div>
+
+                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="400">
+                                    <div class="feature-icon bg-info bg-opacity-10 text-info rounded-3 p-3 d-inline-flex mb-3">
+                                        <i data-lucide="shield-check" width="24" height="24"></i>
+                                    </div>
+                                    <h5 class="fw-semibold mb-2">Sécurisé</h5>
+                                    <p class="text-muted small">Données locales uniquement</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</main>
+{% endblock %}

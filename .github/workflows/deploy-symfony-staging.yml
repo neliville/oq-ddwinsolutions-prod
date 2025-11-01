@@ -1,0 +1,47 @@
+name: Deploy Symfony to Azure Staging
+
+on:
+  push:
+    branches:
+      - feat/symfony-app
+  workflow_dispatch:
+    branches:
+      - feat/symfony-app
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, pdo_pgsql, opcache, zip
+          tools: composer
+
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction
+          php bin/console cache:clear --env=prod --no-interaction
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E65F8C8A79A4218AB4131CD9FA3A46F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_592737AC197B41E49E6B691CBA269220 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F087D0869AF4F41A9E666D6D6C2F27D }}
+
+      - name: 'Deploy to Azure Web App (Staging)'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'outils-qualite-gratuit'
+          slot-name: 'staging'
+          package: .
+

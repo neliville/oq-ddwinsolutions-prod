@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité | Outils Qualité Gratuits : Analyse & Rapports Express{% endblock %}
+
+{% block meta_description %}
+<meta name="description"
+    content="Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
+{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Politique de confidentialité</h1>
+                <p class="lead mb-4">
+                    Comment et pourquoi nous collectons vos données personnelles.
+                </p>
+                <p class="mb-4">
+                    La présente politique décrit la manière dont <strong>DDWIN Solutions</strong> (ci-après « l'Entreprise »)
+                    collecte, utilise et protège les données personnelles traitées via le site
+                    <a href="https://outils-qualite.com" style="color: #fff">outils-qualite.com</a> (ci-après « le Site »).
+                </p>
+            </div>
+            <div class="col-lg-4" data-aos="fade-left">
+                <img src="{{ asset('img/mentions-legales.webp') }}" alt="Politique de confidentialité" class="img-fluid rounded-3 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <!-- 1. Responsable du traitement -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">1. Responsable du traitement</h2>
+        <p class="mb-0">
+            Les traitements de données sont effectués par l'entreprise
+            <strong>DDWIN Solutions – Conseil en systèmes et logiciels
+            informatiques</strong>, immatriculée en France, joignable à
+            <a href="mailto:contact@outils-qualite.com">contact@outils-qualite.com</a>.
+        </p>
+    </section>
+
+    <!-- 2. Données collectées -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">2. Données collectées</h2>
+        <ul class="mb-0">
+            <li><strong>Formulaire de contact</strong> : nom, e-mail, entreprise (facultatif), sujet, message.</li>
+            <li><strong>Formulaire d'inscription newsletter</strong> : e-mail, consentement (oui/non).</li>
+            <li><strong>Statistiques d'export</strong> : type de fichier exporté (PDF, JPEG, JSON). Nombre de visiteurs</li>
+        </ul>
+    </section>
+
+    <!-- 3. Finalités -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">3. Finalités du traitement</h2>
+        <ul class="mb-0">
+            <li>Répondre aux demandes envoyées via le formulaire de contact ;</li>
+            <li>Envoyer des informations sur nos outils et services lorsqu'un utilisateur s'abonne à la newsletter ;</li>
+            <li>Mesurer l'usage des fonctionnalités d'export afin d'améliorer le Site.</li>
+        </ul>
+    </section>
+
+    <!-- 4. Base légale -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">4. Base légale</h2>
+        <p class="mb-0">
+            Conformément au RGPD, les traitements sont fondés sur :
+            <strong>l'intérêt légitime</strong> de l'Entreprise (amélioration continue, sécurité) et
+            <strong>le consentement</strong> explicite des utilisateurs pour la newsletter.
+        </p>
+    </section>
+
+    <!-- 5. Destinataires / Sous-traitants -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">5. Destinataires &amp; sous-traitants</h2>
+        <ul class="mb-0">
+            <li><strong>Microsoft Azure Web Apps</strong> : hébergement du Site et de la base de données sécurisée.</li>
+            <li><strong>Cloudflare, Inc.</strong> : fourniture de DNS, CDN et protection DDoS.</li>
+        </ul>
+        <p class="mt-2 mb-0">
+            Ces prestataires agissent en tant que sous-traitants ; ils sont soumis à des clauses
+            contractuelles conformes au RGPD.
+        </p>
+    </section>
+
+    <!-- 6. Durée de conservation -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">6. Durée de conservation</h2>
+        <ul class="mb-0">
+            <li>Données de contact : 3 ans après le dernier échange;</li>
+            <li>Données newsletter : jusqu'au retrait du consentement;</li>
+        </ul>
+    </section>
+
+    <!-- 7. Vos droits -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">7. Droits des utilisateurs</h2>
+        <p>
+            Vous disposez d'un droit d'accès, de rectification, d'opposition, de suppression
+            et de portabilité de vos données. Pour l'exercer, écrivez à
+            <a href="mailto:dpo@outils-qualite.com">dpo@outils-qualite.com</a>.
+        </p>
+    </section>
+
+    <!-- 8. Cookies -->
+    <section class="mb-4">
+        <h2 class="h5 fw-bold">8. Cookies &amp; traceurs</h2>
+        <p>
+            Le Site n'emploie que :
+        </p>
+        <ul>
+            <li><em>Cookies techniques</em> nécessaires au fonctionnement (Cloudflare / DDOS, préférence langue).</li>
+            <li><em>Aucun cookie publicitaire</em>.</li>
+        </ul>
+        <p class="mb-0">
+            En poursuivant votre navigation, vous acceptez l'usage de ces cookies techniques.
+        </p>
+    </section>
+
+    <!-- 9. Mise à jour -->
+    <section>
+        <h2 class="h5 fw-bold">9. Mise à jour</h2>
+        <p class="mb-0">
+            Dernière révision : {{ 'now'|date('d F Y') }}. Cette politique pourra évoluer ; la
+            nouvelle version sera publiée sur cette page.
+        </p>
+    </section>
+</main>
+{% endblock %}
+

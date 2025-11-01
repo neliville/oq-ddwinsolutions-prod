@@ -1,0 +1,530 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Méthode des 5 Pourquoi | Analyse des causes racines | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}
+<meta name="description"
+    content="Utilisez la méthode des 5 Pourquoi pour identifier les causes racines. Outil gratuit et professionnel avec export PDF.">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="five-why-main">
+    <div class="container">
+        <!-- Header compact -->
+        <div class="five-why-header" data-aos="fade-up">
+            <h1>Méthode des 5 Pourquoi</h1>
+            <p class="lead">Identifiez la cause racine en posant successivement "Pourquoi ?" jusqu'à trouver l'origine du problème.</p>
+        </div>
+
+        <!-- Message pour utilisateurs non connectés -->
+        {% if not app.user %}
+        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
+            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
+            <strong>Vous n'êtes pas connecté.</strong> 
+            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos créations et accéder à votre espace personnel.
+        </div>
+        {% endif %}
+
+        <!-- Instructions compactes -->
+        <div class="alert alert-info rounded-3 mb-3" role="region" aria-label="Instructions" data-aos="fade-up" data-aos-delay="90">
+            <strong>🧭 Guide rapide</strong>
+            <ul class="mb-0 mt-2">
+                <li>Définissez le <strong>problème</strong> clairement</li>
+                <li>Posez votre <strong>1er « Pourquoi »</strong> et remplissez la réponse</li>
+                <li>Ajoutez jusqu'à <strong>10 étapes</strong> pour trouver la cause racine</li>
+            </ul>
+        </div>
+
+        <!-- Controls compacts -->
+        <div class="five-why-controls" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <button class="btn btn-primary btn-sm" onclick="resetAnalysis()" aria-label="Réinitialiser l'analyse">
+                    <i class="fas fa-refresh" aria-hidden="true"></i> Nouvelle analyse
+                </button>
+
+                <button id="addWhyStepButton" class="btn btn-secondary btn-sm" onclick="addWhyStep()" aria-label="Ajouter une étape Pourquoi">
+                    <i class="fas fa-plus me-2"></i> Ajouter un "Pourquoi"
+                </button>
+
+                <!-- Bouton Sauvegarder (visible uniquement si connecté) -->
+                {% if app.user %}
+                <button id="saveBtn" class="btn btn-success btn-sm" onclick="saveFiveWhy()" aria-label="Sauvegarder l'analyse">
+                    <i class="fas fa-save" aria-hidden="true"></i> Sauvegarder
+                </button>
+                <button id="loadBtn" class="btn btn-info btn-sm" onclick="loadFiveWhyList()" style="display: none;" aria-label="Charger une analyse sauvegardée">
+                    <i class="fas fa-folder-open" aria-hidden="true"></i> Charger
+                </button>
+                {% endif %}
+
+                <div class="dropdown export-dropdown">
+                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Options d'export">
+                        <i class="fas fa-download" aria-hidden="true"></i> Exporter
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><button class="dropdown-item" onclick="exportPDF()" role="menuitem">Export PDF</button></li>
+                        <li><button class="dropdown-item" onclick="exportJPEG()" role="menuitem">Export JPEG</button></li>
+                        <li><button class="dropdown-item" onclick="exportJSON()" role="menuitem">Export JSON</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Five Why Container -->
+        <div class="five-why-container" data-aos="fade-up" data-aos-delay="100" id="fiveWhyContainer" role="main" aria-label="Zone d'analyse 5 Pourquoi">
+            <!-- Problem Statement -->
+            <div class="problem-statement" role="region" aria-labelledby="problem-title">
+                <h3 id="problem-title">Définition du problème</h3>
+                <label for="problemStatement" class="visually-hidden">Décrivez clairement le problème que vous souhaitez analyser</label>
+                <input type="text" 
+                    id="problemStatement"
+                    class="form-control"
+                    placeholder="Ex: La production s'est arrêtée pendant 2 heures..."
+                    aria-label="Définition du problème"
+                    aria-describedby="problem-help"
+                    onchange="updateProblemStatement()">
+                <small id="problem-help" class="text-muted d-block mt-2">Décrivez clairement le problème que vous souhaitez analyser</small>
+            </div>
+
+            <!-- Why Chain -->
+            <div class="why-chain" id="whyChain">
+                <!-- Les étapes "Pourquoi" seront générées dynamiquement -->
+            </div>
+
+            <!-- Root Cause -->
+            <div class="root-cause" id="rootCause" style="display: none;">
+                <h3>Cause racine identifiée</h3>
+                <p id="rootCauseText">La cause racine sera affichée ici une fois l'analyse terminée.</p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Toastify CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<!-- Styles pour le modal de confirmation -->
+<style>
+.delete-confirmation-dialog {
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.delete-confirmation-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.delete-confirmation-dialog[open] {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.delete-confirmation-dialog[closing] {
+    animation: fadeOut 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Animation pour le bouton d'ajout quand une réponse existe */
+.pulse-animation {
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+#addWhyStepButton {
+    position: relative;
+    min-width: 200px;
+}
+
+#addWhyStepButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Optimisation de l'espace pour utilisateurs connectés */
+.five-why-main {
+    padding-top: {% if app.user %}1rem{% else %}2rem{% endif %};
+    padding-bottom: 2rem;
+}
+
+.five-why-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+}
+
+.five-why-header h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.five-why-header .lead {
+    color: var(--secondary-color);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.five-why-controls {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.five-why-container {
+    margin-top: 0 !important;
+}
+
+/* Accessibilité - Focus visible amélioré */
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .five-why-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .five-why-controls {
+        padding: 0.75rem;
+    }
+    
+    .five-why-controls .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/fivewhy.js') }}"></script>
+
+<script>
+    // Fonction de sauvegarde via API
+    async function saveFiveWhy() {
+        if (!{{ app.user ? 'true' : 'false' }}) {
+            Toastify({
+                text: "Vous devez être connecté pour sauvegarder.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+            }).showToast();
+            window.location.href = '{{ path('app_login') }}';
+            return;
+        }
+        
+        // Récupérer les données de l'analyse (depuis le script fivewhy.js)
+        const problemStatement = document.getElementById('problemStatement')?.value || '';
+        const whyChain = document.getElementById('whyChain');
+        
+        // Récupérer les données complètes de l'analyse depuis la variable globale
+        const analysisData = window.fiveWhyData || {
+            problemStatement: problemStatement,
+            whySteps: [],
+            rootCause: ''
+        };
+        
+        // Récupérer la cause racine si elle existe
+        const rootCauseEl = document.getElementById('rootCauseText');
+        if (rootCauseEl && rootCauseEl.style.display !== 'none') {
+            analysisData.rootCause = rootCauseEl.textContent || '';
+        }
+        
+        const saveBtn = document.getElementById('saveBtn');
+        const originalText = saveBtn.innerHTML;
+        
+        try {
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sauvegarde...';
+            
+            const response = await fetch('{{ path('app_api_fivewhy_save') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    title: problemStatement || 'Analyse 5 Pourquoi - ' + new Date().toLocaleDateString('fr-FR'),
+                    content: analysisData
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                Toastify({
+                    text: "Analyse sauvegardée avec succès !",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                }).showToast();
+            } else {
+                throw new Error(data.message || 'Erreur lors de la sauvegarde');
+            }
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde:', error);
+            Toastify({
+                text: "Erreur lors de la sauvegarde : " + error.message,
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+            }).showToast();
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+        }
+    }
+    
+    // Fonction pour charger la liste des analyses sauvegardées
+    async function loadFiveWhyList() {
+        if (!{{ app.user ? 'true' : 'false' }}) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('{{ path('app_api_fivewhy_list') }}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.data && data.data.length > 0) {
+                // Afficher une modal avec la liste des analyses sauvegardées
+                showLoadModal(data.data);
+            } else {
+                Toastify({
+                    text: "Aucune analyse sauvegardée.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ffa500, #ff8c00)",
+                }).showToast();
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement:', error);
+            Toastify({
+                text: "Erreur lors du chargement de la liste.",
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+            }).showToast();
+        }
+    }
+    
+    // Fonction pour charger une analyse spécifique
+    async function loadFiveWhy(id) {
+        if (!{{ app.user ? 'true' : 'false' }}) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`{{ path('app_api_fivewhy_get', {id: 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', id), {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                // Charger les données dans l'analyse
+                const analysisData = data.data.content;
+                if (window.loadAnalysisData) {
+                    window.loadAnalysisData(analysisData);
+                } else {
+                    // Charger manuellement si la fonction n'existe pas
+                    if (analysisData.problemStatement) {
+                        document.getElementById('problemStatement').value = analysisData.problemStatement;
+                        updateProblemStatement();
+                    }
+                    console.warn('Fonction loadAnalysisData non disponible');
+                }
+                
+                Toastify({
+                    text: "Analyse chargée avec succès !",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                }).showToast();
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement:', error);
+            Toastify({
+                text: "Erreur lors du chargement de l'analyse.",
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+            }).showToast();
+        }
+    }
+    
+    // Afficher la modal de chargement
+    function showLoadModal(analyses) {
+        // Créer une modal Bootstrap simple
+        const modalHtml = `
+            <div class="modal fade" id="loadFiveWhyModal" tabindex="-1" aria-labelledby="loadFiveWhyModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="loadFiveWhyModalLabel">Charger une analyse sauvegardée</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="list-group">
+                                ${analyses.map(analysis => `
+                                    <button type="button" class="list-group-item list-group-item-action" onclick="loadFiveWhy(${analysis.id}); $('#loadFiveWhyModal').modal('hide');">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
+                                            <small>${new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                                        </div>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+        `;
+        
+        // Supprimer l'ancienne modal si elle existe
+        const existingModal = document.getElementById('loadFiveWhyModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Ajouter la nouvelle modal
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        // Afficher la modal
+        const modal = new bootstrap.Modal(document.getElementById('loadFiveWhyModal'));
+        modal.show();
+    }
+    
+    // Afficher le bouton Charger si l'utilisateur est connecté
+    {% if app.user %}
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadBtn = document.getElementById('loadBtn');
+        if (loadBtn) {
+            loadBtn.style.display = 'inline-block';
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}
+<meta name="description"
+    content="Contactez-nous pour toute question sur nos outils qualité. Support technique, suggestions d'amélioration et partenariats.">
+{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Contactez-nous</h1>
+                <p class="lead mb-4">
+                    Une question ? Une suggestion ? Notre équipe est là pour vous aider.
+                </p>
+            </div>
+            <div class="col-lg-4" data-aos="fade-left">
+                <figure>
+                    <img src="{{ asset('img/markus-winkler-contact-unsplash.webp') }}" alt="Image de contact"
+                        class="img-fluid rounded-3 shadow-lg">
+                    <figcaption><small>Source: Unsplash | Markus Winkler.</small></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg" data-aos="fade-up">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4">Envoyez-nous un message</h2>
+
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+
+                        {{ form_start(form, {'attr': {'class': 'contact-form', 'id': 'contactForm', 'data-turbo': 'false'}}) }}
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-12">
+                                    {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                {{ form_row(form.subject, {'attr': {'class': 'form-select'}}) }}
+                            </div>
+
+                            <div class="mt-3">
+                                {{ form_row(form.message, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <small class="d-block mt-2 text-muted">
+                                    En soumettant ce formulaire, vous acceptez notre <a
+                                        href="{{ path('app_legal_politique_confidentialite') }}"
+                                        class="text-decoration-underline">politique de confidentialité</a>.
+                                </small>
+                                <button type="submit" class="btn btn-primary btn-lg px-5 mt-3">
+                                    <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-center">
+                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-envelope fa-2x"></i>
+                    </div>
+                    <h4 class="fw-semibold mb-3">Email</h4>
+                    <p class="text-muted">ddwinsolutions@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-center">
+                    <div class="feature-icon bg-success bg-opacity-10 text-success rounded-3 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    <h4 class="fw-semibold mb-3">Support</h4>
+                    <p class="text-muted">Lun-Ven : 9h00-18h00</p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-center">
+                    <div class="feature-icon bg-info bg-opacity-10 text-info rounded-3 p-3 d-inline-flex mb-3">
+                        <i class="fas fa-reply fa-2x"></i>
+                    </div>
+                    <h4 class="fw-semibold mb-3">Réponse</h4>
+                    <p class="text-muted">Sous 24h en moyenne</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-3">Questions fréquentes</h2>
+            <p class="lead text-muted">Trouvez rapidement les réponses à vos questions</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion" data-aos="fade-up">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Les outils sont-ils vraiment gratuits ?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Oui, absolument ! Tous nos outils sont 100% gratuits, sans limitation d'usage,
+                                sans inscription obligatoire et sans publicité intrusive. Notre mission est de
+                                démocratiser l'accès aux outils d'amélioration continue.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                Puis-je utiliser les outils pour un usage commercial ?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Oui, vous pouvez utiliser nos outils dans un cadre professionnel et commercial.
+                                Les analyses et rapports générés vous appartiennent entièrement. Nous demandons
+                                simplement de mentionner la source lors de présentations publiques.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Mes données sont-elles sauvegardées ?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Nos outils fonctionnent entièrement dans votre navigateur. Aucune donnée n'est
+                                envoyée sur nos serveurs, garantissant ainsi la confidentialité totale de vos
+                                analyses. Pensez à exporter vos travaux pour les sauvegarder.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Proposez-vous des formations ?
+                            </button>
+                        </h3>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Actuellement, nous proposons des guides et articles sur notre blog. Nous étudions
+                                la possibilité de proposer des formations en ligne. Contactez-nous si vous êtes
+                                intéressé par ce type de service.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block stylesheets %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}

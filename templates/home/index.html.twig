@@ -1,0 +1,327 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Outils Qualité Gratuits : Analyse & Rapports Express | OUTILS-QUALITÉ{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5" id="hero">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Outils Qualité Gratuits : Analyse & Rapports Express</h1>
+                <p class="lead mb-4">Créez vos diagrammes Ishikawa, appliquez la méthode des 5 Pourquoi et générez
+                    vos rapports PDF en quelques clics. Outils professionnels 100% gratuits.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <button
+                        class="btn btn-lg px-5 fw-semibold d-inline-flex align-items-center gap-2 rounded-pill border-0 py-3 bg-gradient-red"
+                        onclick="scrollToSection('avantages')">
+                        <i data-lucide="arrow-down" class="me-2"></i>Découvrir
+                    </button>
+                    <button
+                        class="btn btn-lg btn-light px-5 fw-semibold d-inline-flex align-items-center gap-2 rounded-pill border-0 py-3"
+                        onclick="scrollToSection('outils')">
+                        <i data-lucide="tool-case" class="me-2"></i>
+                        Nos outils
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <img src="{{ asset('img/hero.webp') }}" alt="Outils qualité" class="img-fluid rounded-3 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Avantages Section -->
+<section class="py-5" id="avantages">
+    <div class="container">
+        <div class="row mt-10">
+            <div class="col-lg-8 mx-auto text-center mb-5 mt-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold mb-3">Pourquoi choisir nos outils ?</h2>
+                <p class="lead text-muted">Des solutions professionnelles conçues pour l'amélioration continue</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <div
+                            class="feature-icon bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                            <i data-lucide="zap" width="24" height="24"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Rapide & Efficace</h4>
+                        <p class="text-muted">Créez vos analyses en quelques minutes. Interface intuitive et
+                            résultats instantanés.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <div
+                            class="feature-icon bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                            <i data-lucide="download" width="24" height="24"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Export PDF/JPEG</h4>
+                        <p class="text-muted">Téléchargez vos diagrammes et analyses au format professionnel pour
+                            vos présentations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <div
+                            class="feature-icon bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                            <i data-lucide="shield-check" width="24" height="24"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">100% Gratuit</h4>
+                        <p class="text-muted">Aucun abonnement, aucune limite. Tous nos outils sont entièrement
+                            gratuits.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Suite d'outils Section -->
+<section class="py-5 bg-light" id="outils">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold mb-3">Notre suite d'outils</h2>
+                <p class="lead text-muted">Des outils professionnels pour votre démarche qualité</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-primary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="git-branch" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Diagramme Ishikawa</h5>
+                        </div>
+                        <p class="text-muted mb-3">Analysez les causes racines avec le diagramme en arête de poisson
+                            interactif.</p>
+                        <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">Utiliser l'outil</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-primary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="help-circle" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Méthode 5 Pourquoi</h5>
+                        </div>
+                        <p class="text-muted mb-3">Trouvez la cause racine en posant les bonnes questions
+                            successives.</p>
+                        <a href="{{ path('app_fivewhy_index') }}" class="btn btn-primary">Utiliser l'outil</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-secondary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="bar-chart-3" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Diagramme Pareto</h5>
+                        </div>
+                        <p class="text-muted mb-3">Identifiez les 20% de causes qui génèrent 80% des problèmes.</p>
+                        <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-secondary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="trending-up" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Cartes de contrôle</h5>
+                        </div>
+                        <p class="text-muted mb-3">Surveillez la stabilité de vos processus avec les cartes de
+                            contrôle.</p>
+                        <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-secondary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="target" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Matrice AMDEC</h5>
+                        </div>
+                        <p class="text-muted mb-3">Analysez les modes de défaillance et leurs effets critiques.</p>
+                        <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="card h-100 border-0 shadow-sm tool-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div
+                                class="tool-icon bg-gradient-secondary text-white rounded-3 d-flex align-items-center justify-content-center me-3">
+                                <i data-lucide="layers" width="24" height="24"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Plan d'action 5W2H</h5>
+                        </div>
+                        <p class="text-muted mb-3">Structurez vos plans d'action avec la méthode 5W2H.</p>
+                        <span class="badge bg-warning text-dark">Bientôt disponible</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Expertise Section -->
+<section class="py-5" id="expertise">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h2 class="display-6 fw-bold mb-4">Notre expertise au service de votre qualité</h2>
+                <p class="lead mb-4">Nos outils sont conçus selon les standards internationaux ISO 9001 et les
+                    principes Lean Manufacturing. Bénéficiez d'une approche professionnelle pour vos démarches
+                    d'amélioration continue.</p>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <i data-lucide="award" class="text-primary me-2" width="20" height="20"></i>
+                            <span class="fw-semibold">Conformité ISO 9001</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <i data-lucide="trending-up" class="text-primary me-2" width="20" height="20"></i>
+                            <span class="fw-semibold">Méthodes Lean</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <i data-lucide="users" class="text-primary me-2" width="20" height="20"></i>
+                            <span class="fw-semibold">+10 000 utilisateurs</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <i data-lucide="clock" class="text-primary me-2" width="20" height="20"></i>
+                            <span class="fw-semibold">Support 24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4" data-aos="fade-left">
+                <div class="text-center">
+                    <img src="{{ asset('img/lean-manufacturing.webp') }}" alt="Lean Manufacturing" class="img-fluid" width="550">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 bg-gradient-primary text-white" id="newsletter">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h2 class="display-6 fw-bold mb-3">Restez informé des nouveautés</h2>
+                <p class="lead mb-4">Recevez nos derniers outils et conseils qualité directement dans votre boîte
+                    mail</p>
+                <form id="newsletterForm" class="row g-3 justify-content-center" data-turbo="false">
+                    <div class="col-md-6">
+                        <input type="email" class="form-control form-control-lg" id="email"
+                            placeholder="Votre adresse email" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-light btn-lg px-4">
+                            <i data-lucide="mail" class="me-2"></i>S'abonner
+                        </button>
+                    </div>
+                </form>
+                <small class="d-block mt-3 opacity-75">
+                    Pas de spam, désinscription en un clic
+                </small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION « Résumé société » -->
+<section class="bg-dark text-white py-5">
+    <div class="container-lg">
+        <div class="row g-4 align-items-center">
+            <!-- Texte + bouton -->
+            <div class="col-lg-7">
+                <h2 class="fw-bold mb-2">DDWin Solutions</h2>
+                <h6 class="text-warning mb-3">Conseil en Systèmes et Logiciels Informatiques</h6>
+
+                <p class="mb-4">
+                    Expert en analyse&nbsp;&amp;&nbsp;conception, développement, maintenance et formation.
+                    Nous créons des solutions informatiques sur&nbsp;mesure et développons des outils
+                    professionnels gratuits.
+                </p>
+
+                <a href="{{ path('app_contact_index') }}"
+                    class="btn btn-lg px-4 fw-semibold d-inline-flex align-items-center gap-2 rounded-pill border-0 px-5 py-3 bg-gradient-red">
+                    <i data-lucide="Mail" width="20" height="20"></i> Nous contacter
+                </a>
+            </div>
+
+            <!-- Cartes chiffrées -->
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-4">
+                        <div class="bg-primary bg-opacity-25 rounded-4 p-4 text-center">
+                            <h3 class="fw-bold text-warning mb-0">100%</h3>
+                            <small class="text-white d-block">Gratuit</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="bg-primary bg-opacity-25 rounded-4 p-4 text-center">
+                            <h3 class="fw-bold text-warning mb-0">2</h3>
+                            <small class="text-white d-block">Outils actifs</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="bg-primary bg-opacity-25 rounded-4 p-4 text-center">
+                            <h3 class="fw-bold text-warning mb-0">4+</h3>
+                            <small class="text-white d-block">Outils à venir</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</section>
+
+{% block javascripts %}
+<script>
+    function scrollToSection(sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

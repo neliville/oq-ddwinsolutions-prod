@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales – Outils-Qualité.com{% endblock %}
+
+{% block meta_description %}
+<meta name="description"
+    content="Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
+{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Mentions légales</h1>
+                <p class="lead mb-4">
+                    Conformément à l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN).
+                </p>
+            </div>
+            <div class="col-lg-4" data-aos="fade-left">
+                <figure>
+                    <img src="{{ asset('img/mentions-legales.webp') }}" alt="Image de réglementation"
+                        class="img-fluid rounded-3 shadow-lg">
+                    <figcaption><small>Source: Unsplash | Sasun Bughdaryan.</small></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container pb-5">
+    <!-- Hébergement & Nom de domaine -->
+    <section id="hebergement" class="py-4">
+        <h2 class="h4 fw-bold mb-3">Hébergement &amp; Nom de domaine</h2>
+
+        <p class="mb-2">
+            <strong>Hébergeur</strong> : l'application <em>outils-qualite.com</em> est physiquement
+            hébergée sur la plateforme <abbr title="Platform-as-a-Service">PaaS</abbr>
+            <strong>Microsoft Azure Web Apps</strong> (<em>Microsoft Ireland Operations Ltd.</em>,
+            One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, D18 P521, Irlande – Tél. +353 (1) 706-3117).
+        </p>
+
+        <p class="mb-2">
+            <strong>Nom de domaine &amp; DNS / CDN</strong> : le nom de domaine
+            <code>outils-qualite.com</code> est enregistré et géré chez
+            <strong>Cloudflare, Inc.</strong>,
+            101 Townsend Street, San Francisco, CA 94107, États-Unis
+            (support : <a href="https://support.cloudflare.com" target="_blank" rel="noopener">support.cloudflare.com</a>).
+            Cloudflare assure également la terminaison TLS, la mise en cache et la
+            protection anti-DDoS.
+        </p>
+
+        <p class="mb-0">
+            Les services Azure et Cloudflare sont contractuellement tenus d'assurer la
+            continuité de service, la sauvegarde et la sécurité physique des
+            infrastructures. Le responsable du site conserve l'entière maîtrise des
+            contenus publiés.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2>Hébergement</h2>
+        <p>Microsoft Azure – Microsoft Ireland Operations Ltd.<br>
+        One Microsoft Place, South County Business Park, Leopardstown, Dublin 18 (Irlande).</p>
+    </section>
+
+    <section class="mb-5">
+        <h2>Propriété intellectuelle</h2>
+        <p>L'ensemble des contenus (textes, images, logos, icônes, code) est protégé par le droit d'auteur. Toute reproduction totale ou partielle, sans autorisation préalable, est interdite.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2>Limitation de responsabilité</h2>
+        <p>Les outils gratuits sont fournis « en l'état ». OUTILS-QUALITÉ ne saurait être tenue responsable des résultats obtenus ou de l'usage qui en est fait.</p>
+    </section>
+
+    <section>
+        <h2>Lien vers la politique de confidentialité</h2>
+        <p>Pour plus d'informations sur vos données personnelles : <a href="{{ path('app_legal_politique_confidentialite') }}">consultez notre politique de confidentialité</a>.</p>
+    </section>
+</main>
+{% endblock %}
+
