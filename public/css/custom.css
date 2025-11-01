@@ -129,6 +129,21 @@ body {
   .navbar-nav .nav-link.active::after {
     display: none !important;
   }
+  
+  /* Ajuster la hauteur minimale de la navbar sur mobile pour éviter le chevauchement */
+  #mainNav {
+    min-height: 76px;
+  }
+  
+  /* S'assurer que le contenu principal a un padding-top suffisant sur mobile */
+  .main-content {
+    padding-top: 80px !important;
+  }
+  
+  /* Pour les pages sans sidebar, s'assurer aussi du padding-top */
+  main {
+    padding-top: 80px !important;
+  }
 }
 
 /* Hero Section */
@@ -420,7 +435,7 @@ footer {
 
 /* ===== ISHIKAWA SPECIFIC STYLES ===== */
 
-/* Header */
+/* Header - Styles généraux (peuvent être overridés par des classes spécifiques) */
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -556,9 +571,9 @@ footer {
   background: white;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow);
-  padding: 2rem;
+  padding: 1.5rem;
   margin-bottom: 2rem;
-  margin-top: 8.5rem; /* ou +++, ex: 4rem selon l'espace souhaité */
+  margin-top: 0;
 
   min-height: 80vh;
   position: relative;
@@ -919,10 +934,9 @@ footer {
   background: white;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow);
-  padding: 2.5rem;
-   margin-top: 6.5rem; /* ou +++, ex: 4rem selon l'espace souhaité */
+  padding: 2rem;
+  margin-top: 0;
   margin-bottom: 2rem;
-
 }
 
 .problem-statement {

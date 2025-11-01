@@ -45,6 +45,9 @@ const diagramData = {
   ],
 }
 
+// Exposer diagramData globalement pour l'API de sauvegarde
+window.diagramData = diagramData
+
 let currentCategoryId = null
 let currentCauseIndex = null
 let editingCategory = false
@@ -101,32 +104,74 @@ function generateUniqueId() {
   return "OQ-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2, 5).toUpperCase()
 }
 
+// Variable pour stocker la référence de la notification actuelle
+let currentToast = null
+
 // Fonction pour afficher les notifications
 function showNotification(message, type = "success") {
   const Toastify = window.Toastify // Declare Toastify variable
+  
+  // Fermer la notification précédente si elle existe
+  if (currentToast) {
+    currentToast.hideToast()
+    currentToast = null
+  }
+  
   if (typeof Toastify !== "undefined") {
-    Toastify({
+    currentToast = Toastify({
       text: message,
       duration: 3000,
       gravity: "top",
       position: "right",
       backgroundColor: type === "success" ? "#2ecc71" : type === "error" ? "#e74c3c" : "#3498db",
       stopOnFocus: true,
-    }).showToast()
+      callback: function() {
+        currentToast = null
+      }
+    })
+    currentToast.showToast()
   } else {
     alert(message)
   }
 }
 
 // Initialisation
-document.addEventListener("DOMContentLoaded", () => {
+function initializeIshikawa() {
+  // Vérifier que les éléments DOM existent avant d'initialiser
+  const fishbone = document.getElementById("fishbone")
+  const problemInput = document.getElementById("problemInput")
+  const problemBox = document.getElementById("problemBox")
+  
+  if (!fishbone) {
+    console.warn("Élément #fishbone introuvable, nouvel essai dans 100ms...")
+    setTimeout(initializeIshikawa, 100)
+    return
+  }
+  
+  console.log("Initialisation du diagramme Ishikawa...")
+  
+  // Initialiser le diagramme (renderDiagram vérifie aussi les éléments)
   renderDiagram()
-  document.getElementById("problemInput").value = diagramData.problem
-  updateAddCategoryButton()
+  
+  // Mettre à jour le champ de problème si disponible
+  if (problemInput) {
+    problemInput.value = diagramData.problem || ""
+  }
+  
+  // Mettre à jour la boîte du problème si disponible (renderDiagram le fait déjà, mais on le fait aussi ici pour être sûr)
+  if (problemBox && diagramData && diagramData.problem) {
+    problemBox.textContent = diagramData.problem
+  }
+  
+  // Initialiser les autres fonctionnalités
+  if (typeof updateAddCategoryButton === 'function') {
+    updateAddCategoryButton()
+  }
+  
   initializeDragAndDrop()
 
   // Initialiser AOS si disponible
-  const AOS = window.AOS // Declare AOS variable
+  const AOS = window.AOS
   if (typeof AOS !== "undefined") {
     AOS.init({
       duration: 800,
@@ -134,7 +179,82 @@ document.addEventListener("DOMContentLoaded", () => {
       once: true,
     })
   }
-})
+  
+  // Réinitialiser les icônes Lucide si disponible
+  if (typeof lucide !== "undefined") {
+    lucide.createIcons()
+  }
+  
+  console.log("Diagramme Ishikawa initialisé avec succès")
+}
+
+// Fonction d'initialisation robuste
+function ensureInitialization() {
+  // Vérifier que les éléments DOM existent avant d'initialiser
+  const fishbone = document.getElementById("fishbone")
+  if (!fishbone) {
+    console.warn("Élément #fishbone introuvable, nouvel essai dans 100ms...")
+    setTimeout(ensureInitialization, 100)
+    return
+  }
+  
+  // Vérifier si le diagramme a déjà été initialisé
+  const existingCategories = fishbone.querySelectorAll(".category-zone")
+  if (existingCategories.length === 0 && diagramData && diagramData.categories && diagramData.categories.length > 0) {
+    console.log("Aucune catégorie affichée mais des catégories existent, réinitialisation...")
+    initializeIshikawa()
+  } else if (existingCategories.length > 0) {
+    console.log("Diagramme déjà initialisé, pas de réinitialisation nécessaire")
+  } else {
+    initializeIshikawa()
+  }
+}
+
+// Attendre que le DOM soit complètement chargé
+if (document.readyState === 'loading') {
+  document.addEventListener("DOMContentLoaded", ensureInitialization)
+} else {
+  // DOM déjà chargé, mais on attend un peu pour être sûr que tous les scripts sont chargés
+  setTimeout(ensureInitialization, 100)
+}
+
+// Écouter les événements Turbo pour réinitialiser le diagramme après chaque navigation
+if (typeof window.Turbo !== 'undefined') {
+  document.addEventListener('turbo:load', function() {
+    // Vérifier si on est sur la page Ishikawa avant de réinitialiser
+    if (window.location.pathname.includes('/ishikawa')) {
+      console.log('Navigation Turbo détectée, réinitialisation du diagramme...')
+      setTimeout(ensureInitialization, 150)
+    }
+  })
+  
+  // Également écouter turbo:frame-load pour les frames Turbo
+  document.addEventListener('turbo:frame-load', function() {
+    if (window.location.pathname.includes('/ishikawa')) {
+      console.log('Frame Turbo chargée, réinitialisation du diagramme...')
+      setTimeout(ensureInitialization, 150)
+    }
+  })
+  
+  // Écouter turbo:before-cache pour s'assurer que le diagramme est réinitialisé
+  document.addEventListener('turbo:before-cache', function() {
+    console.log('Turbo va mettre en cache, vérification du diagramme...')
+  })
+}
+
+// Aussi réinitialiser après un court délai pour s'assurer que tout est chargé
+setTimeout(function() {
+  if (window.location.pathname.includes('/ishikawa')) {
+    const fishbone = document.getElementById("fishbone")
+    if (fishbone) {
+      const existingCategories = fishbone.querySelectorAll(".category-zone")
+      if (existingCategories.length === 0 && diagramData && diagramData.categories && diagramData.categories.length > 0) {
+        console.log("Vérification différée : aucune catégorie affichée, réinitialisation...")
+        initializeIshikawa()
+      }
+    }
+  }
+}, 500)
 
 function initializeDragAndDrop() {
   document.addEventListener("mousedown", handleMouseDown)
@@ -252,21 +372,39 @@ function renderDiagram() {
   const fishbone = document.getElementById("fishbone")
   const problemBox = document.getElementById("problemBox")
 
-  problemBox.textContent = diagramData.problem
+  if (!fishbone) {
+    console.error("Élément #fishbone introuvable pour le rendu")
+    return
+  }
+
+  // Mettre à jour la boîte du problème si elle existe
+  if (problemBox && diagramData && diagramData.problem) {
+    problemBox.textContent = diagramData.problem
+  }
 
   // Supprimer les zones existantes (sauf spine, svg, fish-head, problem-box)
   const existingZones = fishbone.querySelectorAll(".category-zone")
   existingZones.forEach((zone) => zone.remove())
 
   // Créer les zones de catégories
-  diagramData.categories.forEach((category, index) => {
-    createCategoryZone(category, index)
-  })
+  if (diagramData && diagramData.categories && diagramData.categories.length > 0) {
+    diagramData.categories.forEach((category, index) => {
+      createCategoryZone(category, index)
+    })
+  } else {
+    console.warn("Aucune catégorie trouvée dans diagramData")
+  }
 
   updateAddCategoryButton()
 
   // Mettre à jour les lignes après un court délai pour s'assurer que le DOM est mis à jour
-  setTimeout(updateConnectionLines, 50)
+  setTimeout(() => {
+    updateConnectionLines()
+    // Réinitialiser les icônes Lucide après le rendu
+    if (typeof lucide !== "undefined") {
+      lucide.createIcons()
+    }
+  }, 100)
 }
 
 function createCategoryZone(category, index) {
@@ -577,6 +715,14 @@ function updateAddCategoryButton() {
 }
 
 function resetAllCauses() {
+  // Utiliser le modal de confirmation Stimulus si disponible
+  const resetModal = document.getElementById('resetCausesModal')
+  if (resetModal && resetModal.dataset.controller?.includes('dialog')) {
+    // Le modal sera géré par Stimulus
+    return
+  }
+  
+  // Fallback sur confirm si le modal n'est pas disponible
   if (confirm("Êtes-vous sûr de vouloir vider toutes les causes ? Cette action est irréversible.")) {
     diagramData.categories.forEach((category) => {
       category.causes = []
