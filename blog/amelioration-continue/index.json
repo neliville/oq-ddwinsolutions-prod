@@ -11,8 +11,14 @@
       "excerpt": "Découvrez les principes fondamentaux de l'amélioration continue et comment l'implémenter dans votre organisation.",
       "date": "2025-01-15",
       "readTime": "8 min",
-      "tags": ["amélioration continue", "kaizen", "lean"],
-      "featured": true
+      "tags": [
+        "amélioration continue",
+        "kaizen",
+        "lean"
+      ],
+      "featured": true,
+      "image": "/blog/amelioration-continue/images/introduction-amelioration-continue.jpg",
+      "imageAlt": "Introduction à l'amélioration continue"
     },
     {
       "id": "cycle-pdca-pratique",
@@ -20,16 +26,27 @@
       "excerpt": "Apprenez à utiliser le cycle Plan-Do-Check-Act pour structurer vos démarches d'amélioration continue.",
       "date": "2025-01-10",
       "readTime": "6 min",
-      "tags": ["PDCA", "cycle", "amélioration"],
-      "featured": false
+      "tags": [
+        "PDCA",
+        "cycle",
+        "amélioration"
+      ],
+      "featured": false,
+      "image": "/blog/amelioration-continue/images/cycle-pdca-pratique.jpg",
+      "imageAlt": "Le cycle PDCA en pratique"
     },
-     {
+    {
       "id": "iso-9001-2026",
       "title": "ISO 9001:2026 - A quoi s'attendre",
       "excerpt": "ISO 9001:2026 arrive en octobre 2026. Découvrez les 5 changements clés pour votre PME et comment vous préparer sereinement. Checklist gratuite incluse.",
       "date": "2025-10-31",
       "readTime": "12 min",
-      "tags": ["norme qualité 2026", "ISO 9001:2026", "changement climatique ISO", "révision ISO 9001"],
+      "tags": [
+        "norme qualité 2026",
+        "ISO 9001:2026",
+        "changement climatique ISO",
+        "révision ISO 9001"
+      ],
       "featured": true,
       "image": "/blog/amelioration-continue/Images/Image-zoneATEX.png",
       "imageAlt": "Évolution de la norme ISO 9001 vers la version 2026"
