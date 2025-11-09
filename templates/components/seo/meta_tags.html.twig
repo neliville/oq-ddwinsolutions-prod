@@ -1,0 +1,57 @@
+{# 
+    Composant pour les meta tags SEO
+    Capture les blocks SEO définis dans les templates enfants
+#}
+
+{# Paramètres par défaut #}
+{% set app_name = 'OUTILS-QUALITÉ' %}
+{% set app_description = 'Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, export PDF. Outils 100% gratuits pour l\'amélioration continue.' %}
+{% set app_keywords = 'diagramme Ishikawa, fishbone diagram, 5 Pourquoi, méthode des 5 pourquoi, analyse des causes racines, root cause analysis, outil qualité gratuit, amélioration continue, PDCA, Pareto, résolution de problèmes' %}
+{% set app_url = app.request.schemeAndHttpHost %}
+{% set current_url = app.request.uri %}
+
+{# Utiliser les variables passées depuis base.html.twig #}
+{# Ces variables contiennent le contenu des blocks SEO capturés depuis les templates enfants #}
+{% set seo_title_raw = seo_title_raw|default('')|trim %}
+{% set seo_description_raw = seo_description_raw|default('')|trim %}
+{% set seo_keywords_raw = seo_keywords_raw|default('')|trim %}
+{% set seo_canonical_raw = seo_canonical_raw|default('')|trim %}
+{% set seo_robots_raw = seo_robots_raw|default('')|trim %}
+
+{# Titre de la page #}
+{% set page_title_raw = seo_title_raw|default('Outils Qualité Gratuits : Analyse & Rapports Express') %}
+{% set page_title = page_title_raw %}
+{% if not page_title_raw ends with app_name and not page_title_raw ends with 'OUTILS-QUALITÉ' %}
+    {% set page_title = page_title_raw ~ ' | ' ~ app_name %}
+{% else %}
+    {% set page_title = page_title_raw %}
+{% endif %}
+
+{# Description de la page #}
+{% set page_description_raw = seo_description_raw|default(app_description) %}
+{% set page_description = page_description_raw|striptags|trim %}
+
+{# Mots-clés de la page #}
+{% set page_keywords = seo_keywords_raw|default(app_keywords) %}
+
+{# Robots #}
+{% set robots = seo_robots_raw|default('index, follow') %}
+
+{# URL canonique #}
+{% set canonical_url = seo_canonical_raw|default(current_url) %}
+
+<!-- Meta Tags SEO -->
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
+<meta name="keywords" content="{{ page_keywords }}">
+<meta name="robots" content="{{ robots }}">
+<meta name="author" content="{{ app_name }}">
+
+{# URL canonique #}
+{% if canonical_url %}
+<link rel="canonical" href="{{ canonical_url }}">
+{% endif %}
+
+{# Meta tags pour mobile #}
+<meta name="theme-color" content="#0d6efd">
+

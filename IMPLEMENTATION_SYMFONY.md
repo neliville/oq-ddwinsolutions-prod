@@ -1,14 +1,17 @@
 # IMPLEMENTATION_SYMFONY.md
 
-> **Objectif** : Transformer le site statique (index.html à la racine) en application **Symfony + PostgreSQL** tout en conservant l’hébergement **Azure App Service (PHP 8.2)** et le CI/CD GitHub.
+> **Objectif** : Transformer le site statique (index.html à la racine) en application **Symfony + MySQL** tout en conservant l'hébergement **Azure App Service (PHP 8.2)** et le CI/CD GitHub.
+
+> **Dernière mise à jour** : 2025-11-07  
+> **Statut** : 🟢 En cours - Migration vers Symfony terminée, espace admin 100% fonctionnel, SEO complet, blog dynamique, tests 100% passent, page Ishikawa améliorée (UX/UI, accessibilité, responsive), **CMS légal éditable (pages Privacy / Terms / Mentions)**
 
 ---
 
 ## 0) Pré-requis
 
 - PHP 8.2+, Composer, Git
-- PostgreSQL local (ou Docker) pour dev
-- Accès au portail Azure (App Service + Postgres)
+- MySQL local (ou Docker) pour dev
+- Accès au portail Azure (App Service + MySQL)
 - Secrets GitHub (publish profile)
 
 ---
@@ -57,7 +60,7 @@ git mv index.html public/index.html 2>/dev/null || mv index.html public/index.ht
 ```dotenv
 APP_ENV=dev
 APP_SECRET=dev-secret-change-me
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/oq?serverVersion=16&charset=utf8"
+DATABASE_URL="mysql://root:root@127.0.0.1:3306/oq?serverVersion=8.0&charset=utf8mb4"
 ```
 
 2) Vérifier que `public/` est servi par Symfony (déjà par défaut).
@@ -106,6 +109,40 @@ composer require lexik/jwt-authentication-bundle
 php bin/console lexik:jwt:generate-keypair
 ```
 
+### Mot de passe oublié / Réinitialisation
+
+1. Installer le bundle officiel :
+
+```bash
+composer require symfonycasts/reset-password-bundle
+php bin/console make:reset-password --with-tests
+```
+
+2. Personnaliser les templates générés (`templates/reset_password/*.html.twig`) pour respecter la charte UI/UX.
+
+3. Configurer l’expéditeur dans `ResetPasswordController` (ex. `support@outils-qualite.com`).
+
+4. Ajouter le lien « Mot de passe oublié ? » dans la page de connexion (`templates/security/login.html.twig`).
+
+5. Relancer la compilation des assets si des styles dédiés sont créés (`php bin/console asset-map:compile`).
+
+6. Exécuter le test fonctionnel généré/adapté (`php bin/phpunit tests/ResetPasswordControllerTest.php`).
+
+### Pages d’erreur personnalisées
+
+1. Créer les templates Twig dans `templates/bundles/TwigBundle/Exception/` (`error.html.twig`, `error404.html.twig`, `error403.html.twig`) pour harmoniser l’expérience.
+2. Importer les routes d’aperçu en dev **et** en test (`config/routes/framework.yaml`) afin de pouvoir les prévisualiser et les tester (`/_error/{code}`).
+3. Ajouter des tests fonctionnels ciblés (`php bin/phpunit tests/Functional/ErrorPageTest.php`).
+4. Penser à nettoyer le cache test (`php bin/console cache:clear --env=test`) après modification des routes.
+
+### Déploiement vers o2switch
+
+1. Secrets GitHub nécessaires : `O2SWITCH_HOST`, `O2SWITCH_PORT`, `O2SWITCH_USER`, `O2SWITCH_SSH_KEY`, `O2SWITCH_DEPLOY_PATH`, `O2SWITCH_WEBROOT`.
+2. Workflow actif : `.github/workflows/deploy-o2switch.yml` (composer install + asset-map:compile + tests + SCP/rsync).
+3. Côté serveur : document root vers `public/`, `.env.prod.local`, accès SSH, base MySQL prête.
+4. Lors du premier déploiement, lancer les migrations en SSH : `php bin/console doctrine:migrations:migrate --env=prod`.
+5. Anciennes pipelines Azure conservées mais désactivées (`if: false`).
+
 ---
 
 ## 7) Contrôleurs & routes (exemple API)
@@ -151,7 +188,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, intl, pdo_pgsql, opcache
+          extensions: mbstring, intl, pdo_mysql, opcache
           tools: composer
 
       - name: Install dependencies
@@ -179,12 +216,12 @@ jobs:
 - **Variables d’application** :
   - `APP_ENV=prod`
   - `APP_SECRET=<secret>`
-  - `DATABASE_URL=postgresql://<user>:<pass>@<host>:5432/<db>?sslmode=require`
+  - `DATABASE_URL=mysql://<user>:<pass>@<host>:3306/<db>?serverVersion=8.0&charset=utf8mb4`
   - `SCM_DO_BUILD_DURING_DEPLOYMENT=true`
 
 ---
 
-## 11) Base PostgreSQL (prod)
+## 11) Base MySQL (prod)
 
 ```bash
 php bin/console doctrine:migrations:migrate --no-interaction --env=prod
@@ -194,9 +231,45 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
 ## 12) Checklist finale
 
-- [ ] Site statique accessible depuis `/`
-- [ ] Auth fonctionnelle
-- [ ] CRUD `Record` OK
+- [x] Site accessible depuis `/` (templates Twig)
+- [x] Auth fonctionnelle (formulaire de connexion)
+- [x] Flux de réinitialisation de mot de passe opérationnel (email, pages dédiées, test automatisé)
+- [x] CRUD `Record` OK (via API REST)
+- [x] Espace d'administration complet (Dashboard, Blog, Contact, Newsletter, Analytics, Logs, Users, Catégories/Tags)
+- [x] SEO complet (meta tags, Open Graph, Schema.org, Sitemap dynamique)
+- [x] Blog dynamique (articles en base de données avec Markdown)
+- [x] Pages d’erreur personnalisées (403/404/500) + tests fonctionnels
+- [x] Page Ishikawa : UX/UI améliorée, accessibilité, responsive, CSS nettoyé
+- [x] Tests unitaires : 42/42 passent (100%)
 - [ ] CI/CD passe au vert
-- [ ] Migrations exécutées
+- [ ] Migrations exécutées en production
 - [ ] Slot staging (si utilisé)
+
+## 13) Améliorations récentes (2025-01-03)
+
+### Page Ishikawa - Améliorations UX/UI et accessibilité
+
+- ✅ **Visibilité des boutons** : Tous les boutons (édition, suppression, ajout) sont toujours visibles avec bon contraste
+- ✅ **Masquage automatique** : Les boutons d'action des catégories sont masqués quand un modal est ouvert
+- ✅ **Nettoyage CSS** : Suppression des doublons entre `custom.css` et `ishikawa.css`, utilisation exclusive des variables CSS de `custom.css`
+- ✅ **Accessibilité** : Boutons avec taille minimale WCAG (44px), contraste vérifié, focus visible
+- ✅ **Canvas responsive** : Redimensionnement automatique selon le conteneur avec adaptation mobile
+- ✅ **Grille horizontale** : Catégories affichées en grille responsive au lieu de colonne verticale
+- ✅ **Visibilité du texte** : Texte du problème toujours visible avec bon contraste
+
+### Architecture actuelle
+
+- ✅ **Templates Twig** : Toutes les pages converties en templates Twig
+- ✅ **API REST** : Endpoints pour sauvegarder/charger les analyses (Ishikawa, 5 Pourquoi)
+- ✅ **Espace admin** : 100% fonctionnel avec toutes les fonctionnalités
+- ✅ **JavaScript** : Page Ishikawa utilise vanilla JS avec IIFE pour éviter les conflits Turbo
+- ✅ **CSS** : Organisation propre avec `custom.css` (variables globales) et `ishikawa.css` (styles spécifiques)
+
+### Mise à jour 2025-11-05 — Ishikawa Live Component
+
+- ✅ Normalisation côté serveur des catégories (propriétés Canvas `spineX`, `angle`, `branchLength`) pour aligner la sauvegarde base/localStorage avec le rendu Canvas.
+- ✅ Ajout des actions Live `reorderCategories` et extension de `updateCategoryPosition()` pour prendre en compte les coordonnées Canvas envoyées par Stimulus.
+- ✅ Renforcement de `updatedCategories()` et `calculateNextCanvasPosition()` pour les nouvelles catégories créées côté client.
+- 🔄 **À finaliser** : le formulaire d'édition de catégorie ne persiste toujours pas la mise à jour (l'ID d'édition n'est pas récupéré côté PHP). Le contrôleur Stimulus `bootstrap-modal` définit désormais `data-live-action-param-editing-category-id`, mais la LiveAction `updateCategory()` reçoit encore `null`. Diagnostic & correctif à prévoir.
+- 🔄 **À vérifier** : synchronisation des nouvelles propriétés Canvas avec le front (drag & drop, export) et tests manuels connectés/déconnectés.
+- 🔄 **À planifier** : tests fonctionnels automatisés (Live Components) ou au minimum un plan de tests manuel documenté couvrant : ajout/édition/suppression catégories et causes, rechargement localStorage vs utilisateur connecté, drag & drop, reorder.

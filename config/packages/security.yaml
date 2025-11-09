@@ -51,6 +51,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/newsletter/subscribe, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: ROLE_USER }
         - { path: ^/ishikawa, roles: PUBLIC_ACCESS }
         - { path: ^/5pourquoi, roles: PUBLIC_ACCESS }

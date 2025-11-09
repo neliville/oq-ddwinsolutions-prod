@@ -1,18 +1,22 @@
 import './bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
 import '@hotwired/turbo';
+import './styles/app.scss';
 
-// Import styles
-import './styles/app.css';
+import './js/bootstrap.js';
+import { registerNavbar } from './js/components/navbar.js';
+import { registerNewsletterForms } from './js/components/newsletter.js';
+import { registerHomePage } from './js/pages/home.js';
 
-// Turbo configuration (will be available after Turbo loads)
+const initialiseFrontend = () => {
+  registerNavbar();
+  registerNewsletterForms();
+  registerHomePage();
+};
+
+document.addEventListener('DOMContentLoaded', initialiseFrontend);
+document.addEventListener('turbo:load', initialiseFrontend);
+document.addEventListener('turbo:render', initialiseFrontend);
+
 if (typeof Turbo !== 'undefined') {
-    Turbo.session.drive = true;
+  Turbo.session.drive = true;
 }
-
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

@@ -1,0 +1,19 @@
+@mixin focus-ring($color: rgba(79, 70, 229, 0.25)) {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem $color;
+}
+
+@mixin responsive-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
+
+@mixin card-shadow {
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius);
+}

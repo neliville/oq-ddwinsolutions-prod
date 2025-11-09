@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Méthode 8D - Outils Qualité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .intro {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .steps-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .step-card h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .step-card p {
+            font-size: 0.9em;
+            opacity: 0.95;
+        }
+
+        .problem-info {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .problem-info h3 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .problem-info h3::before {
+            content: "⚠️";
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .discipline-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #e0e0e0;
+            border-left: 6px solid #667eea;
+        }
+
+        .discipline-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .discipline-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .discipline-title {
+            flex: 1;
+        }
+
+        .discipline-title h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .discipline-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+            display: block;
+        }
+
+        .helper-text {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .team-member {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-generate {
+            background: #667eea;
+            font-size: 1.2em;
+            padding: 18px 50px;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #229954);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .report-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .report-header h2 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        .report-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .report-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-section .content {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .summary-box {
+            background: #e8f5e9;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .summary-box h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #667eea;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '✓';
+            position: absolute;
+            left: -25px;
+            width: 30px;
+            height: 30px;
+            background: #27ae60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .timeline-item h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .steps-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .team-member {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 Méthode 8D</h1>
+            <p class="subtitle">8 Disciplines pour résoudre les problèmes à la racine</p>
+        </header>
+
+        <div class="intro">
+            <h2>La Méthode 8D (Eight Disciplines)</h2>
+            <p>La méthode 8D est une approche structurée de résolution de problèmes développée par Ford Motor Company. 
+            Elle permet d'identifier, corriger et éliminer les problèmes récurrents par une démarche collaborative en équipe.</p>
+            <p><strong>Cette méthode est un standard dans l'industrie automobile (IATF 16949), l'aéronautique et le manufacturing.</strong></p>
+            <p>Les 8 disciplines garantissent une résolution complète : de l'urgence immédiate aux actions préventives long terme.</p>
+        </div>
+
+        <div class="steps-overview">
+            <div class="step-card">
+                <h3>D0 - Préparation</h3>
+                <p>Décision de lancer le 8D</p>
+            </div>
+            <div class="step-card">
+                <h3>D1 - Équipe</h3>
+                <p>Constituer l'équipe</p>
+            </div>
+            <div class="step-card">
+                <h3>D2 - Décrire</h3>
+                <p>Décrire le problème</p>
+            </div>
+            <div class="step-card">
+                <h3>D3 - Contenir</h3>
+                <p>Actions immédiates</p>
+            </div>
+            <div class="step-card">
+                <h3>D4 - Causes</h3>
+                <p>Analyser les causes</p>
+            </div>
+            <div class="step-card">
+                <h3>D5 - Corriger</h3>
+                <p>Actions correctives</p>
+            </div>
+            <div class="step-card">
+                <h3>D6 - Valider</h3>
+                <p>Vérifier l'efficacité</p>
+            </div>
+            <div class="step-card">
+                <h3>D7 - Prévenir</h3>
+                <p>Standardiser</p>
+            </div>
+            <div class="step-card">
+                <h3>D8 - Féliciter</h3>
+                <p>Capitaliser</p>
+            </div>
+        </div>
+
+        <div class="problem-info">
+            <h3>Informations du problème</h3>
+            <div class="form-group">
+                <label>Titre du problème / N° du rapport 8D</label>
+                <input type="text" id="problemTitle" placeholder="Ex: 8D-2024-042 - Défauts de soudure sur châssis">
+            </div>
+            <div class="form-group">
+                <label>Date d'ouverture du 8D</label>
+                <input type="date" id="openDate">
+            </div>
+        </div>
+
+        <!-- D1 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D1</div>
+                <div class="discipline-title">
+                    <h3>Constituer l'équipe pluridisciplinaire</h3>
+                    <p>Former une équipe avec les compétences nécessaires (production, qualité, méthodes, ingénierie...)</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Responsable / Pilote du 8D</label>
+                <input type="text" id="d1Leader" placeholder="Ex: Jean Dupont - Responsable Qualité">
+            </div>
+            <div class="form-group">
+                <label>Membres de l'équipe</label>
+                <p class="helper-text">Ajoutez les membres avec leur fonction et expertise</p>
+                <div id="teamMembers"></div>
+                <button class="btn-add btn-small" onclick="addTeamMember()">➕ Ajouter un membre</button>
+            </div>
+        </div>
+
+        <!-- D2 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D2</div>
+                <div class="discipline-title">
+                    <h3>Décrire le problème (QQOQCCP)</h3>
+                    <p>Description exhaustive et factuelle du problème avec données chiffrées</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description détaillée du problème</label>
+                <p class="helper-text">Utilisez QQOQCCP : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi</p>
+                <textarea id="d2Description" placeholder="Ex: Des défauts de soudure (pénétration insuffisante) sont constatés sur les châssis de la série B depuis le 15/01/2024. 
+Localisation : poste de soudage n°3, ligne 2. 
+Fréquence : 35 pièces défectueuses sur 500 produites (7%).
+Impact : risque de rupture en service, réclamation client majeure."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Photos / Preuves (description)</label>
+                <input type="text" id="d2Evidence" placeholder="Ex: Photos des défauts, rapports de contrôle, plaintes clients">
+            </div>
+        </div>
+
+        <!-- D3 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D3</div>
+                <div class="discipline-title">
+                    <h3>Actions de containment immédiates</h3>
+                    <p>Protéger le client en attendant les actions correctives définitives</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Actions immédiates mises en place</label>
+                <p class="helper-text">Actions d'urgence pour stopper la propagation du défaut</p>
+                <textarea id="d3Actions" placeholder="Ex: 
+- Arrêt de la production sur le poste concerné
+- Tri des pièces en stock (500 pièces contrôlées à 100%)
+- Inspection renforcée sur les pièces suivantes (contrôle systématique)
+- Blocage des expéditions vers le client
+- Retour et tri chez le client (150 pièces)"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Date de mise en œuvre</label>
+                <input type="date" id="d3Date">
+            </div>
+            <div class="form-group">
+                <label>Efficacité vérifiée ?</label>
+                <input type="text" id="d3Verification" placeholder="Ex: Oui - Aucun nouveau défaut détecté depuis 7 jours">
+            </div>
+        </div>
+
+        <!-- D4 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D4</div>
+                <div class="discipline-title">
+                    <h3>Identifier les causes racines</h3>
+                    <p>Analyse approfondie sur le terrain (Gemba) avec 5M, 5 Pourquoi, Ishikawa</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Causes racines identifiées</label>
+                <p class="helper-text">Allez au Gemba ! Utilisez 5 Pourquoi, Ishikawa (5M), analyse de données</p>
+                <textarea id="d4Causes" placeholder="Ex: Causes racines identifiées (analyse 5M + 5 Pourquoi) :
+1. MATIÈRE : Changement de fournisseur de fil de soudure le 10/01 (nouveau fil moins adapté)
+2. MÉTHODE : Paramètres de soudage non réajustés après changement de fil
+3. MAIN D'ŒUVRE : Opérateur récemment formé, manque d'expérience sur détection des dérives
+4. MILIEU : Courants d'air sur le poste perturbant le bain de fusion
+5. Cause racine principale : Absence de procédure de validation lors changement de consommable"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Méthode d'analyse utilisée</label>
+                <input type="text" id="d4Method" placeholder="Ex: 5 Pourquoi + Ishikawa (5M) + Gemba Walk + Analyse micrographique">
+            </div>
+        </div>
+
+        <!-- D5 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D5</div>
+                <div class="discipline-title">
+                    <h3>Définir et mettre en œuvre les actions correctives</h3>
+                    <p>Actions permanentes pour éliminer les causes racines</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Actions correctives permanentes</label>
+                <p class="helper-text">Actions ciblées sur chaque cause racine identifiée</p>
+                <textarea id="d5Actions" placeholder="Ex: Actions correctives permanentes :
+1. Retour au fournisseur de fil d'origine avec contrat long terme (délai : immédiat)
+2. Réajustement des paramètres de soudage et validation par soudures tests (fait le 05/02)
+3. Formation complémentaire des opérateurs sur détection anomalies (formation 2j le 10/02)
+4. Installation d'écrans de protection contre courants d'air (fait le 08/02)
+5. Création procédure validation changement consommable avec essais obligatoires"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Responsable et échéance</label>
+                <input type="text" id="d5Responsible" placeholder="Ex: Responsable Méthodes - 15/02/2024">
+            </div>
+        </div>
+
+        <!-- D6 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D6</div>
+                <div class="discipline-title">
+                    <h3>Valider l'efficacité des actions</h3>
+                    <p>Mesurer l'efficacité réelle sur le terrain avec KPIs</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Méthode de validation</label>
+                <p class="helper-text">Comment allez-vous vérifier que le problème est résolu ?</p>
+                <textarea id="d6Validation" placeholder="Ex: Validation de l'efficacité :
+- Suivi quotidien du taux de défauts sur 4 semaines (objectif : <1%)
+- Audits qualité hebdomadaires sur le poste de soudage
+- Contrôles destructifs sur échantillons (tests de traction, micrographie)
+- Retour d'expérience client après 2 mois (aucune réclamation)"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Résultats obtenus</label>
+                <textarea id="d6Results" placeholder="Ex: Résultats après 1 mois :
+- Taux de défauts passé de 7% à 0,3% (objectif atteint)
+- Aucune réclamation client depuis 6 semaines
+- Validation OK par audit qualité le 15/03/2024"></textarea>
+            </div>
+        </div>
+
+        <!-- D7 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D7</div>
+                <div class="discipline-title">
+                    <h3>Prévenir la récurrence (Standardiser)</h3>
+                    <p>Mettre à jour les documents, procédures, AMDEC et déployer transversalement</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Actions de standardisation et de prévention</label>
+                <p class="helper-text">Yokoten (déploiement horizontal), mise à jour documentaire, formation</p>
+                <textarea id="d7Prevention" placeholder="Ex: Actions de prévention et standardisation :
+1. Mise à jour de la procédure de soudage (PS-045 rev.C)
+2. Création checklist de validation changement consommable (intégrée au système qualité)
+3. Déploiement de la procédure sur les 5 autres postes de soudage (Yokoten)
+4. Mise à jour AMDEC Process (ajout du risque 'changement consommable')
+5. Formation des 12 opérateurs soudeurs sur nouvelle procédure
+6. Audit mensuel de vérification du respect de la procédure"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Documents mis à jour</label>
+                <input type="text" id="d7Documents" placeholder="Ex: PS-045, AMDEC-Soudage-v3, Plan de surveillance, Programme de formation">
+            </div>
+        </div>
+
+        <!-- D8 -->
+        <div class="discipline-section">
+            <div class="discipline-header">
+                <div class="discipline-number">D8</div>
+                <div class="discipline-title">
+                    <h3>Féliciter l'équipe et capitaliser</h3>
+                    <p>Reconnaître les contributions et partager les apprentissages</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Reconnaissance de l'équipe</label>
+                <textarea id="d8Recognition" placeholder="Ex: Félicitations et reconnaissance :
+- Réunion de clôture le 20/03/2024 avec présentation des résultats
+- Remerciements officiels de la direction pour la réactivité de l'équipe
+- Communication dans le journal interne de l'entreprise
+- Bonus qualité pour l'équipe projet"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Capitalisation / Leçons apprises</label>
+                <textarea id="d8Learning" placeholder="Ex: Capitalisation et leçons apprises :
+- Présentation du cas en REX qualité mensuel (partage avec autres services)
+- Ajout du cas dans la bibliothèque de cas 8D (base de connaissances)
+- Points à améliorer : délai de détection trop long, communication client à renforcer
+- Mise en place d'une alerte automatique en cas de changement consommable"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Date de clôture du 8D</label>
+                <input type="date" id="d8CloseDate">
+            </div>
+        </div>
+
+        <button class="btn-generate" onclick="generateReport()">📄 Générer le rapport 8D complet</button>
+
+        <div id="results" class="results" style="display: none;">
+            <div class="report-container">
+                <div class="report-header">
+                    <h2 id="reportTitle">Rapport 8D</h2>
+                    <p style="color: #666; margin-top: 10px;" id="reportDate"></p>
+                </div>
+
+                <div id="progressSection" style="margin-bottom: 30px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Avancement du 8D</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar">0%</div>
+                    </div>
+                </div>
+
+                <div class="timeline" id="reportTimeline"></div>
+
+                <div class="summary-box">
+                    <h3>✅ Résumé de l'efficacité du 8D</h3>
+                    <p id="summaryText"></p>
+                    <ul id="summaryList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let teamMemberCount = 0;
+
+        function addTeamMember() {
+            teamMemberCount++;
+            const container = document.getElementById('teamMembers');
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'team-member';
+            memberDiv.id = `member-${teamMemberCount}`;
+            memberDiv.innerHTML = `
+                <input type="text" placeholder="Nom" class="member-name">
+                <input type="text" placeholder="Fonction" class="member-function">
+                <input type="text" placeholder="Expertise" class="member-expertise">
+                <button class="btn-small btn-remove" onclick="removeTeamMember(${teamMemberCount})">✖</button>
+            `;
+            container.appendChild(memberDiv);
+        }
+
+        function removeTeamMember(id) {
+            const member = document.getElementById(`member-${id}`);
+            if (member) member.remove();
+        }
+
+        function generateReport() {
+            // Récupérer toutes les données
+            const data = {
+                title: document.getElementById('problemTitle').value.trim(),
+                openDate: document.getElementById('openDate').value,
+                d1Leader: document.getElementById('d1Leader').value.trim(),
+                d2Description: document.getElementById('d2Description').value.trim(),
+                d2Evidence: document.getElementById('d2Evidence').value.trim(),
+                d3Actions: document.getElementById('d3Actions').value.trim(),
+                d3Date: document.getElementById('d3Date').value,
+                d3Verification: document.getElementById('d3Verification').value.trim(),
+                d4Causes: document.getElementById('d4Causes').value.trim(),
+                d4Method: document.getElementById('d4Method').value.trim(),
+                d5Actions: document.getElementById('d5Actions').value.trim(),
+                d5Responsible: document.getElementById('d5Responsible').value.trim(),
+                d6Validation: document.getElementById('d6Validation').value.trim(),
+                d6Results: document.getElementById('d6Results').value.trim(),
+                d7Prevention: document.getElementById('d7Prevention').value.trim(),
+                d7Documents: document.getElementById('d7Documents').value.trim(),
+                d8Recognition: document.getElementById('d8Recognition').value.trim(),
+                d8Learning: document.getElementById('d8Learning').value.trim(),
+                d8CloseDate: document.getElementById('d8CloseDate').value
+            };
+
+            // Collecter les membres de l'équipe
+            const teamMembers = [];
+            document.querySelectorAll('.team-member').forEach(member => {
+                const name = member.querySelector('.member-name').value.trim();
+                const func = member.querySelector('.member-function').value.trim();
+                const exp = member.querySelector('.member-expertise').value.trim();
+                if (name) {
+                    teamMembers.push({ name, function: func, expertise: exp });
+                }
+            });
+
+            // Validation minimale
+            if (!data.title || !data.d2Description) {
+                alert('Veuillez renseigner au minimum le titre et la description du problème (D2).');
+                return;
+            }
+
+            // Calculer le taux de complétion
+            const fields = [
+                data.d1Leader, data.d2Description, data.d3Actions, data.d4Causes,
+                data.d5Actions, data.d6Validation, data.d7Prevention, data.d8Recognition
+            ];
+            const completed = fields.filter(f => f && f.length > 0).length;
+            const progress = Math.round((completed / fields.length) * 100);
+
+            // Générer le rapport
+            document.getElementById('reportTitle').textContent = data.title || 'Rapport 8D';
+            document.getElementById('reportDate').textContent = `Ouvert le ${new Date(data.openDate || Date.now()).toLocaleDateString('fr-FR')}`;
+
+            // Barre de progression
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+
+            // Timeline
+            const timeline = document.getElementById('reportTimeline');
+            timeline.innerHTML = '';
+
+            const steps = [
+                { num: 'D1', title: 'Équipe constituée', content: data.d1Leader + (teamMembers.length ? ` + ${teamMembers.length} membre(s)` : '') },
+                { num: 'D2', title: 'Problème décrit', content: data.d2Description },
+                { num: 'D3', title: 'Actions de containment', content: data.d3Actions },
+                { num: 'D4', title: 'Causes racines identifiées', content: data.d4Causes },
+                { num: 'D5', title: 'Actions correctives', content: data.d5Actions },
+                { num: 'D6', title: 'Validation', content: data.d6Results || data.d6Validation },
+                { num: 'D7', title: 'Standardisation', content: data.d7Prevention },
+                { num: 'D8', title: 'Capitalisation', content: data.d8Learning }
+            ];
+
+            steps.forEach(step => {
+                if (step.content) {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    item.innerHTML = `
+                        <h4>${step.num} - ${step.title}</h4>
+                        <p style="color: #666;">${step.content.substring(0, 200)}${step.content.length > 200 ? '...' : ''}</p>
+                    `;
+                    timeline.appendChild(item);
+                }
+            });
+
+            // Résumé
+            const summaryText = document.getElementById('summaryText');
+            const summaryList = document.getElementById('summaryList');
+
+            if (progress === 100) {
+                summaryText.innerHTML = '<strong>🎉 Félicitations ! Le rapport 8D est complet.</strong><br>Toutes les disciplines ont été renseignées. Le problème a été traité de manière exhaustive.';
+            } else {
+                summaryText.innerHTML = `<strong>⚠️ Rapport 8D en cours (${progress}% complété)</strong><br>Certaines disciplines restent à compléter pour finaliser la démarche.`;
+            }
+
+            summaryList.innerHTML = `
+                <li><strong>Problème :</strong> ${data.title || 'Non renseigné'}</li>
+                <li><strong>Pilote :</strong> ${data.d1Leader || 'Non désigné'}</li>
+                <li><strong>Date d'ouverture :</strong> ${data.openDate ? new Date(data.openDate).toLocaleDateString('fr-FR') : 'Non renseignée'}</li>
+                <li><strong>Date de clôture :</strong> ${data.d8CloseDate ? new Date(data.d8CloseDate).toLocaleDateString('fr-FR') : 'En cours'}</li>
+                <li><strong>Disciplines complétées :</strong> ${completed}/8</li>
+            `;
+
+            if (data.d6Results) {
+                summaryList.innerHTML += `<li><strong>✅ Efficacité validée :</strong> ${data.d6Results.substring(0, 100)}</li>`;
+            }
+
+            // Afficher les résultats
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialiser avec des exemples
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('problemTitle').value = '8D-2024-042 - Défauts de soudure sur châssis série B';
+            document.getElementById('openDate').value = today;
+            document.getElementById('d1Leader').value = 'Jean Dupont - Responsable Qualité';
+            
+            // Ajouter 3 membres d'équipe
+            for (let i = 0; i < 3; i++) addTeamMember();
+            const members = [
+                { name: 'Marie Martin', func: 'Ingénieur Méthodes', exp: 'Soudage' },
+                { name: 'Pierre Leroy', func: 'Chef d\'atelier', exp: 'Production' },
+                { name: 'Sophie Bernard', func: 'Technicien Qualité', exp: 'Contrôle destructif' }
+            ];
+            document.querySelectorAll('.team-member').forEach((member, i) => {
+                if (members[i]) {
+                    member.querySelector('.member-name').value = members[i].name;
+                    member.querySelector('.member-function').value = members[i].func;
+                    member.querySelector('.member-expertise').value = members[i].exp;
+                }
+            });
+
+            document.getElementById('d2Description').value = `Défauts de soudure constatés sur châssis série B depuis le 15/01/2024.
+Nature du défaut : Pénétration insuffisante du cordon de soudure (profondeur <3mm au lieu de 5mm requis).
+Localisation : Poste de soudage n°3, ligne d'assemblage 2, soudure longitudinale du longeron.
+Fréquence : 35 pièces défectueuses détectées sur 500 produites (taux de défaut : 7%).
+Impact : Risque de rupture en service, réclamation client majeure (Renault), coût estimé 45 000€.`;
+
+            document.getElementById('d2Evidence').value = 'Photos des défauts, rapports de contrôle (RC-2024-125), plainte client REF-REN-2024-08, analyses micrographiques';
+            
+            document.getElementById('d3Actions').value = `Actions immédiates (mises en place le 16/01/2024) :
+- Arrêt immédiat de la production sur le poste n°3
+- Tri à 100% des pièces en stock (500 pièces) → 28 non-conformes identifiées et mises au rebut
+- Inspection renforcée 100% sur production suivante pendant 2 semaines
+- Blocage des expéditions vers client (150 pièces retenues)
+- Intervention chez le client pour tri de 150 pièces déjà livrées → 7 pièces défectueuses récupérées`;
+
+            document.getElementById('d3Date').value = today;
+            document.getElementById('d3Verification').value = 'Oui - Efficacité validée : aucun nouveau défaut détecté depuis 10 jours (contrôle 100%)';
+
+            document.getElementById('d4Causes').value = `Analyse des causes racines (méthode : 5 Pourquoi + Ishikawa 5M + Gemba Walk) :
+
+MATIÈRE : Changement de fournisseur de fil de soudure le 10/01 (fil FIL-B remplacé par FIL-C, diamètre identique mais composition légèrement différente).
+
+MÉTHODE : Paramètres de soudage non réajustés suite au changement de fil (intensité et vitesse inchangées, inadaptées au nouveau fil).
+
+MAIN D'ŒUVRE : Opérateur récent (3 mois d'ancienneté), formé sur ancien fil, n'a pas détecté la dérive progressive.
+
+MACHINE : Pas de cause machine identifiée (maintenance OK, calibration OK).
+
+MILIEU : Courants d'air sur le poste perturbant le bain de fusion et la protection gazeuse.
+
+➡️ CAUSE RACINE PRINCIPALE : Absence de procédure de validation lors du changement de consommable + manque de formation sur détection anomalies.`;
+
+            document.getElementById('d4Method').value = '5 Pourquoi, Ishikawa (5M), Gemba Walk, Analyses micrographiques, Tests comparatifs fils';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+@use '../core/variables';
+
+.dashboard-page {
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: var(--radius-xl);
+
+  h1, h5, h6 {
+    color: var(--text-primary);
+  }
+
+  .card {
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 18px 32px -20px rgba(15, 23, 42, 0.28);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+    background: var(--bg-primary);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(79, 70, 229, 0.35) !important;
+    }
+
+    &.bg-light {
+      background: var(--bg-secondary) !important;
+      border-color: rgba(148, 163, 184, 0.35) !important;
+    }
+
+    .card-body {
+      padding: var(--space-5);
+    }
+  }
+
+  .card.border {
+    border-style: solid !important;
+  }
+
+  .badge {
+    border-radius: 999px;
+  }
+
+  .list-group-item {
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: var(--shadow-xs);
+    background: rgba(248, 250, 252, 0.85);
+  }
+
+  .btn-outline-primary,
+  .btn-outline-info,
+  .btn-outline-success,
+  .btn-outline-warning {
+    border-width: 1.5px;
+    border-radius: var(--radius-md);
+  }
+
+  @media (max-width: 992px) {
+    .card {
+      border-radius: var(--radius-lg);
+    }
+    .card .card-body {
+      padding: var(--space-4);
+    }
+  }
+}

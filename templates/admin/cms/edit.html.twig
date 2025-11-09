@@ -1,0 +1,119 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}{{ cmsPage.title }} | CMS{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfZ5HKe3Xf1FR8Mq74ZVvYIfR0oMw66N53WhzxSp8UOZbKgjMqvkKcznowBmX5DQ9K1YZm0sl5POn7gZpv+Rw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+function initCmsEditor() {
+    const textarea = document.getElementById('{{ form.content.vars.id }}');
+    if (!textarea || textarea.dataset.easymdeInitialized === 'true') {
+        return;
+    }
+
+    const easyMDE = new EasyMDE({
+        element: textarea,
+        spellChecker: false,
+        forceSync: true,
+        minHeight: '320px',
+        toolbar: [
+            'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list',
+            '|', 'link', 'table', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'
+        ],
+        status: false,
+    });
+
+    textarea.dataset.easymdeInitialized = 'true';
+    textarea.easyMDEInstance = easyMDE;
+}
+
+const initCmsPage = () => {
+    initCmsEditor();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+};
+
+document.addEventListener('DOMContentLoaded', initCmsPage);
+document.addEventListener('turbo:load', initCmsPage);
+document.addEventListener('turbo:render', initCmsPage);
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_cms_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour aux pages CMS
+            </a>
+            <h1 class="h3 fw-bold mb-1">{{ cmsPage.title }}</h1>
+            <p class="text-muted mb-0">Dernière mise à jour : {{ cmsPage.updatedAt|date('d/m/Y à H:i') }}</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Contenu en Markdown</h5>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title) }}
+                            {{ form_widget(form.title, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.content) }}
+                            {{ form_widget(form.content, { attr: { class: 'form-control', rows: 16 } }) }}
+                            {{ form_errors(form.content) }}
+                            <small class="text-muted">Utilisez la syntaxe Markdown. Prévisualisation disponible via EasyMDE.</small>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ path('app_admin_cms_index') }}" class="btn btn-outline-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                                Enregistrer
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Informations</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Slug</small>
+                        <code>{{ cmsPage.slug }}</code>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Créé le</small>
+                        <strong>{{ cmsPage.createdAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Dernière mise à jour</small>
+                        <strong>{{ cmsPage.updatedAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,317 @@
+{% extends 'base.html.twig' %}
+
+{% set featuredImageUrl = post.image ? asset(post.image) : asset('img/og-default.jpg') %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block meta_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
+
+{% block meta_keywords %}
+{% if post.tags|length > 0 %}
+{% for tag in post.tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}, {{ post.category.name }}, amélioration continue, outils qualité
+{% endblock %}
+
+{% block og_title %}{{ post.title }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
+
+{% block og_image %}{{ app.request.schemeAndHttpHost ~ featuredImageUrl }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block schema_type %}Organization,Article{% endblock %}
+
+{% block head %}
+{{ parent() }}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ post.title|json_encode|raw }},
+    "image": {{ (app.request.schemeAndHttpHost ~ featuredImageUrl)|json_encode|raw }},
+    "datePublished": {{ post.publishedAt|date('Y-m-d\\TH:i:sP')|json_encode|raw }},
+    "dateModified": {{ (post.updatedAt ?: post.publishedAt)|date('Y-m-d\\TH:i:sP')|json_encode|raw }},
+    "author": {
+        "@type": "Organization",
+        "name": "OUTILS-QUALITÉ"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "OUTILS-QUALITÉ",
+        "logo": {
+            "@type": "ImageObject",
+            "url": {{ (app.request.schemeAndHttpHost ~ asset('img/logo.png'))|json_encode|raw }}
+        }
+    },
+    "description": {{ (post.excerpt|striptags)|json_encode|raw }},
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug}))|json_encode|raw }}
+    }
+}
+</script>
+{% endblock %}
+
+{% block canonical_url %}{{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug})) }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset('styles/pages/article-prose.scss') }}" rel="stylesheet">
+<style>
+/* Styles pour la section hero de l'article */
+.article-hero-section {
+    margin-top: 76px;
+    padding-top: 2rem !important;
+    position: relative;
+}
+
+/* Styles pour les breadcrumbs sur fond violet */
+.article-breadcrumb {
+    opacity: 0.95;
+}
+
+.article-breadcrumb .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: color 0.2s ease;
+}
+
+.article-breadcrumb .breadcrumb-item a:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.article-breadcrumb .breadcrumb-item.active {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.article-breadcrumb .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* S'assurer qu'il n'y a pas d'éléments qui débordent sous la navbar */
+body {
+    padding-top: 0 !important;
+}
+
+/* Responsive - ajustements pour mobile */
+@media (max-width: 768px) {
+    .article-hero-section {
+        margin-top: 76px;
+        padding-top: 1.5rem !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="py-4 py-md-5 bg-gradient-primary text-black article-hero-section" role="banner">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3 mb-md-4">
+            <ol class="breadcrumb mb-0 article-breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home_index') }}" class="text-decoration-none text-white-50">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_blog_index') }}" class="text-decoration-none text-white-50">Blog</a></li>
+                {% if post.category %}
+                <li class="breadcrumb-item"><a href="{{ path('app_blog_index', {category: post.category.slug}) }}" class="text-decoration-none text-white-50">{{ post.category.name }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active text-white" aria-current="page">{{ post.title }}</li>
+            </ol>
+        </nav>
+        <div class="row align-items-start">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="d-flex flex-wrap align-items-center gap-2 gap-md-3 mb-3" role="list">
+                    {% if post.category %}
+                    <span class="badge bg-{{ post.category.color|default('primary') }} mb-0" role="listitem">
+                        <span class="visually-hidden">Catégorie : </span>{{ post.category.name }}
+                    </span>
+                    {% endif %}
+                    <time datetime="{{ post.publishedAt|date('Y-m-d') }}" class="text-muted small mb-0" role="listitem">
+                        <i data-lucide="calendar" width="14" height="14" class="me-1" aria-hidden="true"></i>
+                        Publié le {{ post.publishedAt|date('d/m/Y') }}
+                    </time>
+                    <span class="text-muted small mb-0" role="listitem">
+                        <i data-lucide="clock" width="14" height="14" class="me-1" aria-hidden="true"></i>
+                        {{ post.readTime }}
+                    </span>
+                    {% if post.views > 0 %}
+                    <span class="text-muted small mb-0" role="listitem">
+                        <i data-lucide="eye" width="14" height="14" class="me-1" aria-hidden="true"></i>
+                        <span class="visually-hidden">Nombre de vues : </span>{{ post.views }} vues
+                    </span>
+                    {% endif %}
+                </div>
+                <h1 class="display-5 display-md-4 fw-bold mb-3" itemprop="headline">{{ post.title }}</h1>
+                <p class="lead text-muted mb-0" itemprop="description">{{ post.excerpt }}</p>
+            </div>
+            <div class="col-lg-4 text-center">
+                {% if post.image %}
+                <img src="{{ asset(post.image) }}" alt="{{ post.title }}" class="img-fluid rounded-3 shadow-lg" loading="lazy">
+                {% elseif post.category and post.category.icon %}
+                <div class="d-inline-block">
+                    <div class="bg-{{ post.category.color|default('primary') }} bg-opacity-10 rounded-3 p-4 p-md-5" aria-hidden="true">
+                        <i data-lucide="{{ post.category.icon }}" width="64" height="64" class="text-{{ post.category.color|default('primary') }}"></i>
+                    </div>
+                </div>
+                {% else %}
+                <img src="{{ asset('img/blog-5why.webp') }}" alt="{{ post.title }}" class="img-fluid rounded-3 shadow-lg" loading="lazy">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Article Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Article Content -->
+            <div class="col-lg-8">
+                <article class="card border-0 shadow-sm mb-4" role="article" itemscope itemtype="https://schema.org/BlogPosting">
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Article Body -->
+                        <div class="article-content prose prose-lg" itemprop="articleBody">
+                            {{ post.content|markdown_to_html|raw }}
+                        </div>
+
+                        <!-- Article Tags -->
+                        {% if post.tags|length > 0 %}
+                        <div class="mt-4 mt-md-5 pt-4 border-top">
+                            <h2 class="h6 fw-semibold mb-3">Tags</h2>
+                            <div class="d-flex flex-wrap gap-2" role="list" aria-label="Tags de l'article">
+                                {% for tag in post.tags %}
+                                <span class="badge bg-light text-dark" role="listitem">
+                                    <span class="visually-hidden">Tag : </span>{{ tag.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Share Buttons -->
+                        <div class="mt-4 mt-md-5 pt-4 border-top">
+                            <h2 class="h6 fw-semibold mb-3">Partager cet article</h2>
+                            <div class="d-flex flex-wrap gap-2" role="group" aria-label="Options de partage">
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug}))|url_encode }}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="btn btn-outline-primary btn-sm"
+                                   aria-label="Partager sur LinkedIn">
+                                    <i data-lucide="linkedin" width="16" height="16" class="me-1" aria-hidden="true"></i>
+                                    LinkedIn
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?url={{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug}))|url_encode }}&text={{ post.title|url_encode }}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="btn btn-outline-info btn-sm"
+                                   aria-label="Partager sur Twitter">
+                                    <i data-lucide="twitter" width="16" height="16" class="me-1" aria-hidden="true"></i>
+                                    Twitter
+                                </a>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="copyArticleLink()" aria-label="Copier le lien de l'article">
+                                    <i data-lucide="link" width="16" height="16" class="me-1" aria-hidden="true"></i>
+                                    Copier le lien
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Navigation Articles -->
+                <nav aria-label="Navigation des articles" class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_blog_index') }}" class="btn btn-outline-primary" aria-label="Retour à la liste des articles">
+                            <i data-lucide="arrow-left" width="16" height="16" class="me-2" aria-hidden="true"></i>
+                            Retour au blog
+                        </a>
+                        {% if relatedPosts|length > 0 %}
+                        <a href="{{ path('app_blog_article', {category: relatedPosts[0].category.slug, slug: relatedPosts[0].slug}) }}" class="btn btn-outline-primary ms-auto" aria-label="Article suivant : {{ relatedPosts[0].title }}">
+                            Article suivant
+                            <i data-lucide="arrow-right" width="16" height="16" class="ms-2" aria-hidden="true"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 100px;">
+                    <!-- Related Articles -->
+                    {% if relatedPosts|length > 0 %}
+                    <aside class="card border-0 shadow-sm mb-4" aria-labelledby="related-articles-heading">
+                        <div class="card-body p-4">
+                            <h2 id="related-articles-heading" class="h5 fw-bold mb-4">Articles similaires</h2>
+                            <nav aria-label="Articles similaires">
+                                <ul class="list-unstyled mb-0">
+                                    {% for relatedPost in relatedPosts %}
+                                    <li class="mb-3 pb-3{% if not loop.last %} border-bottom{% endif %}">
+                                        <article>
+                                            <h3 class="h6 fw-semibold mb-1">
+                                                <a href="{{ path('app_blog_article', {category: relatedPost.category.slug, slug: relatedPost.slug}) }}" 
+                                                   class="text-decoration-none text-dark"
+                                                   aria-label="Lire l'article : {{ relatedPost.title }}">
+                                                    {{ relatedPost.title }}
+                                                </a>
+                                            </h3>
+                                            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                                                <time class="text-muted small" datetime="{{ relatedPost.publishedAt|date('Y-m-d') }}">
+                                                    <i data-lucide="clock" width="12" height="12" class="me-1" aria-hidden="true"></i>
+                                                    {{ relatedPost.readTime }}
+                                                </time>
+                                                {% if relatedPost.category %}
+                                                <span class="badge bg-{{ relatedPost.category.color|default('primary') }} bg-opacity-10 text-{{ relatedPost.category.color|default('primary') }} small">
+                                                    <span class="visually-hidden">Catégorie : </span>{{ relatedPost.category.name }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </article>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </aside>
+                    {% endif %}
+
+                    <!-- Newsletter -->
+                    {% if newsletterForm %}
+                    <aside class="card border-0 shadow-sm" aria-labelledby="newsletter-heading">
+                        <div class="card-body p-4">
+                            <h2 id="newsletter-heading" class="h5 fw-bold mb-3">Newsletter</h2>
+                            <p class="text-muted mb-4">Recevez nos derniers articles directement par email.</p>
+                            {% include 'components/newsletter-form.html.twig' with {'newsletterForm': newsletterForm} %}
+                        </div>
+                    </aside>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+function copyArticleLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        if (typeof showToast !== 'undefined') {
+            showToast('Lien copié dans le presse-papiers !', 'success');
+        } else {
+            alert('Lien copié dans le presse-papiers !');
+        }
+    }).catch(() => {
+        alert('Impossible de copier le lien');
+    });
+}
+
+// Initialize Lucide icons after page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+</script>
+{% endblock %}
+

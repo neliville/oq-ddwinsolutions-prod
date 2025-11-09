@@ -1,0 +1,63 @@
+{# 
+    Composant pour Open Graph et Twitter Cards
+    
+    Variables disponibles :
+    - og_title (optionnel) : Titre Open Graph
+    - og_description (optionnel) : Description Open Graph
+    - og_image (optionnel) : Image Open Graph (URL absolue)
+    - og_url (optionnel) : URL Open Graph
+    - og_type (optionnel) : Type Open Graph (website, article, etc.)
+    - twitter_card (optionnel) : Type de Twitter Card (summary, summary_large_image)
+#}
+
+{# Paramètres par défaut #}
+{% set app_name = 'OUTILS-QUALITÉ' %}
+{% set app_url = app.request.schemeAndHttpHost %}
+{% set app_default_image = app_url ~ asset('img/og-default.jpg') %}
+
+{# Utiliser les variables passées depuis base.html.twig #}
+{# Ces variables contiennent le contenu des blocks SEO capturés depuis les templates enfants #}
+{% set og_title_raw = og_title_raw|default('')|trim %}
+{% set og_description_raw = og_description_raw|default('')|trim %}
+{% set og_image_raw = og_image_raw|default('')|trim %}
+{% set og_url_raw = og_url_raw|default('')|trim %}
+{% set og_type_raw = og_type_raw|default('')|trim %}
+{% set twitter_card_raw = twitter_card_raw|default('')|trim %}
+
+{# Valeurs par défaut depuis les meta tags si non spécifiées #}
+{% set og_title_value = og_title_raw|default('') %}
+{% if not og_title_value %}
+    {% set og_title_value = 'Outils Qualité Gratuits | ' ~ app_name %}
+{% endif %}
+
+{% set og_description_value = og_description_raw|default('') %}
+{% if not og_description_value %}
+    {% set og_description_value = 'Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, export PDF.' %}
+{% endif %}
+
+{% set og_image_value = og_image_raw|default(app_default_image) %}
+{% set og_url_value = og_url_raw|default(app.request.uri) %}
+{% set og_type_value = og_type_raw|default('website') %}
+{% set twitter_card_value = twitter_card_raw|default('summary_large_image') %}
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="{{ og_title_value }}">
+<meta property="og:description" content="{{ og_description_value }}">
+<meta property="og:image" content="{{ og_image_value }}">
+<meta property="og:url" content="{{ og_url_value }}">
+<meta property="og:type" content="{{ og_type_value }}">
+<meta property="og:site_name" content="{{ app_name }}">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="{{ twitter_card_value }}">
+<meta name="twitter:title" content="{{ og_title_value }}">
+<meta name="twitter:description" content="{{ og_description_value }}">
+<meta name="twitter:image" content="{{ og_image_value }}">
+{% if twitter_site is defined %}
+<meta name="twitter:site" content="{{ twitter_site }}">
+{% endif %}
+{% if twitter_creator is defined %}
+<meta name="twitter:creator" content="{{ twitter_creator }}">
+{% endif %}
+

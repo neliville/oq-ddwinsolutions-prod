@@ -1,0 +1,304 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Méthode QQOQCCP | Analyse 5W2H{% endblock %}
+
+{% block meta_description %}Structurer votre analyse avec la méthode QQOQCCP (5W2H). Outil interactif pour explorer le Qui, Quoi, Où, Quand, Comment, Combien et Pourquoi d'une situation.{% endblock %}
+
+{% block meta_keywords %}qqoqccp, 5w2h, outil qualité, méthode qqoqccp, analyse complète, résolution de problème{% endblock %}
+
+{% block og_title %}Méthode QQOQCCP - Outil Gratuit | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Utilisez la méthode QQOQCCP (5W2H) pour réaliser un questionnement complet de vos projets et problèmes.{% endblock %}
+
+{% block schema_type %}{{ parent() }},SoftwareApplication{% endblock %}
+
+{% block schema_data %}
+{
+    "name": "Outil QQOQCCP",
+    "description": "Questionnement 5W2H interactif pour analyser vos projets et vos problèmes.",
+    "url": "{{ absolute_url(path('app_qqoqccp_index')) }}",
+    "screenshot": "{{ app.request.schemeAndHttpHost ~ asset('img/og-default.jpg') }}"
+}
+{% endblock %}
+
+{% block content %}
+<main class="qqoqccp-page{% if not app.user %} qqoqccp-page--guest{% endif %}">
+    <div class="container">
+        <input type="hidden" id="qqoqccpAnalysisId" value="{{ analysisId ?? '' }}">
+
+        <header class="qqoqccp-header" data-aos="fade-up">
+            <h1>Analyse QQOQCCP (5W2H)</h1>
+            <p class="lead">Explorez méthodiquement une situation à l'aide des 7 questions fondamentales : Qui ? Quoi ? Où ? Quand ? Comment ? Combien ? Pourquoi ?</p>
+        </header>
+
+        {% if not app.user %}
+        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
+            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
+            <strong>Vous n'êtes pas connecté.</strong>
+            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos analyses et les retrouver facilement.
+        </div>
+        {% endif %}
+
+        <section class="qqoqccp-guide-card" data-aos="fade-up" data-aos-delay="80">
+            <h2 class="qqoqccp-guide-card__title">🧭 Guide rapide</h2>
+            <p class="qqoqccp-guide-card__intro">Répondez successivement aux 7 questions pour obtenir une vision à 360° de votre projet ou de votre problème.</p>
+            <div class="qqoqccp-guide-card__grid">
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">🙋 Qui ?</span>
+                    <p>Acteurs impliqués, responsables, parties prenantes.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">📋 Quoi ?</span>
+                    <p>Description précise du sujet, de l'événement ou du problème.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">📍 Où ?</span>
+                    <p>Localisation géographique, service ou processus concerné.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">⏰ Quand ?</span>
+                    <p>Période, fréquence, durée, échéances.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">🔧 Comment ?</span>
+                    <p>Processus, méthodes, moyens utilisés.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">💰 Combien ?</span>
+                    <p>Budget, quantités, volumes, ressources consommées.</p>
+                </div>
+                <div class="qqoqccp-guide-card__item">
+                    <span class="qqoqccp-guide-card__badge">🎯 Pourquoi ?</span>
+                    <p>Objectifs, causes identifiées, finalité recherchée.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="qqoqccp-controls" data-aos="fade-up" data-aos-delay="120" role="toolbar" aria-label="Actions disponibles">
+            <button class="btn btn-primary btn-sm" type="button" onclick="newQqoqccpAnalysis()" aria-label="Réinitialiser l'analyse QQOQCCP">
+                <i class="fas fa-sync-alt me-2"></i>Nouvelle analyse
+            </button>
+            <button class="btn btn-info btn-sm" type="button" onclick="generateQqoqccpReport()" aria-label="Générer le rapport QQOQCCP">
+                <i class="fas fa-file-alt me-2"></i>Générer le rapport
+            </button>
+            <button class="btn btn-outline-danger btn-sm" type="button" onclick="resetQqoqccpForm()" aria-label="Effacer le formulaire QQOQCCP">
+                <i class="fas fa-eraser me-2"></i>Réinitialiser
+            </button>
+            {% if app.user %}
+            <button class="btn btn-success btn-sm" type="button" onclick="saveQqoqccp()" aria-label="Sauvegarder l'analyse QQOQCCP">
+                <i class="fas fa-save me-2"></i>Sauvegarder
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openQqoqccpSaved()" aria-label="Voir mes analyses QQOQCCP">
+                <i class="fas fa-folder-open me-2"></i>Mes analyses
+            </button>
+            {% endif %}
+            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
+                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="qqoqccpExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                    <i class="fas fa-download me-2"></i>Exporter
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="qqoqccpExportDropdown" data-dropdown-basic-target="menu" hidden>
+                    <li><button class="dropdown-item" type="button" onclick="exportQqoqccp('png')">Exporter en PNG</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportQqoqccp('pdf')">Exporter en PDF</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportQqoqccp('json')">Exporter en JSON</button></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="qqoqccp-intro-card" data-aos="fade-up" data-aos-delay="150">
+            <h2>Pourquoi utiliser la méthode QQOQCCP ?</h2>
+            <p>Le QQOQCCP, également connu sous le nom de 5W2H, est une méthode de questionnement systématique. Elle vous aide à clarifier une situation, identifier les parties prenantes, comprendre les impacts et préparer un plan d'action efficace.</p>
+        </section>
+
+        <section class="qqoqccp-method-grid" data-aos="fade-up" data-aos-delay="180">
+            <div class="qqoqccp-method-card">
+                <h3>🙋 Qui</h3>
+                <p>Acteurs impliqués, responsables, prestataires, clients, équipes concernées.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>📋 Quoi</h3>
+                <p>Nature du sujet ou du problème, caractéristiques, éléments impactés.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>📍 Où</h3>
+                <p>Localisation, service, zone géographique, poste de travail impacté.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>⏰ Quand</h3>
+                <p>Période, fréquence, durée de l'événement, échéances à respecter.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>🔧 Comment</h3>
+                <p>Processus, modes opératoires, moyens utilisés, déroulement.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>💰 Combien</h3>
+                <p>Volumes, quantités, coûts, ressources consommées ou nécessaires.</p>
+            </div>
+            <div class="qqoqccp-method-card">
+                <h3>🎯 Pourquoi</h3>
+                <p>Objectifs recherchés, causes identifiées, attentes des parties prenantes.</p>
+            </div>
+        </section>
+
+        <section class="qqoqccp-form" data-aos="fade-up" data-aos-delay="200" id="qqoqccpForm">
+            <div class="qqoqccp-question qqoqccp-question--subject">
+                <label class="qqoqccp-question__label" for="qqoqccpSubject">Sujet ou titre de l'analyse</label>
+                <input type="text" id="qqoqccpSubject" class="form-control" placeholder="Ex : Retards de livraison aux clients" oninput="updateQqoqccpField('subject', this.value)">
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">🙋</span>
+                    <div>
+                        <h3>Qui ?</h3>
+                        <p class="qqoqccp-question__helper">Qui est concerné ? Qui agit ? Qui est responsable ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpQui" placeholder="Décrivez les acteurs impliqués..." oninput="updateQqoqccpField('qui', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">📋</span>
+                    <div>
+                        <h3>Quoi ?</h3>
+                        <p class="qqoqccp-question__helper">De quoi s'agit-il ? Quelle est la nature du problème ou du projet ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpQuoi" placeholder="Décrivez précisément le sujet..." oninput="updateQqoqccpField('quoi', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">📍</span>
+                    <div>
+                        <h3>Où ?</h3>
+                        <p class="qqoqccp-question__helper">Où cela se passe-t-il ? Dans quel service, zone ou processus ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpOu" placeholder="Précisez les lieux ou services concernés..." oninput="updateQqoqccpField('ou', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">⏰</span>
+                    <div>
+                        <h3>Quand ?</h3>
+                        <p class="qqoqccp-question__helper">Quand cela se produit-il ? Depuis quand ? À quelle fréquence ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpQuand" placeholder="Indiquez la période ou la fréquence..." oninput="updateQqoqccpField('quand', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">🔧</span>
+                    <div>
+                        <h3>Comment ?</h3>
+                        <p class="qqoqccp-question__helper">Comment cela se passe-t-il ? Quels sont les processus utilisés ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpComment" placeholder="Expliquez le déroulement ou le processus..." oninput="updateQqoqccpField('comment', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">💰</span>
+                    <div>
+                        <h3>Combien ?</h3>
+                        <p class="qqoqccp-question__helper">Quels sont les volumes, coûts, quantités ou ressources en jeu ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpCombien" placeholder="Précisez les quantités, coûts ou ressources..." oninput="updateQqoqccpField('combien', this.value)"></textarea>
+            </div>
+
+            <div class="qqoqccp-question">
+                <div class="qqoqccp-question__header">
+                    <span class="qqoqccp-question__icon">🎯</span>
+                    <div>
+                        <h3>Pourquoi ?</h3>
+                        <p class="qqoqccp-question__helper">Quelles sont les causes possibles ou objectifs recherchés ?</p>
+                    </div>
+                </div>
+                <textarea id="qqoqccpPourquoi" placeholder="Listez les causes et finalités..." oninput="updateQqoqccpField('pourquoi', this.value)"></textarea>
+            </div>
+        </section>
+
+        <section id="qqoqccpResults" class="qqoqccp-results" style="display:none;" data-aos="fade-up" data-aos-delay="240">
+            <div id="qqoqccpReportContainer" class="qqoqccp-report">
+                <div class="qqoqccp-report__header">
+                    <h2 id="qqoqccpReportTitle">Rapport QQOQCCP</h2>
+                    <p id="qqoqccpReportDate" class="text-muted"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>🎯 Sujet analysé</h3>
+                    <p id="qqoqccpReportSubject"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>🙋 Qui ?</h3>
+                    <p id="qqoqccpReportQui"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>📋 Quoi ?</h3>
+                    <p id="qqoqccpReportQuoi"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>📍 Où ?</h3>
+                    <p id="qqoqccpReportOu"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>⏰ Quand ?</h3>
+                    <p id="qqoqccpReportQuand"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>🔧 Comment ?</h3>
+                    <p id="qqoqccpReportComment"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>💰 Combien ?</h3>
+                    <p id="qqoqccpReportCombien"></p>
+                </div>
+                <div class="qqoqccp-report__section">
+                    <h3>🎯 Pourquoi ?</h3>
+                    <p id="qqoqccpReportPourquoi"></p>
+                </div>
+                <div class="qqoqccp-report__summary">
+                    <h3>💡 Synthèse</h3>
+                    <div id="qqoqccpReportSummary"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('styles/pages/qqoqccp.scss') }}" data-turbo-track="reload">
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/qqoqccp.js') }}"></script>
+
+<script>
+    window.qqoqccpAppConfig = {
+        isAuthenticated: {{ app.user ? 'true' : 'false' }},
+        analysisId: {{ analysisId is defined and analysisId ? analysisId : 'null' }},
+        currentAnalysisId: null,
+    };
+
+    window.qqoqccpRoutes = {
+        save: '{{ path('app_api_qqoqccp_save') }}',
+        list: '{{ path('app_api_qqoqccp_list') }}',
+        get: '{{ path('app_api_qqoqccp_get', {id: 0}) }}',
+        delete: '{{ path('app_api_qqoqccp_delete', {id: 0}) }}',
+        login: '{{ path('app_login') }}'
+    };
+</script>
+{% endblock %}
+
+

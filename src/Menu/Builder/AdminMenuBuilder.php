@@ -58,6 +58,39 @@ class AdminMenuBuilder
             'linkAttributes' => ['class' => 'nav-link'],
         ]);
 
+        $cmsMenu = $menu->addChild('CMS', [
+            'route' => 'app_admin_cms_index',
+            'attributes' => ['class' => 'nav-item has-children'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
+        $cmsMenu->addChild('Politique de confidentialité', [
+            'route' => 'app_admin_cms_edit',
+            'routeParameters' => ['slug' => 'privacy-policy'],
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link small ps-3'],
+        ]);
+
+        $cmsMenu->addChild('Conditions d\'utilisation', [
+            'route' => 'app_admin_cms_edit',
+            'routeParameters' => ['slug' => 'terms-of-use'],
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link small ps-3'],
+        ]);
+
+        $cmsMenu->addChild('Mentions légales', [
+            'route' => 'app_admin_cms_edit',
+            'routeParameters' => ['slug' => 'legal-notice'],
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link small ps-3'],
+        ]);
+
+        $menu->addChild('Exports', [
+            'route' => 'app_admin_export_analytics_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
         $menu->addChild('Logs', [
             'route' => 'app_admin_logs_index',
             'attributes' => ['class' => 'nav-item'],

@@ -1,0 +1,213 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Gestion des utilisateurs | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Gestion des utilisateurs</h1>
+            <p class="text-muted mb-0">Gérer les utilisateurs et leurs rôles</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Total utilisateurs</h6>
+                            <h3 class="fw-bold mb-0">{{ allCount }}</h3>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="users" width="24" height="24" class="text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Administrateurs</h6>
+                            <h3 class="fw-bold mb-0">{{ adminCount }}</h3>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="shield" width="24" height="24" class="text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Utilisateurs</h6>
+                            <h3 class="fw-bold mb-0">{{ userCount }}</h3>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="user" width="24" height="24" class="text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group" aria-label="Filtres">
+                <a href="{{ path('app_admin_users_index', {filter: 'all'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Tous ({{ allCount }})
+                </a>
+                <a href="{{ path('app_admin_users_index', {filter: 'admin'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'admin' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Administrateurs ({{ adminCount }})
+                </a>
+                <a href="{{ path('app_admin_users_index', {filter: 'user'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'user' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Utilisateurs ({{ userCount }})
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des utilisateurs -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if users|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Rôles</th>
+                            <th>Date de création</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        {{ user.email|slice(0, 1)|upper }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ user.email }}</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% for role in user.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                <span class="badge bg-danger me-1">
+                                    <i data-lucide="shield" width="12" height="12" class="me-1"></i>
+                                    Admin
+                                </span>
+                                {% elseif role == 'ROLE_USER' %}
+                                <span class="badge bg-success me-1">User</span>
+                                {% else %}
+                                <span class="badge bg-secondary me-1">{{ role }}</span>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <small>{{ user.createdAt|date('d/m/Y H:i') }}</small>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_admin_users_show', {id: user.id}) }}" 
+                                       class="btn btn-outline-primary" title="Voir">
+                                        <i data-lucide="eye" width="14" height="14"></i>
+                                    </a>
+                                    <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" 
+                                       class="btn btn-outline-secondary" title="Modifier">
+                                        <i data-lucide="edit" width="14" height="14"></i>
+                                    </a>
+                                    {% if user.id != app.user.id %}
+                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" 
+                                          class="d-inline" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                            <i data-lucide="trash-2" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if totalPages > 1 %}
+            <div class="card-footer bg-white border-top">
+                <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0 justify-content-center">
+                        {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage - 1}) }}">
+                                <i data-lucide="chevron-left" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                        {% if i == currentPage %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
+                        </li>
+                        {% elseif i == 4 or i == totalPages - 3 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage + 1}) }}">
+                                <i data-lucide="chevron-right" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i data-lucide="users" width="48" height="48" class="text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucun utilisateur{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

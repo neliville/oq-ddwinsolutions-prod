@@ -28,4 +28,51 @@ return [
     '@stimulus-components/dialog' => [
         'version' => '1.0.1',
     ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
+    '@stimulus-components/sortable' => [
+        'version' => '5.0.3',
+    ],
+    'sortablejs' => [
+        'version' => '1.15.6',
+    ],
+    '@rails/request.js' => [
+        'version' => '0.0.12',
+    ],
+    '@stimulus-components/dropdown' => [
+        'version' => '3.0.0',
+    ],
+    '@stimulus-components/reveal' => [
+        'version' => '5.0.0',
+    ],
+    'stimulus-use' => [
+        'version' => '0.52.2',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    'bootstrap/js/dist/collapse' => [
+        'version' => '5.3.8',
+        'type' => 'js',
+    ],
+    'bootstrap/js/dist/dropdown' => [
+        'version' => '5.3.8',
+        'type' => 'js',
+    ],
+    'bootstrap/js/dist/modal' => [
+        'version' => '5.3.8',
+        'type' => 'js',
+    ],
+    'bootstrap/js/dist/toast' => [
+        'version' => '5.3.8',
+        'type' => 'js',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.8',
+        'type' => 'css',
+    ],
 ];

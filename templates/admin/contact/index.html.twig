@@ -1,0 +1,208 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Messages de contact | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Messages de contact</h1>
+            <p class="text-muted mb-0">Gérer les messages reçus via le formulaire de contact</p>
+        </div>
+        <div>
+            {% if unreadCount > 0 %}
+            <span class="badge bg-danger me-2">
+                <i data-lucide="mail" width="14" height="14" class="me-1"></i>
+                {{ unreadCount }} non lu{{ unreadCount > 1 ? 's' : '' }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group" aria-label="Filtres">
+                <a href="{{ path('app_admin_contact_index', {filter: 'all'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Tous ({{ total }})
+                </a>
+                <a href="{{ path('app_admin_contact_index', {filter: 'unread'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'unread' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Non lus ({{ unreadCount }})
+                </a>
+                <a href="{{ path('app_admin_contact_index', {filter: 'read'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'read' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Lus ({{ readCount }})
+                </a>
+                <a href="{{ path('app_admin_contact_index', {filter: 'replied'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'replied' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Répondus ({{ repliedCount }})
+                </a>
+                <a href="{{ path('app_admin_contact_index', {filter: 'unreplied'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'unreplied' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Non répondus ({{ unrepliedCount }})
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if messages|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" class="form-check-input" id="selectAll">
+                            </th>
+                            <th>De</th>
+                            <th>Sujet</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in messages %}
+                        <tr class="{% if not message.read %}table-warning{% endif %}">
+                            <td>
+                                <input type="checkbox" class="form-check-input message-checkbox" value="{{ message.id }}">
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <i data-lucide="user" width="16" height="16"></i>
+                                    </div>
+                                    <div>
+                                        <strong>{{ message.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ message.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ message.subject|default('Sans sujet') }}</strong>
+                            </td>
+                            <td>
+                                <p class="mb-0 text-truncate" style="max-width: 300px;" title="{{ message.message }}">
+                                    {{ message.message|slice(0, 100) }}{% if message.message|length > 100 %}...{% endif %}
+                                </p>
+                            </td>
+                            <td>
+                                <small>{{ message.createdAt|date('d/m/Y H:i') }}</small>
+                            </td>
+                            <td>
+                                {% if not message.read %}
+                                <span class="badge bg-warning">Non lu</span>
+                                {% else %}
+                                <span class="badge bg-success">Lu</span>
+                                {% endif %}
+                                {% if message.replied %}
+                                <span class="badge bg-info ms-1">Répondu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_admin_contact_show', {id: message.id}) }}" 
+                                       class="btn btn-outline-primary" title="Voir">
+                                        <i data-lucide="eye" width="14" height="14"></i>
+                                    </a>
+                                    {% if message.read %}
+                                    <form method="post" action="{{ path('app_admin_contact_mark_unread', {id: message.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('mark_unread_' ~ message.id) }}">
+                                        <button type="submit" class="btn btn-outline-warning" title="Marquer non lu">
+                                            <i data-lucide="mail" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <form method="post" action="{{ path('app_admin_contact_mark_read', {id: message.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('mark_read_' ~ message.id) }}">
+                                        <button type="submit" class="btn btn-outline-success" title="Marquer lu">
+                                            <i data-lucide="check" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="post" action="{{ path('app_admin_contact_delete', {id: message.id}) }}" 
+                                          class="d-inline" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ message.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                            <i data-lucide="trash-2" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if totalPages > 1 %}
+            <div class="card-footer bg-white border-top">
+                <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0 justify-content-center">
+                        {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_contact_index', {filter: currentFilter, page: currentPage - 1}) }}">
+                                <i data-lucide="chevron-left" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                        {% if i == currentPage %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_contact_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
+                        </li>
+                        {% elseif i == 4 or i == totalPages - 3 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_contact_index', {filter: currentFilter, page: currentPage + 1}) }}">
+                                <i data-lucide="chevron-right" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i data-lucide="inbox" width="48" height="48" class="text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucun message{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+
+// Sélection multiple
+document.getElementById('selectAll')?.addEventListener('change', function(e) {
+    const checkboxes = document.querySelectorAll('.message-checkbox');
+    checkboxes.forEach(cb => cb.checked = e.target.checked);
+});
+</script>
+{% endblock %}

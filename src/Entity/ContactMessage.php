@@ -7,6 +7,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactMessageRepository::class)]
+#[ORM\Index(columns: ['`read`'], name: 'idx_contactmessage_read')]
+#[ORM\Index(columns: ['replied'], name: 'idx_contactmessage_replied')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_contactmessage_created_at')]
 class ContactMessage
 {
     #[ORM\Id]
@@ -26,7 +29,7 @@ class ContactMessage
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: '`read`')]
     private bool $read = false;
 
     #[ORM\Column]

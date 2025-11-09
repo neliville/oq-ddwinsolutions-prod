@@ -29,10 +29,10 @@ class Category
     #[ORM\Column(length: 50)]
     private ?string $color = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $icon = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: '`order`')]
     private int $order = 0;
 
     #[ORM\OneToMany(targetEntity: BlogPost::class, mappedBy: 'category')]
@@ -101,7 +101,7 @@ class Category
         return $this->icon;
     }
 
-    public function setIcon(string $icon): static
+    public function setIcon(?string $icon): static
     {
         $this->icon = $icon;
 

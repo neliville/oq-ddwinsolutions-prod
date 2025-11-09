@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page introuvable - OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}La page que vous cherchez n’existe pas ou a été déplacée. Découvrez nos outils qualité depuis la page d’accueil.{% endblock %}
+{% block og_title %}404 – Page introuvable | OUTILS-QUALITÉ{% endblock %}
+{% block og_description %}La page recherchée n’est plus disponible. Retournez à l’accueil ou explorez nos outils qualité professionnels.{% endblock %}
+{% block seo_robots %}noindex, nofollow{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include 'bundles/TwigBundle/Exception/_error_styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <main class="error-page" role="main" aria-labelledby="error-title">
+        <section class="error-page__card" aria-live="polite">
+            <span class="error-page__code">404</span>
+            <h1 class="error-page__title" id="error-title">Oups, page introuvable</h1>
+            <p class="error-page__message">
+                La page que vous cherchez n’existe pas ou a été déplacée.
+                Vérifiez l’URL saisie ou revenez à la page d’accueil pour continuer votre navigation.
+            </p>
+            <div class="error-page__actions">
+                <a href="{{ path('app_home_index') }}" class="btn btn-primary">
+                    <i class="fas fa-compass me-2"></i> Explorer nos outils
+                </a>
+                <a href="{{ path('app_contact_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-life-ring me-2"></i> Contacter le support
+                </a>
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié - OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Réinitialisez votre mot de passe OUTILS-QUALITÉ en recevant un lien sécurisé par email.{% endblock %}
+
+{% block seo_robots %}noindex, follow{% endblock %}
+
+{% block body %}
+<div class="auth-page auth-page--forgot">
+    <div class="auth-page__container container">
+        <div class="auth-page__brand">
+            <div class="auth-brand">
+                <span class="auth-brand__icon">
+                    <i class="fas fa-key"></i>
+                </span>
+                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+            </div>
+            <p class="auth-page__baseline">
+                Un lien sécurisé vous permet de définir un nouveau mot de passe et de retrouver l’accès à vos analyses en toute sérénité.
+            </p>
+        </div>
+
+        <div class="auth-card row g-0">
+            <div class="col-lg-5 order-lg-1">
+                <section class="auth-card__panel auth-card__panel--form">
+                    <header>
+                        <h1 class="auth-card__title">Réinitialiser votre mot de passe</h1>
+                        <p class="auth-card__subtitle">Saisissez l’adresse email associée à votre compte. Nous vous enverrons un lien de réinitialisation valable 1 heure.</p>
+                    </header>
+
+                    {% for flash_error in app.flashes('reset_password_error') %}
+                        <div class="alert auth-alert alert-danger" role="alert">{{ flash_error }}</div>
+                    {% endfor %}
+
+                    {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
+                        <div>
+                            {{ form_label(requestForm.email) }}
+                            {{ form_widget(requestForm.email) }}
+                            {{ form_errors(requestForm.email) }}
+                        </div>
+
+                        <p class="auth-form__hint">
+                            Vous recevrez immédiatement un email contenant un lien sécurisé. Pensez à vérifier votre dossier indésirables.
+                        </p>
+
+                        <button class="auth-form__submit" type="submit" name="reset_password_request_submit" value="1">
+                            <i class="fas fa-paper-plane"></i>
+                            Envoyer le lien sécurisé
+                        </button>
+                    {{ form_end(requestForm) }}
+
+                    <div class="auth-card__footer">
+                        Vous vous souvenez de votre mot de passe ?
+                        <a href="{{ path('app_login') }}">Retour à la connexion</a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-7 order-lg-2">
+                <section class="auth-card__panel auth-card__panel--info">
+                    <div class="position-relative">
+                        <h2 class="auth-info__title">Sécurité et assistance</h2>
+                        <p class="auth-info__subtitle">Notre équipe met tout en œuvre pour protéger vos données et vous aider à reprendre le contrôle rapidement.</p>
+
+                        <ul class="auth-info__list">
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">🕒</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Lien temporaire</h3>
+                                    <p class="auth-benefits__description">Chaque lien est valable 60 minutes afin de garantir la confidentialité de votre compte.</p>
+                                </div>
+                            </li>
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">🔐</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Protection renforcée</h3>
+                                    <p class="auth-benefits__description">Les mots de passe sont chiffrés et ne sont jamais stockés en clair. Nous recommandons l’utilisation d’un gestionnaire de mots de passe.</p>
+                                </div>
+                            </li>
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">💬</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Support réactif</h3>
+                                    <p class="auth-benefits__description">Besoin d’aide ? Contactez-nous à <a class="text-white fw-semibold text-decoration-none" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <p class="auth-meta mt-4">
+                            <i class="fas fa-shield-alt me-2"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

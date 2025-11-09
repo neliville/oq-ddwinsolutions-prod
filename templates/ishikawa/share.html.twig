@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Diagramme partagé | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="ishikawa-page">
+    <div class="page-header">
+        <h1 class="page-title">Diagramme partagé</h1>
+        <div class="info-banner">
+            <p class="info-text">
+                Ce diagramme a été partagé par {{ analysis.user.email }}. Vous consultez une version en lecture seule correspondant à la publication.
+            </p>
+            <p class="info-text">
+                Lien valable jusqu'au {{ share.expiresAt|date('d/m/Y H:i') }}.
+            </p>
+        </div>
+    </div>
+
+    <div class="ishikawa-content">
+        {{ include('components/ishikawa_canvas.html.twig', { diagramId: null, readonly: true }) }}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.ishikawaReadonly = true;
+        window.sharedIshikawaData = {{ diagramData|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+        function __oqApplySharedDiagram() {
+            if (window.sharedIshikawaData && window.ishikawaApp && typeof window.ishikawaApp.loadDiagramData === 'function') {
+                window.ishikawaApp.loadDiagramData(window.sharedIshikawaData);
+            }
+        }
+        window.addEventListener('ishikawa:ready', function handle() {
+            __oqApplySharedDiagram();
+        }, { once: true });
+        if (window.ishikawaApp && window.ishikawaApp.isReady) {
+            __oqApplySharedDiagram();
+        }
+    </script>
+    <script src="{{ asset('js/main.js') }}" data-turbo-track="reload"></script>
+    <script src="{{ asset('js/ishikawa.js') }}" data-turbo-track="reload"></script>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès non autorisé - OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}Vous n’avez pas les droits nécessaires pour consulter cette ressource. Connectez-vous avec un compte autorisé ou revenez à l’accueil.{% endblock %}
+{% block og_title %}Erreur 403 | OUTILS-QUALITÉ{% endblock %}
+{% block og_description %}Accès restreint : vous n’êtes pas autorisé à consulter cette ressource.{% endblock %}
+{% block seo_robots %}noindex, nofollow{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include 'bundles/TwigBundle/Exception/_error_styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <main class="error-page" role="main" aria-labelledby="error-title">
+        <section class="error-page__card" aria-live="polite">
+            <span class="error-page__code">403</span>
+            <h1 class="error-page__title" id="error-title">Accès restreint</h1>
+            <p class="error-page__message">
+                Vous n’avez pas les droits nécessaires pour accéder à cette page.
+                Connectez-vous avec un compte disposant des autorisations requises ou contactez un administrateur.
+            </p>
+            <div class="error-page__actions">
+                {% if app.user %}
+                    <a href="{{ path('app_dashboard_index') }}" class="btn btn-primary">
+                        <i class="fas fa-columns me-2"></i> Retourner au tableau de bord
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_home_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-home me-2"></i> Accueil
+                </a>
+            </div>
+        </section>
+    </main>
+{% endblock %}

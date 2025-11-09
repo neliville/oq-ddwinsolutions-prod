@@ -2,14 +2,17 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Record;
-use App\Repository\RecordRepository;
+use App\Entity\IshikawaAnalysis;
+use App\Entity\IshikawaShare;
+use App\Entity\User;
+use App\Repository\IshikawaAnalysisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/ishikawa')]
@@ -19,6 +22,7 @@ final class IshikawaController extends AbstractController
     #[Route('/save', name: 'app_api_ishikawa_save', methods: ['POST'])]
     public function save(
         Request $request,
+        IshikawaAnalysisRepository $repository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -30,34 +34,105 @@ final class IshikawaController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $record = new Record();
-        $record->setTitle($data['title']);
-        $record->setType('ishikawa');
-        $record->setContent(json_encode($data['content']));
-        $record->setUser($this->getUser());
+        $user = $this->getUser();
+        $analysis = null;
 
-        $entityManager->persist($record);
+        $status = Response::HTTP_OK;
+
+        if (isset($data['id'])) {
+            $analysis = $repository->find($data['id']);
+
+            if (!$analysis || $analysis->getUser() !== $user) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Diagramme introuvable ou accès non autorisé.',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            $analysis->setUpdatedAt(new \DateTimeImmutable());
+        } else {
+            $analysis = new IshikawaAnalysis();
+            $analysis->setUser($user);
+            $status = Response::HTTP_CREATED;
+        }
+
+        $analysis->setTitle($data['title']);
+        $analysis->setProblem($data['problem'] ?? null);
+        $analysis->setData(json_encode($data['content']));
+
+        $entityManager->persist($analysis);
         $entityManager->flush();
 
         return new JsonResponse([
             'success' => true,
             'message' => 'Diagramme Ishikawa sauvegardé avec succès.',
             'data' => [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'type' => $record->getType(),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updatedAt' => $analysis->getUpdatedAt()?->format('Y-m-d H:i:s'),
+            ],
+        ], $status);
+    }
+
+    #[Route('/share', name: 'app_api_ishikawa_share', methods: ['POST'])]
+    public function share(
+        Request $request,
+        IshikawaAnalysisRepository $analysisRepository,
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['id'])) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Le diagramme à partager est requis.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $analysis = $analysisRepository->find($data['id']);
+
+        if (!$analysis || $analysis->getUser() !== $user) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Diagramme introuvable ou accès refusé.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $share = new IshikawaShare();
+        $share->setToken(bin2hex(random_bytes(24)));
+        $share->setAnalysis($analysis);
+        $share->setExpiresAt(new \DateTimeImmutable('+1 month'));
+
+        $entityManager->persist($share);
+        $entityManager->flush();
+
+        $shareUrl = $urlGenerator->generate(
+            'app_ishikawa_share_view',
+            ['token' => $share->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Lien de partage généré.',
+            'data' => [
+                'url' => $shareUrl,
+                'expiresAt' => $share->getExpiresAt()->format('Y-m-d H:i:s'),
             ],
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'app_api_ishikawa_get', methods: ['GET'])]
-    public function get(int $id, RecordRepository $recordRepository): JsonResponse
+    #[Route('/{id<\d+>}', name: 'app_api_ishikawa_get', methods: ['GET'])]
+    public function get(int $id, IshikawaAnalysisRepository $repository): JsonResponse
     {
         $user = $this->getUser();
-        $record = $recordRepository->findOneBy(['id' => $id, 'user' => $user, 'type' => 'ishikawa']);
+        $analysis = $repository->findOneBy(['id' => $id, 'user' => $user]);
 
-        if (!$record) {
+        if (!$analysis) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Diagramme Ishikawa non trouvé.',
@@ -67,50 +142,49 @@ final class IshikawaController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'data' => [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'type' => $record->getType(),
-                'content' => json_decode($record->getContent(), true),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'problem' => $analysis->getProblem(),
+                'content' => json_decode($analysis->getData(), true),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
             ],
         ], Response::HTTP_OK);
     }
 
     #[Route('/list', name: 'app_api_ishikawa_list', methods: ['GET'])]
-    public function list(RecordRepository $recordRepository): JsonResponse
+    public function list(IshikawaAnalysisRepository $repository): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
-        $records = $recordRepository->findBy(
-            ['user' => $user, 'type' => 'ishikawa'],
-            ['createdAt' => 'DESC']
-        );
+        $analyses = $repository->findByUser($user->getId());
 
-        $data = array_map(function (Record $record) {
+        $data = array_map(function (IshikawaAnalysis $analysis) {
             return [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'content' => json_decode($record->getContent(), true),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'problem' => $analysis->getProblem(),
+                'content' => json_decode($analysis->getData(), true),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
-        }, $records);
+        }, $analyses);
 
         return new JsonResponse(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/{id}', name: 'app_api_ishikawa_delete', methods: ['DELETE'])]
-    public function delete(int $id, RecordRepository $recordRepository, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/{id<\d+>}', name: 'app_api_ishikawa_delete', methods: ['DELETE'])]
+    public function delete(int $id, IshikawaAnalysisRepository $repository, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();
-        $record = $recordRepository->findOneBy(['id' => $id, 'user' => $user, 'type' => 'ishikawa']);
+        $analysis = $repository->findOneBy(['id' => $id, 'user' => $user]);
 
-        if (!$record) {
+        if (!$analysis) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Diagramme Ishikawa non trouvé.',
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $entityManager->remove($record);
+        $entityManager->remove($analysis);
         $entityManager->flush();
 
         return new JsonResponse([

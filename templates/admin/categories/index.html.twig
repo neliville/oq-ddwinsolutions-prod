@@ -1,0 +1,117 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Gestion des catégories | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Gestion des catégories</h1>
+            <p class="text-muted mb-0">Gérer les catégories de blog</p>
+        </div>
+        <div>
+            <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary">
+                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                Nouvelle catégorie
+            </a>
+        </div>
+    </div>
+
+    <!-- Liste des catégories -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if categories|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">Ordre</th>
+                            <th>Nom</th>
+                            <th>Slug</th>
+                            <th>Description</th>
+                            <th>Couleur</th>
+                            <th>Icône</th>
+                            <th>Articles</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>
+                                <strong>{{ category.order }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge me-2" style="background-color: {{ category.color }}; color: white;">
+                                    <i data-lucide="{{ category.icon }}" width="14" height="14" class="me-1"></i>
+                                    {{ category.name }}
+                                </span>
+                            </td>
+                            <td>
+                                <code class="small">{{ category.slug }}</code>
+                            </td>
+                            <td>
+                                <small>{{ category.description|default('-')|slice(0, 50) }}{% if category.description|length > 50 %}...{% endif %}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded me-2" style="width: 24px; height: 24px; background-color: {{ category.color }}; border: 1px solid #ddd;"></div>
+                                    <small>{{ category.color }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <i data-lucide="{{ category.icon }}" width="20" height="20"></i>
+                                <small class="text-muted ms-1">{{ category.icon }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" 
+                                       class="btn btn-outline-secondary" title="Modifier">
+                                        <i data-lucide="edit" width="14" height="14"></i>
+                                    </a>
+                                    {% if category.blogPosts|length == 0 %}
+                                    <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" 
+                                          class="d-inline" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                            <i data-lucide="trash-2" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-outline-secondary" disabled title="Catégorie utilisée, impossible de supprimer">
+                                        <i data-lucide="lock" width="14" height="14"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i data-lucide="folder" width="48" height="48" class="text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucune catégorie</p>
+                <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary mt-3">
+                    <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                    Créer la première catégorie
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

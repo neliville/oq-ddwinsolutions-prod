@@ -2,8 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Record;
-use App\Repository\RecordRepository;
+use App\Entity\FiveWhyAnalysis;
+use App\Entity\User;
+use App\Repository\FiveWhyAnalysisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +20,8 @@ final class FiveWhyController extends AbstractController
     #[Route('/save', name: 'app_api_fivewhy_save', methods: ['POST'])]
     public function save(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        FiveWhyAnalysisRepository $repository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -30,34 +32,55 @@ final class FiveWhyController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $record = new Record();
-        $record->setTitle($data['title']);
-        $record->setType('fivewhy');
-        $record->setContent(json_encode($data['content']));
-        $record->setUser($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $analysis = null;
+        $isUpdate = false;
 
-        $entityManager->persist($record);
+        if (!empty($data['id'])) {
+            $analysis = $repository->findOneBy([
+                'id' => (int) $data['id'],
+                'user' => $user,
+            ]);
+            if ($analysis) {
+                $isUpdate = true;
+            }
+        }
+
+        if (!$analysis) {
+            $analysis = new FiveWhyAnalysis();
+            $analysis->setUser($user);
+            $entityManager->persist($analysis);
+        }
+
+        $analysis->setTitle($data['title']);
+        $analysis->setProblem($data['problem'] ?? null);
+        $analysis->setData(json_encode($data['content']));
+        $analysis->setUpdatedAt(new \DateTimeImmutable());
+
         $entityManager->flush();
 
         return new JsonResponse([
             'success' => true,
-            'message' => 'Analyse 5 Pourquoi sauvegardée avec succès.',
+            'message' => $isUpdate
+                ? 'Analyse 5 Pourquoi mise à jour avec succès.'
+                : 'Analyse 5 Pourquoi sauvegardée avec succès.',
             'data' => [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'type' => $record->getType(),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updatedAt' => $analysis->getUpdatedAt()?->format('Y-m-d H:i:s'),
             ],
-        ], Response::HTTP_CREATED);
+        ], $isUpdate ? Response::HTTP_OK : Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'app_api_fivewhy_get', methods: ['GET'])]
-    public function get(int $id, RecordRepository $recordRepository): JsonResponse
+    #[Route('/{id<\d+>}', name: 'app_api_fivewhy_get', methods: ['GET'])]
+    public function get(int $id, FiveWhyAnalysisRepository $repository): JsonResponse
     {
         $user = $this->getUser();
-        $record = $recordRepository->findOneBy(['id' => $id, 'user' => $user, 'type' => 'fivewhy']);
+        $analysis = $repository->findOneBy(['id' => $id, 'user' => $user]);
 
-        if (!$record) {
+        if (!$analysis) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Analyse 5 Pourquoi non trouvée.',
@@ -67,50 +90,50 @@ final class FiveWhyController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'data' => [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'type' => $record->getType(),
-                'content' => json_decode($record->getContent(), true),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'problem' => $analysis->getProblem(),
+                'content' => json_decode($analysis->getData(), true),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
             ],
         ], Response::HTTP_OK);
     }
 
     #[Route('/list', name: 'app_api_fivewhy_list', methods: ['GET'])]
-    public function list(RecordRepository $recordRepository): JsonResponse
+    public function list(FiveWhyAnalysisRepository $repository): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
-        $records = $recordRepository->findBy(
-            ['user' => $user, 'type' => 'fivewhy'],
-            ['createdAt' => 'DESC']
-        );
+        $analyses = $repository->findByUser($user->getId());
 
-        $data = array_map(function (Record $record) {
+        $data = array_map(function (FiveWhyAnalysis $analysis) {
             return [
-                'id' => $record->getId(),
-                'title' => $record->getTitle(),
-                'content' => json_decode($record->getContent(), true),
-                'createdAt' => $record->getCreatedAt()->format('Y-m-d H:i:s'),
+                'id' => $analysis->getId(),
+                'title' => $analysis->getTitle(),
+                'problem' => $analysis->getProblem(),
+                'content' => json_decode($analysis->getData(), true),
+                'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updatedAt' => $analysis->getUpdatedAt()?->format('Y-m-d H:i:s'),
             ];
-        }, $records);
+        }, $analyses);
 
         return new JsonResponse(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/{id}', name: 'app_api_fivewhy_delete', methods: ['DELETE'])]
-    public function delete(int $id, RecordRepository $recordRepository, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/{id<\d+>}', name: 'app_api_fivewhy_delete', methods: ['DELETE'])]
+    public function delete(int $id, FiveWhyAnalysisRepository $repository, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();
-        $record = $recordRepository->findOneBy(['id' => $id, 'user' => $user, 'type' => 'fivewhy']);
+        $analysis = $repository->findOneBy(['id' => $id, 'user' => $user]);
 
-        if (!$record) {
+        if (!$analysis) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Analyse 5 Pourquoi non trouvée.',
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $entityManager->remove($record);
+        $entityManager->remove($analysis);
         $entityManager->flush();
 
         return new JsonResponse([
@@ -119,4 +142,3 @@ final class FiveWhyController extends AbstractController
         ], Response::HTTP_OK);
     }
 }
-

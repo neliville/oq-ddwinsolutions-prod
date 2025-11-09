@@ -1,0 +1,22 @@
+{# Template pour capturer les blocks SEO sans les rendre #}
+{# Ce template utilise 'use' pour capturer les blocks depuis les templates enfants #}
+{% use 'base.html.twig' %}
+
+{# Capturer les blocks SEO #}
+{% set _seo_title = block('title') %}
+{% set _seo_description = block('meta_description') %}
+{% set _seo_keywords = block('meta_keywords') %}
+{% set _seo_canonical = block('canonical_url') %}
+{% set _seo_robots = block('seo_robots') %}
+{% set _og_title = block('og_title') %}
+{% set _og_description = block('og_description') %}
+{% set _og_image = block('og_image') %}
+{% set _og_url = block('og_url') %}
+{% set _og_type = block('og_type') %}
+{% set _twitter_card = block('twitter_card') %}
+{% set _schema_type = block('schema_type') %}
+{% set _schema_data = block('schema_data') %}
+{% set _schema_social_links = block('schema_social_links') %}
+
+{# Ne rien rendre - juste capturer #}
+

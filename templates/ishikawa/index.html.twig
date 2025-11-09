@@ -1,503 +1,315 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Diagramme d'Ishikawa | Analyse des causes | OUTILS-QUALITÉ{% endblock %}
+{% block title %}Diagramme d'Ishikawa | Analyse des causes{% endblock %}
 
-{% block meta_description %}
-<meta name="description"
-    content="Créez votre diagramme d'Ishikawa interactif gratuitement, sur les 5 pourquoi, diagramme d'Ishikawa 100% personnalisables. Canva avec notre outil professionnel. Export PDF, JPEG, JSON.">
+{% block meta_description %}Créez votre diagramme d'Ishikawa interactif gratuitement. Diagramme de causes et effets 100% personnalisable. Outil professionnel avec export PDF, JPEG, JSON.{% endblock %}
+
+{% block meta_keywords %}diagramme Ishikawa, fishbone diagram, diagramme de causes et effets, analyse des causes, root cause analysis, Kaoru Ishikawa, outil qualité gratuit, amélioration continue{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/ishikawa.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block content %}
-<!-- Main Content -->
-<div class="ishikawa-main">
-    <div class="container-fluid">
-        <!-- Header compact -->
-        <div class="ishikawa-header" data-aos="fade-up">
-            <h1>Diagramme d'Ishikawa</h1>
-            <p class="lead">Analysez les causes racines avec le diagramme en arête de poisson. Glissez-déposez les catégories pour organiser votre analyse.</p>
-        </div>
-
-        <!-- Message pour utilisateurs non connectés -->
-        {% if not app.user %}
-        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
-            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
-            <strong>Vous n'êtes pas connecté.</strong> 
-            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos créations et accéder à votre espace personnel.
-        </div>
-        {% endif %}
-
-        <!-- Instructions compactes -->
-        <div class="alert alert-info mb-3" role="region" aria-label="Instructions" data-aos="fade-up" data-aos-delay="90">
-            <strong>🔧 Guide rapide</strong>
-            <ul class="mb-0 mt-2">
-                <li>Certaines <strong>catégories</strong> et causes sont pré‑chargées</li>
-                <li>Vous pouvez <strong>déplacer</strong> librement chaque catégorie</li>
-                <li>Pour une expérience complète, utilisez un <strong>grand écran</strong></li>
-            </ul>
-        </div>
-
-        <!-- Controls compacts -->
-        <div class="ishikawa-controls" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
-            <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="text" 
-                    id="problemInput" 
-                    class="form-control problem-input" 
-                    placeholder="Définissez le problème à analyser..." 
-                    aria-label="Définir le problème à analyser"
-                    aria-describedby="problem-help"
-                    onchange="updateProblem()">
-
-                <button id="addCategoryBtn" class="btn btn-primary btn-sm" onclick="addCategory()" aria-label="Ajouter une catégorie">
-                    <i class="fas fa-plus" aria-hidden="true"></i> Ajouter une catégorie
-                </button>
-
-                <button class="btn btn-secondary btn-sm" onclick="resetAllCauses()" aria-label="Vider toutes les causes">
-                    <i class="fas fa-trash" aria-hidden="true"></i> Vider les causes
-                </button>
-
-                <!-- Bouton Sauvegarder (visible uniquement si connecté) -->
-                {% if app.user %}
-                <button id="saveBtn" class="btn btn-success btn-sm" onclick="saveIshikawa()" aria-label="Sauvegarder le diagramme">
-                    <i class="fas fa-save" aria-hidden="true"></i> Sauvegarder
-                </button>
-                <button id="loadBtn" class="btn btn-info btn-sm" onclick="loadIshikawaList()" style="display: none;" aria-label="Charger un diagramme sauvegardé">
-                    <i class="fas fa-folder-open" aria-hidden="true"></i> Charger
-                </button>
-                {% endif %}
-
-                <div class="dropdown export-dropdown">
-                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Options d'export">
-                        <i class="fas fa-download" aria-hidden="true"></i> Exporter
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><button class="dropdown-item" onclick="exportPDF()" role="menuitem">Export PDF</button></li>
-                        <li><button class="dropdown-item" onclick="exportJPEG()" role="menuitem">Export JPEG</button></li>
-                        <li><button class="dropdown-item" onclick="exportJSON()" role="menuitem">Export JSON</button></li>
-                    </ul>
-                </div>
-            </div>
-            <small id="problem-help" class="text-muted d-block mt-2">Définissez clairement le problème que vous souhaitez analyser</small>
-        </div>
-
-        <!-- Avertissement mobile et tablette -->
-        <div class="alert alert-warning d-block d-md-none text-center mb-3" role="alert" aria-label="Avertissement mobile" data-aos="fade-up" data-aos-delay="100">
-            <strong><i data-lucide="alert-triangle" width="20" height="20" class="me-2" aria-hidden="true"></i>Sur mobile et tablette, l'expérience est limitée.</strong><br>
-            Nous recommandons d'utiliser un PC pour un confort optimal.
-        </div>
-
-        <!-- Diagram Container -->
-        <div class="diagram-container" data-aos="fade-up" data-aos-delay="100" id="diagramContainer" role="main" aria-label="Zone du diagramme Ishikawa">
-            <div class="fishbone" id="fishbone">
-                <!-- SVG pour les lignes de connexion -->
-                <svg class="connection-svg" id="connectionSvg" aria-hidden="true">
-                    <!-- Les lignes de connexion seront générées dynamiquement -->
-                </svg>
-
-                <!-- Épine dorsale -->
-                <div class="spine" aria-hidden="true"></div>
-
-                <!-- Tête du poisson -->
-                <div class="fish-head" aria-hidden="true">
-                    <div class="fish-shape"></div>
-                </div>
-
-                <!-- Boîte du problème -->
-                <div class="problem-box" 
-                    id="problemBox" 
-                    onclick="editProblem()" 
-                    tabindex="0" 
-                    role="button"
-                    aria-label="Cliquer pour modifier le problème"
-                    aria-describedby="problem-box-help">
-                    Utilisez ce modèle d'analyse pour optimiser l'amélioration des processus et identifier les causes racines.
-                </div>
-                <span id="problem-box-help" class="visually-hidden">Double-cliquez ou appuyez sur Entrée pour modifier le texte du problème</span>
-            </div>
+<div class="ishikawa-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Diagramme d'Ishikawa</h1>
+        <div class="info-banner">
+            <p class="info-text">
+                Certaines catégories et causes sont déjà pré-chargées pour vous aider à démarrer. Vous pouvez déplacer librement chaque catégorie pour ajuster sa position. Pour une expérience complète, utilisez un grand écran!
+            </p>
+            <p class="info-text">
+                Vider les causes pour commencer une nouvelle analyse.
+            </p>
         </div>
     </div>
-</div>
 
-<!-- Modal pour ajouter/modifier une catégorie -->
-<div id="categoryModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="categoryModalTitle">
-    <div class="modal-content">
-        <span class="close" onclick="closeCategoryModal()" aria-label="Fermer">&times;</span>
-        <h2 id="categoryModalTitle">Ajouter une catégorie</h2>
-
-        <div class="form-group">
-            <label for="categorySelect">Catégorie prédéfinie :</label>
-            <select id="categorySelect">
-                <option value="">-- Sélectionner une catégorie --</option>
-            </select>
-        </div>
-
-        <div class="form-group" id="customCategoryGroup" style="display: none;">
-            <label for="categoryName">Nom personnalisé :</label>
-            <input type="text" id="categoryName" placeholder="Nom de la catégorie">
-        </div>
-
-        <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closeCategoryModal()">Annuler</button>
-            <button class="btn btn-primary" onclick="saveCategoryModal()">Enregistrer</button>
-        </div>
+    <div class="ishikawa-content">
+        {{ include('components/ishikawa_canvas.html.twig', { diagramId: diagramId }) }}
     </div>
 </div>
-
-<!-- Modal pour ajouter/modifier une cause -->
-<div id="causeModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="causeModalTitle">
-    <div class="modal-content">
-        <span class="close" onclick="closeCauseModal()" aria-label="Fermer">&times;</span>
-        <h2 id="causeModalTitle">Ajouter une cause</h2>
-
-        <div class="form-group">
-            <label for="causeName">Description de la cause :</label>
-            <input type="text" id="causeName" placeholder="Décrivez la cause...">
-        </div>
-
-        <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closeCauseModal()">Annuler</button>
-            <button class="btn btn-primary" onclick="saveCauseModal()">Enregistrer</button>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block stylesheets %}
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-<!-- Toastify CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-<!-- Styles optimisés pour Ishikawa -->
-<style>
-/* Optimisation de l'espace pour utilisateurs connectés */
-.ishikawa-main {
-    padding-top: {% if app.user %}0.5rem{% else %}1rem{% endif %};
-    padding-bottom: 2rem;
-    min-height: calc(100vh - 200px);
-}
-
-.ishikawa-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    padding: 1rem 0;
-}
-
-.ishikawa-header h1 {
-    color: var(--primary-color);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    font-size: 2rem;
-}
-
-.ishikawa-header .lead {
-    color: var(--secondary-color);
-    font-size: 1rem;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.ishikawa-controls {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: white;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-}
-
-.ishikawa-controls .problem-input {
-    flex: 1;
-    min-width: 250px;
-}
-
-/* Réduire la marge supérieure du diagram-container */
-.diagram-container {
-    margin-top: 0 !important;
-}
-
-/* Accessibilité - Focus visible amélioré */
-input:focus-visible,
-textarea:focus-visible,
-button:focus-visible {
-    outline: 3px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-.problem-box:focus-visible {
-    outline: 3px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .ishikawa-header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .ishikawa-controls {
-        padding: 0.75rem;
-    }
-    
-    .ishikawa-controls .btn {
-        font-size: 0.875rem;
-        padding: 0.5rem 0.75rem;
-    }
-    
-    .fishbone {
-        min-height: 500px;
-        height: 70vh;
-    }
-}
-
-/* Amélioration du contraste pour l'accessibilité */
-.alert-info {
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-    color: #0c5460;
-}
-
-.alert-warning {
-    background-color: #fff3cd;
-    border-color: #ffeaa7;
-    color: #856404;
-}
-
-/* Visually hidden pour l'accessibilité */
-.visually-hidden {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-}
-</style>
 {% endblock %}
 
 {% block javascripts %}
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="{{ asset('js/main.js') }}"></script>
-<script src="{{ asset('js/ishikawa.js') }}" defer></script>
+    {{ parent() }}
 
-<script>
-    // Fonction de sauvegarde via API
-    async function saveIshikawa() {
-        if (!{{ app.user ? 'true' : 'false' }}) {
-            Toastify({
-                text: "Vous devez être connecté pour sauvegarder.",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
-            window.location.href = '{{ path('app_login') }}';
-            return;
-        }
-        
-        // Récupérer les données du diagramme (depuis le script ishikawa.js)
-        const problemInput = document.getElementById('problemInput');
-        const problem = problemInput?.value || document.getElementById('problemBox')?.textContent?.trim() || 'Analyse Ishikawa';
-        
-        // Récupérer les données complètes du diagramme depuis la variable globale
-        const diagramData = window.diagramData || {
-            problem: problem,
-            categories: []
-        };
-        
-        const saveBtn = document.getElementById('saveBtn');
-        const originalText = saveBtn.innerHTML;
-        
-        try {
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sauvegarde...';
-            
-            const response = await fetch('{{ path('app_api_ishikawa_save') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: JSON.stringify({
-                    title: problem || 'Analyse Ishikawa - ' + new Date().toLocaleDateString('fr-FR'),
-                    content: diagramData
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                Toastify({
-                    text: "Diagramme sauvegardé avec succès !",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                }).showToast();
-            } else {
-                throw new Error(data.message || 'Erreur lors de la sauvegarde');
-            }
-        } catch (error) {
-            console.error('Erreur lors de la sauvegarde:', error);
-            Toastify({
-                text: "Erreur lors de la sauvegarde : " + error.message,
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalText;
-        }
-    }
+
+<!-- Toastify CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Bibliothèques d'export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Scripts globaux -->
+    <script src="{{ asset('js/main.js') }}" data-turbo-track="reload"></script>
+    <!-- Ishikawa JS - Chargé après le DOM pour éviter les problèmes d'initialisation -->
+    <script src="{{ asset('js/ishikawa.js') }}" data-turbo-track="reload"></script>
     
-    // Fonction pour charger la liste des diagrammes sauvegardés
-    async function loadIshikawaList() {
-        if (!{{ app.user ? 'true' : 'false' }}) {
-            return;
-        }
-        
-        try {
-            const response = await fetch('{{ path('app_api_ishikawa_list') }}', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.data && data.data.length > 0) {
-                // Afficher une modal avec la liste des diagrammes sauvegardés
-                showLoadModal(data.data);
-            } else {
-                Toastify({
-                    text: "Aucun diagramme sauvegardé.",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ffa500, #ff8c00)",
-                }).showToast();
-            }
-        } catch (error) {
-            console.error('Erreur lors du chargement:', error);
-            Toastify({
-                text: "Erreur lors du chargement de la liste.",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
-        }
-    }
-    
-    // Fonction pour charger un diagramme spécifique
-    async function loadIshikawa(id) {
-        if (!{{ app.user ? 'true' : 'false' }}) {
-            return;
-        }
-        
-        try {
-            const response = await fetch(`{{ path('app_api_ishikawa_get', {id: 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', id), {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.success && data.data) {
-                // Charger les données dans le diagramme
-                const diagramData = data.data.content;
-                if (window.loadDiagramData) {
-                    window.loadDiagramData(diagramData);
-                } else {
-                    console.warn('Fonction loadDiagramData non disponible');
-                }
-                
-                Toastify({
-                    text: "Diagramme chargé avec succès !",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                }).showToast();
-            }
-        } catch (error) {
-            console.error('Erreur lors du chargement:', error);
-            Toastify({
-                text: "Erreur lors du chargement du diagramme.",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
-        }
-    }
-    
-    // Afficher la modal de chargement
-    function showLoadModal(diagrams) {
-        // Créer une modal Bootstrap simple
-        const modalHtml = `
-            <div class="modal fade" id="loadIshikawaModal" tabindex="-1" aria-labelledby="loadIshikawaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="loadIshikawaModalLabel">Charger un diagramme sauvegardé</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="list-group">
-                                ${diagrams.map(diagram => `
-                                    <button type="button" class="list-group-item list-group-item-action" onclick="loadIshikawa(${diagram.id}); $('#loadIshikawaModal').modal('hide');">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">${diagram.title || 'Sans titre'}</h6>
-                                            <small>${new Date(diagram.createdAt).toLocaleDateString('fr-FR')}</small>
-                                        </div>
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-</div>
-        `;
-        
-        // Supprimer l'ancienne modal si elle existe
-        const existingModal = document.getElementById('loadIshikawaModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-        
-        // Ajouter la nouvelle modal
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
-        // Afficher la modal
-        const modal = new bootstrap.Modal(document.getElementById('loadIshikawaModal'));
-        modal.show();
-    }
-    
-    // Afficher le bouton Charger si l'utilisateur est connecté
     {% if app.user %}
-    document.addEventListener('DOMContentLoaded', function() {
-        const loadBtn = document.getElementById('loadBtn');
-        if (loadBtn) {
-            loadBtn.style.display = 'inline-block';
+    <script>
+        // Fonction de sauvegarde via API (similaire à saveFiveWhy)
+        async function saveIshikawa() {
+            const Toastify = window.Toastify;
+            
+            if (!Toastify) {
+                alert('Erreur : Bibliothèque Toastify non chargée');
+                return;
+            }
+            
+            // Récupérer les données du diagramme via la fonction exposée
+            let diagramData = {};
+            
+            if (window.ishikawaApp && typeof window.ishikawaApp.getDiagramData === 'function') {
+                diagramData = window.ishikawaApp.getDiagramData();
+            } else {
+                Toastify({
+                    text: "Erreur : Impossible de récupérer les données du diagramme.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                }).showToast();
+                return;
+            }
+            
+            const problemInput = document.getElementById('problemInput');
+            const problem = problemInput ? problemInput.value : '';
+            const diagramIdInput = document.getElementById('ishikawaDiagramId');
+            const existingId = diagramIdInput && diagramIdInput.value ? parseInt(diagramIdInput.value, 10) : null;
+            
+            const saveBtn = document.getElementById('saveIshikawaBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            try {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sauvegarde...';
+                
+                const payload = {
+                    title: problem || 'Diagramme Ishikawa - ' + new Date().toLocaleDateString('fr-FR'),
+                    problem: problem,
+                    content: diagramData
+                };
+
+                if (existingId) {
+                    payload.id = existingId;
+                }
+
+                const response = await fetch('{{ path('app_api_ishikawa_save') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    Toastify({
+                        text: "Diagramme sauvegardé avec succès !",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }).showToast();
+
+                    if (diagramIdInput && data.data && data.data.id) {
+                        diagramIdInput.value = data.data.id;
+                    }
+                } else {
+                    throw new Error(data.message || 'Erreur lors de la sauvegarde');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+                Toastify({
+                    text: "Erreur lors de la sauvegarde : " + error.message,
+                    duration: 5000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                }).showToast();
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
         }
-    });
+
+        async function shareIshikawa() {
+            const Toastify = window.Toastify;
+            const shareBtn = document.getElementById('shareIshikawaBtn');
+            const diagramIdInput = document.getElementById('ishikawaDiagramId');
+
+            if (!diagramIdInput || !diagramIdInput.value) {
+                Toastify({
+                    text: "Sauvegardez le diagramme avant de le partager.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
+                }).showToast();
+                return;
+            }
+
+            try {
+                shareBtn.disabled = true;
+                shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Partage...';
+
+                const response = await fetch('{{ path('app_api_ishikawa_share') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(diagramIdInput.value, 10)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Impossible de générer le lien de partage');
+                }
+
+                const shareUrl = data.data.url;
+                const expiration = data.data.expiresAt ? new Date(data.data.expiresAt) : null;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(shareUrl);
+                    Toastify({
+                        text: `Lien copié dans le presse-papiers ! Ce lien public reste valide pendant un mois${expiration ? ', jusqu\'au ' + expiration.toLocaleDateString('fr-FR') : ''}.`,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #14b8a6, #0ea5e9)",
+                    }).showToast();
+                } else {
+                    prompt("Copiez ce lien pour partager votre diagramme :", shareUrl);
+                }
+            } catch (error) {
+                console.error('Erreur lors du partage:', error);
+                Toastify({
+                    text: "Erreur lors du partage : " + error.message,
+                    duration: 5000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                }).showToast();
+            } finally {
+                shareBtn.disabled = false;
+                shareBtn.innerHTML = '<i class="fas fa-share-alt me-2"></i>Partager';
+            }
+        }
+    </script>
     {% endif %}
-</script>
+
+    {% if diagramId %}
+    <script>
+        (function() {
+            const isAuthenticated = Boolean({{ app.user ? 1 : 0 }});
+            const requestUrl = '{{ path('app_api_ishikawa_get', {id: diagramId}) }}';
+
+            function notify(message, type = 'info') {
+                const Toastify = window.Toastify;
+                if (Toastify) {
+                    const colors = {
+                        success: 'linear-gradient(to right, #22c55e, #16a34a)',
+                        error: 'linear-gradient(to right, #ef4444, #dc2626)',
+                        warning: 'linear-gradient(to right, #f97316, #ea580c)',
+                        info: 'linear-gradient(to right, #2563eb, #38bdf8)'
+                    };
+                    Toastify({
+                        text: message,
+                        duration: 3200,
+                        close: true,
+                        gravity: 'top',
+                        position: 'right',
+                        backgroundColor: colors[type] || colors.info,
+                    }).showToast();
+                } else {
+                    if (type === 'error') {
+                        console.error(message);
+                    } else {
+                        console.log(message);
+                    }
+                }
+            }
+
+            async function fetchDiagram() {
+                try {
+                    const response = await fetch(requestUrl, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const payload = await response.json();
+                    if (!payload || payload.success === false) {
+                        throw new Error(payload?.message || 'Diagramme introuvable.');
+                    }
+
+                    const data = payload.data || {};
+                    const content = data.content ? { ...data.content } : {};
+                    if (typeof content.problem !== 'string' && typeof data.problem === 'string') {
+                        content.problem = data.problem;
+                    }
+                    if (!Array.isArray(content.categories)) {
+                        content.categories = [];
+                    }
+ 
+                    if (window.ishikawaApp && typeof window.ishikawaApp.loadDiagramData === 'function') {
+                        window.ishikawaApp.loadDiagramData(content);
+                        const diagramIdInput = document.getElementById('ishikawaDiagramId');
+                        if (diagramIdInput) {
+                            diagramIdInput.value = data.id ?? '';
+                        }
+                        notify('Diagramme chargé avec succès.', 'success');
+                    }
+                } catch (error) {
+                    console.error('Ishikawa: erreur lors du chargement du diagramme', error);
+                    notify('Impossible de charger le diagramme sauvegardé.', 'error');
+                }
+            }
+
+            function bootstrapLoading() {
+                if (!isAuthenticated) {
+                    notify('Connectez-vous pour charger vos diagrammes sauvegardés.', 'warning');
+                    return;
+                }
+
+                if (window.ishikawaApp && typeof window.ishikawaApp.loadDiagramData === 'function' && window.ishikawaApp.isReady) {
+                    fetchDiagram();
+                } else {
+                    const handler = () => {
+                        window.removeEventListener('ishikawa:ready', handler);
+                        fetchDiagram();
+                    };
+                    window.addEventListener('ishikawa:ready', handler, { once: true });
+                }
+            }
+
+            if (typeof window.requestAnimationFrame === 'function') {
+                window.requestAnimationFrame(bootstrapLoading);
+            } else {
+                bootstrapLoading();
+            }
+        })();
+    </script>
+    {% endif %}
 {% endblock %}

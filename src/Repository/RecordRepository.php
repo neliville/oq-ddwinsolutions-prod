@@ -16,6 +16,46 @@ class RecordRepository extends ServiceEntityRepository
         parent::__construct($registry, Record::class);
     }
 
+    /**
+     * @return Record[]
+     */
+    public function findByUserAndType(?int $userId, ?string $type = null, int $limit = null): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.user = :user')
+            ->setParameter('user', $userId)
+            ->orderBy('r.createdAt', 'DESC');
+
+        if ($type) {
+            $qb->andWhere('r.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Count records by user and type
+     */
+    public function countByUserAndType(?int $userId, ?string $type = null): int
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.user = :user')
+            ->setParameter('user', $userId);
+
+        if ($type) {
+            $qb->andWhere('r.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        return $qb->getQuery()->getSingleScalarResult() ?? 0;
+    }
+
 //    /**
 //     * @return Record[] Returns an array of Record objects
 //     */

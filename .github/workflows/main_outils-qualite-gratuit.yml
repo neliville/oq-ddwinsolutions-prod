@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - outils-qualite-gratuit
+name: (deprecated) Build and deploy Node.js app to Azure Web App - outils-qualite-gratuit
 
 on:
   #push:
@@ -11,28 +11,12 @@ on:
 
 jobs:
   deploy:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Récupération du code
-        uses: actions/checkout@v4
-       
-     
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E65F8C8A79A4218AB4131CD9FA3A46F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_592737AC197B41E49E6B691CBA269220 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F087D0869AF4F41A9E666D6D6C2F27D }}
-
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'outils-qualite-gratuit'
-          slot-name: 'Production'
-          package: .       
+      - name: (deprecated) noop
+        run: echo 'Azure deployment workflow disabled'

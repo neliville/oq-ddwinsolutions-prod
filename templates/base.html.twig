@@ -1,30 +1,71 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Outils Qualité Gratuits : Analyse & Rapports Express | OUTILS-QUALITÉ{% endblock %}</title>
-    
-    {% block meta_description %}
-    <meta name="description"
-        content="Outils qualité gratuits et interactif en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
-    {% endblock %}
-    
-    <meta name="keywords"
-        content="diagramme Ishikawa, fishbone diagram, 5 Pourquoi,
-               méthode des 5 pourquoi, analyse des causes racines,
-               root cause analysis, outil qualité gratuit,
-               amélioration continue, PDCA, Pareto, résolution
-               de problèmes, export PDF Ishikawa, export JPEG, Pareto, 8D, 
-               outil Ishikawa interactif, Outil qualité,
-               audit qualité, méthode Lean, contrôle qualité, qualité ISO 9001, outils qualité ISO 9001, résolution problèmes, analyse causes, ISO 9001, lean, amélioration continue">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Balise Open Graph -->
-    <meta property="og:title" content="{% block og_title %}Outils Qualité Gratuits | OUTILS-QUALITÉ{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, export PDF. Outils 100% gratuits.{% endblock %}">
-    <meta property="og:url" content="https://www.outils-qualite.com">
-    <meta property="og:image" content="https://www.outils-qualite.com{{ asset('img/logo.png') }}">
+    {# Capturer les blocks SEO depuis les templates enfants sans les rendre directement #}
+    {% set seo_title_raw %}{% block title %}{% endblock %}{% endset %}
+    {% set seo_title_raw = seo_title_raw|trim %}
+
+    {% set seo_description_raw %}{% block meta_description %}{% endblock %}{% endset %}
+    {% set seo_description_raw = seo_description_raw|trim %}
+
+    {% set seo_keywords_raw %}{% block meta_keywords %}{% endblock %}{% endset %}
+    {% set seo_keywords_raw = seo_keywords_raw|trim %}
+
+    {% set seo_canonical_raw %}{% block canonical_url %}{% endblock %}{% endset %}
+    {% set seo_canonical_raw = seo_canonical_raw|trim %}
+
+    {% set seo_robots_raw %}{% block seo_robots %}{% endblock %}{% endset %}
+    {% set seo_robots_raw = seo_robots_raw|trim %}
+
+    {% set og_title_raw %}{% block og_title %}{% endblock %}{% endset %}
+    {% set og_title_raw = og_title_raw|trim %}
+
+    {% set og_description_raw %}{% block og_description %}{% endblock %}{% endset %}
+    {% set og_description_raw = og_description_raw|trim %}
+
+    {% set og_image_raw %}{% block og_image %}{% endblock %}{% endset %}
+    {% set og_image_raw = og_image_raw|trim %}
+
+    {% set og_url_raw %}{% block og_url %}{% endblock %}{% endset %}
+    {% set og_url_raw = og_url_raw|trim %}
+
+    {% set og_type_raw %}{% block og_type %}{% endblock %}{% endset %}
+    {% set og_type_raw = og_type_raw|trim %}
+
+    {% set twitter_card_raw %}{% block twitter_card %}{% endblock %}{% endset %}
+    {% set twitter_card_raw = twitter_card_raw|trim %}
+
+    {% set schema_type_raw %}{% block schema_type %}{% endblock %}{% endset %}
+    {% set schema_type_raw = schema_type_raw|trim %}
+
+    {% set schema_data_raw %}{% block schema_data %}{% endblock %}{% endset %}
+    {% set schema_social_links_raw %}{% block schema_social_links %}{% endblock %}{% endset %}
+    
+    {# Passer les valeurs capturées aux composants SEO comme variables #}
+    {% include 'components/seo/meta_tags.html.twig' with {
+        seo_title_raw: seo_title_raw,
+        seo_description_raw: seo_description_raw,
+        seo_keywords_raw: seo_keywords_raw,
+        seo_canonical_raw: seo_canonical_raw,
+        seo_robots_raw: seo_robots_raw
+    } %}
+    {% include 'components/seo/open_graph.html.twig' with {
+        og_title_raw: og_title_raw,
+        og_description_raw: og_description_raw,
+        og_image_raw: og_image_raw,
+        og_url_raw: og_url_raw,
+        og_type_raw: og_type_raw,
+        twitter_card_raw: twitter_card_raw
+    } %}
+    {% include 'components/seo/schema_org.html.twig' with {
+        schema_type_raw: schema_type_raw,
+        schema_data_raw: schema_data_raw,
+        schema_social_links_raw: schema_social_links_raw
+    } %}
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('img/favicon.svg') }}">
@@ -35,18 +76,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
 
-    <!-- Google Tag Manager -->
-    <script>
+    {% block head %}{% endblock %}
+
+    {# Google Tag Manager - DÉSACTIVÉ TEMPORAIREMENT POUR DÉBOGAGE #}
+    {# <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('consent', 'default', {
@@ -61,21 +103,45 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PNCNWR54');</script>
-    <!-- End Google Tag Manager -->
+    })(window,document,'script','dataLayer','GTM-PNCNWR54');</script> #}
+    {# End Google Tag Manager #}
 
     {% block stylesheets %}
+{# Masquer le bandeau BrowserTools MCP (outil de debug externe) #}
+<style>
+    /* Masquer le bandeau BrowserTools MCP */
+    [data-browser-tools],
+    iframe[src*="browser-tools"],
+    div[id*="browser-tools"],
+    div[class*="browser-tools"],
+    .browser-tools-banner,
+    .mcp-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+    }
+</style>
     {% endblock %}
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNCNWR54"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    {# Google Tag Manager (noscript) - DÉSACTIVÉ TEMPORAIREMENT POUR DÉBOGAGE #}
+    {# <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNCNWR54"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> #}
+    {# End Google Tag Manager (noscript) #}
     
+    {% set show_sidebar_toggle = show_sidebar_toggle is defined ? show_sidebar_toggle : false %}
+    {% set current_route = app.request.attributes.get('_route') %}
+    {% set show_public_navbar = show_public_navbar is defined ? show_public_navbar : (app.user is null or current_route == 'app_home_index') %}
+
     <!-- Navigation -->
-    {% include 'components/navbar.html.twig' %}
+    {% if show_public_navbar %}
+        {% include 'components/navbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+    {% endif %}
 
     <!-- Main Content -->
     {% block body %}
@@ -84,9 +150,6 @@
 
     <!-- Footer -->
     {% include 'components/footer.html.twig' %}
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>

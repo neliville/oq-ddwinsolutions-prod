@@ -1,0 +1,108 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Modifier la catégorie | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_categories_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour à la liste
+            </a>
+            <h1 class="h3 fw-bold mb-1">Modifier la catégorie</h1>
+            <p class="text-muted mb-0">{{ category.name }}</p>
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_help(form.slug) }}
+                        {{ form_errors(form.slug) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form_label(form.color, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.color, {'attr': {'class': 'form-control form-control-color'}}) }}
+                            {{ form_errors(form.color) }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form_label(form.icon, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.icon, {'attr': {'class': 'form-control'}}) }}
+                            <div class="form-text">Nom d'icône Lucide (ex: home). Laisser vide pour aucune icône.</div>
+                            {{ form_errors(form.icon) }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form_label(form.order, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.order, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.order) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                            Enregistrer les modifications
+                        </button>
+                        <a href="{{ path('app_admin_categories_index') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Informations</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Articles</small>
+                        <strong>{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</strong>
+                    </div>
+                    {% if category.blogPosts|length > 0 %}
+                    <div class="alert alert-warning small mb-0">
+                        <i data-lucide="alert-triangle" width="14" height="14" class="me-1"></i>
+                        Cette catégorie ne peut pas être supprimée car elle est utilisée.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

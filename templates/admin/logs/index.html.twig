@@ -1,0 +1,203 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Logs d'administration | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Logs d'administration</h1>
+            <p class="text-muted mb-0">Historique des actions d'administration</p>
+        </div>
+        <div>
+            <a href="{{ path('app_admin_logs_export', app.request.query.all) }}" class="btn btn-sm btn-outline-primary">
+                <i data-lucide="download" width="16" height="16" class="me-1"></i>
+                Exporter (CSV)
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_admin_logs_index') }}" class="row g-3">
+                <div class="col-md-2">
+                    <label for="action" class="form-label small">Action</label>
+                    <select name="action" id="action" class="form-select form-select-sm">
+                        <option value="">Toutes</option>
+                        {% for actionItem in actions %}
+                        <option value="{{ actionItem }}" {{ currentAction == actionItem ? 'selected' : '' }}>
+                            {{ actionItem }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="entityType" class="form-label small">Entité</label>
+                    <select name="entityType" id="entityType" class="form-select form-select-sm">
+                        <option value="">Toutes</option>
+                        {% for entityTypeItem in entityTypes %}
+                        <option value="{{ entityTypeItem }}" {{ currentEntityType == entityTypeItem ? 'selected' : '' }}>
+                            {{ entityTypeItem|split('\\')|last }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="user" class="form-label small">Utilisateur</label>
+                    <select name="user" id="user" class="form-select form-select-sm">
+                        <option value="">Tous</option>
+                        {% for userItem in users %}
+                        <option value="{{ userItem.id }}" {{ currentUserId == userItem.id ? 'selected' : '' }}>
+                            {{ userItem.email }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="period" class="form-label small">Période</label>
+                    <select name="period" id="period" class="form-select form-select-sm">
+                        <option value="today" {{ currentPeriod == 'today' ? 'selected' : '' }}>Aujourd'hui</option>
+                        <option value="week" {{ currentPeriod == 'week' ? 'selected' : '' }}>7 jours</option>
+                        <option value="month" {{ currentPeriod == 'month' ? 'selected' : '' }}>30 jours</option>
+                        <option value="year" {{ currentPeriod == 'year' ? 'selected' : '' }}>1 an</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i data-lucide="filter" width="14" height="14" class="me-1"></i>
+                        Filtrer
+                    </button>
+                    <a href="{{ path('app_admin_logs_index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i data-lucide="x" width="14" height="14" class="me-1"></i>
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des logs -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if logs|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Utilisateur</th>
+                            <th>Action</th>
+                            <th>Entité</th>
+                            <th>Description</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>
+                                <small>{{ log.createdAt|date('d/m/Y H:i:s') }}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <i data-lucide="user" width="16" height="16"></i>
+                                    </div>
+                                    <div>
+                                        <strong>{{ log.user.email }}</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if log.action == 'CREATE' %}
+                                <span class="badge bg-success">{{ log.action }}</span>
+                                {% elseif log.action == 'UPDATE' %}
+                                <span class="badge bg-primary">{{ log.action }}</span>
+                                {% elseif log.action == 'DELETE' %}
+                                <span class="badge bg-danger">{{ log.action }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ log.action }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.entityType %}
+                                <code class="small">{{ log.entityType|split('\\')|last }}</code>
+                                {% if log.entityId %}
+                                <br><small class="text-muted">ID: {{ log.entityId }}</small>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ log.description|default('-') }}</small>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ log.ipAddress|default('-') }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if totalPages > 1 %}
+            <div class="card-footer bg-white border-top">
+                <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0 justify-content-center">
+                        {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: currentPage - 1}) }}">
+                                <i data-lucide="chevron-left" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                        {% if i == currentPage %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: i}) }}">{{ i }}</a>
+                        </li>
+                        {% elseif i == 4 or i == totalPages - 3 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: currentPage + 1}) }}">
+                                <i data-lucide="chevron-right" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i data-lucide="file-text" width="48" height="48" class="text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucun log{{ currentAction or currentEntityType or currentUserId ? ' (avec les filtres appliqués)' : '' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

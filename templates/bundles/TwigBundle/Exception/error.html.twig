@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une erreur est survenue - OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}Une erreur inattendue est survenue. Notre équipe en a été informée et nous vous invitons à réessayer ou à retourner à la page d’accueil.{% endblock %}
+{% block og_title %}Erreur {{ status_code }} | OUTILS-QUALITÉ{% endblock %}
+{% block og_description %}Une erreur inattendue est survenue sur OUTILS-QUALITÉ.{% endblock %}
+{% block seo_robots %}noindex, nofollow{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include 'bundles/TwigBundle/Exception/_error_styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <main class="error-page" role="main" aria-labelledby="error-title">
+        <section class="error-page__card" aria-live="polite">
+            <span class="error-page__code">{{ status_code }}</span>
+            <h1 class="error-page__title" id="error-title">Nous rencontrons un problème</h1>
+            <p class="error-page__message">
+                Désolé, une erreur inattendue s’est produite ({{ status_text|default('Erreur') }}).
+                {% if exception is defined and exception.message is not empty %}
+                    <br><small class="text-muted">Détail : {{ exception.message }}</small>
+                {% endif %}
+                Notre équipe a été notifiée. Vous pouvez réessayer ou revenir à la page d’accueil.
+            </p>
+            <div class="error-page__actions">
+                <a href="{{ path('app_home_index') }}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>Retour à l’accueil
+                </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left me-2"></i>Page précédente
+                </button>
+            </div>
+        </section>
+    </main>
+{% endblock %}

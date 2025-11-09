@@ -1,0 +1,27 @@
+<h1 style="font-family: 'Segoe UI', Roboto, sans-serif; color: #1f2937;">Réinitialisez votre mot de passe</h1>
+
+<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
+    Bonjour,
+</p>
+
+<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
+    Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte OUTILS-QUALITÉ. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe.
+</p>
+
+<p style="margin: 24px 0;">
+    <a href="{{ url('app_reset_password', { token: resetToken.token }) }}"
+       style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #ffffff; padding: 12px 28px; border-radius: 999px; font-family: 'Segoe UI', Roboto, sans-serif; font-weight: 600; text-decoration: none; display: inline-block;">
+        Réinitialiser mon mot de passe
+    </a>
+</p>
+
+<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #6b7280; font-size: 14px; line-height: 1.6;">
+    Ce lien est valide durant {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    Si vous n’êtes pas à l’origine de cette demande, ignorez simplement cet email : votre mot de passe actuel restera inchangé.
+</p>
+
+<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
+    À très vite,<br>
+    <strong>L’équipe OUTILS-QUALITÉ</strong><br>
+    <span style="color: #94a3b8;">support@outils-qualite.com</span>
+</p>

@@ -1,0 +1,58 @@
+.newsletter-card {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-2xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-12, 3rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+
+  .newsletter-badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+  }
+
+  .newsletter-signup-form {
+    .newsletter-email-field {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--gray-300);
+    }
+
+    .newsletter-submit-btn {
+      font-weight: 600;
+      min-height: 48px;
+    }
+  }
+
+  .newsletter-legal {
+    color: var(--text-muted);
+
+    a {
+      color: var(--primary);
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .newsletter-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

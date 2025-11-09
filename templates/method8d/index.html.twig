@@ -1,0 +1,177 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Méthode 8D | Résolution structurée de problèmes{% endblock %}
+
+{% block meta_description %}Pilotez vos résolutions de problèmes avec la méthode 8D : équipe pluridisciplinaire, containment, causes racines, plan d'actions et capitalisation.{% endblock %}
+
+{% block meta_keywords %}méthode 8d, 8 disciplines, résolution de problème, containment, plan d'action, qualité{% endblock %}
+
+{% block og_title %}Méthode 8D - Outil Gratuit | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Suivez les 8 disciplines (8D) pour résoudre durablement vos problèmes terrain et capitaliser vos apprentissages.{% endblock %}
+
+{% block schema_type %}{{ parent() }},SoftwareApplication{% endblock %}
+
+{% block schema_data %}
+{
+    "name": "Outil Méthode 8D",
+    "description": "Application complète pour piloter une démarche 8D (Eight Disciplines).",
+    "url": "{{ absolute_url(path('app_eightd_index')) }}",
+    "screenshot": "{{ app.request.schemeAndHttpHost ~ asset('img/og-default.jpg') }}"
+}
+{% endblock %}
+
+{% block content %}
+<main class="eightd-page{% if not app.user %} eightd-page--guest{% endif %}">
+    <div class="container">
+        <input type="hidden" id="eightdAnalysisId" value="{{ analysisId ?? '' }}">
+
+        <header class="eightd-header" data-aos="fade-up">
+            <h1>Méthode 8D</h1>
+            <p class="lead">Pilotez votre résolution de problème en 8 disciplines : de la constitution de l'équipe jusqu'à la capitalisation des apprentissages.</p>
+        </header>
+
+        {% if not app.user %}
+        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
+            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
+            <strong>Vous n'êtes pas connecté.</strong>
+            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos analyses 8D, les partager et les reprendre plus tard.
+        </div>
+        {% endif %}
+
+        <section class="eightd-notice" data-aos="fade-up" data-aos-delay="60">
+            <h2>🛠️ Pourquoi utiliser la méthode 8D ?</h2>
+            <p>La méthode 8D (Eight Disciplines) est la démarche standard industrialisée par Ford pour éradiquer un problème à la source. Elle structure la résolution autour d'une équipe pluridisciplinaire, des actions de containment, de l'analyse des causes racines et d'une capitalisation finale. Elle est très utilisée dans l'automobile (IATF 16949), l'aéronautique, le manufacturing et tout environnement orienté client.</p>
+        </section>
+
+        <section class="eightd-overview" data-aos="fade-up" data-aos-delay="70">
+            {% set steps = {
+                'D0': 'Préparer',
+                'D1': 'Former l’équipe',
+                'D2': 'Décrire le problème',
+                'D3': 'Contenir',
+                'D4': 'Analyser les causes',
+                'D5': 'Définir les actions',
+                'D6': 'Valider l’efficacité',
+                'D7': 'Prévenir la récidive',
+                'D8': 'Féliciter & capitaliser'
+            } %}
+            {% for code, label in steps %}
+            <article class="eightd-overview__card" aria-label="Discipline {{ loop.index0 }}">
+                <h3>{{ code }}</h3>
+                <p>{{ label }}</p>
+            </article>
+            {% endfor %}
+        </section>
+
+        <section class="eightd-controls" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
+            <button class="btn btn-primary btn-sm" type="button" onclick="newEightDAnalysis()" aria-label="Initialiser un exemple de rapport 8D">
+                <i class="fas fa-sync-alt me-2"></i>Nouvelle analyse
+            </button>
+            <button class="btn btn-info btn-sm" type="button" onclick="generateEightDReport()" aria-label="Générer le rapport 8D">
+                <i class="fas fa-clipboard-check me-2"></i>Générer le rapport
+            </button>
+            <button class="btn btn-outline-danger btn-sm" type="button" onclick="resetEightDForm()" aria-label="Réinitialiser le formulaire 8D">
+                <i class="fas fa-eraser me-2"></i>Réinitialiser
+            </button>
+            {% if app.user %}
+            <button class="btn btn-success btn-sm" type="button" onclick="saveEightD()" aria-label="Sauvegarder l'analyse 8D">
+                <i class="fas fa-save me-2"></i>Sauvegarder
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openEightDSaved()" aria-label="Charger une analyse 8D sauvegardée">
+                <i class="fas fa-folder-open me-2"></i>Mes analyses
+            </button>
+            {% endif %}
+            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
+                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="eightdExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                    <i class="fas fa-download me-2"></i>Exporter
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="eightdExportDropdown" data-dropdown-basic-target="menu" hidden>
+                    <li><button class="dropdown-item" type="button" onclick="exportEightD('png')">Exporter en PNG</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportEightD('pdf')">Exporter en PDF</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportEightD('json')">Exporter en JSON</button></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="eightd-problem-card" data-aos="fade-up" data-aos-delay="140">
+            <h2>Informations générales</h2>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="eightd-form-group">
+                        <label for="eightdTitle">Intitulé du problème / Référence 8D</label>
+                        <input type="text" id="eightdTitle" placeholder="Ex : 8D-2025-017 - Défaut de collage panneau porte" oninput="updateEightDField('title', this.value)">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="eightd-form-group">
+                        <label for="eightdOpenedAt">Date d'ouverture</label>
+                        <input type="date" id="eightdOpenedAt" oninput="updateEightDField('openDate', this.value)">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="eightd-form-group">
+                        <label for="eightdClosedAt">Date de clôture</label>
+                        <input type="date" id="eightdClosedAt" oninput="updateEightDField('closeDate', this.value)">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="eightd-form-group">
+                        <label for="eightdContext">Description courte / contexte</label>
+                        <textarea id="eightdContext" placeholder="Contexte général, périmètre concerné..." oninput="updateEightDField('description', this.value)"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="eightdDisciplines" data-aos="fade-up" data-aos-delay="160" aria-live="polite"></section>
+
+        <section id="eightdResults" class="eightd-results" style="display:none;" data-aos="fade-up" data-aos-delay="220">
+            <div class="eightd-progress">
+                <h3>Progression de la démarche 8D</h3>
+                <div class="eightd-progress__bar">
+                    <div class="eightd-progress__fill" id="eightdProgressBar" style="width:0%">0%</div>
+                </div>
+            </div>
+
+            <div class="eightd-timeline" id="eightdTimeline"></div>
+
+            <div class="eightd-summary">
+                <h3 id="eightdSummaryTitle">Résumé de la démarche</h3>
+                <ul id="eightdSummaryList"></ul>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<link rel="stylesheet" href="{{ asset('styles/pages/method8d.scss') }}" data-turbo-track="reload">
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/method8d.js') }}"></script>
+<script>
+    window.eightDAppConfig = {
+        isAuthenticated: {{ app.user ? 'true' : 'false' }},
+        analysisId: {{ analysisId is defined and analysisId ? analysisId : 'null' }},
+        currentAnalysisId: null
+    };
+
+    window.eightDRoutes = {
+        save: '{{ path('app_api_eightd_save') }}',
+        list: '{{ path('app_api_eightd_list') }}',
+        get: '{{ path('app_api_eightd_get', {id: 0}) }}',
+        delete: '{{ path('app_api_eightd_delete', {id: 0}) }}',
+        login: '{{ path('app_login') }}'
+    };
+</script>
+{% endblock %}
+
+

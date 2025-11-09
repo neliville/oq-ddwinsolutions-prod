@@ -1,0 +1,313 @@
+<div {{ attributes }}
+     {{ stimulus_controller('ishikawa', {
+         diagramId: diagramId,
+         isAuthenticated: isAuthenticated
+     }) }}
+     {{ stimulus_target('ishikawa', 'problemInput') }}
+     {{ stimulus_target('ishikawa', 'categoryModal') }}
+     {{ stimulus_target('ishikawa', 'causeModal') }}
+     {{ stimulus_target('ishikawa', 'categorySelect') }}
+     {{ stimulus_target('ishikawa', 'categoryName') }}
+     {{ stimulus_target('ishikawa', 'causeName') }}
+     data-action="keydown->ishikawa#handleKeydown">
+    
+    <!-- Message pour utilisateurs non connectés -->
+    {% if not isAuthenticated %}
+    <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
+        <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
+        <strong>Vous n'êtes pas connecté.</strong> 
+        <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos créations et accéder à votre espace personnel.
+    </div>
+    {% endif %}
+
+    <!-- Section Catégories en haut -->
+    <div class="ishikawa-categories-section mb-4" data-aos="fade-up" data-aos-delay="50">
+        <div class="ishikawa-categories-header mb-3">
+            <div class="d-flex align-items-center mb-2">
+                <i data-lucide="git-branch" width="24" height="24" class="text-primary me-2" style="color: #20c997;"></i>
+                <h2 class="h4 mb-0 fw-bold">Ishikawa</h2>
+            </div>
+            <p class="text-muted small mb-0">Analyse des causes - Diagramme 5M+</p>
+        </div>
+
+        <!-- Section CATÉGORIES (ARÊTES) -->
+        <div class="mb-3">
+            <h3 class="h6 fw-bold mb-3">CATÉGORIES (ARÊTES)</h3>
+            <div class="categories-list d-flex flex-wrap gap-3"
+                 {{ stimulus_controller('sortable', {
+                     animation: 150
+                 }) }}
+                 data-action="sortable:end->ishikawa#updateCategoryOrder"
+                 style="cursor: move;">
+                {% for category in categories %}
+                <div class="category-card" 
+                     data-category-id="{{ category.id }}"
+                     data-category-name="{{ category.name }}"
+                     style="cursor: move;">
+                    <div class="category-card-header">
+                        <div class="category-icon" style="background-color: {{ this.getCategoryColor(category.name) }};"></div>
+                        <div class="category-info">
+                            <h4 class="category-name mb-0">{{ category.name }}</h4>
+                            <small class="text-muted">{{ category.causes|length }} cause(s)</small>
+                        </div>
+                        <div class="category-actions">
+                            <button class="btn btn-sm btn-link text-primary p-1" 
+                                    data-action="click->live#action"
+                                    data-live-action-param="openEditCategoryModal"
+                                    data-live-action-param-category-id="{{ category.id }}"
+                                    aria-label="Modifier la catégorie {{ category.name }}"
+                                    title="Modifier"
+                                    onclick="event.stopPropagation();">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-danger p-1" 
+                                    data-action="click->live#action"
+                                    data-live-action-param="deleteCategory"
+                                    data-live-action-param-category-id="{{ category.id }}"
+                                    aria-label="Supprimer la catégorie {{ category.name }}"
+                                    title="Supprimer"
+                                    onclick="event.stopPropagation();">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bouton Ajouter une catégorie -->
+        <button class="btn btn-success btn-sm mb-3" 
+                data-action="click->live#action"
+                data-live-action-param="openAddCategoryModal"
+                aria-label="Ajouter une catégorie">
+            <i class="fas fa-plus" aria-hidden="true"></i> Ajouter une catégorie
+        </button>
+
+        <!-- Section Interactions -->
+        <div class="ishikawa-interactions">
+            <div class="d-flex align-items-center mb-2">
+                <i data-lucide="lightbulb" width="18" height="18" class="text-warning me-2"></i>
+                <h3 class="h6 fw-bold mb-0">Interactions :</h3>
+            </div>
+            <ul class="list-unstyled mb-0 small">
+                <li><i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i> Double-clic sur une catégorie pour éditer</li>
+                <li><i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i> Glissez-déposez pour repositionner</li>
+                <li><i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i> Ajoutez des causes à chaque arête</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Zone principale avec Canvas -->
+    <div class="ishikawa-main-area">
+        <!-- Header avec titre et boutons -->
+        <div class="ishikawa-canvas-header d-flex align-items-start flex-wrap gap-3">
+            <h3 class="ishikawa-canvas-title">Diagramme en arêtes de poisson</h3>
+            <div class="ishikawa-canvas-actions d-flex align-items-center gap-3 ms-auto">
+                {% if isAuthenticated %}
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-action="click->live#action"
+                            data-live-action-param="save"
+                            aria-label="Sauvegarder le diagramme">
+                        <i class="fas fa-save me-1" aria-hidden="true"></i>
+                        Sauvegarder
+                    </button>
+                {% endif %}
+                <div class="dropdown">
+                    <button type="button"
+                            class="btn btn-info dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="Exporter le diagramme">
+                        <i class="fas fa-download me-1" aria-hidden="true"></i>
+                        Exporter
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" role="menu">
+                        <li><button class="dropdown-item" data-action="click->ishikawa#exportPDF" role="menuitem">Export PDF</button></li>
+                        <li><button class="dropdown-item" data-action="click->ishikawa#exportJPEG" role="menuitem">Export JPEG</button></li>
+                        <li><button class="dropdown-item" data-action="click->ishikawa#exportJSON" role="menuitem">Export JSON</button></li>
+                    </ul>
+                </div>
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-action="click->live#action"
+                        data-live-action-param="resetAllCauses"
+                        aria-label="Vider toutes les causes">
+                    <i class="fas fa-trash me-1" aria-hidden="true"></i>
+                    Vider les causes
+                </button>
+            </div>
+        </div>
+
+        <!-- Container Canvas -->
+        <div class="ishikawa-canvas-container">
+            <canvas 
+                id="ishikawaCanvas"
+                class="ishikawa-canvas"
+                {{ stimulus_controller('ishikawa-canvas', {
+                    width: 1400,
+                    height: 800
+                }) }}
+                {{ stimulus_target('ishikawa-canvas', 'canvas') }}
+                data-ishikawa-ishikawa-canvas-outlet
+                data-diagram-problem="{{ problem }}"
+                {{ stimulus_controller('ishikawa-drag', {
+                    canvasWidth: 1400,
+                    canvasHeight: 800,
+                    spineY: 400
+                }) }}
+                width="1400"
+                height="800"
+                role="img"
+                aria-label="Diagramme Ishikawa interactif">
+            </canvas>
+            
+            {# Passer les données des catégories via un script JSON pour le Canvas #}
+            <script type="application/json" id="diagramDataJson">
+            {
+                "problem": "{{ problem }}",
+                "categories": [
+                    {% for category in categories %}
+                    {
+                        "id": {{ category.id }},
+                        "name": "{{ category.name }}",
+                        "causes": [
+                            {% for cause in category.causes %}
+                            "{{ cause }}"{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        ],
+                        "spineX": {{ category.spineX|default(200) }},
+                        "angle": {{ category.angle|default(0) }},
+                        "branchLength": {{ category.branchLength|default(150) }}
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+            }
+            </script>
+        </div>
+
+        <!-- Input pour le problème (caché visuellement mais accessible) -->
+        <input type="text" 
+               id="problemInput" 
+               class="form-control problem-input mt-3" 
+               placeholder="Définissez le problème à analyser..." 
+               value="{{ problem }}"
+               aria-label="Définir le problème à analyser"
+               aria-describedby="problem-help"
+               data-action="input->ishikawa#updateProblem"
+               data-ishikawa-target="problemInput"
+               style="display: none;">
+        <small id="problem-help" class="text-muted d-block mt-2" style="display: none;">Définissez clairement le problème que vous souhaitez analyser</small>
+    </div>
+
+    <!-- Avertissement mobile et tablette -->
+    <div class="alert alert-warning d-block d-md-none text-center mb-3" role="alert" aria-label="Avertissement mobile" data-aos="fade-up" data-aos-delay="100">
+        <strong><i data-lucide="alert-triangle" width="20" height="20" class="me-2" aria-hidden="true"></i>Sur mobile et tablette, l'expérience est limitée.</strong><br>
+        Nous recommandons d'utiliser un PC pour un confort optimal.
+    </div>
+
+    <!-- Modal pour catégorie -->
+    {% set editingCategory = this.getEditingCategory() %}
+    {% set availableCategories = this.getAvailableStandardCategories() %}
+    <div data-live-id="category-modal-wrapper">
+    {% component BootstrapModal with {id: 'categoryModal', autoShow: showCategoryModal} %}
+        {% block modal_header %}
+            <h5 class="modal-title" id="categoryModalTitle">
+                {{ editingCategoryId ? 'Modifier la catégorie' : 'Ajouter une catégorie' }}
+            </h5>
+            <button type="button" 
+                    class="btn-close" 
+                    data-action="click->live#action"
+                    data-live-action-param="closeCategoryModal"
+                    aria-label="Fermer"></button>
+        {% endblock %}
+        {% block modal_body %}
+            <form data-action="live#action:prevent" 
+                  data-live-action-param="{{ editingCategoryId ? 'updateCategory' : 'addCategory' }}"
+                  {% if editingCategoryId %}data-live-action-param-editing-category-id="{{ editingCategoryId }}"{% else %}data-live-action-param-editing-category-id=""{% endif %}>
+                {% if editingCategoryId %}
+                <input type="hidden" name="editingCategoryId" value="{{ editingCategoryId }}">
+                {% endif %}
+                <div class="mb-3">
+                    <label for="categorySelect" class="form-label">Catégorie prédéfinie :</label>
+                    <select class="form-select" 
+                            id="categorySelect"
+                            name="categorySelect"
+                            data-action="change->ishikawa#toggleCategoryType"
+                            data-ishikawa-target="categorySelect">
+                        <option value="">-- Sélectionner une catégorie --</option>
+                        {% for cat in availableCategories %}
+                        <option value="{{ cat }}" {{ (editingCategory and editingCategory.name == cat) ? 'selected' : '' }}>
+                            {{ cat }}
+                        </option>
+                        {% endfor %}
+                        <option value="custom" {{ (editingCategory and editingCategory.name not in availableCategories) ? 'selected' : '' }}>
+                            Catégorie personnalisée...
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3" id="customCategoryGroup" 
+                     style="display: {{ (editingCategory and editingCategory.name not in availableCategories) or (not editingCategoryId) ? 'block' : 'none' }};">
+                    <label for="categoryName" class="form-label">Nom personnalisé :</label>
+                    <input type="text" 
+                           class="form-control"
+                           id="categoryName" 
+                           name="categoryName"
+                           placeholder="Nom de la catégorie"
+                           value="{{ editingCategory ? editingCategory.name : '' }}">
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button type="button" 
+                            class="btn btn-secondary" 
+                            data-action="click->live#action"
+                            data-live-action-param="closeCategoryModal">Annuler</button>
+                    <button type="submit" 
+                            class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        {% endblock %}
+    {% endcomponent %}
+    </div>
+
+    <!-- Modal pour cause -->
+    {% set editingCause = this.getEditingCause() %}
+    <div data-live-id="cause-modal-wrapper">
+    {% component BootstrapModal with {id: 'causeModal', autoShow: showCauseModal} %}
+        {% block modal_header %}
+            <h5 class="modal-title" id="causeModalTitle">
+                {{ editingCauseIndex is not null ? 'Modifier la cause' : 'Ajouter une cause' }}
+            </h5>
+            <button type="button" 
+                    class="btn-close" 
+                    data-action="click->live#action"
+                    data-live-action-param="closeCauseModal"
+                    aria-label="Fermer"></button>
+        {% endblock %}
+        {% block modal_body %}
+            <form data-action="live#action:prevent" data-live-action-param="{{ editingCauseIndex is not null ? 'updateCause' : 'addCause' }}">
+                <div class="mb-3">
+                    <label for="causeName" class="form-label">Description de la cause :</label>
+                    <input type="text" 
+                           class="form-control"
+                           id="causeName" 
+                           name="causeName"
+                           placeholder="Décrivez la cause..."
+                           value="{{ editingCause ? editingCause : '' }}">
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button type="button" 
+                            class="btn btn-secondary" 
+                            data-action="click->live#action"
+                            data-live-action-param="closeCauseModal">Annuler</button>
+                    <button type="submit" 
+                            class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        {% endblock %}
+    {% endcomponent %}
+    </div>
+</div>

@@ -7,6 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NewsletterSubscriberRepository::class)]
+#[ORM\Index(columns: ['active'], name: 'idx_newsletter_active')]
+#[ORM\Index(columns: ['subscribed_at'], name: 'idx_newsletter_subscribed_at')]
 class NewsletterSubscriber
 {
     #[ORM\Id]

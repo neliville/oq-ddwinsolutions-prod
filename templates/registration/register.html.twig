@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Créez votre compte gratuit pour accéder à tous nos outils d'analyse qualité et sauvegarder vos analyses.{% endblock %}
+
+{% block meta_keywords %}inscription, créer un compte, outils qualité, gratuit{% endblock %}
+
+{% block og_title %}Inscription | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Créez votre compte gratuit pour accéder à tous nos outils d'analyse qualité et sauvegarder vos analyses.{% endblock %}
+
+{% block seo_robots %}noindex, follow{% endblock %}
+
+{% block body %}
+<div class="auth-page auth-page--register">
+    <div class="auth-page__container container">
+        <div class="auth-page__brand">
+            <div class="auth-brand">
+                <span class="auth-brand__icon">
+                    <i class="fas fa-user-plus"></i>
+                </span>
+                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+            </div>
+            <p class="auth-page__baseline">
+                Rejoignez la plateforme de référence pour structurer, analyser et partager vos démarches qualité en toute simplicité.
+            </p>
+        </div>
+
+        <div class="auth-card row g-0">
+            <div class="col-lg-6 order-lg-1">
+                <section class="auth-card__panel auth-card__panel--form">
+                    <header>
+                        <h1 class="auth-card__title">Créer un compte</h1>
+                        <p class="auth-card__subtitle">
+                            En moins d’une minute, accédez à l’ensemble des outils OUTILS-QUALITÉ et sauvegardez vos analyses en illimité.
+                        </p>
+                    </header>
+
+                    {% for flash_error in app.flashes('error') %}
+                        <div class="alert auth-alert alert-danger alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
+                            <i class="fas fa-exclamation-circle mt-1"></i>
+                            <div>{{ flash_error }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+
+                    {% for flash_success in app.flashes('success') %}
+                        <div class="alert auth-alert alert-success alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <div>{{ flash_success }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(registrationForm, {
+                        'attr': {
+                            'class': 'auth-form needs-validation',
+                            'novalidate': true
+                        }
+                    }) }}
+
+                        <div>
+                            {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form_errors(registrationForm.email) ? ' is-invalid' : ''),
+                                    'placeholder': 'votre.email@exemple.com'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.first, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form_errors(registrationForm.plainPassword.first) ? ' is-invalid' : ''),
+                                    'placeholder': 'Choisissez un mot de passe sécurisé'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                            <div class="auth-terms mt-2">
+                                <strong>Votre mot de passe doit contenir :</strong>
+                                <ul class="mt-2 mb-0 ps-3">
+                                    <li>Au moins 8 caractères</li>
+                                    <li>Une lettre majuscule et une minuscule</li>
+                                    <li>Un chiffre ou un caractère spécial</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form_errors(registrationForm.plainPassword.second) ? ' is-invalid' : ''),
+                                    'placeholder': 'Confirmez votre mot de passe'
+                                }
+                            }) }}
+                            {{ form_errors(registrationForm.plainPassword.second) }}
+                        </div>
+
+                        <div class="auth-terms">
+                            En créant un compte, vous acceptez nos
+                            <a href="/mentions-legales">mentions légales</a>
+                            et notre <a href="/politique-de-confidentialite">politique de confidentialité</a>.
+                        </div>
+
+                        <button class="auth-form__submit" type="submit">
+                            <i class="fas fa-user-plus"></i>
+                            Créer mon compte
+                        </button>
+                    {{ form_end(registrationForm) }}
+
+                    <div class="auth-card__footer">
+                        Déjà inscrit ?
+                        <a href="{{ path('app_login') }}">Se connecter</a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-6 order-lg-2">
+                <section class="auth-card__panel auth-card__panel--info">
+                    <div class="position-relative">
+                        <h2 class="auth-info__title">Ce que vous débloquez</h2>
+                        <p class="auth-info__subtitle">
+                            Des outils professionnels prêts à l’emploi, une interface pensée pour les équipes qualité et un suivi continu de vos analyses.
+                        </p>
+
+                        <ul class="auth-benefits">
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">🧠</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Tous vos outils qualité</h3>
+                                    <p class="auth-benefits__description">Ishikawa, 5 Pourquoi, QQOQCCP, Pareto, AMDEC, 8D… accessibles en un seul espace.</p>
+                                </div>
+                            </li>
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">🤝</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Collaboration facilitée</h3>
+                                    <p class="auth-benefits__description">Sauvegardez, partagez et réutilisez vos analyses avec votre équipe en toute sécurité.</p>
+                                </div>
+                            </li>
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">📈</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Tableau de bord intelligent</h3>
+                                    <p class="auth-benefits__description">Suivez vos dernières créations, vos exports et vos partages depuis une interface claire.</p>
+                                </div>
+                            </li>
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">🛡️</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Confidentialité garantie</h3>
+                                    <p class="auth-benefits__description">Hébergement français, conformité RGPD, sauvegardes quotidiennes et chiffrement avancé.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="auth-highlights mt-4">
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">3&nbsp;min</span>
+                                <span class="auth-highlight__label">pour créer votre premier diagramme</span>
+                            </div>
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">Illimité</span>
+                                <span class="auth-highlight__label">enregistrements & exports</span>
+                            </div>
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">Support</span>
+                                <span class="auth-highlight__label">prioritaire par email</span>
+                            </div>
+                        </div>
+
+                        <p class="auth-meta mt-4">
+                            <i class="fas fa-envelope-open-text me-2"></i>Besoin d’aide ? Écrivez-nous à support@outils-qualite.com.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}

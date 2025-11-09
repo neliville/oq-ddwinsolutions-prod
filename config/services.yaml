@@ -1,9 +1,12 @@
-# This file is the entry point to configure your own services.
+# This file is the entry point to configure your services.
 # Files in the packages/ subdirectory configure your dependencies.
 
-# Put parameters here that don't need to change on each machine where the app is deployed
+# Put parameters here that don't change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.name: 'OUTILS-QUALITÉ'
+    app.email: 'noreply@outils-qualite.com'
+    blog_images_directory: '%kernel.project_dir%/public/uploads/blog'
 
 services:
     # default configuration for services in *this* file
@@ -15,6 +18,10 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
 
     # Menu builders
     App\Menu\Builder\MainMenuBuilder:
@@ -24,6 +31,22 @@ services:
     App\Menu\Builder\AdminMenuBuilder:
         tags:
             - { name: knp_menu.menu_builder, method: createAdminMenu, alias: admin }
+
+    App\Menu\Builder\NavbarMenuBuilder:
+        tags:
+            - { name: knp_menu.menu_builder, method: createNavbar, alias: app.navbar }
+
+    # Mailer Service
+    App\Service\MailerService:
+        arguments:
+            $appName: '%app.name%'
+            $appEmail: '%app.email%'
+            $appUrl: '%env(APP_URL)%'
+
+    # Newsletter Service
+    App\Service\NewsletterService:
+        arguments:
+            $mailerService: '@App\Service\MailerService'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

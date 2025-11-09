@@ -3,6 +3,11 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+/.env.local.*
+/.env
+/.env.test
+/.env.dev
+/.env.example
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -15,3 +20,25 @@
 ###< symfony/asset-mapper ###
 var/data.db
 var/data.db-journal
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> symfonycasts/sass-bundle ###
+/public/assets/
+###< symfonycasts/sass-bundle ###
+
+# Node / frontend
+/node_modules/
+/package-lock.json
+/yarn.lock
+
+# IDE / editor
+/.idea/
+/.vscode/
+*.iml
+
+# Déploiement / archives
+/release.zip

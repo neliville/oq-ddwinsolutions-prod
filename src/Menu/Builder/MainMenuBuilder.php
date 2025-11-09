@@ -36,6 +36,30 @@ class MainMenuBuilder
             'linkAttributes' => ['class' => 'nav-link'],
         ]);
 
+        $menu->addChild('Analyse QQOQCCP', [
+            'route' => 'app_qqoqccp_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
+        $menu->addChild('Analyse AMDEC', [
+            'route' => 'app_amdec_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
+        $menu->addChild('Diagramme Pareto', [
+            'route' => 'app_pareto_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
+        $menu->addChild('Méthode 8D', [
+            'route' => 'app_eightd_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
         $menu->addChild('Outils', [
             'route' => 'app_outils_index',
             'attributes' => ['class' => 'nav-item'],

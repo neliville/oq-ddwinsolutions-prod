@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Définir un nouveau mot de passe - OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Choisissez un nouveau mot de passe sécurisé pour votre compte OUTILS-QUALITÉ.{% endblock %}
+
+{% block seo_robots %}noindex, follow{% endblock %}
+
+{% block body %}
+<div class="auth-page auth-page--forgot">
+    <div class="auth-page__container container">
+        <div class="auth-page__brand">
+            <div class="auth-brand">
+                <span class="auth-brand__icon">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+            </div>
+            <p class="auth-page__baseline">
+                Dernière étape : définissez un mot de passe robuste pour sécuriser vos prochaines sessions.
+            </p>
+        </div>
+
+        <div class="auth-card row g-0">
+            <div class="col-lg-5 order-lg-1">
+                <section class="auth-card__panel auth-card__panel--form">
+                    <header>
+                        <h1 class="auth-card__title">Nouveau mot de passe</h1>
+                        <p class="auth-card__subtitle">Choisissez un mot de passe respectant les bonnes pratiques ci-contre. Il s’appliquera immédiatement.</p>
+                    </header>
+
+                    {{ form_start(resetForm, { attr: { class: 'auth-form' } }) }}
+                        <div>
+                            {{ form_label(resetForm.plainPassword.first) }}
+                            {{ form_widget(resetForm.plainPassword.first) }}
+                            {{ form_errors(resetForm.plainPassword.first) }}
+                        </div>
+
+                        <div>
+                            {{ form_label(resetForm.plainPassword.second) }}
+                            {{ form_widget(resetForm.plainPassword.second) }}
+                            {{ form_errors(resetForm.plainPassword.second) }}
+                        </div>
+
+                        <button class="auth-form__submit" type="submit" name="change_password_submit" value="1">
+                            <i class="fas fa-check-circle"></i>
+                            Valider le nouveau mot de passe
+                        </button>
+                    {{ form_end(resetForm) }}
+
+                    <div class="auth-card__footer">
+                        Mot de passe trouvé ?
+                        <a href="{{ path('app_login') }}">Se connecter</a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-7 order-lg-2">
+                <section class="auth-card__panel auth-card__panel--info">
+                    <div class="position-relative">
+                        <h2 class="auth-info__title">Nos conseils sécurité</h2>
+                        <p class="auth-info__subtitle">Protégez vos analyses et vos données en adoptant des réflexes simples.</p>
+
+                        <ul class="auth-info__list">
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">🔑</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Longueur minimale</h3>
+                                    <p class="auth-benefits__description">Utilisez au moins 8 caractères avec majuscules, minuscules et chiffres.</p>
+                                </div>
+                            </li>
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">🧩</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Mots de passe uniques</h3>
+                                    <p class="auth-benefits__description">Ne réutilisez jamais un mot de passe déjà employé sur un autre service.</p>
+                                </div>
+                            </li>
+                            <li class="auth-info__list-item">
+                                <span class="auth-info__list-icon">🛡️</span>
+                                <div class="auth-info__list-content">
+                                    <h3 class="auth-info__list-heading">Gestionnaire recommandé</h3>
+                                    <p class="auth-benefits__description">Un gestionnaire de mots de passe fiable vous aide à stocker et générer des identifiants forts.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <p class="auth-meta mt-4">
+                            Besoin d’assistance ? Écrivez-nous à <a class="text-white fw-semibold text-decoration-none" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

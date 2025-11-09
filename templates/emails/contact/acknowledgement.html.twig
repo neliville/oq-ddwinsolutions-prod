@@ -1,0 +1,63 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;padding:24px 0;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;padding:32px;box-shadow:0 12px 24px -20px rgba(15,23,42,0.4);font-family:'Segoe UI',Arial,sans-serif;color:#0f172a;">
+                <tr>
+                    <td style="font-size:18px;font-weight:600;color:#1d4ed8;">
+                        Bonjour {{ contact.name ?: 'cher utilisateur' }},
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:16px;font-size:15px;line-height:1.6;">
+                        Merci de nous avoir contactés via le formulaire du site <strong>{{ app_name }}</strong>. Nous avons bien reçu votre message et notre équipe vous répondra dans les plus brefs délais.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:24px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;">
+                            <tr>
+                                <td style="padding:16px 20px;font-size:14px;color:#334155;">
+                                    <div style="margin-bottom:12px;">
+                                        <strong>Objet :</strong><br>
+                                        {{ contact.subject ?: '—' }}
+                                    </div>
+                                    <div style="margin-bottom:12px;">
+                                        <strong>Nom :</strong><br>
+                                        {{ contact.name ?: '—' }}
+                                    </div>
+                                    <div style="margin-bottom:12px;">
+                                        <strong>Email :</strong><br>
+                                        {{ contact.email }}
+                                    </div>
+                                    <div>
+                                        <strong>Message :</strong><br>
+                                        <div style="margin-top:8px;white-space:pre-wrap;">
+                                            {{ contact.message }}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:24px;font-size:14px;line-height:1.6;color:#475569;">
+                        Si vous souhaitez compléter votre demande, vous pouvez répondre directement à cet email ou nous écrire depuis notre site :
+                        <a href="{{ app_url }}/contact/" style="color:#2563eb;text-decoration:none;">{{ app_url }}/contact/</a>.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:24px;font-size:12px;color:#64748b;">
+                        Cet accusé de réception est généré automatiquement. Pour toute question urgente, n'hésitez pas à nous contacter à l'adresse suivante : <a href="mailto:{{ app_email|default('contact@outils-qualite.com') }}" style="color:#2563eb;text-decoration:none;">{{ app_email|default('contact@outils-qualite.com') }}</a>.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:16px;font-size:12px;color:#94a3b8;">
+                        &copy; {{ "now"|date("Y") }} {{ app_name }}. Tous droits réservés.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+

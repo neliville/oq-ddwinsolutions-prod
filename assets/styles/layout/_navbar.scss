@@ -1,0 +1,239 @@
+@use '../core/variables';
+
+.sidebar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  color: var(--primary);
+  background: #fff;
+  transition: all var(--transition-base);
+
+  &:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.35);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+  }
+}
+
+.navbar {
+  transition: var(--transition-base);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: var(--shadow-md);
+}
+
+.main-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.35rem 0;
+  z-index: 1030;
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--text-primary);
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .navbar-toggler {
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: var(--border-radius-sm);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 0.45rem 0.65rem;
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 70, 229, 0.35);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+    }
+
+    .navbar-toggler-icon {
+      filter: hue-rotate(-20deg) brightness(0.9);
+    }
+  }
+
+  .navbar-collapse-inner {
+    width: 100%;
+  }
+
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+
+    .nav-item {
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.5rem 0;
+      position: relative;
+      text-decoration: none;
+      transition: color var(--transition-base);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width var(--transition-base);
+      }
+
+      &:hover,
+      &.active {
+        color: var(--primary);
+      }
+
+      &:hover::after,
+      &.active::after {
+        width: 100%;
+      }
+    }
+  }
+
+  .navbar-actions {
+    display: flex;
+    gap: 0.75rem;
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+
+      &:hover {
+        background: var(--primary-dark);
+      }
+    }
+  }
+
+  .profile-dropdown__button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+
+    &:focus-visible {
+      outline: 2px solid rgba(79, 70, 229, 0.35);
+      outline-offset: 2px;
+    }
+
+    .profile-dropdown__avatar {
+      width: 40px;
+      height: 40px;
+      font-weight: 600;
+    }
+  }
+
+  .profile-dropdown__menu {
+    min-width: 250px;
+  }
+}
+
+.dashboard-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  background: var(--bg-primary);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 30px -20px rgba(15, 23, 42, 0.25);
+
+  &__inner {
+    min-height: 72px;
+  }
+
+  &__brand {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  &__actions {
+    .btn-outline-primary {
+      border-radius: var(--border-radius-md);
+    }
+
+    .profile-dropdown__button {
+      border: none;
+      background: transparent;
+      padding: 0;
+
+      &:focus-visible {
+        outline: 2px solid rgba(79, 70, 229, 0.35);
+        outline-offset: 2px;
+      }
+
+      .profile-dropdown__avatar {
+        width: 40px;
+        height: 40px;
+        font-weight: 600;
+      }
+    }
+
+    .profile-dropdown__menu {
+      min-width: 250px;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .main-navbar {
+    .nav-menu {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+
+    .navbar-actions {
+      width: 100%;
+      flex-direction: column;
+
+      .sidebar-toggle-btn,
+      .btn-primary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .dashboard-topbar {
+    &__actions {
+      gap: 0.5rem;
+
+      .sidebar-toggle-label {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  #mainNav {
+    min-height: 76px;
+  }
+}

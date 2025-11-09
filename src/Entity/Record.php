@@ -7,6 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecordRepository::class)]
+#[ORM\Index(columns: ['type'], name: 'idx_record_type')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_record_created_at')]
 class Record
 {
     #[ORM\Id]

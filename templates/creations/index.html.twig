@@ -18,8 +18,8 @@
         </div>
 
         <!-- Stats -->
-        <div class="row mb-4">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="row mb-4 g-3">
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="100">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body text-center p-4">
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="200">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body text-center p-4">
                         <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="300">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body text-center p-4">
                         <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
@@ -49,6 +49,50 @@
                         </div>
                         <h3 class="fw-bold mb-1">{{ fiveWhyRecords|length }}</h3>
                         <p class="text-muted mb-0">Analyses 5 Pourquoi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="350">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-list-check fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ qqoqccpRecords|length }}</h3>
+                        <p class="text-muted mb-0">Analyses QQOQCCP</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="400">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ amdecRecords|length }}</h3>
+                        <p class="text-muted mb-0">Analyses AMDEC</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="450">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ paretoRecords|length }}</h3>
+                        <p class="text-muted mb-0">Analyses Pareto</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="500">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-layer-group fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ eightDRecords|length }}</h3>
+                        <p class="text-muted mb-0">Méthodes 8D</p>
                     </div>
                 </div>
             </div>
@@ -68,6 +112,18 @@
                         </a>
                         <a href="{{ path('app_fivewhy_index') }}" class="btn btn-info">
                             <i class="fas fa-question-circle me-2"></i>Créer une analyse 5 Pourquoi
+                        </a>
+                        <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-list-check me-2"></i>Créer une analyse QQOQCCP
+                        </a>
+                        <a href="{{ path('app_amdec_index') }}" class="btn btn-outline-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Créer une analyse AMDEC
+                        </a>
+                        <a href="{{ path('app_pareto_index') }}" class="btn btn-outline-info">
+                            <i class="fas fa-chart-line me-2"></i>Créer une analyse Pareto
+                        </a>
+                        <a href="{{ path('app_eightd_index') }}" class="btn btn-outline-warning">
+                            <i class="fas fa-layer-group me-2"></i>Lancer une méthode 8D
                         </a>
                     </div>
                 </div>
@@ -160,6 +216,218 @@
                                         data-action="click->dialog#open"
                                         data-dialog-url-value="{{ path('app_api_fivewhy_delete', {id: record.id}) }}"
                                         data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible."
+                                    >
+                                        <i class="fas fa-trash me-1"></i>Supprimer
+                                    </button>
+                                    {% include 'components/delete-confirmation-modal.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Analyses QQOQCCP -->
+        {% if qqoqccpRecords|length > 0 %}
+        <section class="mb-5" data-aos="fade-up" data-aos-delay="150">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold mb-0">
+                    <i class="fas fa-list-check me-2 text-secondary"></i>Analyses QQOQCCP
+                </h2>
+                <span class="badge bg-secondary">{{ qqoqccpRecords|length }}</span>
+            </div>
+            <div class="row g-4">
+                {% for record in qqoqccpRecords %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 p-2 me-3">
+                                    <i class="fas fa-list-check fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
+                                    <small class="text-muted d-block">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ record.createdAt|date('d/m/Y à H:i') }}
+                                    </small>
+                                    {% if record.updatedAt %}
+                                    <small class="text-muted">Dernière mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{{ path('app_qqoqccp_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-secondary flex-fill">
+                                    <i class="fas fa-folder-open me-1"></i>Charger
+                                </a>
+                                <div data-controller="dialog delete-confirmation">
+                                    <button 
+                                        class="btn btn-sm btn-danger" 
+                                        data-action="click->dialog#open"
+                                        data-dialog-url-value="{{ path('app_api_qqoqccp_delete', {id: record.id}) }}"
+                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse QQOQCCP ? Cette action est irréversible."
+                                    >
+                                        <i class="fas fa-trash me-1"></i>Supprimer
+                                    </button>
+                                    {% include 'components/delete-confirmation-modal.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Analyses AMDEC -->
+        {% if amdecRecords|length > 0 %}
+        <section class="mb-5" data-aos="fade-up" data-aos-delay="200">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold mb-0">
+                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Analyses AMDEC
+                </h2>
+                <span class="badge bg-danger">{{ amdecRecords|length }}</span>
+            </div>
+            <div class="row g-4">
+                {% for record in amdecRecords %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="bg-danger bg-opacity-10 text-danger rounded-3 p-2 me-3">
+                                    <i class="fas fa-exclamation-triangle fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
+                                    <small class="text-muted d-block">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ record.createdAt|date('d/m/Y à H:i') }}
+                                    </small>
+                                    {% if record.updatedAt %}
+                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{{ path('app_amdec_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-danger flex-fill">
+                                    <i class="fas fa-folder-open me-1"></i>Charger
+                                </a>
+                                <div data-controller="dialog delete-confirmation">
+                                    <button
+                                        class="btn btn-sm btn-danger"
+                                        data-action="click->dialog#open"
+                                        data-dialog-url-value="{{ path('app_api_amdec_delete', {id: record.id}) }}"
+                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible."
+                                    >
+                                        <i class="fas fa-trash me-1"></i>Supprimer
+                                    </button>
+                                    {% include 'components/delete-confirmation-modal.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Analyses Pareto -->
+        {% if paretoRecords|length > 0 %}
+        <section class="mb-5" data-aos="fade-up" data-aos-delay="250">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold mb-0">
+                    <i class="fas fa-chart-line me-2 text-info"></i>Analyses Pareto
+                </h2>
+                <span class="badge bg-info">{{ paretoRecords|length }}</span>
+            </div>
+            <div class="row g-4">
+                {% for record in paretoRecords %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="bg-info bg-opacity-10 text-info rounded-3 p-2 me-3">
+                                    <i class="fas fa-chart-line fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
+                                    <small class="text-muted d-block">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ record.createdAt|date('d/m/Y à H:i') }}
+                                    </small>
+                                    {% if record.updatedAt %}
+                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{{ path('app_pareto_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-info flex-fill">
+                                    <i class="fas fa-folder-open me-1"></i>Charger
+                                </a>
+                                <div data-controller="dialog delete-confirmation">
+                                    <button
+                                        class="btn btn-sm btn-danger"
+                                        data-action="click->dialog#open"
+                                        data-dialog-url-value="{{ path('app_api_pareto_delete', {id: record.id}) }}"
+                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible."
+                                    >
+                                        <i class="fas fa-trash me-1"></i>Supprimer
+                                    </button>
+                                    {% include 'components/delete-confirmation-modal.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Méthodes 8D -->
+        {% if eightDRecords|length > 0 %}
+        <section class="mb-5" data-aos="fade-up" data-aos-delay="300">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold mb-0">
+                    <i class="fas fa-layer-group me-2 text-warning"></i>Rapports Méthode 8D
+                </h2>
+                <span class="badge bg-warning text-dark">{{ eightDRecords|length }}</span>
+            </div>
+            <div class="row g-4">
+                {% for record in eightDRecords %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-2 me-3">
+                                    <i class="fas fa-layer-group fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
+                                    <small class="text-muted d-block">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ record.createdAt|date('d/m/Y à H:i') }}
+                                    </small>
+                                    {% if record.updatedAt %}
+                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{{ path('app_eightd_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-warning flex-fill">
+                                    <i class="fas fa-folder-open me-1"></i>Charger
+                                </a>
+                                <div data-controller="dialog delete-confirmation">
+                                    <button
+                                        class="btn btn-sm btn-danger"
+                                        data-action="click->dialog#open"
+                                        data-dialog-url-value="{{ path('app_api_eightd_delete', {id: record.id}) }}"
+                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible."
                                     >
                                         <i class="fas fa-trash me-1"></i>Supprimer
                                     </button>

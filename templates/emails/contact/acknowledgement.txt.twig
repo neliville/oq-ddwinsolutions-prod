@@ -1,0 +1,19 @@
+Bonjour {{ contact.name ?: 'cher utilisateur' }},
+
+Nous avons bien reçu votre message envoyé depuis le site {{ app_name }} et nous vous remercions de nous avoir contactés. Notre équipe reviendra vers vous dans les plus brefs délais.
+
+Voici un rappel des informations transmises :
+- Objet : {{ contact.subject ?: '—' }}
+- Nom : {{ contact.name ?: '—' }}
+- Adresse e-mail : {{ contact.email }}
+- Message :
+{{ contact.message }}
+
+Si vous souhaitez compléter votre demande, vous pouvez répondre directement à ce message ou nous écrire depuis la page de contact : {{ app_url }}/contact/
+
+À bientôt,
+L’équipe {{ app_name }}
+
+---
+Cet accusé de réception est généré automatiquement. Pour toute demande urgente, contactez-nous à l’adresse suivante : {{ app_email|default('contact@outils-qualite.com') }}.
+

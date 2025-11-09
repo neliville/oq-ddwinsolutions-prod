@@ -1,0 +1,44 @@
+{% if item.hasChildren and options.depth is not same as(0) %}
+    <ul class="nav-menu navbar-nav align-items-lg-center gap-lg-4 mb-3 mb-lg-0 w-100 w-lg-auto">
+        {% for child in item.children %}
+            {% if child.displayed %}
+                {% set liClasses = ['nav-item'] %}
+                {% if matcher is defined %}
+                    {% if matcher.isCurrent(child) %}
+                        {% set liClasses = liClasses|merge([options.currentClass]) %}
+                    {% elseif matcher.isAncestor(child, options.matchingDepth) %}
+                        {% set liClasses = liClasses|merge([options.ancestorClass]) %}
+                    {% endif %}
+                {% endif %}
+
+                {% set linkClassList = child.linkAttributes.class|default('')|split(' ') %}
+                {% set linkClassList = linkClassList|filter(v => v is not empty) %}
+                {% if 'nav-link' not in linkClassList %}
+                    {% set linkClassList = linkClassList|merge(['nav-link']) %}
+                {% endif %}
+                {% set linkClasses = linkClassList|join(' ') %}
+
+                <li class="{{ liClasses|join(' ') }}">
+                    {% if child.uri is not empty %}
+                        <a href="{{ child.uri }}" class="{{ linkClasses }}">
+                            {% if options.allow_safe_labels and child.extra('safe_label', false) %}
+                                {{ child.label|raw }}
+                            {% else %}
+                                {{ child.label }}
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        <span class="{{ linkClasses }}">
+                            {% if options.allow_safe_labels and child.extra('safe_label', false) %}
+                                {{ child.label|raw }}
+                            {% else %}
+                                {{ child.label }}
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+

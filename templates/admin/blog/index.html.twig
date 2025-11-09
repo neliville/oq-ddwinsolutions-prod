@@ -1,0 +1,263 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Gestion du blog | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Gestion du blog</h1>
+            <p class="text-muted mb-0">Gérer les articles de blog</p>
+        </div>
+        <div>
+            <a href="{{ path('app_admin_blog_new') }}" class="btn btn-primary">
+                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                Nouvel article
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Articles publiés</h6>
+                            <h3 class="fw-bold mb-0">{{ publishedCount }}</h3>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="check-circle" width="24" height="24" class="text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Brouillons</h6>
+                            <h3 class="fw-bold mb-0">{{ draftCount }}</h3>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="file-text" width="24" height="24" class="text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Mis en avant</h6>
+                            <h3 class="fw-bold mb-0">{{ featuredCount }}</h3>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="star" width="24" height="24" class="text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group" aria-label="Filtres">
+                <a href="{{ path('app_admin_blog_index', {filter: 'all'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Tous ({{ total }})
+                </a>
+                <a href="{{ path('app_admin_blog_index', {filter: 'published'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'published' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Publiés ({{ publishedCount }})
+                </a>
+                <a href="{{ path('app_admin_blog_index', {filter: 'draft'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'draft' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Brouillons ({{ draftCount }})
+                </a>
+                <a href="{{ path('app_admin_blog_index', {filter: 'featured'}) }}" 
+                   class="btn btn-sm {{ currentFilter == 'featured' ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Mis en avant ({{ featuredCount }})
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des articles -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if posts|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Titre</th>
+                            <th>Catégorie</th>
+                            <th>Tags</th>
+                            <th>Statut</th>
+                            <th>Vues</th>
+                            <th>Date</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td>
+                                <strong>{{ post.title }}</strong>
+                                {% if post.featured %}
+                                <span class="badge bg-primary ms-2">⭐</span>
+                                {% endif %}
+                                <br>
+                                <small class="text-muted">/{{ post.slug }}</small>
+                            </td>
+                            <td>
+                                {% if post.category %}
+                                <span class="badge" style="background-color: {{ post.category.color }}; color: white;">
+                                    {{ post.category.name }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if post.tags|length > 0 %}
+                                {% for tag in post.tags|slice(0, 2) %}
+                                <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+                                {% endfor %}
+                                {% if post.tags|length > 2 %}
+                                <small class="text-muted">+{{ post.tags|length - 2 }}</small>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if post.publishedAt %}
+                                <span class="badge bg-success">Publié</span>
+                                {% else %}
+                                <span class="badge bg-warning">Brouillon</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ post.views }} vues</small>
+                            </td>
+                            <td>
+                                <small>
+                                    {% if post.publishedAt %}
+                                    {{ post.publishedAt|date('d/m/Y H:i') }}
+                                    {% else %}
+                                    {{ post.createdAt|date('d/m/Y H:i') }}
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" 
+                                       class="btn btn-outline-primary" title="Voir">
+                                        <i data-lucide="eye" width="14" height="14"></i>
+                                    </a>
+                                    <a href="{{ path('app_admin_blog_edit', {id: post.id}) }}" 
+                                       class="btn btn-outline-secondary" title="Modifier">
+                                        <i data-lucide="edit" width="14" height="14"></i>
+                                    </a>
+                                    {% if post.publishedAt %}
+                                    <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
+                                        <button type="submit" class="btn btn-outline-warning" title="Dépublier">
+                                            <i data-lucide="eye-off" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
+                                        <button type="submit" class="btn btn-outline-success" title="Publier">
+                                            <i data-lucide="check" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" 
+                                          class="d-inline" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                            <i data-lucide="trash-2" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if totalPages > 1 %}
+            <div class="card-footer bg-white border-top">
+                <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0 justify-content-center">
+                        {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage - 1}) }}">
+                                <i data-lucide="chevron-left" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                        {% if i == currentPage %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
+                        </li>
+                        {% elseif i == 4 or i == totalPages - 3 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage + 1}) }}">
+                                <i data-lucide="chevron-right" width="14" height="14"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i data-lucide="file-text" width="48" height="48" class="text-muted mb-3"></i>
+                <p class="text-muted mb-0">Aucun article{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+                <a href="{{ path('app_admin_blog_new') }}" class="btn btn-primary mt-3">
+                    <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                    Créer le premier article
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

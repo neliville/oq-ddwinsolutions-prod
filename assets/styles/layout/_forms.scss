@@ -1,0 +1,17 @@
+@use '../core/mixins' as *;
+
+input,
+textarea,
+select,
+.form-control,
+.form-select {
+  font-family: inherit;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-300);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+  &:focus {
+    border-color: var(--primary);
+    @include focus-ring(rgba(79, 70, 229, 0.15));
+  }
+}

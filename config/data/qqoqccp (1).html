@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQOQCCP - Outils Qualité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .intro {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .method-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .method-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+
+        .method-card p {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        .input-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .input-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .input-section h3::before {
+            content: "❓";
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .question-block {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-block h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-icon {
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .helper-text {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-generate {
+            background: #667eea;
+            font-size: 1.1em;
+            padding: 15px 40px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+            margin-left: 10px;
+        }
+
+        .btn-clear:hover {
+            background: #c0392b;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .report-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .report-header h2 {
+            color: #667eea;
+            font-size: 1.8em;
+        }
+
+        .report-section {
+            margin-bottom: 25px;
+        }
+
+        .report-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-section .content {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            line-height: 1.6;
+        }
+
+        .summary-box {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .summary-box h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .method-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>❓ QQOQCCP</h1>
+            <p class="subtitle">Questionnement méthodique pour analyser une situation</p>
+        </header>
+
+        <div class="intro">
+            <h2>La méthode QQOQCCP</h2>
+            <p>Le QQOQCCP (ou 5W2H en anglais) est un outil d'analyse simple et puissant qui permet d'explorer 
+            exhaustivement une situation, un problème ou un projet en se posant 7 questions fondamentales.</p>
+            <p>Cette méthode garantit qu'aucun aspect important n'est oublié lors de l'analyse et facilite 
+            la communication claire et structurée.</p>
+        </div>
+
+        <div class="method-grid">
+            <div class="method-card">
+                <h3>🙋 QUI</h3>
+                <p>Qui est concerné ? Qui agit ? Qui décide ? Qui est responsable ?</p>
+            </div>
+            <div class="method-card">
+                <h3>📋 QUOI</h3>
+                <p>De quoi s'agit-il ? Quel est le problème ? Quelles sont les caractéristiques ?</p>
+            </div>
+            <div class="method-card">
+                <h3>📍 OÙ</h3>
+                <p>Où cela se passe-t-il ? Où est le problème ? Dans quel lieu, service, zone ?</p>
+            </div>
+            <div class="method-card">
+                <h3>⏰ QUAND</h3>
+                <p>Quand cela se produit-il ? Quelle fréquence ? Quelle durée ? Quel délai ?</p>
+            </div>
+            <div class="method-card">
+                <h3>🔧 COMMENT</h3>
+                <p>Comment cela se passe-t-il ? De quelle manière ? Avec quels moyens ?</p>
+            </div>
+            <div class="method-card">
+                <h3>💰 COMBIEN</h3>
+                <p>Combien ? Quel coût ? Quelle quantité ? Quel volume ? Quelle fréquence ?</p>
+            </div>
+            <div class="method-card">
+                <h3>🎯 POURQUOI</h3>
+                <p>Pourquoi ? Quelles sont les causes ? Quels sont les objectifs ? Quelle finalité ?</p>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <h3>Remplissez votre analyse QQOQCCP</h3>
+            
+            <div class="question-block">
+                <h4><span class="question-icon">Q</span> TITRE / SUJET DE L'ANALYSE</h4>
+                <input type="text" id="subject" placeholder="Ex: Retards de livraison aux clients">
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">QUI</span> Qui ?</h4>
+                <p class="helper-text">Qui est concerné ? Qui agit ? Qui est responsable ?</p>
+                <textarea id="qui" placeholder="Ex: Les équipes logistiques, le responsable expéditions, les clients B2B..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">Q</span> Quoi ?</h4>
+                <p class="helper-text">De quoi s'agit-il ? Quelle est la nature du problème/projet ?</p>
+                <textarea id="quoi" placeholder="Ex: Retards systématiques de 2-3 jours sur les livraisons promises aux clients..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">O</span> Où ?</h4>
+                <p class="helper-text">Où cela se passe-t-il ? Dans quel lieu, service, zone géographique ?</p>
+                <textarea id="ou" placeholder="Ex: Principalement sur l'entrepôt de Lyon, zone de préparation de commandes..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">Q</span> Quand ?</h4>
+                <p class="helper-text">Quand cela se produit-il ? Quelle fréquence ? Quelle durée ?</p>
+                <textarea id="quand" placeholder="Ex: Depuis 3 mois, surtout en fin de mois lors des pics d'activité..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">C</span> Comment ?</h4>
+                <p class="helper-text">Comment cela se passe-t-il ? De quelle manière ? Par quel processus ?</p>
+                <textarea id="comment" placeholder="Ex: Les commandes s'accumulent dans le système, la préparation prend du retard..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">C</span> Combien ?</h4>
+                <p class="helper-text">Combien ? Quel coût ? Quelle quantité ? Quel volume ?</p>
+                <textarea id="combien" placeholder="Ex: 35% des commandes en retard, coût estimé à 15 000€/mois en pénalités..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <h4><span class="question-icon">P</span> Pourquoi ?</h4>
+                <p class="helper-text">Pourquoi ? Quelles sont les causes ? Quels sont les objectifs ?</p>
+                <textarea id="pourquoi" placeholder="Ex: Manque de personnel, processus de préparation inefficace, mauvaise organisation..."></textarea>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="generateReport()">📄 Générer le rapport d'analyse</button>
+            <button class="btn-clear" onclick="clearForm()">🗑️ Réinitialiser</button>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+            <div class="report-container">
+                <div class="report-header">
+                    <h2 id="reportTitle">Rapport d'analyse QQOQCCP</h2>
+                    <p style="color: #666; margin-top: 10px;" id="reportDate"></p>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">QUI</span> QUI - Acteurs concernés</h3>
+                    <div class="content" id="reportQui"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">Q</span> QUOI - Nature du sujet</h3>
+                    <div class="content" id="reportQuoi"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">O</span> OÙ - Localisation</h3>
+                    <div class="content" id="reportOu"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">Q</span> QUAND - Temporalité</h3>
+                    <div class="content" id="reportQuand"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">C</span> COMMENT - Modalités</h3>
+                    <div class="content" id="reportComment"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">C</span> COMBIEN - Quantification</h3>
+                    <div class="content" id="reportCombien"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3><span class="question-icon">P</span> POURQUOI - Causes et objectifs</h3>
+                    <div class="content" id="reportPourquoi"></div>
+                </div>
+
+                <div class="summary-box">
+                    <h3>💡 Synthèse de l'analyse</h3>
+                    <p>Cette analyse QQOQCCP vous permet maintenant de :</p>
+                    <ul>
+                        <li>Avoir une vision complète et structurée de la situation</li>
+                        <li>Identifier les acteurs clés et les responsabilités</li>
+                        <li>Comprendre les causes et les impacts</li>
+                        <li>Définir un plan d'action ciblé et efficace</li>
+                        <li>Communiquer clairement avec toutes les parties prenantes</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Prochaines étapes recommandées :</strong></p>
+                    <ul>
+                        <li>Partager ce rapport avec les personnes concernées</li>
+                        <li>Organiser une réunion de résolution de problème</li>
+                        <li>Utiliser d'autres outils (5 Pourquoi, Ishikawa, Plan d'action) pour approfondir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateReport() {
+            const subject = document.getElementById('subject').value.trim();
+            const qui = document.getElementById('qui').value.trim();
+            const quoi = document.getElementById('quoi').value.trim();
+            const ou = document.getElementById('ou').value.trim();
+            const quand = document.getElementById('quand').value.trim();
+            const comment = document.getElementById('comment').value.trim();
+            const combien = document.getElementById('combien').value.trim();
+            const pourquoi = document.getElementById('pourquoi').value.trim();
+
+            // Validation
+            if (!subject || !qui || !quoi || !ou || !quand || !comment || !combien || !pourquoi) {
+                alert('Veuillez remplir tous les champs pour générer un rapport complet.');
+                return;
+            }
+
+            // Remplir le rapport
+            document.getElementById('reportTitle').textContent = 'Rapport d\'analyse QQOQCCP : ' + subject;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('reportDate').textContent = 'Généré le ' + dateStr;
+
+            document.getElementById('reportQui').textContent = qui;
+            document.getElementById('reportQuoi').textContent = quoi;
+            document.getElementById('reportOu').textContent = ou;
+            document.getElementById('reportQuand').textContent = quand;
+            document.getElementById('reportComment').textContent = comment;
+            document.getElementById('reportCombien').textContent = combien;
+            document.getElementById('reportPourquoi').textContent = pourquoi;
+
+            // Afficher les résultats
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll vers les résultats
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearForm() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser le formulaire ?')) {
+                document.getElementById('subject').value = '';
+                document.getElementById('qui').value = '';
+                document.getElementById('quoi').value = '';
+                document.getElementById('ou').value = '';
+                document.getElementById('quand').value = '';
+                document.getElementById('comment').value = '';
+                document.getElementById('combien').value = '';
+                document.getElementById('pourquoi').value = '';
+                document.getElementById('results').style.display = 'none';
+            }
+        }
+
+        // Charger un exemple au démarrage
+        window.onload = function() {
+            document.getElementById('subject').value = 'Retards de livraison aux clients';
+            document.getElementById('qui').value = 'Les équipes logistiques (3 préparateurs), le responsable expéditions (Jean Dupont), les transporteurs, et les clients B2B (principalement secteur automobile)';
+            document.getElementById('quoi').value = 'Retards systématiques de 2-3 jours sur les livraisons promises aux clients, avec non-respect des délais annoncés lors de la prise de commande';
+            document.getElementById('ou').value = 'Principalement sur l\'entrepôt de Lyon (zone de préparation de commandes), mais aussi au niveau du quai d\'expédition. Moins de problèmes sur l\'entrepôt de Marseille';
+            document.getElementById('quand').value = 'Depuis 3 mois, surtout en fin de mois lors des pics d\'activité. Les retards surviennent principalement les lundis et vendredis. Durée moyenne du retard : 2,5 jours';
+            document.getElementById('comment').value = 'Les commandes s\'accumulent dans le système WMS, la préparation prend du retard à cause d\'un manque de coordination entre les équipes. Les colis sont ensuite mis en attente sur le quai faute de place dans les camions';
+            document.getElementById('combien').value = '35% des commandes en retard (150 commandes/semaine sur 430), coût estimé à 15 000€/mois en pénalités contractuelles, 8 réclamations clients formelles ce mois-ci';
+            document.getElementById('pourquoi').value = 'Causes identifiées : manque de personnel (-2 personnes depuis 4 mois), processus de préparation inefficace (pas de priorisation), mauvaise communication avec les transporteurs, pics d\'activité non anticipés, système informatique qui plante régulièrement';
+        };
+    </script>
+</body>
+</html>

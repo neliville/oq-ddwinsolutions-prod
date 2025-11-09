@@ -1,0 +1,94 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Nouveau tag | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_tags_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour à la liste
+            </a>
+            <h1 class="h3 fw-bold mb-1">Nouveau tag</h1>
+            <p class="text-muted mb-0">Créer un nouveau tag de blog</p>
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.slug, {'attr': {'class': 'form-control', 'placeholder': 'Laissé vide pour génération automatique'}}) }}
+                        {{ form_help(form.slug) }}
+                        {{ form_errors(form.slug) }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                            Enregistrer
+                        </button>
+                        <a href="{{ path('app_admin_tags_index') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar avec aide -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Aide</h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="small text-muted text-uppercase mb-2">Conseils</h6>
+                    <ul class="small mb-0">
+                        <li>Le slug sera généré automatiquement depuis le nom si laissé vide</li>
+                        <li>Les tags permettent de catégoriser les articles de blog</li>
+                        <li>Un article peut avoir plusieurs tags</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+
+// Génération automatique du slug depuis le nom
+document.getElementById('{{ form.name.vars.id }}')?.addEventListener('input', function(e) {
+    const slugInput = document.getElementById('{{ form.slug.vars.id }}');
+    if (slugInput && !slugInput.value) {
+        const name = e.target.value;
+        const slug = name
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        slugInput.value = slug;
+    }
+});
+</script>
+{% endblock %}
+

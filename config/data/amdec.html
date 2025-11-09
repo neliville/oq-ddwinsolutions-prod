@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse AMDEC - Outils Qualité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .intro {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .intro p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .scale-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .scale-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .scale-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scale-card table {
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .scale-card td {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .scale-card td:first-child {
+            font-weight: bold;
+            color: #667eea;
+            width: 50px;
+        }
+
+        .input-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .input-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .input-section h3::before {
+            content: "⚠️";
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .amdec-entry {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .rating-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .rating-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rating-input input {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .npr-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .npr-display h4 {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .npr-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .criticality-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .criticality-low {
+            background: #27ae60;
+            color: white;
+        }
+
+        .criticality-medium {
+            background: #f39c12;
+            color: white;
+        }
+
+        .criticality-high {
+            background: #e74c3c;
+            color: white;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-generate {
+            background: #667eea;
+            font-size: 1.1em;
+            padding: 15px 40px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9em;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .priority-high {
+            background: #ffe8e8;
+        }
+
+        .priority-medium {
+            background: #fff5e8;
+        }
+
+        .priority-low {
+            background: #e8f8f5;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .insights {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .insights h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .insights ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .form-grid,
+            .rating-group {
+                grid-template-columns: 1fr;
+            }
+
+            .scale-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚠️ Analyse AMDEC</h1>
+            <p class="subtitle">Analysez les modes de défaillance, leurs effets et leur criticité pour prévenir les risques</p>
+        </header>
+
+        <div class="intro">
+            <h2>Qu'est-ce que l'AMDEC ?</h2>
+            <p>L'AMDEC (Analyse des Modes de Défaillance, de leurs Effets et de leur Criticité) est une méthode d'analyse préventive et systématique qui permet d'identifier les défaillances potentielles d'un produit, d'un process ou d'un système.</p>
+            <p><strong>La criticité (NPR)</strong> est calculée par : <strong>NPR = Gravité × Occurrence × Détection</strong></p>
+            <p>Plus le NPR est élevé, plus le risque nécessite une action corrective prioritaire.</p>
+        </div>
+
+        <div class="scale-info">
+            <div class="scale-card">
+                <h3>📊 Gravité (G)</h3>
+                <table>
+                    <tr><td>1</td><td>Mineure - Aucun effet</td></tr>
+                    <tr><td>2-3</td><td>Faible - Gêne mineure</td></tr>
+                    <tr><td>4-6</td><td>Modérée - Insatisfaction client</td></tr>
+                    <tr><td>7-8</td><td>Élevée - Perte de fonction</td></tr>
+                    <tr><td>9-10</td><td>Critique - Danger, non-conformité légale</td></tr>
+                </table>
+            </div>
+
+            <div class="scale-card">
+                <h3>🔄 Occurrence (O)</h3>
+                <table>
+                    <tr><td>1</td><td>Quasi impossible - 1/10000</td></tr>
+                    <tr><td>2-3</td><td>Rare - 1/1000</td></tr>
+                    <tr><td>4-6</td><td>Occasionnelle - 1/100</td></tr>
+                    <tr><td>7-8</td><td>Fréquente - 1/10</td></tr>
+                    <tr><td>9-10</td><td>Très fréquente - >1/10</td></tr>
+                </table>
+            </div>
+
+            <div class="scale-card">
+                <h3>🔍 Détection (D)</h3>
+                <table>
+                    <tr><td>1</td><td>Quasi certaine - Toujours détectée</td></tr>
+                    <tr><td>2-3</td><td>Élevée - Presque toujours détectée</td></tr>
+                    <tr><td>4-6</td><td>Moyenne - Parfois détectée</td></tr>
+                    <tr><td>7-8</td><td>Faible - Rarement détectée</td></tr>
+                    <tr><td>9-10</td><td>Quasi impossible - Jamais détectée</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <h3>Saisie des modes de défaillance</h3>
+            <div id="amdecEntries"></div>
+            <button class="btn-add" onclick="addEntry()">➕ Ajouter un mode de défaillance</button>
+        </div>
+
+        <button class="btn-generate" onclick="generateAnalysis()">📋 Générer l'analyse AMDEC</button>
+
+        <div id="results" class="results" style="display: none;">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h4>Modes de défaillance analysés</h4>
+                    <div class="value" id="totalDefaillances">0</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Risques critiques (NPR > 125)</h4>
+                    <div class="value" id="criticalRisks" style="color: #e74c3c;">0</div>
+                </div>
+                <div class="summary-card">
+                    <h4>NPR moyen</h4>
+                    <div class="value" id="averageNPR">0</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3 style="margin-bottom: 15px; color: #333;">📊 Tableau d'analyse AMDEC</h3>
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Fonction</th>
+                            <th>Mode de défaillance</th>
+                            <th>Effet</th>
+                            <th>Cause</th>
+                            <th>G</th>
+                            <th>O</th>
+                            <th>D</th>
+                            <th>NPR</th>
+                            <th>Priorité</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="insights" class="insights"></div>
+        </div>
+    </div>
+
+    <script>
+        let entryCount = 0;
+
+        function addEntry() {
+            entryCount++;
+            const container = document.getElementById('amdecEntries');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'amdec-entry';
+            newEntry.id = `entry-${entryCount}`;
+            newEntry.innerHTML = `
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Fonction / Processus</label>
+                        <input type="text" class="fonction" placeholder="Ex: Assemblage des pièces">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mode de défaillance</label>
+                        <textarea class="defaillance" placeholder="Ex: Pièce mal positionnée"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Effet de la défaillance</label>
+                        <textarea class="effet" placeholder="Ex: Assemblage défectueux"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cause probable</label>
+                        <textarea class="cause" placeholder="Ex: Manque de formation opérateur"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Actions préventives / correctives</label>
+                        <textarea class="actions" placeholder="Ex: Formation renforcée, contrôle visuel"></textarea>
+                    </div>
+                </div>
+
+                <div class="rating-group">
+                    <div class="rating-input">
+                        <label>Gravité (1-10)</label>
+                        <input type="number" class="gravite" min="1" max="10" value="5" onchange="calculateNPR(${entryCount})">
+                    </div>
+                    
+                    <div class="rating-input">
+                        <label>Occurrence (1-10)</label>
+                        <input type="number" class="occurrence" min="1" max="10" value="5" onchange="calculateNPR(${entryCount})">
+                    </div>
+                    
+                    <div class="rating-input">
+                        <label>Détection (1-10)</label>
+                        <input type="number" class="detection" min="1" max="10" value="5" onchange="calculateNPR(${entryCount})">
+                    </div>
+                </div>
+
+                <div class="npr-display" id="npr-${entryCount}">
+                    <h4>Indice de Criticité (NPR)</h4>
+                    <div class="npr-value">125</div>
+                    <div class="criticality-badge criticality-medium">Priorité Moyenne</div>
+                </div>
+
+                <button class="btn-remove" onclick="removeEntry(${entryCount})">🗑️ Supprimer cette défaillance</button>
+            `;
+            container.appendChild(newEntry);
+            calculateNPR(entryCount);
+        }
+
+        function removeEntry(id) {
+            const entry = document.getElementById(`entry-${id}`);
+            if (entry) {
+                entry.remove();
+            }
+        }
+
+        function calculateNPR(entryId) {
+            const entry = document.getElementById(`entry-${entryId}`);
+            if (!entry) return;
+
+            const g = parseInt(entry.querySelector('.gravite').value) || 1;
+            const o = parseInt(entry.querySelector('.occurrence').value) || 1;
+            const d = parseInt(entry.querySelector('.detection').value) || 1;
+
+            const npr = g * o * d;
+            const nprDisplay = entry.querySelector(`#npr-${entryId}`);
+            const nprValue = nprDisplay.querySelector('.npr-value');
+            const badge = nprDisplay.querySelector('.criticality-badge');
+
+            nprValue.textContent = npr;
+
+            // Déterminer la criticité
+            let criticality, criticalityClass, criticalityText;
+            if (npr <= 50) {
+                criticality = 'low';
+                criticalityClass = 'criticality-low';
+                criticalityText = 'Priorité Faible';
+            } else if (npr <= 125) {
+                criticality = 'medium';
+                criticalityClass = 'criticality-medium';
+                criticalityText = 'Priorité Moyenne';
+            } else {
+                criticality = 'high';
+                criticalityClass = 'criticality-high';
+                criticalityText = 'Priorité Élevée';
+            }
+
+            badge.className = `criticality-badge ${criticalityClass}`;
+            badge.textContent = criticalityText;
+        }
+
+        function generateAnalysis() {
+            const entries = document.querySelectorAll('.amdec-entry');
+            const data = [];
+
+            entries.forEach(entry => {
+                const fonction = entry.querySelector('.fonction').value.trim();
+                const defaillance = entry.querySelector('.defaillance').value.trim();
+                const effet = entry.querySelector('.effet').value.trim();
+                const cause = entry.querySelector('.cause').value.trim();
+                const actions = entry.querySelector('.actions').value.trim();
+                const g = parseInt(entry.querySelector('.gravite').value) || 1;
+                const o = parseInt(entry.querySelector('.occurrence').value) || 1;
+                const d = parseInt(entry.querySelector('.detection').value) || 1;
+
+                if (fonction && defaillance) {
+                    const npr = g * o * d;
+                    let priorite;
+                    if (npr <= 50) priorite = 'Faible';
+                    else if (npr <= 125) priorite = 'Moyenne';
+                    else priorite = 'Élevée';
+
+                    data.push({
+                        fonction,
+                        defaillance,
+                        effet: effet || '-',
+                        cause: cause || '-',
+                        actions: actions || '-',
+                        g, o, d, npr, priorite
+                    });
+                }
+            });
+
+            if (data.length === 0) {
+                alert('Veuillez saisir au moins un mode de défaillance avec une fonction et une description.');
+                return;
+            }
+
+            // Tri par NPR décroissant
+            data.sort((a, b) => b.npr - a.npr);
+
+            displayResults(data);
+            generateInsights(data);
+        }
+
+        function displayResults(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                let rowClass = '';
+                if (item.npr > 125) rowClass = 'priority-high';
+                else if (item.npr > 50) rowClass = 'priority-medium';
+                else rowClass = 'priority-low';
+                
+                row.className = rowClass;
+                row.innerHTML = `
+                    <td>${item.fonction}</td>
+                    <td>${item.defaillance}</td>
+                    <td>${item.effet}</td>
+                    <td>${item.cause}</td>
+                    <td><strong>${item.g}</strong></td>
+                    <td><strong>${item.o}</strong></td>
+                    <td><strong>${item.d}</strong></td>
+                    <td><strong style="font-size: 1.1em; color: ${item.npr > 125 ? '#e74c3c' : '#667eea'};">${item.npr}</strong></td>
+                    <td><span class="criticality-badge criticality-${item.priorite === 'Élevée' ? 'high' : item.priorite === 'Moyenne' ? 'medium' : 'low'}">${item.priorite}</span></td>
+                    <td>${item.actions}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Mise à jour des statistiques
+            document.getElementById('totalDefaillances').textContent = data.length;
+            const criticalCount = data.filter(item => item.npr > 125).length;
+            document.getElementById('criticalRisks').textContent = criticalCount;
+            const averageNPR = Math.round(data.reduce((sum, item) => sum + item.npr, 0) / data.length);
+            document.getElementById('averageNPR').textContent = averageNPR;
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function generateInsights(data) {
+            const insightsDiv = document.getElementById('insights');
+            const criticalRisks = data.filter(item => item.npr > 125);
+            const mediumRisks = data.filter(item => item.npr > 50 && item.npr <= 125);
+            const lowRisks = data.filter(item => item.npr <= 50);
+
+            let recommendations = '<ul>';
+            
+            if (criticalRisks.length > 0) {
+                recommendations += `<li><strong>⚠️ ${criticalRisks.length} risque(s) critique(s) identifié(s)</strong> (NPR > 125) nécessitent une action immédiate :<br>`;
+                criticalRisks.slice(0, 3).forEach(risk => {
+                    recommendations += `<em>- ${risk.fonction}: ${risk.defaillance} (NPR: ${risk.npr})</em><br>`;
+                });
+                recommendations += '</li>';
+            }
+
+            if (mediumRisks.length > 0) {
+                recommendations += `<li><strong>⚡ ${mediumRisks.length} risque(s) de priorité moyenne</strong> (51-125) à traiter dans un second temps.</li>`;
+            }
+
+            if (lowRisks.length > 0) {
+                recommendations += `<li><strong>✅ ${lowRisks.length} risque(s) de priorité faible</strong> (≤50) sous surveillance.</li>`;
+            }
+
+            const highGravity = data.filter(item => item.g >= 8).length;
+            if (highGravity > 0) {
+                recommendations += `<li><strong>🔴 ${highGravity} défaillance(s)</strong> avec gravité élevée (≥8) - concentrez-vous sur la réduction de l'occurrence ou l'amélioration de la détection.</li>`;
+            }
+
+            const poorDetection = data.filter(item => item.d >= 7).length;
+            if (poorDetection > 0) {
+                recommendations += `<li><strong>🔍 ${poorDetection} défaillance(s)</strong> difficiles à détecter (D≥7) - mettez en place des contrôles supplémentaires.</li>`;
+            }
+
+            recommendations += '<li><strong>📝 Plan d\'action :</strong> Traitez d\'abord les NPR les plus élevés en réduisant la gravité (G), l\'occurrence (O) ou en améliorant la détection (D).</li>';
+            recommendations += '</ul>';
+
+            insightsDiv.innerHTML = `
+                <h3>💡 Analyse et recommandations</h3>
+                ${recommendations}
+            `;
+        }
+
+        // Ajouter un exemple au chargement
+        window.onload = function() {
+            const examples = [
+                {
+                    fonction: 'Assemblage moteur',
+                    defaillance: 'Serrage incorrect des boulons',
+                    effet: 'Fuite d\'huile, panne moteur',
+                    cause: 'Clé dynamométrique mal calibrée',
+                    actions: 'Calibration hebdomadaire, procédure de contrôle',
+                    g: 8, o: 4, d: 3
+                },
+                {
+                    fonction: 'Contrôle qualité',
+                    defaillance: 'Pièce défectueuse non détectée',
+                    effet: 'Retour client, réclamation',
+                    cause: 'Manque de formation inspecteur',
+                    actions: 'Formation renforcée, double contrôle',
+                    g: 7, o: 3, d: 6
+                },
+                {
+                    fonction: 'Livraison produit',
+                    defaillance: 'Emballage endommagé',
+                    effet: 'Produit abîmé à réception',
+                    cause: 'Emballage inadapté',
+                    actions: 'Changement d\'emballage, test chute',
+                    g: 5, o: 6, d: 2
+                }
+            ];
+
+            examples.forEach(example => {
+                addEntry();
+                const entry = document.getElementById(`entry-${entryCount}`);
+                entry.querySelector('.fonction').value = example.fonction;
+                entry.querySelector('.defaillance').value = example.defaillance;
+                entry.querySelector('.effet').value = example.effet;
+                entry.querySelector('.cause').value = example.cause;
+                entry.querySelector('.actions').value = example.actions;
+                entry.querySelector('.gravite').value = example.g;
+                entry.querySelector('.occurrence').value = example.o;
+                entry.querySelector('.detection').value = example.d;
+                calculateNPR(entryCount);
+            });
+        };
+    </script>
+</body>
+</html>

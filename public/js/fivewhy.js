@@ -3,24 +3,20 @@ const fiveWhyData = {
   problemStatement: "",
   whySteps: [],
   rootCause: "",
+  rootCauseReady: false,
 }
+
+window.fiveWhyData = fiveWhyData
+
+const MAX_WHY_STEPS = 7
+const MIN_ROOT_CAUSE_STEPS = 4
 
 // Note: L'ajout automatique a été désactivé - l'utilisateur doit cliquer sur le bouton
 
-const LOG_ENDPOINT = "https://prod-14.northeurope.logic.azure.com:443/workflows/e5f6c53b8fee498b910fd8ead7abe254/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=2CfWC8Xg8UCHtKiOt4MyodWfnTSRu2foSzsZxnl9Biw"
-
-function trackExport(tool, format) {
-  fetch(LOG_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Tool:   tool,                // "Ishikawa"
-      Format: format,              // "PDF" | "JPEG" | "JSON"
-      UA:     navigator.userAgent, // Facultatif
-      Page:   location.pathname,   // Facultatif
-      Time:   new Date().toISOString()
-    })
-  }).catch(console.error);
+function trackExport(tool, format, metadata = {}) {
+  if (typeof window.trackExport === "function") {
+    window.trackExport(tool, format, metadata)
+  }
 }
 
 // Initialisation
@@ -95,6 +91,8 @@ function renderWhyChain() {
   const whyChain = document.getElementById("whyChain")
   whyChain.innerHTML = ""
 
+  const limitReached = fiveWhyData.whySteps.length >= MAX_WHY_STEPS
+
   fiveWhyData.whySteps.forEach((step, index) => {
     const stepDiv = document.createElement("div")
     stepDiv.className = "why-step"
@@ -124,37 +122,19 @@ function renderWhyChain() {
                         oninput="updateWhyStep(${index}, 'answer', this.value); checkForNextStep(${index})"
                     >${step.answer.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
                 </div>
+                <div class="why-actions">
+                    <button type="button" class="btn ${limitReached ? 'btn-secondary' : 'btn-primary'} why-add-btn" ${limitReached ? 'disabled' : ''} onclick="addWhyStepFrom(${index})">
+                        <i class="fas fa-plus-circle me-2"></i> Ajouter un "Pourquoi"
+                    </button>
+                </div>
                 ${
                   index > 0
                     ? `
-                    <div data-controller="dialog" id="deleteStepModal-${index}" style="display: inline;">
-                        <button class="remove-step-btn" type="button" data-action="click->dialog#open" aria-label="Supprimer cette étape">
-                            <i class="fas fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <dialog data-dialog-target="dialog" class="delete-confirmation-dialog" data-step-index="${index}">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2"></i>
-                                        Confirmation de suppression
-                                    </h5>
-                                    <button type="button" class="btn-close" data-action="dialog#close" aria-label="Fermer"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Êtes-vous sûr de vouloir supprimer cette étape ? Cette action est irréversible.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-action="dialog#close">Annuler</button>
-                                    <button type="button" class="btn btn-danger" onclick="confirmRemoveWhyStep(${index}); this.closest('dialog').close();">
-                                        <i data-lucide="trash-2" width="18" height="18" class="me-1"></i>
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </div>
-                        </dialog>
-                    </div>
-                `
-                    : ""
+                    <button class="remove-step-btn" type="button" onclick="removeWhyStep(${index})" aria-label="Supprimer cette étape">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </button>
+                  `
+                    : ''
                 }
             </div>
         `
@@ -168,27 +148,9 @@ function renderWhyChain() {
     lucide.createIcons()
   }
   
-  // Forcer Stimulus à détecter les nouveaux contrôleurs Dialog
-  // Stimulus détecte automatiquement, mais on force pour s'assurer que ça fonctionne
-  setTimeout(() => {
-    if (window.Stimulus) {
-      // Sélectionner tous les nouveaux éléments avec data-controller="dialog"
-      const dialogElements = whyChain.querySelectorAll('[data-controller="dialog"]')
-      dialogElements.forEach(element => {
-        // Stimulus devrait détecter automatiquement, mais on force le chargement
-        try {
-          window.Stimulus.load(element)
-        } catch (e) {
-          // Si load() n'existe pas, Stimulus détectera automatiquement
-          console.debug('Stimulus auto-détection activée pour', element)
-        }
-      })
-    }
-  }, 10)
-
-  // Vérifier si on doit afficher la cause racine
-  checkRootCause()
-  
+  renderRootCauseTrigger()
+  updateRootCauseDisplay()
+ 
   // Mettre à jour la visibilité du bouton d'ajout après le rendu
   setTimeout(() => {
     updateAddButtonVisibility()
@@ -198,7 +160,8 @@ function renderWhyChain() {
 function updateWhyStep(index, field, value) {
   if (fiveWhyData.whySteps[index]) {
     fiveWhyData.whySteps[index][field] = value.trim()
-    checkRootCause()
+    renderRootCauseTrigger()
+    updateRootCauseDisplay()
   }
 }
 
@@ -214,43 +177,42 @@ function checkForNextStep(index) {
   
   // Mettre à jour la visibilité du bouton d'ajout pour indiquer qu'une nouvelle étape peut être ajoutée
   updateAddButtonVisibility()
-  
+  renderRootCauseTrigger()
+ 
   // Ne plus ajouter automatiquement - l'utilisateur doit cliquer sur le bouton
 }
 
 // Fonction pour mettre à jour la visibilité et le style du bouton d'ajout
 function updateAddButtonVisibility() {
   const addButton = document.getElementById('addWhyStepButton')
-  if (!addButton) return
-  
-  const lastStep = fiveWhyData.whySteps[fiveWhyData.whySteps.length - 1]
-  const hasLastAnswer = lastStep && lastStep.answer && lastStep.answer.trim().length > 0
-  const canAddMore = fiveWhyData.whySteps.length < 10
-  
-  if (hasLastAnswer && canAddMore) {
-    // Mettre en évidence le bouton si une réponse existe dans la dernière étape
-    addButton.classList.remove('btn-secondary')
-    addButton.classList.add('btn-primary', 'pulse-animation')
-    addButton.innerHTML = '<i class="fas fa-plus-circle me-2"></i> Ajouter un "Pourquoi" <i class="fas fa-arrow-right ms-2"></i>'
-    addButton.disabled = false
-  } else if (!canAddMore) {
-    // Limite atteinte
-    addButton.classList.remove('btn-primary', 'pulse-animation')
-    addButton.classList.add('btn-secondary')
-    addButton.innerHTML = '<i class="fas fa-ban me-2"></i> Limite atteinte (10 étapes max)'
-    addButton.disabled = true
-  } else {
-    // Pas de réponse dans la dernière étape - bouton moins visible mais toujours cliquable
-    addButton.classList.remove('btn-primary', 'pulse-animation')
-    addButton.classList.add('btn-secondary')
-    addButton.innerHTML = '<i class="fas fa-plus me-2"></i> Ajouter un "Pourquoi"'
-    addButton.disabled = false
+  const canAddMore = fiveWhyData.whySteps.length < MAX_WHY_STEPS
+
+  if (addButton) {
+    addButton.disabled = !canAddMore
+    addButton.classList.remove('btn-secondary', 'pulse-animation')
+    addButton.classList.add('btn-primary')
+    addButton.innerHTML = canAddMore
+      ? '<i class="fas fa-plus-circle me-2"></i> Ajouter un "Pourquoi"'
+      : `<i class="fas fa-ban me-2"></i> Limite atteinte (${MAX_WHY_STEPS} étapes max)`
   }
+
+  const stepButtons = document.querySelectorAll('.why-add-btn')
+  stepButtons.forEach(button => {
+    if (canAddMore) {
+      button.disabled = false
+      button.classList.remove('btn-secondary')
+      button.classList.add('btn-primary')
+    } else {
+      button.disabled = true
+      button.classList.remove('btn-primary')
+      button.classList.add('btn-secondary')
+    }
+  })
 }
 
 function addWhyStep() {
-  if (fiveWhyData.whySteps.length >= 10) {
-    showNotification("Limite de 10 étapes atteinte", "error")
+  if (fiveWhyData.whySteps.length >= MAX_WHY_STEPS) {
+    showNotification(`Limite de ${MAX_WHY_STEPS} étapes atteinte`, "error")
     return
   }
 
@@ -282,27 +244,59 @@ function addWhyStep() {
   }, 100)
 }
 
-function removeWhyStep(index) {
+function addWhyStepFrom(index) {
+  if (fiveWhyData.whySteps.length >= MAX_WHY_STEPS) {
+    showNotification(`Limite de ${MAX_WHY_STEPS} étapes atteinte`, "error")
+    return
+  }
+
+  const currentStep = fiveWhyData.whySteps[index]
+  let newQuestion = "Pourquoi ?"
+
+  if (currentStep && currentStep.answer.trim()) {
+    newQuestion = `Pourquoi ${currentStep.answer.trim().toLowerCase()} ?`
+  }
+
+  fiveWhyData.whySteps.splice(index + 1, 0, {
+    question: newQuestion,
+    answer: "",
+  })
+
+  renderWhyChain()
+  showNotification("Nouvelle étape ajoutée")
+
+  setTimeout(() => {
+    const newAnswerField = document.getElementById(`answer-${index + 1}`)
+    if (newAnswerField) {
+      newAnswerField.focus()
+    }
+  }, 100)
+}
+
+async function removeWhyStep(index) {
   if (index === 0) {
     showNotification("Impossible de supprimer la première étape", "error")
     return
   }
 
-  // Le modal sera ouvert automatiquement par Stimulus Dialog via l'attribut data-action
-  // Cette fonction n'est plus utilisée directement, mais conservée pour compatibilité
-  const deleteStepModal = document.getElementById(`deleteStepModal-${index}`)
-  if (deleteStepModal) {
-    const dialog = deleteStepModal.querySelector('[data-dialog-target="dialog"]')
-    if (dialog && !dialog.open) {
-      dialog.showModal()
-    }
+  let confirmed = true
+
+  if (typeof window.showConfirmationModal === 'function') {
+    confirmed = await window.showConfirmationModal({
+      title: 'Supprimer cette étape',
+      message: 'Êtes-vous sûr de vouloir supprimer cette étape ? Cette action est irréversible.',
+      type: 'danger',
+      confirmText: 'Supprimer',
+    })
+  } else {
+    confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cette étape ?')
+  }
+
+  if (!confirmed) {
     return
   }
-  
-  // Fallback sur confirm si le modal n'est pas disponible
-  if (confirm("Êtes-vous sûr de vouloir supprimer cette étape ?")) {
-    confirmRemoveWhyStep(index)
-  }
+
+  confirmRemoveWhyStep(index)
 }
 
 // Fonction pour confirmer la suppression d'une étape (appelée par le modal)
@@ -315,36 +309,120 @@ function confirmRemoveWhyStep(stepIndex) {
   fiveWhyData.whySteps.splice(stepIndex, 1)
   renderWhyChain()
   showNotification("Étape supprimée")
-  
-  // Fermer tous les modals ouverts
-  document.querySelectorAll('[data-dialog-target="dialog"]').forEach(dialog => {
-    if (dialog.open) {
-      dialog.close()
-    }
-  })
 }
 
-function checkRootCause() {
+function renderRootCauseTrigger() {
+  const trigger = document.getElementById("rootCauseTrigger")
+  if (!trigger) return
+
+  trigger.innerHTML = ""
+
+  const stepsCount = fiveWhyData.whySteps.length
+
+  if (stepsCount < MIN_ROOT_CAUSE_STEPS) {
+        trigger.style.display = "none"
+        trigger.setAttribute('data-visible', 'false')
+      trigger.style.display = "none"
+      trigger.setAttribute('data-visible', 'false')
+    if (fiveWhyData.rootCauseReady) {
+      fiveWhyData.rootCauseReady = false
+      fiveWhyData.rootCause = ""
+    }
+    return
+  }
+
+    trigger.style.display = "flex"
+    trigger.setAttribute('data-visible', 'true')
+
+  const answeredCount = fiveWhyData.whySteps.filter((step) => step.answer.trim()).length
+  const canGenerate = answeredCount >= MIN_ROOT_CAUSE_STEPS
+
+  const button = document.createElement("button")
+  button.type = "button"
+  button.className = "btn root-cause-btn"
+  button.disabled = !canGenerate
+  button.innerHTML = `${fiveWhyData.rootCauseReady ? '<i class="fas fa-sync-alt me-2"></i> Mettre à jour la cause racine' : '<i class="fas fa-lightbulb me-2"></i> Générer la cause racine'}`
+  button.addEventListener("click", generateRootCause)
+
+  trigger.appendChild(button)
+
+  const helper = document.createElement("p")
+  helper.className = "root-cause-helper"
+  helper.textContent = canGenerate
+    ? (fiveWhyData.rootCauseReady
+        ? "Mettez à jour vos réponses puis cliquez pour rafraîchir la cause racine."
+        : "Cliquez pour générer la cause racine à partir des réponses saisies.")
+    : `Complétez au moins ${MIN_ROOT_CAUSE_STEPS} réponses pour activer le bouton.`
+
+  trigger.appendChild(helper)
+}
+
+function generateRootCause() {
+  const answeredSteps = fiveWhyData.whySteps.filter((step) => step.answer.trim())
+
+  if (answeredSteps.length < MIN_ROOT_CAUSE_STEPS) {
+    showNotification(`Veuillez renseigner au moins ${MIN_ROOT_CAUSE_STEPS} réponses complètes.`, "error")
+    return
+  }
+
+  const latestAnswer = answeredSteps[answeredSteps.length - 1].answer.trim()
+
+  fiveWhyData.rootCause = latestAnswer
+  fiveWhyData.rootCauseReady = true
+  updateRootCauseDisplay({ force: true, answerOverride: latestAnswer })
+  renderRootCauseTrigger()
+
+  const rootCauseDiv = document.getElementById("rootCause")
+  if (rootCauseDiv) {
+    rootCauseDiv.scrollIntoView({ behavior: "smooth", block: "center" })
+  }
+
+  showNotification("Cause racine générée avec succès !")
+}
+
+function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
   const rootCauseDiv = document.getElementById("rootCause")
   const rootCauseText = document.getElementById("rootCauseText")
 
-  // Considérer qu'on a trouvé la cause racine si :
-  // 1. On a au moins 3 étapes
-  // 2. Les 3 dernières étapes ont des réponses
-  // 3. La dernière réponse semble être une cause fondamentale
+  if (!rootCauseDiv || !rootCauseText) return
 
-  const completedSteps = fiveWhyData.whySteps.filter((step) => step.answer.trim())
+  const answeredSteps = fiveWhyData.whySteps.filter((step) => step.answer.trim())
 
-  if (completedSteps.length >= 3) {
-    const lastAnswer = completedSteps[completedSteps.length - 1].answer.trim()
-    fiveWhyData.rootCause = lastAnswer
+  if (force) {
+    if (answeredSteps.length < MIN_ROOT_CAUSE_STEPS) {
+      fiveWhyData.rootCauseReady = false
+      fiveWhyData.rootCause = ""
+      rootCauseDiv.style.display = "none"
+      rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+      return
+    }
 
-    rootCauseText.textContent = `La cause racine identifiée est : "${lastAnswer}"`
+    const latestAnswer = answerOverride ?? answeredSteps[answeredSteps.length - 1].answer.trim()
+    fiveWhyData.rootCauseReady = true
+    fiveWhyData.rootCause = latestAnswer
+    rootCauseText.textContent = `La cause racine identifiée est : "${latestAnswer}"`
     rootCauseDiv.style.display = "block"
-  } else {
-    rootCauseDiv.style.display = "none"
-    fiveWhyData.rootCause = ""
+    return
   }
+
+  if (!fiveWhyData.rootCauseReady) {
+    rootCauseDiv.style.display = "none"
+    rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+    return
+  }
+
+  if (answeredSteps.length < MIN_ROOT_CAUSE_STEPS) {
+    fiveWhyData.rootCauseReady = false
+    fiveWhyData.rootCause = ""
+    rootCauseDiv.style.display = "none"
+    rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+    return
+  }
+
+  const lastAnswer = answerOverride ?? answeredSteps[answeredSteps.length - 1].answer.trim()
+  fiveWhyData.rootCause = lastAnswer
+  rootCauseText.textContent = `La cause racine identifiée est : "${lastAnswer}"`
+  rootCauseDiv.style.display = "block"
 }
 
 function resetAnalysis() {
@@ -352,211 +430,240 @@ function resetAnalysis() {
     fiveWhyData.problemStatement = ""
     fiveWhyData.whySteps = [{ question: "", answer: "" }]
     fiveWhyData.rootCause = ""
+    fiveWhyData.rootCauseReady = false
 
     document.getElementById("problemStatement").value = ""
     renderWhyChain()
+    updateRootCauseDisplay()
     showNotification("Analyse réinitialisée")
   }
 }
 
 // Fonctions d'export
-function exportPDF() {
+function buildFiveWhyExportData() {
   const container = document.getElementById("fiveWhyContainer")
-  const { jsPDF } = window.jspdf
-
-  if (!jsPDF) {
-    showNotification("Erreur : Bibliothèque PDF non chargée", "error")
-    return
+  if (!container) {
+    throw new Error("Impossible de trouver la zone d’analyse à exporter.")
   }
 
-  if (!fiveWhyData.problemStatement.trim()) {
-    showNotification("Veuillez d'abord définir le problème", "error")
-    return
+  const problem = (fiveWhyData.problemStatement || "").toString().trim()
+  if (!problem) {
+    throw new Error("Veuillez d'abord définir le problème.")
   }
 
-  showNotification("Génération du PDF en cours...", "info")
+  const steps = Array.isArray(fiveWhyData.whySteps) ? fiveWhyData.whySteps : []
+  const sanitizedSteps = steps.map((step, index) => ({
+    stepNumber: index + 1,
+    question: (step?.question || "").toString().trim(),
+    answer: (step?.answer || "").toString().trim(),
+  }))
 
-  // Configuration pour l'export
-  const originalStyle = container.style.cssText
-  container.style.cssText += `
-        background: white !important;
-        padding: 20px !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-    `
+  const completedSteps = sanitizedSteps.filter((step) => step.answer.length).length
+  const rootCause = (fiveWhyData.rootCause || "").toString().trim()
+  const exportDate = new Date()
 
-  window
-    .html2canvas(container, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      width: container.scrollWidth,
-      height: container.scrollHeight,
-    })
-    .then((canvas) => {
-      const imgData = canvas.toDataURL("image/png")
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      })
-
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = pdf.internal.pageSize.getHeight()
-      const imgWidth = canvas.width
-      const imgHeight = canvas.height
-      const ratio = Math.min(pdfWidth / imgWidth, (pdfHeight - 20) / imgHeight)
-      const imgX = (pdfWidth - imgWidth * ratio) / 2
-      const imgY = 10
-
-      pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio)
-
-      // Ajouter un filigrane
-      pdf.setFontSize(8)
-      pdf.setTextColor(150, 150, 150)
-      pdf.text("Généré par OUTILS-QUALITÉ - www.outils-qualite.com", 10, pdfHeight - 5)
-
-      // Ajouter les métadonnées dans le footer
-      const currentDate = new Date().toLocaleDateString("fr-FR")
-      const metadata = `Analyse 5 Pourquoi - ${fiveWhyData.problemStatement.substring(0, 50)}... - ${currentDate}`
-      pdf.setFontSize(6)
-      pdf.text(metadata, 10, pdfHeight - 10)
-
-      const filename = `5pourquoi-${Date.now()}.pdf`
-      pdf.save(filename)
-
-      showNotification("PDF exporté avec succès")
-      trackExport("5pourquoi","PDF");
-
-    })
-    .catch((error) => {
-      console.error("Erreur lors de l'export PDF:", error)
-      showNotification("Erreur lors de l'export PDF", "error")
-    })
-    .finally(() => {
-      container.style.cssText = originalStyle
-    })
+  return {
+    container,
+    problem,
+    sanitizedSteps,
+    completedSteps,
+    totalSteps: sanitizedSteps.length,
+    rootCause,
+    hasRootCause: Boolean(rootCause),
+    exportDate,
+    exportLocale: exportDate.toLocaleString("fr-FR"),
+    titleText: problem.length ? `Analyse 5 Pourquoi – ${problem.slice(0, 60)}` : "Analyse 5 Pourquoi",
+    descriptionText: "Méthode des 5 Pourquoi – identification de la cause racine d’un problème.",
+  }
 }
 
-function exportJPEG() {
-  const container = document.getElementById("fiveWhyContainer")
+function buildFiveWhyCanvas(capturedCanvas, context) {
+  const padding = 56
+  const headerHeight = 108
+  const footerHeight = 88
+  const finalCanvas = document.createElement("canvas")
+  finalCanvas.width = capturedCanvas.width + padding * 2
+  finalCanvas.height = capturedCanvas.height + padding * 2 + headerHeight + footerHeight
+  const ctx = finalCanvas.getContext("2d")
 
-  if (!fiveWhyData.problemStatement.trim()) {
-    showNotification("Veuillez d'abord définir le problème", "error")
+  ctx.fillStyle = "#ffffff"
+  ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height)
+
+  ctx.textAlign = "center"
+  ctx.fillStyle = "#1f2937"
+  ctx.font = "bold 30px Inter, sans-serif"
+  ctx.fillText(context.titleText, finalCanvas.width / 2, headerHeight / 2 + 8)
+
+  ctx.font = "16px Inter, sans-serif"
+  ctx.fillStyle = "#475569"
+  ctx.fillText(`Exporté le ${context.exportLocale}`, finalCanvas.width / 2, headerHeight - 24)
+
+  ctx.font = "14px Inter, sans-serif"
+  ctx.fillStyle = "#334155"
+  ctx.fillText(context.descriptionText.substring(0, 150), finalCanvas.width / 2, headerHeight - 2)
+
+  const contentOffsetY = headerHeight + padding
+  ctx.drawImage(capturedCanvas, padding, contentOffsetY)
+
+  ctx.save()
+  ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2)
+  ctx.rotate(-Math.PI / 6)
+  ctx.font = "26px Inter, sans-serif"
+  ctx.fillStyle = "rgba(148, 163, 184, 0.18)"
+  ctx.fillText("OUTILS-QUALITÉ", 0, 0)
+  ctx.restore()
+
+  const summaryStart = contentOffsetY + capturedCanvas.height + padding
+  ctx.textAlign = "center"
+  ctx.fillStyle = "#1f2937"
+  ctx.font = "15px Inter, sans-serif"
+  ctx.fillText(
+    `Étapes complétées : ${context.completedSteps}/${context.totalSteps} · Longueur du problème : ${context.problem.length} caractères`,
+    finalCanvas.width / 2,
+    summaryStart
+  )
+
+  ctx.fillStyle = "#475569"
+  ctx.font = "14px Inter, sans-serif"
+  const rootCauseLabel = context.hasRootCause
+    ? `Cause racine : ${context.rootCause.slice(0, 80)}${context.rootCause.length > 80 ? "…" : ""}`
+    : "Cause racine non identifiée"
+  ctx.fillText(rootCauseLabel, finalCanvas.width / 2, summaryStart + 24)
+
+  ctx.fillStyle = "#94a3b8"
+  ctx.font = "12px Inter, sans-serif"
+  ctx.fillText("© OUTILS-QUALITÉ - www.outils-qualite.com", finalCanvas.width / 2, finalCanvas.height - footerHeight / 2)
+
+  return finalCanvas
+}
+
+function exportFiveWhy(format) {
+  let context
+  try {
+    context = buildFiveWhyExportData()
+  } catch (error) {
+    showNotification(error.message, "error")
     return
   }
 
-  showNotification("Génération de l’image en cours...", "info")
+  const baseMetadata = {
+    steps: context.totalSteps,
+    completedSteps: context.completedSteps,
+    hasRootCause: context.hasRootCause,
+  }
 
-  // Ajout d’un style temporaire pour un bon rendu
-  const originalStyle = container.style.cssText
-  container.style.cssText += `
+  if (format === "json") {
+    const payload = {
+      metadata: {
+        tool: "Méthode des 5 Pourquoi",
+        version: "1.1",
+        exportDate: context.exportDate.toISOString(),
+        exportLocale: context.exportLocale,
+        source: "OUTILS-QUALITÉ",
+        title: context.problem.slice(0, 120),
+      },
+      analysis: {
+        problem: context.problem,
+        totalSteps: context.totalSteps,
+        completedSteps: context.completedSteps,
+        rootCause: context.hasRootCause ? context.rootCause : null,
+        steps: context.sanitizedSteps,
+      },
+      rawData: {
+        problemStatement: fiveWhyData.problemStatement,
+        whySteps: context.sanitizedSteps,
+        rootCause: context.rootCause,
+        rootCauseReady: fiveWhyData.rootCauseReady || context.hasRootCause,
+      },
+    }
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `5pourquoi-${Date.now()}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+    showNotification("Export JSON généré.", "success")
+    trackExport("5pourquoi", "JSON", baseMetadata)
+    return
+  }
+
+  const { jsPDF } = window.jspdf || {}
+  if (format === "pdf" && !jsPDF) {
+    showNotification("Erreur : bibliothèque PDF non chargée.", "error")
+    return
+  }
+
+  const originalStyle = context.container.style.cssText
+  context.container.style.cssText += `
     background: white !important;
-    padding: 20px !important;
+    padding: 24px !important;
     box-shadow: none !important;
     border-radius: 0 !important;
   `
 
-  window.html2canvas(container, {
-    scale: 3,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: "#ffffff",
-    width: container.scrollWidth,
-    height: container.scrollHeight,
-  })
-  .then((canvas) => {
-    // Nouveau canvas avec padding et watermark
-    const finalCanvas = document.createElement("canvas")
-    const ctx = finalCanvas.getContext("2d")
-    const padding = 40
-    finalCanvas.width = canvas.width + padding * 2
-    finalCanvas.height = canvas.height + padding * 2
+  window
+    .html2canvas(context.container, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      width: context.container.scrollWidth,
+      height: context.container.scrollHeight,
+    })
+    .then((canvas) => {
+      const exportCanvas = buildFiveWhyCanvas(canvas, context)
 
-    ctx.fillStyle = "#ffffff"
-    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height)
-    ctx.drawImage(canvas, padding, padding)
-
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
-    ctx.save()
-    ctx.translate(finalCanvas.width / 2, finalCanvas.height / 2)
-    ctx.rotate(-Math.PI / 6)
-    ctx.textAlign = "center"
-    ctx.fillText("OUTILS-QUALITÉ", 0, 0)
-    ctx.restore()
-
-    ctx.font = "12px Arial"
-    ctx.fillStyle = "#666666"
-    ctx.textAlign = "left"
-    const currentDate = new Date().toLocaleDateString("fr-FR")
-    const metadata = `Analyse 5 Pourquoi – ${fiveWhyData.problemStatement.substring(0, 60)}… – ${currentDate}`
-    ctx.fillText(metadata, padding, finalCanvas.height - 10)
-
-    // Téléchargement
-    const link = document.createElement("a")
-    const filename = `5pourquoi-${Date.now()}.jpg`
-    link.download = filename
-    link.href = finalCanvas.toDataURL("image/jpeg", 0.9)
-    link.click()
-    URL.revokeObjectURL(link.href)
-
-    // Notification succès
-    showNotification(`Le fichier ${filename} a bien été téléchargé`, "success")
-      trackExport("5pourquoi","JPEG");
-
-  })
-  .catch((error) => {
-    console.error("Erreur lors de l'export JPEG :", error)
-    showNotification("Erreur lors de l’export JPEG", "error")
-  })
-  .finally(() => {
-    // Restauration du style
-    container.style.cssText = originalStyle
-  })
+      if (format === "pdf") {
+        const pdf = new jsPDF("portrait")
+        const pageWidth = pdf.internal.pageSize.getWidth()
+        const pageHeight = pdf.internal.pageSize.getHeight()
+        const imgData = exportCanvas.toDataURL("image/png", 0.95)
+        const ratio = Math.min(pageWidth / exportCanvas.width, pageHeight / exportCanvas.height)
+        const imgWidth = exportCanvas.width * ratio
+        const imgHeight = exportCanvas.height * ratio
+        const marginX = (pageWidth - imgWidth) / 2
+        const marginY = (pageHeight - imgHeight) / 2
+        pdf.addImage(imgData, "PNG", marginX, marginY, imgWidth, imgHeight)
+        pdf.save(`5pourquoi-${Date.now()}.pdf`)
+        showNotification("Export PDF généré.", "success")
+        trackExport("5pourquoi", "PDF", baseMetadata)
+      } else {
+        const mime = format === "jpeg" ? "image/jpeg" : "image/png"
+        const dataUrl = exportCanvas.toDataURL(mime, 0.95)
+        const link = document.createElement("a")
+        link.href = dataUrl
+        const extension = format === "jpeg" ? "jpg" : "png"
+        link.download = `5pourquoi-${Date.now()}.${extension}`
+        link.click()
+        showNotification(`Export ${format === "jpeg" ? "JPEG" : "PNG"} généré.`, "success")
+        trackExport("5pourquoi", format.toUpperCase(), baseMetadata)
+      }
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l’export 5 Pourquoi :", error)
+      showNotification("Erreur lors de la génération de l’export.", "error")
+    })
+    .finally(() => {
+      context.container.style.cssText = originalStyle
+    })
 }
 
+function exportPDF() {
+  exportFiveWhy("pdf")
+}
+
+function exportJPEG() {
+  exportFiveWhy("jpeg")
+}
+
+function exportPNG() {
+  exportFiveWhy("png")
+}
 
 function exportJSON() {
-  if (!fiveWhyData.problemStatement.trim()) {
-    showNotification("Veuillez d'abord définir le problème", "error")
-    return
-  }
-
-  const exportData = {
-    metadata: {
-      tool: "Méthode des 5 Pourquoi",
-      version: "1.0",
-      exportDate: new Date().toISOString(),
-      source: "OUTILS-QUALITÉ",
-    },
-    analysis: {
-      problemStatement: fiveWhyData.problemStatement,
-      whySteps: fiveWhyData.whySteps.map((step, index) => ({
-        stepNumber: index + 1,
-        question: step.question,
-        answer: step.answer,
-      })),
-      rootCause: fiveWhyData.rootCause,
-      completedSteps: fiveWhyData.whySteps.filter((step) => step.answer.trim()).length,
-    },
-  }
-
-  const dataStr = JSON.stringify(exportData, null, 2)
-  const dataBlob = new Blob([dataStr], { type: "application/json" })
-  const url = URL.createObjectURL(dataBlob)
-  const link = document.createElement("a")
-  const filename = `5pourquoi-${Date.now()}.json`
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
-
-  showNotification(`Le JSON ${filename} a bien été téléchargé`, "success")
-
-  trackExport("5pourquoi","JSON");
-
+  exportFiveWhy("json")
 }
 
 // Gestion des événements clavier
@@ -582,7 +689,10 @@ window.confirmRemoveWhyStep = confirmRemoveWhyStep
 window.resetAnalysis = resetAnalysis
 window.exportPDF = exportPDF
 window.exportJPEG = exportJPEG
+window.exportPNG = exportPNG
 window.exportJSON = exportJSON
 window.updateWhyStep = updateWhyStep
 window.checkForNextStep = checkForNextStep
 window.updateAddButtonVisibility = updateAddButtonVisibility
+window.addWhyStepFrom = addWhyStepFrom
+window.generateRootCause = generateRootCause

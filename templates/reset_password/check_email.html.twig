@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email de réinitialisation envoyé - OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Consultez votre messagerie pour finaliser la réinitialisation de votre mot de passe OUTILS-QUALITÉ.{% endblock %}
+
+{% block seo_robots %}noindex, follow{% endblock %}
+
+{% block body %}
+<div class="auth-page auth-page--forgot">
+    <div class="auth-page__container container">
+        <div class="auth-card">
+            <section class="auth-card__panel auth-card__panel--form">
+                <div class="auth-status">
+                    <span class="auth-status__icon">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </span>
+                    <h1 class="auth-status__title">Vérifiez votre messagerie</h1>
+                    <p class="auth-status__text">
+                        Si une adresse correspond dans notre base, un email contenant un lien sécurisé vient d’être envoyé. Ce lien expire dans
+                        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                    </p>
+                    <p class="auth-form__hint">
+                        Pensez à vérifier votre dossier indésirables ou promotions. Si vous n’avez rien reçu, vous pouvez demander un nouvel envoi.
+                    </p>
+                    <div class="auth-status__actions">
+                        <a class="auth-status__button" href="{{ path('app_login') }}">
+                            <i class="fas fa-arrow-left"></i>
+                            Retour à la connexion
+                        </a>
+                        <a class="auth-status__button auth-status__button--light" href="{{ path('app_forgot_password_request') }}">
+                            <i class="fas fa-sync"></i>
+                            Renvoyer l’email
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

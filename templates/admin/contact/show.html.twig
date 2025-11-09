@@ -1,0 +1,184 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Message de contact | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_contact_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour à la liste
+            </a>
+            <h1 class="h3 fw-bold mb-1">Message de contact</h1>
+            <p class="text-muted mb-0">Détails du message reçu</p>
+        </div>
+        <div>
+            {% if not message.read %}
+            <span class="badge bg-warning me-2">Non lu</span>
+            {% else %}
+            <span class="badge bg-success me-2">Lu</span>
+            {% endif %}
+            {% if message.replied %}
+            <span class="badge bg-info">Répondu</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Message principal -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i data-lucide="mail" width="20" height="20" class="me-2"></i>
+                            {{ message.subject|default('Sans sujet') }}
+                        </h5>
+                        <small class="text-muted">{{ message.createdAt|date('d/m/Y à H:i') }}</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Informations expéditeur -->
+                    <div class="mb-4 pb-4 border-bottom">
+                        <h6 class="text-muted text-uppercase small mb-3">Expéditeur</h6>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                <i data-lucide="user" width="24" height="24"></i>
+                            </div>
+                            <div>
+                                <strong>{{ message.name }}</strong>
+                                <br>
+                                <a href="mailto:{{ message.email }}" class="text-decoration-none">
+                                    <i data-lucide="mail" width="14" height="14" class="me-1"></i>
+                                    {{ message.email }}
+                                </a>
+                                {% if message.user %}
+                                <br>
+                                <small class="text-muted">
+                                    <i data-lucide="user-check" width="14" height="14" class="me-1"></i>
+                                    Utilisateur enregistré
+                                </small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenu du message -->
+                    <div class="mb-4">
+                        <h6 class="text-muted text-uppercase small mb-3">Message</h6>
+                        <div class="bg-light rounded p-3">
+                            <p class="mb-0">{{ message.message|nl2br }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        {% if not message.read %}
+                        <form method="post" action="{{ path('app_admin_contact_mark_read', {id: message.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('mark_read_' ~ message.id) }}">
+                            <button type="submit" class="btn btn-success">
+                                <i data-lucide="check" width="16" height="16" class="me-1"></i>
+                                Marquer comme lu
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{{ path('app_admin_contact_mark_unread', {id: message.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('mark_unread_' ~ message.id) }}">
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i data-lucide="mail" width="16" height="16" class="me-1"></i>
+                                Marquer comme non lu
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject|default('Votre message') }}" 
+                           class="btn btn-primary">
+                            <i data-lucide="reply" width="16" height="16" class="me-1"></i>
+                            Répondre par email
+                        </a>
+
+                        <form method="post" action="{{ path('app_admin_contact_delete', {id: message.id}) }}" 
+                              class="d-inline ms-auto"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ message.id) }}">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i data-lucide="trash-2" width="16" height="16" class="me-1"></i>
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations et réponse -->
+        <div class="col-lg-4">
+            <!-- Informations -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Informations</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Date de réception</small>
+                        <strong>{{ message.createdAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Statut</small>
+                        <div>
+                            {% if not message.read %}
+                            <span class="badge bg-warning">Non lu</span>
+                            {% else %}
+                            <span class="badge bg-success">Lu</span>
+                            {% endif %}
+                            {% if message.replied %}
+                            <span class="badge bg-info ms-1">Répondu</span>
+                            {% else %}
+                            <span class="badge bg-secondary ms-1">Non répondu</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if message.user %}
+                    <div>
+                        <small class="text-muted d-block">Utilisateur</small>
+                        <strong>{{ message.user.email }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Formulaire de réponse -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Répondre</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_admin_contact_reply', {id: message.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reply_' ~ message.id) }}">
+                        
+                        <div class="mb-3">
+                            <label for="reply_message" class="form-label">Votre réponse</label>
+                            <textarea class="form-control" id="reply_message" name="reply_message" rows="5" required placeholder="Tapez votre réponse ici..."></textarea>
+                            <small class="text-muted">Cette réponse sera envoyée par email à {{ message.email }}</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i data-lucide="send" width="16" height="16" class="me-1"></i>
+                            Envoyer la réponse
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

@@ -1,10 +1,20 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
+        # Use individual connection parameters to avoid URL encoding issues with special characters
+        driver: 'pdo_mysql'
+        server_version: '10.6'
+        host: '%env(DB_HOST)%'
+        port: '%env(int:DB_PORT)%'
+        dbname: '%env(DB_NAME)%'
+        user: '%env(DB_USER)%'
+        password: '%env(DB_PASSWORD)%'
+        charset: 'utf8mb4'
+        
+        # Alternative: Use DATABASE_URL if you prefer (but encoding special chars in password is tricky)
+        # url: '%env(resolve:DATABASE_URL)%'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
@@ -15,7 +25,7 @@ doctrine:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         identity_generation_preferences:
-            Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
+            Doctrine\DBAL\Platforms\MySQLPlatform: identity
         auto_mapping: true
         mappings:
             App:
@@ -30,8 +40,15 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            # En environnement test, utiliser DATABASE_URL directement (SQLite en mémoire)
+            # Ne pas utiliser les variables individuelles en test
+            url: '%env(resolve:DATABASE_URL)%'
+            driver: null
+            host: null
+            port: null
+            dbname: null
+            user: null
+            password: null
 
 when@prod:
     doctrine:

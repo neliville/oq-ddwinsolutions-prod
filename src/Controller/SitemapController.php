@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Controller;
+
+use App\Repository\BlogPostRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+#[Route('/sitemap.xml', name: 'app_sitemap_', methods: ['GET'])]
+final class SitemapController extends AbstractController
+{
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly BlogPostRepository $blogPostRepository,
+    ) {
+    }
+
+    #[Route('', name: 'index')]
+    public function index(): Response
+    {
+        // Routes publiques statiques
+        $staticRoutes = [
+            ['url' => $this->router->generate('app_home_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_ishikawa_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_fivewhy_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_outils_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_blog_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8', 'changefreq' => 'weekly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_contact_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_legal_politique_confidentialite', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.5', 'changefreq' => 'yearly', 'lastmod' => date('Y-m-d')],
+            ['url' => $this->router->generate('app_legal_mentions_legales', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.5', 'changefreq' => 'yearly', 'lastmod' => date('Y-m-d')],
+        ];
+
+        // Articles de blog publiés
+        $blogPosts = $this->blogPostRepository->findPublishedByCategory(null, 1, 1000);
+        $blogRoutes = [];
+        foreach ($blogPosts as $post) {
+            if ($post->getPublishedAt() && $post->getCategory()) {
+                try {
+                    $url = $this->router->generate('app_blog_article', [
+                        'category' => $post->getCategory()->getSlug(),
+                        'slug' => $post->getSlug()
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                    
+                    $blogRoutes[] = [
+                        'url' => $url,
+                        'priority' => '0.7',
+                        'changefreq' => 'monthly',
+                        'lastmod' => $post->getUpdatedAt() ? $post->getUpdatedAt()->format('Y-m-d') : $post->getPublishedAt()->format('Y-m-d'),
+                    ];
+                } catch (\Exception $e) {
+                    // Route non encore créée, on skip
+                    continue;
+                }
+            }
+        }
+
+        // Générer le XML
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+        // Routes statiques
+        foreach ($staticRoutes as $route) {
+            $xml .= $this->generateUrlElement($route['url'], $route['priority'], $route['changefreq'], $route['lastmod']);
+        }
+
+        // Articles de blog
+        foreach ($blogRoutes as $route) {
+            $xml .= $this->generateUrlElement($route['url'], $route['priority'], $route['changefreq'], $route['lastmod']);
+        }
+
+        $xml .= '</urlset>';
+
+        $response = new Response($xml);
+        $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
+
+        return $response;
+    }
+
+    private function generateUrlElement(string $url, string $priority, string $changefreq, string $lastmod): string
+    {
+        return "  <url>\n" .
+               "    <loc>" . htmlspecialchars($url, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</loc>\n" .
+               "    <priority>" . htmlspecialchars($priority, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</priority>\n" .
+               "    <changefreq>" . htmlspecialchars($changefreq, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</changefreq>\n" .
+               "    <lastmod>" . htmlspecialchars($lastmod, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</lastmod>\n" .
+               "  </url>\n";
+    }
+}

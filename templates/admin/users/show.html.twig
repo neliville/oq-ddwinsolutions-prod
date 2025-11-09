@@ -1,0 +1,141 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}{{ user.email }} | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_users_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour à la liste
+            </a>
+            <h1 class="h3 fw-bold mb-1">Utilisateur : {{ user.email }}</h1>
+            <p class="text-muted mb-0">Détails de l'utilisateur</p>
+        </div>
+        <div>
+            <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" class="btn btn-primary">
+                <i data-lucide="edit" width="16" height="16" class="me-1"></i>
+                Modifier
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Informations utilisateur -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Informations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Email</small>
+                        <strong>{{ user.email }}</strong>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Rôles</small>
+                        <div>
+                            {% for role in user.roles %}
+                            {% if role == 'ROLE_ADMIN' %}
+                            <span class="badge bg-danger me-1">
+                                <i data-lucide="shield" width="12" height="12" class="me-1"></i>
+                                Admin
+                            </span>
+                            {% elseif role == 'ROLE_USER' %}
+                            <span class="badge bg-success me-1">User</span>
+                            {% else %}
+                            <span class="badge bg-secondary me-1">{{ role }}</span>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Date de création</small>
+                        <strong>{{ user.createdAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions récentes -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Actions récentes</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if userLogs|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in userLogs %}
+                                <tr>
+                                    <td>
+                                        <small>{{ log.createdAt|date('d/m/Y H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        {% if log.action == 'CREATE' %}
+                                        <span class="badge bg-success">{{ log.action }}</span>
+                                        {% elseif log.action == 'UPDATE' %}
+                                        <span class="badge bg-primary">{{ log.action }}</span>
+                                        {% elseif log.action == 'DELETE' %}
+                                        <span class="badge bg-danger">{{ log.action }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ log.action }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>{{ log.description|default('-')|slice(0, 50) }}{% if log.description|length > 50 %}...{% endif %}</small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i data-lucide="file-text" width="48" height="48" class="text-muted mb-3"></i>
+                        <p class="text-muted mb-0">Aucune action récente</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    {% if user.id != app.user.id %}
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0 text-danger">Zone de danger</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                <button type="submit" class="btn btn-danger">
+                    <i data-lucide="trash-2" width="16" height="16" class="me-1"></i>
+                    Supprimer l'utilisateur
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

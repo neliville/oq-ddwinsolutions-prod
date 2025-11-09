@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% set show_sidebar_toggle = app.user is not null %}
+
 {% block body %}
+{% if app.user %}
+    {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+{% endif %}
 <div class="d-flex">
     <!-- Overlay pour mobile quand sidebar ouverte -->
     {% if app.user %}
@@ -13,7 +18,7 @@
     {% endif %}
 
     <!-- Contenu principal -->
-    <main class="main-content flex-grow-1" {% if app.user %}style="transition: margin-left 0.3s; padding-top: 76px; padding-bottom: 100px;"{% else %}style="padding-top: 76px;"{% endif %}>
+    <main class="main-content flex-grow-1" {% if app.user %}style="transition: margin-left 0.3s; padding-top: 110px; padding-bottom: 64px;"{% else %}style="padding-top: 76px;"{% endif %}>
         {% block content %}{% endblock %}
     </main>
 </div>
@@ -21,7 +26,43 @@
 {% if app.user %}
 <style>
     /* Styles responsive pour la sidebar */
-    @media (min-width: 769px) {
+    .sidebar-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 44px;
+        min-width: 44px;
+        font-weight: 600;
+        border-radius: 999px;
+    }
+
+    .sidebar-toggle-btn:focus-visible {
+        outline: 3px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    .sidebar-toggle-label {
+        color: var(--dark-color);
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 1200px) {
+        .sidebar-toggle-label {
+            display: none;
+        }
+    }
+
+    body.sidebar-collapsed .sidebar-overlay {
+        display: none !important;
+        opacity: 0 !important;
+    }
+
+    body.sidebar-collapsed .admin-sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    @media (min-width: 1201px) {
         .main-content {
             margin-left: 280px !important;
         }
@@ -31,11 +72,19 @@
         .admin-sidebar {
             transform: translateX(0) !important;
         }
+        body.sidebar-collapsed .admin-sidebar {
+            transform: translateX(-100%) !important;
+        }
+        body.sidebar-collapsed .main-content {
+            margin-left: 0 !important;
+        }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
         .main-content {
             margin-left: 0 !important;
+            padding-top: 100px !important;
+            padding-bottom: 56px !important;
         }
         .sidebar-overlay {
             position: fixed;
@@ -56,7 +105,6 @@
             pointer-events: none;
         }
         
-        /* Amélioration de l'accessibilité pour le bouton hamburger */
         #sidebarToggle {
             min-width: 44px;
             min-height: 44px;

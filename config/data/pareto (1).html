@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Pareto - Outils Qualité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .intro {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .input-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .input-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-section h3::before {
+            content: "📊";
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .data-entry {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            padding: 10px 15px;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-calculate {
+            background: #667eea;
+            font-size: 1.1em;
+            padding: 15px 40px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: 400px !important;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            font-weight: bold;
+        }
+
+        .insights {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .insights h3 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .insights ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .data-entry {
+                grid-template-columns: 1fr;
+            }
+
+            canvas {
+                height: 300px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Diagramme de Pareto</h1>
+            <p class="subtitle">Identifiez les 20% de causes qui génèrent 80% des problèmes</p>
+        </header>
+
+        <div class="intro">
+            <h2>Principe du diagramme de Pareto</h2>
+            <p>Le diagramme de Pareto est un outil de gestion de la qualité basé sur la loi des 80/20 : 
+            environ 80% des effets sont produits par 20% des causes. Cet outil vous permet de visualiser 
+            et prioriser les problèmes les plus importants pour concentrer vos efforts d'amélioration.</p>
+        </div>
+
+        <div class="input-section">
+            <h3>Saisie des données</h3>
+            <div id="dataEntries">
+                <div class="data-entry">
+                    <input type="text" placeholder="Nom de la cause (ex: Défaut de production)" class="cause-name">
+                    <input type="number" placeholder="Fréquence" min="0" class="cause-value">
+                    <button class="btn-remove" onclick="removeEntry(this)">✖ Supprimer</button>
+                </div>
+            </div>
+            <button class="btn-add" onclick="addEntry()">➕ Ajouter une cause</button>
+        </div>
+
+        <button class="btn-calculate" onclick="calculatePareto()">🔍 Générer le diagramme de Pareto</button>
+
+        <div id="results" class="results" style="display: none;">
+            <div class="chart-container">
+                <canvas id="paretoChart"></canvas>
+            </div>
+
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Cause</th>
+                            <th>Fréquence</th>
+                            <th>% du total</th>
+                            <th>% cumulé</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="insights" class="insights"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chartInstance = null;
+
+        function addEntry() {
+            const container = document.getElementById('dataEntries');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'data-entry';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Nom de la cause" class="cause-name">
+                <input type="number" placeholder="Fréquence" min="0" class="cause-value">
+                <button class="btn-remove" onclick="removeEntry(this)">✖ Supprimer</button>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        function removeEntry(button) {
+            const entries = document.querySelectorAll('.data-entry');
+            if (entries.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('Vous devez conserver au moins une entrée.');
+            }
+        }
+
+        function calculatePareto() {
+            const entries = document.querySelectorAll('.data-entry');
+            const data = [];
+
+            entries.forEach(entry => {
+                const name = entry.querySelector('.cause-name').value.trim();
+                const value = parseFloat(entry.querySelector('.cause-value').value);
+
+                if (name && !isNaN(value) && value > 0) {
+                    data.push({ name, value });
+                }
+            });
+
+            if (data.length === 0) {
+                alert('Veuillez saisir au moins une cause avec une fréquence valide.');
+                return;
+            }
+
+            // Tri décroissant par valeur
+            data.sort((a, b) => b.value - a.value);
+
+            // Calculs
+            const total = data.reduce((sum, item) => sum + item.value, 0);
+            let cumulative = 0;
+            const processedData = data.map((item, index) => {
+                const percentage = (item.value / total) * 100;
+                cumulative += percentage;
+                return {
+                    rank: index + 1,
+                    name: item.name,
+                    value: item.value,
+                    percentage: percentage,
+                    cumulative: cumulative
+                };
+            });
+
+            displayResults(processedData);
+            createChart(processedData);
+            generateInsights(processedData);
+        }
+
+        function displayResults(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                const isIn80 = item.cumulative <= 80;
+                if (isIn80) {
+                    row.classList.add('highlight');
+                }
+                
+                row.innerHTML = `
+                    <td>${item.rank}</td>
+                    <td>${item.name}</td>
+                    <td>${item.value}</td>
+                    <td>${item.percentage.toFixed(2)}%</td>
+                    <td>${item.cumulative.toFixed(2)}%</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function createChart(data) {
+            const ctx = document.getElementById('paretoChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const labels = data.map(item => item.name);
+            const values = data.map(item => item.value);
+            const cumulative = data.map(item => item.cumulative);
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Fréquence',
+                        data: values,
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        yAxisID: 'y'
+                    }, {
+                        label: '% Cumulé',
+                        data: cumulative,
+                        type: 'line',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                        yAxisID: 'y1',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Diagramme de Pareto',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Fréquence'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '% Cumulé'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Ajouter la ligne des 80%
+            if (chartInstance.options.plugins.annotation) {
+                chartInstance.options.plugins.annotation.annotations = {
+                    line80: {
+                        type: 'line',
+                        yMin: 80,
+                        yMax: 80,
+                        yScaleID: 'y1',
+                        borderColor: 'rgba(39, 174, 96, 0.8)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        label: {
+                            content: '80%',
+                            enabled: true
+                        }
+                    }
+                };
+            }
+        }
+
+        function generateInsights(data) {
+            const insightsDiv = document.getElementById('insights');
+            const causesIn80 = data.filter(item => item.cumulative <= 80);
+            const percentageCausesIn80 = (causesIn80.length / data.length) * 100;
+
+            insightsDiv.innerHTML = `
+                <h3>💡 Analyse et recommandations</h3>
+                <ul>
+                    <li><strong>${causesIn80.length}</strong> cause(s) sur ${data.length} (${percentageCausesIn80.toFixed(1)}%) génèrent 80% des problèmes.</li>
+                    <li>Les causes prioritaires à traiter sont : <strong>${causesIn80.map(c => c.name).join(', ')}</strong></li>
+                    <li>En concentrant vos efforts sur ces ${causesIn80.length} cause(s), vous pouvez résoudre la majorité des problèmes.</li>
+                    <li>Établissez un plan d'action pour traiter ces causes par ordre de priorité.</li>
+                </ul>
+            `;
+        }
+
+        // Ajouter quelques entrées par défaut au chargement
+        window.onload = function() {
+            const examples = [
+                { name: 'Défaut de soudure', value: 45 },
+                { name: 'Retard de livraison', value: 32 },
+                { name: 'Erreur de documentation', value: 18 },
+                { name: 'Panne machine', value: 12 },
+                { name: 'Mauvaise communication', value: 8 }
+            ];
+
+            const container = document.getElementById('dataEntries');
+            container.innerHTML = '';
+
+            examples.forEach(example => {
+                const newEntry = document.createElement('div');
+                newEntry.className = 'data-entry';
+                newEntry.innerHTML = `
+                    <input type="text" placeholder="Nom de la cause" class="cause-name" value="${example.name}">
+                    <input type="number" placeholder="Fréquence" min="0" class="cause-value" value="${example.value}">
+                    <button class="btn-remove" onclick="removeEntry(this)">✖ Supprimer</button>
+                `;
+                container.appendChild(newEntry);
+            });
+        };
+    </script>
+</body>
+</html>

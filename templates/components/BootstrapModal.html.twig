@@ -1,0 +1,46 @@
+{# Composant Bootstrap Modal réutilisable #}
+{# Usage:
+    {% component BootstrapModal with {id: 'my-modal'} %}
+        {% block modal_header %}
+            <h5>Mon titre</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        {% endblock %}
+        {% block modal_body %}
+            Contenu du modal
+        {% endblock %}
+        {% block modal_footer %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        {% endblock %}
+    {% endcomponent %}
+#}
+<div {{ attributes.defaults({
+    class: 'modal fade',
+    tabindex: '-1',
+    'aria-hidden': 'true',
+    id: id ? id : false,
+    style: 'display: none;'
+}) }}
+    {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
+    data-turbo="false"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            {% if block('modal_header') is defined %}
+                <div class="modal-header">
+                    {% block modal_header %}{% endblock %}
+                </div>
+            {% endif %}
+
+            <div class="modal-body">
+                {% block modal_body %}{% endblock %}
+            </div>
+
+            {% if block('modal_footer') is defined %}
+                <div class="modal-footer">
+                    {% block modal_footer %}{% endblock %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

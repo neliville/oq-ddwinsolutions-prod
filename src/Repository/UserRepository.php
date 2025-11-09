@@ -33,28 +33,43 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findByFilter(string $filter = 'all', int $page = 1, int $limit = 20): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->orderBy('u.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        switch ($filter) {
+            case 'admin':
+                $qb->andWhere('u.roles LIKE :adminRole')
+                    ->setParameter('adminRole', '%ROLE_ADMIN%');
+                break;
+            case 'user':
+                $qb->andWhere('u.roles NOT LIKE :adminRole OR u.roles IS NULL')
+                    ->setParameter('adminRole', '%ROLE_ADMIN%');
+                break;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countByFilter(string $filter = 'all'): int
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)');
+
+        switch ($filter) {
+            case 'admin':
+                $qb->andWhere('u.roles LIKE :adminRole')
+                    ->setParameter('adminRole', '%ROLE_ADMIN%');
+                break;
+            case 'user':
+                $qb->andWhere('u.roles NOT LIKE :adminRole OR u.roles IS NULL')
+                    ->setParameter('adminRole', '%ROLE_ADMIN%');
+                break;
+        }
+
+        return $qb->getQuery()->getSingleScalarResult() ?? 0;
+    }
 }

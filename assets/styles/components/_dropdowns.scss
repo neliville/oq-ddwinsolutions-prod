@@ -1,0 +1,33 @@
+.dropdown-menu {
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-md);
+}
+
+.dropdown-item {
+  font-weight: 500;
+  color: var(--dark);
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover,
+  &:focus {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+  }
+}
+
+.export-dropdown {
+  position: relative;
+
+  .dropdown-toggle {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

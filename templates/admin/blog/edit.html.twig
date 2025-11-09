@@ -1,0 +1,289 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Modifier l'article | Administration{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfZ5HKe3Xf1FR8Mq74ZVvYIfR0oMw66N53WhzxSp8UOZbKgjMqvkKcznowBmX5DQ9K1YZm0sl5POn7gZpv+Rw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+function initEasyMDEEditor() {
+    const textarea = document.getElementById('{{ form.content.vars.id }}');
+    if (!textarea || textarea.dataset.easymdeInitialized === 'true') {
+        return;
+    }
+
+    const easyMDE = new EasyMDE({
+        element: textarea,
+        spellChecker: false,
+        forceSync: true,
+        minHeight: '300px',
+        toolbar: [
+            'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list',
+            '|', 'link', 'image', 'table', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'
+        ],
+    });
+
+    textarea.dataset.easymdeInitialized = 'true';
+    textarea.easyMDEInstance = easyMDE;
+}
+
+function initFeaturedImagePreview() {
+    const input = document.getElementById('{{ form.featuredImage.vars.id }}');
+    const wrapper = document.getElementById('blog-image-preview-edit-wrapper');
+    const img = document.getElementById('blog-image-preview-edit');
+
+    if (!input || !wrapper || !img || input.dataset.previewInitialized === 'true') {
+        return;
+    }
+
+    input.dataset.previewInitialized = 'true';
+
+    input.addEventListener('change', (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+            {% if post.image %}
+            wrapper.classList.remove('d-none');
+            img.src = '{{ asset(post.image) }}';
+            {% else %}
+            wrapper.classList.add('d-none');
+            img.src = '#';
+            {% endif %}
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            img.src = e.target?.result ?? '#';
+            wrapper.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function initBlogEditors() {
+    initEasyMDEEditor();
+    initFeaturedImagePreview();
+}
+
+document.addEventListener('DOMContentLoaded', initBlogEditors);
+document.addEventListener('turbo:load', initBlogEditors);
+document.addEventListener('turbo:render', initBlogEditors);
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_admin_blog_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+                Retour à la liste
+            </a>
+            <h1 class="h3 fw-bold mb-1">Modifier l'article</h1>
+            <p class="text-muted mb-0">{{ post.title }}</p>
+        </div>
+        <div>
+            {% if post.publishedAt %}
+            <span class="badge bg-success">Publié</span>
+            {% else %}
+            <span class="badge bg-warning">Brouillon</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_help(form.slug) }}
+                        {{ form_errors(form.slug) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.excerpt, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.excerpt, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                        {{ form_errors(form.excerpt) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.featuredImage, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {% if post.image %}
+                        <div class="mb-2" id="blog-image-preview-edit-wrapper">
+                            <p class="small text-muted mb-2">Image actuelle</p>
+                            <img id="blog-image-preview-edit" src="{{ asset(post.image) }}" alt="Image actuelle de l'article" class="img-fluid rounded shadow-sm">
+                        </div>
+                        {% else %}
+                        <div class="mb-2 d-none" id="blog-image-preview-edit-wrapper">
+                            <p class="small text-muted mb-2">Aperçu de l'image</p>
+                            <img id="blog-image-preview-edit" src="#" alt="Aperçu de l'image" class="img-fluid rounded shadow-sm">
+                        </div>
+                        {% endif %}
+                        {{ form_widget(form.featuredImage, {'attr': {'class': 'form-control'}}) }}
+                        <div class="form-text">Formats acceptés : JPG ou WEBP (4&nbsp;Mo maximum).</div>
+                        {{ form_errors(form.featuredImage) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.content, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 15}}) }}
+                        {{ form_errors(form.content) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.category, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.category) }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.readTime, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.readTime, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.readTime) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.tags, {'attr': {'class': 'form-select'}}) }}
+                        {{ form_help(form.tags) }}
+                        {{ form_errors(form.tags) }}
+                        <small class="form-text text-muted">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs tags</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.publishedAt, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.publishedAt, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.publishedAt) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form_widget(form.featured, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(form.featured, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                        {{ form_errors(form.featured) }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                            Enregistrer les modifications
+                        </button>
+                        {% if not post.publishedAt %}
+                        <button type="submit" name="publish_now" value="1" class="btn btn-success">
+                            <i data-lucide="send" width="16" height="16" class="me-1"></i>
+                            Publier maintenant
+                        </button>
+                        {% endif %}
+                        <a href="{{ path('app_admin_blog_index') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar avec informations -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Informations</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Créé le</small>
+                        <strong>{{ post.createdAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                    {% if post.updatedAt %}
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Modifié le</small>
+                        <strong>{{ post.updatedAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                    {% endif %}
+                    {% if post.publishedAt %}
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Publié le</small>
+                        <strong>{{ post.publishedAt|date('d/m/Y à H:i') }}</strong>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <small class="text-muted d-block">Vues</small>
+                        <strong>{{ post.views }} vues</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h6 class="mb-0">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" class="btn btn-outline-primary btn-sm">
+                            <i data-lucide="eye" width="14" height="14" class="me-1"></i>
+                            Voir l'article
+                        </a>
+                        {% if post.publishedAt %}
+                        <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
+                            <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                                <i data-lucide="eye-off" width="14" height="14" class="me-1"></i>
+                                Dépublier
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
+                            <button type="submit" class="btn btn-outline-success btn-sm w-100">
+                                <i data-lucide="check" width="14" height="14" class="me-1"></i>
+                                Publier
+                            </button>
+                        </form>
+                        {% endif %}
+                        <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" 
+                              class="d-inline"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                <i data-lucide="trash-2" width="14" height="14" class="me-1"></i>
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+

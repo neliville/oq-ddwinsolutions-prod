@@ -1,0 +1,9 @@
+@use '../core/mixins' as *;
+
+.container {
+  @include responsive-container;
+}
+
+section {
+  position: relative;
+}

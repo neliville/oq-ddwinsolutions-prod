@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme Ishikawa - Analyse des Causes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 24px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.938rem;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.938rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 0.813rem;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Categories List */
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .category-card {
+            background: var(--light);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            background: white;
+            transform: translateX(4px);
+        }
+
+        .category-card.active {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .category-color {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .category-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 0.938rem;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .category-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* Main Canvas Area */
+        .canvas-area {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .canvas-header {
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .canvas-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .canvas-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            padding: 24px;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #fafbfc 0%, #f3f4f6 100%);
+        }
+
+        #diagramCanvas {
+            border-radius: 12px;
+            cursor: default;
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        #diagramCanvas.dragging {
+            cursor: move !important;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 24px 28px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .close {
+            color: white;
+            font-size: 32px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+
+        .close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 28px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.938rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.938rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group-inline {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: var(--dark);
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--dark);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        /* Causes List */
+        .causes-list {
+            margin-top: 16px;
+        }
+
+        .cause-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .cause-item:hover {
+            background: #e5e7eb;
+            transform: translateX(4px);
+        }
+
+        .cause-text {
+            flex: 1;
+            font-size: 0.938rem;
+            color: var(--dark);
+        }
+
+        .cause-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            font-size: 0.938rem;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid var(--info);
+            color: #1e40af;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 280px 1fr;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                height: auto;
+                min-height: calc(100vh - 40px);
+            }
+
+            .sidebar {
+                max-height: 400px;
+            }
+
+            .canvas-area {
+                min-height: 600px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .app-container {
+                gap: 10px;
+            }
+
+            .sidebar-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .canvas-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .canvas-actions {
+                flex-wrap: wrap;
+            }
+
+            #diagramCanvas {
+                max-width: 100%;
+            }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 10px;
+            background: var(--dark);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            margin-bottom: 6px;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🐟 Ishikawa</h1>
+                <p>Analyse des causes - Diagramme 5M+</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Problem Input -->
+                <div class="section">
+                    <div class="section-title">Problème à analyser</div>
+                    <div class="input-group">
+                        <input type="text" id="problemInput" placeholder="Ex: Retards de livraison" value="Problème à résoudre">
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="section">
+                    <div class="section-title">Catégories (Arêtes)</div>
+                    <div id="categoriesList" class="categories-list"></div>
+                    <button class="btn btn-success btn-block btn-sm" onclick="openAddCategoryModal()" style="margin-top: 12px;">
+                        ➕ Ajouter une catégorie
+                    </button>
+                </div>
+
+                <!-- Instructions -->
+                <div class="section">
+                    <div class="alert alert-info">
+                        <span class="alert-icon">💡</span>
+                        <div>
+                            <strong>Interactions :</strong><br>
+                            • Double-clic sur une catégorie pour éditer<br>
+                            • Glissez-déposez pour repositionner<br>
+                            • Ajoutez des causes à chaque arête
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-area">
+            <div class="canvas-header">
+                <div class="canvas-title">Diagramme en arêtes de poisson</div>
+                <div class="canvas-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="exportDiagram()">
+                        📥 Exporter PNG
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="resetDiagram()">
+                        🔄 Réinitialiser
+                    </button>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="diagramCanvas" width="1200" height="700"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Category -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="addCategoryModalTitle">➕ Ajouter une catégorie</h2>
+                <span class="close" onclick="closeModal('addCategoryModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nom de la catégorie</label>
+                    <input type="text" id="newCategoryName" placeholder="Ex: Management, Mesures...">
+                </div>
+                <div class="form-group">
+                    <label>Couleur</label>
+                    <div class="color-picker-wrapper" id="colorPicker"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal('addCategoryModal')">Annuler</button>
+                    <button class="btn btn-primary" onclick="saveNewCategory()">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Category -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Éditer la catégorie</h2>
+                <span class="close" onclick="closeModal('categoryModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nom de la catégorie</label>
+                    <input type="text" id="categoryNameInput" placeholder="Ex: Main d'œuvre">
+                </div>
+                <div class="form-group">
+                    <label>Causes associées</label>
+                    <div id="causesList" class="causes-list"></div>
+                    <button class="btn btn-success btn-block btn-sm" onclick="addCause()" style="margin-top: 12px;">
+                        ➕ Ajouter une cause
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal('categoryModal')">Fermer</button>
+                    <button class="btn btn-primary" onclick="saveCategoryChanges()">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Cause -->
+    <div id="causeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="causeModalTitle">➕ Ajouter une cause</h2>
+                <span class="close" onclick="closeModal('causeModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Description de la cause</label>
+                    <textarea id="causeDescriptionInput" placeholder="Décrivez la cause identifiée..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal('causeModal')">Annuler</button>
+                    <button class="btn btn-primary" onclick="saveCause()">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('diagramCanvas');
+        const ctx = canvas.getContext('2d');
+        const problemInput = document.getElementById('problemInput');
+
+        let currentCategory = null;
+        let currentCauseIndex = null;
+        let isDragging = false;
+        let draggedCategory = null;
+        let dragOffset = { x: 0, y: 0 };
+        let selectedColor = '#FF6B6B';
+
+        const predefinedColors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+            '#F06292', '#BA68C8', '#FFD54F', '#81C784', '#64B5F6',
+            '#FF8A65', '#A1887F', '#90A4AE', '#4DB6AC', '#AED581'
+        ];
+
+        // Structure des données
+        const centerY = canvas.height / 2;
+        const startX = 100;
+        const endX = canvas.width - 150;
+
+        let categories = [
+            { 
+                name: "Main d'œuvre", 
+                color: "#FF6B6B", 
+                spineX: 280,
+                angle: 130,
+                branchLength: 200,
+                causes: []
+            },
+            { 
+                name: "Matériel", 
+                color: "#4ECDC4", 
+                spineX: 480, 
+                angle: 145,
+                branchLength: 180,
+                causes: []
+            },
+            { 
+                name: "Méthode", 
+                color: "#45B7D1", 
+                spineX: 680, 
+                angle: 155,
+                branchLength: 160,
+                causes: []
+            },
+            { 
+                name: "Matière", 
+                color: "#FFA07A", 
+                spineX: 520, 
+                angle: -145,
+                branchLength: 180,
+                causes: []
+            },
+            { 
+                name: "Milieu", 
+                color: "#98D8C8", 
+                spineX: 720, 
+                angle: -155,
+                branchLength: 160,
+                causes: []
+            }
+        ];
+
+        function drawDiagram() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerY = canvas.height / 2;
+            const startX = 100;
+            const endX = canvas.width - 150;
+            const problemBoxX = endX + 10;
+
+            // Flèche principale (colonne vertébrale)
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(startX, centerY);
+            ctx.lineTo(endX, centerY);
+            ctx.stroke();
+
+            // Pointe de flèche
+            ctx.beginPath();
+            ctx.moveTo(endX, centerY);
+            ctx.lineTo(endX - 18, centerY - 12);
+            ctx.lineTo(endX - 18, centerY + 12);
+            ctx.closePath();
+            ctx.fillStyle = '#1f2937';
+            ctx.fill();
+
+            // Boîte du problème avec ombre
+            const problemText = problemInput.value || "Problème";
+            ctx.font = 'bold 18px Inter, sans-serif';
+            const textWidth = ctx.measureText(problemText).width;
+            const boxWidth = textWidth + 40;
+            const boxHeight = 60;
+
+            // Ombre
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 5;
+
+            // Gradient pour la boîte
+            const gradient = ctx.createLinearGradient(problemBoxX, centerY - boxHeight/2, problemBoxX, centerY + boxHeight/2);
+            gradient.addColorStop(0, '#ef4444');
+            gradient.addColorStop(1, '#dc2626');
+            
+            ctx.fillStyle = gradient;
+            roundRect(ctx, problemBoxX, centerY - boxHeight/2, boxWidth, boxHeight, 12);
+            ctx.fill();
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Bordure
+            ctx.strokeStyle = '#b91c1c';
+            ctx.lineWidth = 3;
+            roundRect(ctx, problemBoxX, centerY - boxHeight/2, boxWidth, boxHeight, 12);
+            ctx.stroke();
+
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(problemText, problemBoxX + boxWidth/2, centerY);
+
+            // Dessiner chaque catégorie
+            categories.forEach((category, index) => {
+                drawFishboneCategory(category, centerY);
+            });
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function drawFishboneCategory(category, spineY) {
+            const spineX = category.spineX;
+            const angleRad = (category.angle * Math.PI) / 180;
+            const endX = spineX + category.branchLength * Math.cos(angleRad);
+            const endY = spineY + category.branchLength * Math.sin(angleRad);
+
+            // Ombre pour l'arête
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 3;
+
+            // Arête principale avec gradient
+            const gradient = ctx.createLinearGradient(spineX, spineY, endX, endY);
+            gradient.addColorStop(0, category.color);
+            gradient.addColorStop(1, adjustColorBrightness(category.color, -20));
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(spineX, spineY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+
+            // Nom de la catégorie
+            const textOffsetDistance = 30;
+            const textX = endX + textOffsetDistance * Math.cos(angleRad);
+            const textY = endY + textOffsetDistance * Math.sin(angleRad);
+            
+            ctx.font = 'bold 16px Inter, sans-serif';
+            const textMetrics = ctx.measureText(category.name);
+            const textWidth = textMetrics.width;
+            const padding = 12;
+            
+            // Ombre pour le badge
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+
+            // Badge de catégorie
+            ctx.fillStyle = category.color;
+            roundRect(ctx, textX - textWidth/2 - padding, textY - 18, textWidth + padding * 2, 36, 8);
+            ctx.fill();
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            
+            // Texte
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(category.name, textX, textY);
+
+            // Zone de drag
+            category.dragArea = {
+                x: textX - textWidth/2 - padding,
+                y: textY - 18,
+                width: textWidth + padding * 2,
+                height: 36,
+                textX: textX,
+                textY: textY
+            };
+
+            category.clickArea = category.dragArea;
+
+            // Dessiner les causes
+            if (category.causes.length > 0) {
+                category.causes.forEach((cause, causeIndex) => {
+                    const ratio = (causeIndex + 1) / (category.causes.length + 1);
+                    const causeBaseX = spineX + (endX - spineX) * ratio;
+                    const causeBaseY = spineY + (endY - spineY) * ratio;
+
+                    const side = (causeIndex % 2 === 0) ? 1 : -1;
+                    const perpAngle = angleRad + (Math.PI / 2) * side;
+                    
+                    const subBranchLength = 90;
+                    const causeEndX = causeBaseX + subBranchLength * Math.cos(perpAngle);
+                    const causeEndY = causeBaseY + subBranchLength * Math.sin(perpAngle);
+
+                    // Sous-arête
+                    ctx.strokeStyle = adjustColorBrightness(category.color, 20);
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(causeBaseX, causeBaseY);
+                    ctx.lineTo(causeEndX, causeEndY);
+                    ctx.stroke();
+
+                    // Texte de la cause
+                    ctx.font = '14px Inter, sans-serif';
+                    ctx.fillStyle = '#1f2937';
+                    
+                    const textOffset = 18;
+                    const textPosX = causeEndX + textOffset * Math.cos(perpAngle);
+                    const textPosY = causeEndY + textOffset * Math.sin(perpAngle);
+                    
+                    if (Math.abs(perpAngle) < Math.PI/2) {
+                        ctx.textAlign = 'left';
+                    } else {
+                        ctx.textAlign = 'right';
+                    }
+                    ctx.textBaseline = 'middle';
+                    
+                    let displayText = cause;
+                    if (displayText.length > 28) {
+                        displayText = displayText.substring(0, 26) + '...';
+                    }
+                    
+                    // Fond avec ombre
+                    const causeTextWidth = ctx.measureText(displayText).width;
+                    const bgX = ctx.textAlign === 'left' ? textPosX - 4 : textPosX - causeTextWidth - 4;
+                    
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
+                    ctx.shadowBlur = 6;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    roundRect(ctx, bgX, textPosY - 12, causeTextWidth + 8, 24, 6);
+                    ctx.fill();
+
+                    ctx.shadowColor = 'transparent';
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.fillStyle = '#1f2937';
+                    ctx.fillText(displayText, textPosX, textPosY);
+                });
+            }
+        }
+
+        function adjustColorBrightness(color, percent) {
+            const num = parseInt(color.replace("#",""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 +
+                (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255))
+                .toString(16).slice(1);
+        }
+
+        // Drag & Drop
+        canvas.addEventListener('mousedown', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            for (let i = 0; i < categories.length; i++) {
+                const category = categories[i];
+                if (category.dragArea &&
+                    x >= category.dragArea.x &&
+                    x <= category.dragArea.x + category.dragArea.width &&
+                    y >= category.dragArea.y &&
+                    y <= category.dragArea.y + category.dragArea.height) {
+                    
+                    if (event.detail === 2) {
+                        openCategoryModal(i);
+                        return;
+                    }
+                    
+                    isDragging = true;
+                    draggedCategory = i;
+                    dragOffset.x = x - category.dragArea.textX;
+                    dragOffset.y = y - category.dragArea.textY;
+                    canvas.classList.add('dragging');
+                    return;
+                }
+            }
+        });
+
+        canvas.addEventListener('mousemove', (event) => {
+            if (!isDragging || draggedCategory === null) {
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                let overCategory = false;
+                for (let category of categories) {
+                    if (category.dragArea &&
+                        x >= category.dragArea.x &&
+                        x <= category.dragArea.x + category.dragArea.width &&
+                        y >= category.dragArea.y &&
+                        y <= category.dragArea.y + category.dragArea.height) {
+                        overCategory = true;
+                        break;
+                    }
+                }
+                canvas.style.cursor = overCategory ? 'move' : 'default';
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const category = categories[draggedCategory];
+            const spineY = canvas.height / 2;
+            
+            const desiredTextX = x - dragOffset.x;
+            const desiredTextY = y - dragOffset.y;
+            
+            const textOffsetDistance = 30;
+            const angleRad = (category.angle * Math.PI) / 180;
+            const endX = desiredTextX - textOffsetDistance * Math.cos(angleRad);
+            const endY = desiredTextY - textOffsetDistance * Math.sin(angleRad);
+            
+            const newSpineX = endX - category.branchLength * Math.cos(angleRad);
+            
+            category.spineX = newSpineX;
+            
+            const dx = endX - category.spineX;
+            const dy = endY - spineY;
+            category.branchLength = Math.sqrt(dx * dx + dy * dy);
+            
+            category.angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            if (category.spineX < startX) category.spineX = startX;
+            if (category.spineX > endX) category.spineX = endX;
+            if (category.branchLength < 80) category.branchLength = 80;
+            if (category.branchLength > 350) category.branchLength = 350;
+
+            drawDiagram();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                draggedCategory = null;
+                canvas.classList.remove('dragging');
+            }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                draggedCategory = null;
+                canvas.classList.remove('dragging');
+            }
+        });
+
+        // Categories List UI
+        function updateCategoriesList() {
+            const list = document.getElementById('categoriesList');
+            list.innerHTML = '';
+            
+            categories.forEach((category, index) => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <div class="category-color" style="background-color: ${category.color};"></div>
+                    <div class="category-info">
+                        <div class="category-name">${category.name}</div>
+                        <div class="category-count">${category.causes.length} cause(s)</div>
+                    </div>
+                    <div class="category-actions">
+                        <button class="btn btn-primary btn-icon btn-sm tooltip" data-tooltip="Éditer" onclick="openCategoryModal(${index})">
+                            ✏️
+                        </button>
+                        <button class="btn btn-danger btn-icon btn-sm tooltip" data-tooltip="Supprimer" onclick="deleteCategory(${index})">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // Color Picker
+        function initColorPicker() {
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = '';
+            
+            predefinedColors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.backgroundColor = color;
+                if (color === selectedColor) {
+                    option.classList.add('active');
+                }
+                option.onclick = () => {
+                    document.querySelectorAll('.color-option').forEach(el => el.classList.remove('active'));
+                    option.classList.add('active');
+                    selectedColor = color;
+                };
+                picker.appendChild(option);
+            });
+        }
+
+        // Category Management
+        function openAddCategoryModal() {
+            initColorPicker();
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('addCategoryModal').style.display = 'block';
+        }
+
+        function saveNewCategory() {
+            const name = document.getElementById('newCategoryName').value.trim();
+            
+            if (!name) {
+                alert('Veuillez entrer un nom pour la catégorie.');
+                return;
+            }
+
+            // Calculer une position libre
+            const avgSpineX = categories.length > 0 
+                ? categories.reduce((sum, cat) => sum + cat.spineX, 0) / categories.length 
+                : 400;
+            
+            const newCategory = {
+                name: name,
+                color: selectedColor,
+                spineX: avgSpineX + 100,
+                angle: categories.length % 2 === 0 ? 140 : -140,
+                branchLength: 180,
+                causes: []
+            };
+
+            categories.push(newCategory);
+            closeModal('addCategoryModal');
+            updateCategoriesList();
+            drawDiagram();
+        }
+
+        function deleteCategory(index) {
+            if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categories[index].name}" et toutes ses causes ?`)) {
+                categories.splice(index, 1);
+                updateCategoriesList();
+                drawDiagram();
+            }
+        }
+
+        function openCategoryModal(categoryIndex) {
+            currentCategory = categoryIndex;
+            const category = categories[categoryIndex];
+            
+            document.getElementById('categoryNameInput').value = category.name;
+            displayCauses();
+            document.getElementById('categoryModal').style.display = 'block';
+        }
+
+        function displayCauses() {
+            const causesList = document.getElementById('causesList');
+            const category = categories[currentCategory];
+            
+            if (category.causes.length === 0) {
+                causesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Aucune cause identifiée</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            causesList.innerHTML = '';
+            category.causes.forEach((cause, index) => {
+                const causeItem = document.createElement('div');
+                causeItem.className = 'cause-item';
+                causeItem.innerHTML = `
+                    <span class="cause-text">${cause}</span>
+                    <div class="cause-actions">
+                        <button class="btn btn-primary btn-icon btn-sm" onclick="editCause(${index})">✏️</button>
+                        <button class="btn btn-danger btn-icon btn-sm" onclick="deleteCause(${index})">🗑️</button>
+                    </div>
+                `;
+                causesList.appendChild(causeItem);
+            });
+        }
+
+        function addCause() {
+            currentCauseIndex = null;
+            document.getElementById('causeModalTitle').textContent = '➕ Ajouter une cause';
+            document.getElementById('causeDescriptionInput').value = '';
+            document.getElementById('causeModal').style.display = 'block';
+        }
+
+        function editCause(index) {
+            currentCauseIndex = index;
+            const cause = categories[currentCategory].causes[index];
+            document.getElementById('causeModalTitle').textContent = '✏️ Éditer la cause';
+            document.getElementById('causeDescriptionInput').value = cause;
+            document.getElementById('causeModal').style.display = 'block';
+        }
+
+        function deleteCause(index) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette cause ?')) {
+                categories[currentCategory].causes.splice(index, 1);
+                displayCauses();
+                drawDiagram();
+            }
+        }
+
+        function saveCause() {
+            const description = document.getElementById('causeDescriptionInput').value.trim();
+            
+            if (!description) {
+                alert('Veuillez entrer une description pour la cause.');
+                return;
+            }
+
+            if (currentCauseIndex !== null) {
+                categories[currentCategory].causes[currentCauseIndex] = description;
+            } else {
+                categories[currentCategory].causes.push(description);
+            }
+
+            closeModal('causeModal');
+            displayCauses();
+            updateCategoriesList();
+            drawDiagram();
+        }
+
+        function saveCategoryChanges() {
+            const newName = document.getElementById('categoryNameInput').value.trim();
+            
+            if (!newName) {
+                alert('Veuillez entrer un nom pour la catégorie.');
+                return;
+            }
+
+            categories[currentCategory].name = newName;
+            closeModal('categoryModal');
+            updateCategoriesList();
+            drawDiagram();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Export & Reset
+        function exportDiagram() {
+            const link = document.createElement('a');
+            link.download = 'diagramme-ishikawa.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function resetDiagram() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser le diagramme ? Toutes les données seront perdues.')) {
+                location.reload();
+            }
+        }
+
+        // Initialize
+        problemInput.addEventListener('input', drawDiagram);
+        updateCategoriesList();
+        drawDiagram();
+    </script>
+</body>
+</html>

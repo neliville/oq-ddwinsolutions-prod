@@ -1,154 +1,180 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion | OUTILS-QUALITÉ{% endblock %}
+{% block title %}Connexion - OUTILS-QUALITÉ{% endblock %}
 
-{% block meta_description %}
-<meta name="description"
-    content="Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.">
-{% endblock %}
+{% block meta_description %}Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.{% endblock %}
+
+{% block meta_keywords %}connexion, compte utilisateur, outils qualité, sauvegarde analyses{% endblock %}
+
+{% block og_title %}Connexion | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.{% endblock %}
+
+{% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-<!-- Hero Section -->
-<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
-                <h1 class="display-4 fw-bold mb-4">Connexion</h1>
-                <p class="lead mb-4">
-                    Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.
-                </p>
+<div class="auth-page auth-page--login">
+    <div class="auth-page__container container">
+        <div class="auth-page__brand">
+            <div class="auth-brand">
+                <span class="auth-brand__icon">
+                    <i class="fas fa-chart-line"></i>
+                </span>
+                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
             </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <img src="{{ asset('img/markus-winkler-contact-unsplash.webp') }}" alt="Connexion" class="img-fluid rounded-3 shadow-lg">
-            </div>
+            <p class="auth-page__baseline">
+                Votre espace sécurisé pour piloter vos analyses qualité, suivre vos projets et retrouver toutes vos créations.
+            </p>
         </div>
-    </div>
-</section>
 
-<!-- Login Form Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8">
-                <div class="card border-0 shadow-lg" data-aos="fade-up">
-                    <div class="card-body p-5">
-                        {% if app.user %}
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check-circle me-2"></i>
+        <div class="auth-card row g-0">
+            <div class="col-lg-5 order-lg-1">
+                <section class="auth-card__panel auth-card__panel--form">
+                    <header>
+                        <h1 class="auth-card__title">Connexion</h1>
+                        <p class="auth-card__subtitle">
+                            Accédez instantanément à votre tableau de bord, vos historiques et vos exports personnalisés.
+                        </p>
+                    </header>
+
+                    {% if app.user %}
+                        <div class="alert auth-alert alert-success d-flex align-items-start gap-3" role="alert">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <div>
                                 <strong>Vous êtes déjà connecté</strong> en tant que {{ app.user.userIdentifier }}.
-                                <a href="{{ path('app_logout') }}" class="alert-link">Se déconnecter</a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <div class="mt-1">
+                                    <a href="{{ path('app_logout') }}" class="fw-semibold text-success text-decoration-none">Se déconnecter</a>
+                                </div>
                             </div>
-                        {% else %}
-                            <h2 class="text-center mb-4 fw-bold">Connectez-vous</h2>
-                            <p class="text-center text-muted mb-4">Accédez à vos outils et sauvegardez vos analyses</p>
-
-                            {% if error %}
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    <strong>Erreur de connexion :</strong> {{ error.messageKey|trans(error.messageData, 'security') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            {% endif %}
-
-                            <form method="post" data-turbo="false">
-                                <div class="mb-3">
-                                    <label for="username" class="form-label fw-semibold">
-                                        <i class="fas fa-envelope me-2"></i>Email
-                                    </label>
-                                    <input 
-                                        type="email" 
-                                        value="{{ last_username }}" 
-                                        name="_username" 
-                                        id="username" 
-                                        class="form-control form-control-lg" 
-                                        autocomplete="email" 
-                                        required 
-                                        autofocus
-                                        placeholder="votre.email@exemple.com"
-                                    >
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label fw-semibold">
-                                        <i class="fas fa-lock me-2"></i>Mot de passe
-                                    </label>
-                                    <input 
-                                        type="password" 
-                                        name="_password" 
-                                        id="password" 
-                                        class="form-control form-control-lg" 
-                                        autocomplete="current-password" 
-                                        required
-                                        placeholder="Votre mot de passe"
-                                    >
-                                </div>
-
-                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="_remember_me" id="_remember_me">
-                                        <label class="form-check-label" for="_remember_me">
-                                            Se souvenir de moi
-                                        </label>
-                                    </div>
-                                    <a href="#" class="text-decoration-none text-primary">
-                                        Mot de passe oublié ?
-                                    </a>
-                                </div>
-
-                                <div class="d-grid">
-                                    <button class="btn btn-primary btn-lg px-5 py-3 fw-semibold" type="submit">
-                                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="text-center mt-4">
-                                <p class="text-muted mb-0">
-                                    Pas encore de compte ? 
-                                    <a href="#" class="text-decoration-none fw-semibold">Créer un compte</a>
-                                </p>
+                        </div>
+                    {% else %}
+                        {% if error %}
+                            <div class="alert auth-alert alert-danger alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
+                                <i class="fas fa-exclamation-triangle mt-1"></i>
+                                <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         {% endif %}
-                    </div>
-                </div>
 
-                <!-- Info Box -->
-                <div class="card border-0 shadow-sm mt-4 bg-light" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card-body p-4">
-                        <h5 class="fw-semibold mb-3">
-                            <i class="fas fa-info-circle me-2 text-primary"></i>
-                            Pourquoi se connecter ?
-                        </h5>
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                Sauvegarder vos analyses (Ishikawa, 5 Pourquoi)
+                        <form method="post" data-turbo="false" class="auth-form">
+                            <div>
+                                <label for="username" class="form-label">Adresse email</label>
+                                <input
+                                    type="email"
+                                    value="{{ last_username }}"
+                                    name="_username"
+                                    id="username"
+                                    class="form-control"
+                                    autocomplete="email"
+                                    required
+                                    autofocus
+                                    placeholder="votre.email@exemple.com"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input
+                                    type="password"
+                                    name="_password"
+                                    id="password"
+                                    class="form-control"
+                                    autocomplete="current-password"
+                                    required
+                                    placeholder="••••••••"
+                                >
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <div class="auth-form__actions">
+                                <div class="form-check m-0">
+                                    <input class="form-check-input" type="checkbox" name="_remember_me" id="_remember_me">
+                                    <label class="form-check-label" for="_remember_me">
+                                        Se souvenir de moi
+                                    </label>
+                                </div>
+                                <a href="{{ path('app_forgot_password_request') }}" class="auth-form__link">
+                                    <i class="fas fa-key"></i>
+                                    Mot de passe oublié ?
+                                </a>
+                            </div>
+
+                            <button class="auth-form__submit" type="submit">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Se connecter
+                            </button>
+                        </form>
+
+                        <div class="auth-card__footer">
+                            Pas encore de compte ?
+                            <a href="{{ path('app_register') }}">Créer un compte</a>
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+
+            <div class="col-lg-7 order-lg-2">
+                <section class="auth-card__panel auth-card__panel--info">
+                    <div class="position-relative">
+                        <h2 class="auth-info__title">Pourquoi se connecter ?</h2>
+                        <p class="auth-info__subtitle">
+                            Centralisez vos outils qualité, restez synchronisé avec votre équipe et partagez vos analyses en toute sécurité.
+                        </p>
+
+                        <ul class="auth-benefits">
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">💾</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Sauvegarde automatique</h3>
+                                    <p class="auth-benefits__description">Retrouvez vos diagrammes Ishikawa, 5 Pourquoi, Pareto ou 8D à tout moment.</p>
+                                </div>
                             </li>
-                            <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                Accéder à votre espace personnel
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">📊</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Tableau de bord unifié</h3>
+                                    <p class="auth-benefits__description">Un aperçu clair de vos projets en cours, des exports réalisés et des partages actifs.</p>
+                                </div>
                             </li>
-                            <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                Consulter vos créations sauvegardées
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">📤</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Exports professionnels</h3>
+                                    <p class="auth-benefits__description">PDF, PNG ou JSON : distribuez vos analyses avec la charte graphique OUTILS-QUALITÉ.</p>
+                                </div>
                             </li>
-                            <li class="mb-0">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                Exporter et partager vos analyses
+                            <li class="auth-benefits__item">
+                                <span class="auth-benefits__icon">🔒</span>
+                                <div>
+                                    <h3 class="auth-benefits__heading">Sécurité & conformité</h3>
+                                    <p class="auth-benefits__description">Infrastructure conforme RGPD, hébergée en France, données chiffrées et sauvegardées.</p>
+                                </div>
                             </li>
                         </ul>
+
+                        <div class="auth-highlights mt-4">
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">+15&nbsp;000</span>
+                                <span class="auth-highlight__label">analyses générées</span>
+                            </div>
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">98&nbsp;%</span>
+                                <span class="auth-highlight__label">d’utilisateurs satisfaits</span>
+                            </div>
+                            <div class="auth-highlight">
+                                <span class="auth-highlight__value">24h/24</span>
+                                <span class="auth-highlight__label">accès à vos exports</span>
+                            </div>
+                        </div>
+
+                        <p class="auth-meta mt-4">
+                            <i class="fas fa-shield-alt me-2"></i>Conforme RGPD – Vos données restent strictement confidentielles.
+                        </p>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </div>
-</section>
-{% endblock %}
-
-{% block stylesheets %}
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</div>
 {% endblock %}

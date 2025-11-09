@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ meta.title }}{% endblock %}
+
+{% block meta_description %}{{ meta.description }}{% endblock %}
+
+{% block meta_keywords %}{{ meta.keywords|default('legal, conformité, outils qualité') }}{% endblock %}
+
+{% block og_title %}{{ meta.title }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}{{ meta.description }}{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">{{ page.title }}</h1>
+                <p class="lead mb-4">{{ meta.description }}</p>
+            </div>
+            <div class="col-lg-4" data-aos="fade-left">
+                <figure>
+                    <img src="{{ asset(meta.image|default('img/mentions-legales.webp')) }}" alt="{{ page.title }}" class="img-fluid rounded-3 shadow-lg">
+                    <figcaption><small>Source: Unsplash.</small></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <article class="legal-content markdown-body">
+        {{ page.content|markdown_to_html|raw }}
+    </article>
+</main>
+
+<style>
+.legal-content h1,
+.legal-content h2,
+.legal-content h3 {
+    font-weight: 700;
+    margin-top: 2rem;
+}
+
+.legal-content p {
+    margin-bottom: 1rem;
+}
+
+.legal-content ul,
+.legal-content ol {
+    padding-left: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.legal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.legal-content table th,
+.legal-content table td {
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem;
+}
+</style>
+{% endblock %}

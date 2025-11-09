@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ContactMessage;
 use App\Form\ContactFormType;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ContactController extends AbstractController
 {
+    public function __construct(
+        private readonly MailerService $mailerService,
+    ) {
+    }
+
     #[Route('/contact/', name: 'app_contact_index')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -30,6 +36,18 @@ final class ContactController extends AbstractController
             // Sauvegarder le message en base de données
             $entityManager->persist($contactMessage);
             $entityManager->flush();
+
+            try {
+                $this->mailerService->sendContactAcknowledgement($contactMessage);
+            } catch (\Throwable $exception) {
+                if ($_SERVER['APP_ENV'] ?? null) {
+                    if ($_SERVER['APP_ENV'] === 'test') {
+                        throw $exception;
+                    }
+                }
+
+                error_log('Erreur lors de l\'envoi de l\'accusé de réception : ' . $exception->getMessage());
+            }
 
             $this->addFlash('success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
 

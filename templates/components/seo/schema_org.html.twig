@@ -1,0 +1,162 @@
+{# 
+    Composant pour Schema.org JSON-LD
+    
+    Variables disponibles selon le type :
+    - schema_type : Type de schema (Organization, WebSite, Article, SoftwareApplication, BreadcrumbList)
+    - schema_data : Données spécifiques au type de schema
+#}
+
+{# Paramètres par défaut #}
+{% set app_name = 'OUTILS-QUALITÉ' %}
+{% set app_url = app.request.schemeAndHttpHost %}
+{% set app_logo = app_url ~ asset('img/logo.png') %}
+{% set app_email = 'contact@outils-qualite.com' %}
+
+{# Utiliser les variables passées depuis base.html.twig #}
+{# Ces variables contiennent le contenu des blocks SEO capturés depuis les templates enfants #}
+{% set schema_type_raw = schema_type_raw|default('')|trim %}
+{% set schema_data_raw = schema_data_raw|default(null) %}
+{% set schema_social_links_raw = schema_social_links_raw|default([]) %}
+
+{# Utiliser les valeurs capturées ou les valeurs par défaut #}
+{% set schema_type_value = schema_type_raw|default('Organization') %}
+{% set schema_type_array = schema_type_value is iterable ? schema_type_value : [schema_type_value] %}
+
+{# Schema Organization (toutes les pages) #}
+{% if 'Organization' in schema_type_array %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ app_name }}",
+    "url": "{{ app_url }}",
+    "logo": "{{ app_logo }}",
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "{{ app_email }}"
+    },
+    "sameAs": [
+        {% if schema_social_links_raw is defined and schema_social_links_raw is iterable %}
+        {% for link in schema_social_links_raw %}
+        "{{ link }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+        {% endif %}
+    ]
+}
+</script>
+{% endif %}
+
+{# Schema WebSite (page d'accueil) #}
+{% if 'WebSite' in schema_type_array %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ app_name }}",
+    "url": "{{ app_url }}",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "{{ app_url }}/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+{% endif %}
+
+{# Schema Article (articles de blog) #}
+{% if 'Article' in schema_type_array %}
+    {% set schema_data_value = schema_data_raw|default(null) %}
+    {# Note: schema_data_raw est déjà capturé dans base.html.twig depuis le block schema_data #}
+    {% if schema_data_value is not empty %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ (schema_data_value.headline|default(''))|json_encode|raw }},
+    "image": {{ (schema_data_value.image|default(app_logo))|json_encode|raw }},
+    "datePublished": {{ (schema_data_value.datePublished|default(''))|json_encode|raw }},
+    "dateModified": {{ (schema_data_value.dateModified|default(schema_data_value.datePublished|default('')))|json_encode|raw }},
+    "author": {
+        "@type": "Organization",
+        "name": {{ app_name|json_encode|raw }}
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": {{ app_name|json_encode|raw }},
+        "logo": {
+            "@type": "ImageObject",
+            "url": {{ app_logo|json_encode|raw }}
+        }
+    },
+    "description": {{ (schema_data_value.description|default(''))|json_encode|raw }},
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {{ (schema_data_value.url|default(app.request.uri))|json_encode|raw }}
+    }
+    {% if schema_data_value.articleBody is defined %},
+    "articleBody": {{ schema_data_value.articleBody|json_encode|raw }}
+    {% endif %}
+}
+</script>
+    {% endif %}
+{% endif %}
+
+{# Schema SoftwareApplication (outils Ishikawa et 5 Pourquoi) #}
+{% if 'SoftwareApplication' in schema_type_array %}
+    {% set schema_data_value = schema_data_raw|default(null) %}
+    {# Note: schema_data_raw est déjà capturé dans base.html.twig depuis le block schema_data #}
+    {% if schema_data_value is not empty %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": {{ (schema_data_value.name|default('Outil Qualité'))|json_encode|raw }},
+    "applicationCategory": "WebApplication",
+    "operatingSystem": "Web",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+    },
+    "description": {{ (schema_data_value.description|default(''))|json_encode|raw }},
+    "url": {{ (schema_data_value.url|default(app.request.uri))|json_encode|raw }},
+    "screenshot": {{ (schema_data_value.screenshot|default(app_logo))|json_encode|raw }}
+    {% if schema_data_value.aggregateRating is defined %},
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": {{ schema_data_value.aggregateRating.ratingValue|json_encode|raw }},
+        "ratingCount": {{ schema_data_value.aggregateRating.ratingCount|json_encode|raw }}
+    }
+    {% endif %}
+}
+</script>
+    {% endif %}
+{% endif %}
+
+{# Schema BreadcrumbList (pages avec hiérarchie) #}
+{% if 'BreadcrumbList' in schema_type_array %}
+    {% set schema_data_value = schema_data_raw|default(null) %}
+    {% if schema_data_value is not null and schema_data_value.items is defined %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {% for item in schema_data_value.items %}
+        {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "name": "{{ item.name }}",
+            "item": "{{ item.url }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+    {% endif %}
+{% endif %}
+

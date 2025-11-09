@@ -1,0 +1,159 @@
+{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+
+{% block title %}Diagramme de Pareto | Analyse 80/20{% endblock %}
+
+{% block meta_description %}Construisez vos diagrammes de Pareto en quelques clics, identifiez les causes majeures et priorisez vos actions d'amélioration continue.{% endblock %}
+
+{% block meta_keywords %}pareto, diagramme pareto, 80 20, amélioration continue, analyse des causes, outil qualité{% endblock %}
+
+{% block og_title %}Diagramme de Pareto - Outil Gratuit | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Visualisez vos données, calculez le % cumulatif et identifiez les causes prioritaires avec l'outil Pareto en ligne.{% endblock %}
+
+{% block schema_type %}{{ parent() }},SoftwareApplication{% endblock %}
+
+{% block schema_data %}
+{
+    "name": "Outil Diagramme de Pareto",
+    "description": "Analyse 80/20 interactive pour prioriser vos actions qualité.",
+    "url": "{{ absolute_url(path('app_pareto_index')) }}",
+    "screenshot": "{{ app.request.schemeAndHttpHost ~ asset('img/og-default.jpg') }}"
+}
+{% endblock %}
+
+{% block content %}
+<main class="pareto-page{% if not app.user %} pareto-page--guest{% endif %}">
+    <div class="container">
+        <input type="hidden" id="paretoAnalysisId" value="{{ analysisId ?? '' }}">
+
+        <header class="pareto-header" data-aos="fade-up">
+            <h1>Diagramme de Pareto</h1>
+            <p class="lead">Identifiez les causes les plus impactantes (Principe 80/20) et concentrez vos efforts d'amélioration là où ils comptent le plus.</p>
+        </header>
+
+        {% if not app.user %}
+        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
+            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
+            <strong>Vous n'êtes pas connecté.</strong>
+            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos analyses et les réutiliser facilement.
+        </div>
+        {% endif %}
+
+        <section class="pareto-intro" data-aos="fade-up" data-aos-delay="60">
+            <h2>📘 Rappel sur le principe de Pareto</h2>
+            <p>Le diagramme de Pareto illustre que 80% des effets proviennent d'environ 20% des causes. Cet outil vous permet d'identifier les leviers prioritaires pour maximiser l'impact de vos plans d'action.</p>
+        </section>
+
+        <section class="pareto-controls" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
+            <button class="btn btn-primary btn-sm" type="button" onclick="newParetoAnalysis()" aria-label="Initialiser une nouvelle analyse Pareto">
+                <i class="fas fa-sync-alt me-2"></i>Nouvelle analyse
+            </button>
+            <button class="btn btn-info btn-sm" type="button" onclick="generateParetoChart()" aria-label="Générer le diagramme de Pareto">
+                <i class="fas fa-chart-line me-2"></i>Générer le diagramme
+            </button>
+            <button class="btn btn-outline-danger btn-sm" type="button" onclick="resetParetoForm()" aria-label="Réinitialiser le formulaire Pareto">
+                <i class="fas fa-eraser me-2"></i>Réinitialiser
+            </button>
+            {% if app.user %}
+            <button class="btn btn-success btn-sm" type="button" onclick="savePareto()" aria-label="Sauvegarder l'analyse Pareto">
+                <i class="fas fa-save me-2"></i>Sauvegarder
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openParetoSaved()" aria-label="Charger une analyse Pareto">
+                <i class="fas fa-folder-open me-2"></i>Mes analyses
+            </button>
+            {% endif %}
+            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
+                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="paretoExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                    <i class="fas fa-download me-2"></i>Exporter
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="paretoExportDropdown" data-dropdown-basic-target="menu" hidden>
+                    <li><button class="dropdown-item" type="button" onclick="exportPareto('png')">Exporter en PNG</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportPareto('pdf')">Exporter en PDF</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportPareto('json')">Exporter en JSON</button></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="pareto-form" data-aos="fade-up" data-aos-delay="120">
+            <h2>Saisissez vos causes et occurrences</h2>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="paretoTitle">Titre de l'analyse</label>
+                    <input type="text"
+                           id="paretoTitle"
+                           class="form-control"
+                           placeholder="Ex : Pannes production Semaine 38"
+                           oninput="updateParetoTitle(this.value)">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="paretoDescription">Description courte</label>
+                    <input type="text"
+                           id="paretoDescription"
+                           class="form-control"
+                           placeholder="Contexte, périmètre..."
+                           oninput="updateParetoDescription(this.value)">
+                </div>
+            </div>
+            <div class="pareto-data-list" id="paretoEntries" aria-live="polite"></div>
+            <button class="btn btn-outline-success btn-sm mt-3" type="button" onclick="addParetoEntry()" aria-label="Ajouter une cause">
+                <i class="fas fa-plus me-2"></i>Ajouter une cause
+            </button>
+        </section>
+
+        <section id="paretoResults" class="pareto-results" style="display:none;" data-aos="fade-up" data-aos-delay="180">
+            <div class="pareto-chart-container">
+                <canvas id="paretoChart" role="img" aria-label="Diagramme de Pareto"></canvas>
+            </div>
+
+            <div class="pareto-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Cause</th>
+                            <th>Fréquence</th>
+                            <th>% du total</th>
+                            <th>% cumulé</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paretoTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="pareto-insights" id="paretoInsights"></div>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<link rel="stylesheet" href="{{ asset('styles/pages/pareto.scss') }}" data-turbo-track="reload">
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/pareto.js') }}"></script>
+<script>
+    window.paretoAppConfig = {
+        isAuthenticated: {{ app.user ? 'true' : 'false' }},
+        analysisId: {{ analysisId is defined and analysisId ? analysisId : 'null' }},
+        currentAnalysisId: null,
+    };
+
+    window.paretoRoutes = {
+        save: '{{ path('app_api_pareto_save') }}',
+        list: '{{ path('app_api_pareto_list') }}',
+        get: '{{ path('app_api_pareto_get', {id: 0}) }}',
+        delete: '{{ path('app_api_pareto_delete', {id: 0}) }}',
+        login: '{{ path('app_login') }}'
+    };
+</script>
+{% endblock %}
+
+

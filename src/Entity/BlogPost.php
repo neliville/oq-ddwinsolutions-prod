@@ -9,6 +9,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlogPostRepository::class)]
+#[ORM\Index(columns: ['published_at'], name: 'idx_blogpost_published_at')]
+#[ORM\Index(columns: ['featured'], name: 'idx_blogpost_featured')]
+#[ORM\Index(columns: ['views'], name: 'idx_blogpost_views')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_blogpost_created_at')]
 class BlogPost
 {
     #[ORM\Id]
@@ -27,6 +31,9 @@ class BlogPost
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $publishedAt = null;
@@ -108,6 +115,18 @@ class BlogPost
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

@@ -1,0 +1,117 @@
+# Guide de déploiement - Symfony sur o2switch
+
+Ce document décrit la stratégie de déploiement actuelle : le code est hébergé sur GitHub et déployé automatiquement vers o2switch via SSH/rsync grâce au workflow `Deploy Symfony to o2switch`.
+
+## 📋 Vue d’ensemble
+
+```
+feature/*  ──▶  Pull Request ──▶  merge main
+                         │
+                         ▼
+                 CI tests (ci-tests.yml)
+                         │
+                         ▼
+             Deploy Symfony to o2switch (auto)
+```
+
+- **Branche `feature/*`** : développement local + push → exécution des tests CI.
+- **Pull Request vers `main`** : revue + tests obligatoires.
+- **Merge sur `main`** : déclenche automatiquement le workflow de déploiement o2switch (tests + build + SCP/rsync).
+- **Workflow manuel** : possible via l’onglet GitHub Actions (`workflow_dispatch`) pour relancer un déploiement sur `main`.
+
+## 🔐 Pré-requis côté o2switch
+
+1. **Accès SSH**
+   - Activer dans le cPanel et tester : `ssh -p 2222 moncompte@ssh.[domaine].o2switch.net`.
+   - Générer une clé dédiée pour GitHub Actions (`ssh-keygen -t ed25519 -f gh_o2switch`).
+   - Ajouter la clé publique (`gh_o2switch.pub`) dans `~/.ssh/authorized_keys` sur le serveur.
+
+2. **Structure du projet**
+   - Dossier cible : `/home/moncompte/www/oq-symfony` (ou chemin équivalent).
+   - Le document root du domaine doit pointer vers `…/oq-symfony/public`.
+
+3. **Variables d’environnement**
+   - Créer un fichier `.env.prod.local` côté serveur (non versionné) :
+     ```dotenv
+     APP_ENV=prod
+     APP_SECRET=…
+     DATABASE_URL=mysql://user:pass@localhost:3306/db?charset=utf8mb4
+     MAILER_DSN=…
+     ```
+
+4. **Base de données**
+   - Créer la base MySQL via cPanel.
+   - Lors du premier déploiement, exécuter manuellement :
+     ```bash
+     php bin/console doctrine:migrations:migrate --env=prod --no-interaction
+     ```
+   - Prévoir un script de sauvegarde régulier (mysqldump ou snapshot cPanel).
+
+## 🔑 Secrets GitHub Actions
+
+À définir dans `Settings > Secrets and variables > Actions` :
+
+| Secret | Description |
+| --- | --- |
+| `O2SWITCH_HOST` | Hôte SSH (ex. `sshXXX.o2switch.net`) |
+| `O2SWITCH_PORT` | Port SSH (souvent `2222`) |
+| `O2SWITCH_USER` | Identifiant o2switch |
+| `O2SWITCH_SSH_KEY` | Clé privée générée (`gh_o2switch`) |
+| `O2SWITCH_DEPLOY_PATH` | Dossier tampon pour les releases (ex. `/home/moncompte/deploy`) |
+| `O2SWITCH_WEBROOT` | Dossier final du site (ex. `/home/moncompte/www/oq-symfony`) |
+
+Optionnel : ajouter un secret `O2SWITCH_KNOWN_HOSTS` contenant la sortie de `ssh-keyscan -p 2222 sshXXX.o2switch.net` si on souhaite forcer la vérification d’hôte.
+
+## ⚙️ Workflow `deploy-o2switch.yml`
+
+Principales étapes :
+
+1. **Composer install** (prod, sans dev) + `asset-map:compile` + `cache:clear`.
+2. **PHPUnit** (`php bin/phpunit --testdox`).
+3. **Compression** (`release.zip`).
+4. **SCP** de l’archive vers le dossier tampon (`O2SWITCH_DEPLOY_PATH`).
+5. **Déploiement serveur** : unzip dans un dossier temporaire, `rsync --delete` vers `O2SWITCH_WEBROOT`, purge du cache prod.
+
+> Migrations Doctrine sont commentées dans le script : les lancer manuellement ou décommenter une fois validé.
+
+## 🔄 Règles de branche & CI
+
+- `ci-tests.yml` reste la référence pour les tests automatiques (unitaires, fonctionnels, intégration). Il doit passer avant tout merge.
+- Protéger la branche `main` (GitHub Settings > Branches) :
+  - Require PR reviews.
+  - Require status checks (`ci-tests`).
+  - Interdire le push direct sans tests.
+
+## ✅ Checklist avant déploiement
+
+1. PR approuvée, tests locaux + CI verts.
+2. Secrets GitHub + accès SSH validés.
+3. `.env.prod.local` présent côté serveur.
+4. Résultat du premier déploiement : exécuter `doctrine:migrations:migrate` et vérifier `var/log/prod.log`.
+5. Tester manuellement les parcours critiques :
+   - Accueil, Ishikawa, 5 Pourquoi, Outils, Blog, Contact, Pages légales.
+   - Authentification + “mot de passe oublié”.
+   - Sauvegarde/chargement d’analyses (Ishikawa, 5 Pourquoi).
+   - Formulaires contact/newsletter, exports PDF/JSON.
+   - Responsive (navbar, sidebar, hero).
+
+## 🔁 Rollback
+
+1. Conserver la release précédente sur le serveur (copie `release.zip` ou dossier backup `oq-symfony-YYYYMMDD`).
+2. En cas de bug critique :
+   ```bash
+   rsync -a --delete /home/moncompte/backups/oq-symfony-YYYYMMDD/ $O2SWITCH_WEBROOT/
+   php bin/console cache:clear --env=prod
+   ```
+3. Rétablir l’ancienne base de données si nécessaire (restauration cPanel ou dump SQL).
+
+## 🧹 Workflows Azure (legacy)
+
+Les workflows GitHub historiques (`deploy-symfony-staging.yml`, `deploy-symfony-production.yml`, `main_outils-qualite-gratuit.yml`) sont conservés pour archive mais désactivés (`if: ${{ false }}`). Ils peuvent être supprimés ultérieurement.
+
+## 📚 Références
+
+- [o2switch – Documentation SSH](https://faq.o2switch.fr/category/ssh/)  
+- [appleboy/scp-action](https://github.com/appleboy/scp-action) / [appleboy/ssh-action](https://github.com/appleboy/ssh-action)  
+- [Symfony 7.3 – Déploiement](https://symfony.com/doc/current/deployment.html)
+

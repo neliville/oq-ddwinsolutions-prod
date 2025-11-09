@@ -1,227 +1,314 @@
-{% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Outils Qualité Gratuits : Analyse & Rapports Express | OUTILS-QUALITÉ{% endblock %}
+{% block title %}Tous nos outils qualité{% endblock %}
 
-{% block meta_description %}
-<meta name="description"
-    content="Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, analyse des causes. Générez vos rapports PDF instantanément.">
-{% endblock %}
+{% block meta_description %}Une collection complète d'outils professionnels pour l'amélioration continue : diagramme Ishikawa, méthode 5 Pourquoi et bien plus. Tous les outils sont 100% gratuits.{% endblock %}
+
+{% block meta_keywords %}outils qualité, suite d'outils qualité, amélioration continue, diagramme Ishikawa, 5 pourquoi, outils gratuits, méthodes qualité{% endblock %}
+
+{% block og_title %}Tous nos outils qualité | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Une collection complète d'outils professionnels pour l'amélioration continue : diagramme Ishikawa, méthode 5 Pourquoi et bien plus. Tous les outils sont 100% gratuits.{% endblock %}
 
 {% block content %}
-<!-- Main Content -->
-<main class="pt-5 mt-4">
-    <div class="container">
-        <!-- Header --> 
-        <div class="header text-center bg-gradient-light rounded-3 py-5 mb-5" data-aos="fade-up">
-            <h1 class="display-4 fw-bold mb-3">Tous nos outils qualité</h1>
-            <p class="lead text-muted">Une collection complète d'outils professionnels pour l'amélioration continue</p>
-            <p class="mb-0">
-                Choisissez l'outil qui correspond à votre besoin pour démarrer votre analyse.
-                D'autres outils passionnants arrivent bientôt 👀
+<div class="tools-page">
+    <section class="tools-hero" id="outils-hero">
+        <div class="container">
+            <span class="tools-hero__badge">Suite QSE complète</span>
+            <h1 class="tools-hero__title">Tous nos outils qualité</h1>
+            <p class="tools-hero__subtitle">
+                Choisissez l'outil qui correspond à votre besoin pour lancer votre analyse. Chaque module est gratuit,
+                prêt à l'audit et conçu pour l'amélioration continue.
             </p>
-        </div>
-
-        <!-- Tools Grid -->
-        <div class="row py-3 g-4">
-            <!-- Ishikawa -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="card tool-card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
-                                <i data-lucide="git-branch" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Diagramme d'Ishikawa</h4>
-                                <p class="text-muted mb-3">Analysez les causes racines avec le diagramme en arête de
-                                    poisson. Parfait pour identifier tous les facteurs contribuant à un problème.
-                                </p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-primary bg-opacity-10 text-primary">Analyse des
-                                        causes</span>
-                                    <span class="badge bg-success bg-opacity-10 text-success">Export PDF</span>
-                                    <span class="badge bg-info bg-opacity-10 text-info">Drag & Drop</span>
-                                </div>
-                                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
-                                    <i data-lucide="arrow-right" width="16" height="16" class="me-2"></i>
-                                    Utiliser l'outil
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tools-hero__stats">
+                <div>
+                    <span class="value">6&nbsp;500+</span>
+                    <span class="label">Analyses générées</span>
                 </div>
-            </div>
-
-            <!-- 5 Pourquoi -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="card tool-card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-success bg-opacity-10 text-success rounded-3 p-3 me-3">
-                                <i data-lucide="help-circle" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Méthode des 5 Pourquoi</h4>
-                                <p class="text-muted mb-3">Identifiez la cause racine en posant successivement "Pourquoi ?" jusqu'à trouver l'origine du problème.</p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-success bg-opacity-10 text-success">Cause racine</span>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary">Export PDF</span>
-                                    <span class="badge bg-warning bg-opacity-10 text-warning">Guide intégré</span>
-                                </div>
-                                <a href="{{ path('app_fivewhy_index') }}" class="btn btn-success">
-                                    <i data-lucide="arrow-right" width="16" height="16" class="me-2"></i>
-                                    Utiliser l'outil
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <span class="value">100%</span>
+                    <span class="label">Exports prêts pour vos audits</span>
                 </div>
-            </div>
-
-            <!-- Pareto (Bientôt) -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
-                                <i data-lucide="bar-chart-3" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Diagramme de Pareto</h4>
-                                <p class="text-muted mb-3">Identifiez les 20% de causes qui génèrent 80% des problèmes. Analysez vos données et visualisez les priorités.</p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
-                                </div>
-                                <button class="btn btn-secondary" disabled>
-                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
-                                    À venir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Cartes de contrôle (Bientôt) -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
-                                <i data-lucide="trending-up" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Cartes de contrôle</h4>
-                                <p class="text-muted mb-3">Surveillez la stabilité de vos processus avec les cartes de contrôle statistiques. Détectez les variations anormales.</p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
-                                </div>
-                                <button class="btn btn-secondary" disabled>
-                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
-                                    À venir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AMDEC (Bientôt) -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
-                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
-                                <i data-lucide="target" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Matrice AMDEC</h4>
-                                <p class="text-muted mb-3">Analysez les modes de défaillance et leurs effets critiques. Évaluez les risques et priorisez les actions correctives.</p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
-                                </div>
-                                <button class="btn btn-secondary" disabled>
-                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
-                                    À venir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5W2H (Bientôt) -->
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="600">
-                <div class="card tool-card h-100 border-0 shadow-sm opacity-75">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="tool-icon bg-secondary bg-opacity-10 text-secondary rounded-3 p-3 me-3">
-                                <i data-lucide="layers" width="24" height="24"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h4 class="fw-semibold mb-2">Plan d'action 5W2H</h4>
-                                <p class="text-muted mb-3">Structurez vos plans d'action avec la méthode 5W2H (Who, What, When, Where, Why, How, How much).</p>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-warning text-dark">Bientôt disponible</span>
-                                </div>
-                                <button class="btn btn-secondary" disabled>
-                                    <i data-lucide="lock" width="16" height="16" class="me-2"></i>
-                                    À venir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Features Section -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm bg-light">
-                        <div class="card-body p-5">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold mb-3">Fonctionnalités communes</h3>
-                                <p class="text-muted">Tous nos outils partagent ces caractéristiques professionnelles</p>
-                            </div>
-
-                            <div class="row g-4">
-                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="100">
-                                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3 d-inline-flex mb-3">
-                                        <i data-lucide="download" width="24" height="24"></i>
-                                    </div>
-                                    <h5 class="fw-semibold mb-2">Export multiple</h5>
-                                    <p class="text-muted small">PDF, JPEG, JSON</p>
-                                </div>
-
-                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="200">
-                                    <div class="feature-icon bg-success bg-opacity-10 text-success rounded-3 p-3 d-inline-flex mb-3">
-                                        <i data-lucide="smartphone" width="24" height="24"></i>
-                                    </div>
-                                    <h5 class="fw-semibold mb-2">Responsive</h5>
-                                    <p class="text-muted small">Mobile, tablette, desktop</p>
-                                </div>
-
-                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="300">
-                                    <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3 d-inline-flex mb-3">
-                                        <i data-lucide="zap" width="24" height="24"></i>
-                                    </div>
-                                    <h5 class="fw-semibold mb-2">Temps réel</h5>
-                                    <p class="text-muted small">Modifications instantanées</p>
-                                </div>
-
-                                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="400">
-                                    <div class="feature-icon bg-info bg-opacity-10 text-info rounded-3 p-3 d-inline-flex mb-3">
-                                        <i data-lucide="shield-check" width="24" height="24"></i>
-                                    </div>
-                                    <h5 class="fw-semibold mb-2">Sécurisé</h5>
-                                    <p class="text-muted small">Données locales uniquement</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <span class="value">RGPD</span>
+                    <span class="label">Données sécurisées, sans installation</span>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section class="tools-section" id="catalogue">
+        <div class="container">
+            <div class="tools-showcase">
+                <div class="tool-feature featured">
+                    <div class="tool-feature-content">
+                        <div class="tool-badge best">Le plus utilisé</div>
+                        <h3>Diagramme d'Ishikawa</h3>
+                        <p>
+                            Identifiez et analysez les causes racines de vos problèmes avec le diagramme en arête de poisson.
+                            Structurez votre analyse selon la méthode des 5M ou 6M et exportez des rapports présentables en un clic.
+                        </p>
+                        <ul class="feature-list">
+                            <li>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                    <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <span>Création visuelle interactive avec catégories personnalisables.</span>
+                            </li>
+                            <li>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                    <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <span>Exports PDF haute qualité adaptés aux audits et présentations.</span>
+                            </li>
+                            <li>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                    <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <span>Sauvegarde automatique et historique complet de vos analyses.</span>
+                            </li>
+                        </ul>
+                        <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                            Créer un diagramme
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="tool-mockup">
+                        <div class="mockup-window">
+                            <div class="window-header">
+                                <div class="window-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="ishikawa-canvas">
+                                <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration d'un diagramme d'Ishikawa">
+                                    <line x1="50" y1="250" x2="750" y2="250" stroke="#1f2937" stroke-width="3" />
+                                    <polygon points="753,250 740,242 740,258" fill="#ef4444" />
+                                    <line x1="200" y1="250" x2="150" y2="150" stroke="#ef4444" stroke-width="2.5" />
+                                    <line x1="400" y1="250" x2="350" y2="150" stroke="#06b6d4" stroke-width="2.5" />
+                                    <line x1="600" y1="250" x2="550" y2="150" stroke="#3b82f6" stroke-width="2.5" />
+                                    <line x1="200" y1="250" x2="150" y2="350" stroke="#f97316" stroke-width="2.5" />
+                                    <line x1="400" y1="250" x2="350" y2="350" stroke="#06b6d4" stroke-width="2.5" />
+                                    <line x1="600" y1="250" x2="550" y2="350" stroke="#a855f7" stroke-width="2.5" />
+                                    <rect x="110" y="130" width="90" height="35" rx="8" fill="#ef4444" />
+                                    <text x="155" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Méthodes</text>
+                                    <rect x="310" y="130" width="90" height="35" rx="8" fill="#06b6d4" />
+                                    <text x="355" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Mesure</text>
+                                    <rect x="510" y="130" width="90" height="35" rx="8" fill="#3b82f6" />
+                                    <text x="555" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Machines</text>
+                                    <rect x="110" y="335" width="90" height="35" rx="8" fill="#f97316" />
+                                    <text x="155" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Matériels</text>
+                                    <rect x="310" y="335" width="90" height="35" rx="8" fill="#06b6d4" />
+                                    <text x="355" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Milieu</text>
+                                    <rect x="510" y="335" width="100" height="35" rx="8" fill="#a855f7" />
+                                    <text x="560" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Management</text>
+                                    <rect x="620" y="218" width="150" height="64" rx="12" fill="#ef4444" />
+                                    <text x="695" y="244" text-anchor="middle" fill="white" font-size="12" font-weight="600">Problème :</text>
+                                    <text x="695" y="264" text-anchor="middle" fill="white" font-size="11">Non-conformité</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-card-icon cyan">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <text x="20" y="28" text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">5?</text>
+                            </svg>
+                        </div>
+                        <h4>Méthode 5 Pourquoi</h4>
+                        <p>Identifiez la cause racine en posant successivement « Pourquoi ? » jusqu'à trouver l'origine du problème.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Analyse des causes</span>
+                            <span class="badge">Export PDF</span>
+                            <span class="badge">Guide intégré</span>
+                        </div>
+                        <a href="{{ path('app_fivewhy_index') }}" class="btn btn-primary">
+                            Utiliser l'outil
+                        </a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-card-icon neutral">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <rect x="10" y="10" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2"></rect>
+                                <path d="M12 16H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                                <path d="M12 20H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                                <circle cx="16" cy="26" r="2" fill="currentColor"></circle>
+                            </svg>
+                        </div>
+                        <h4>Analyse QQOQCCP</h4>
+                        <p>Structurez votre diagnostic avec les 7 questions fondamentales (Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi).</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Questionnement 5W2H</span>
+                            <span class="badge">Rapport généré</span>
+                            <span class="badge">Sauvegarde sécurisée</span>
+                        </div>
+                        <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-secondary">
+                            Utiliser l'outil
+                        </a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-card-icon danger">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <path d="M20 6L4 34H36L20 6Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                                <circle cx="20" cy="27" r="2" fill="currentColor"/>
+                                <path d="M20 15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h4>Analyse AMDEC</h4>
+                        <p>Identifiez vos modes de défaillance, calculez l'indice NPR et obtenez des recommandations de priorisation.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Risque & NPR</span>
+                            <span class="badge">Rapport intelligent</span>
+                            <span class="badge">Sauvegarde sécurisée</span>
+                        </div>
+                        <a href="{{ path('app_amdec_index') }}" class="btn btn-danger">
+                            Utiliser l'outil
+                        </a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-card-icon purple">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <rect x="6" y="6" width="28" height="28" rx="8" stroke="currentColor" stroke-width="2"></rect>
+                                <path d="M14 14H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                                <path d="M12 20H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                                <path d="M14 26H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                        <h4>Méthode 8D</h4>
+                        <p>Pilotez vos résolutions de problèmes en 8 disciplines : containment, analyse des causes, plan d’actions et capitalisation.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Structure 8 disciplines</span>
+                            <span class="badge">Suivi progression</span>
+                            <span class="badge">Exports PDF & JSON</span>
+                        </div>
+                        <a href="{{ path('app_eightd_index') }}" class="btn btn-warning">
+                            Utiliser l'outil
+                        </a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-card-icon cyan">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <rect x="6" y="24" width="6" height="10" fill="currentColor" />
+                                <rect x="16" y="18" width="6" height="16" fill="currentColor" />
+                                <rect x="26" y="12" width="6" height="22" fill="currentColor" />
+                                <path d="M6 10C14 4 26 4 34 10" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </div>
+                        <h4>Diagramme de Pareto</h4>
+                        <p>Comprenez en un clin d'œil quelles causes concentrent 80% de vos problèmes et priorisez vos actions.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Analyse 80/20</span>
+                            <span class="badge">Graphique interactif</span>
+                            <span class="badge">Export PDF & JSON</span>
+                        </div>
+                        <a href="{{ path('app_pareto_index') }}" class="btn btn-info">
+                            Utiliser l'outil
+                        </a>
+                    </div>
+
+                    <div class="tool-card coming-soon">
+                        <div class="tool-card-icon gray">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <line x1="5" y1="20" x2="35" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" />
+                                <line x1="5" y1="12" x2="35" y2="12" stroke="#ef4444" stroke-width="1.5" />
+                                <line x1="5" y1="28" x2="35" y2="28" stroke="#ef4444" stroke-width="1.5" />
+                                <polyline points="8,18 12,22 16,16 20,20 24,19 28,21 32,18" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </div>
+                        <h4>Cartes de contrôle</h4>
+                        <p>Surveillez la stabilité de vos processus avec les cartes de contrôle statistiques et détectez les dérives.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Bientôt disponible</span>
+                        </div>
+                        <button class="btn btn-secondary" disabled>À venir</button>
+                    </div>
+
+                    <div class="tool-card coming-soon">
+                        <div class="tool-card-icon gray">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <line x1="8" y1="32" x2="32" y2="32" stroke="currentColor" stroke-width="2" />
+                                <line x1="8" y1="8" x2="8" y2="32" stroke="currentColor" stroke-width="2" />
+                                <path d="M12 24L20 16L26 20L32 14" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </div>
+                        <h4>Analyse FTA</h4>
+                        <p>Représentez graphiquement vos arbres de défaillance pour comprendre les causes combinées.</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Bientôt disponible</span>
+                        </div>
+                        <button class="btn btn-secondary" disabled>À venir</button>
+                    </div>
+
+                    <div class="tool-card coming-soon">
+                        <div class="tool-card-icon gray">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                                <rect x="8" y="10" width="24" height="20" stroke="currentColor" stroke-width="2" fill="none" />
+                                <line x1="12" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="1.5" />
+                                <line x1="12" y1="20" x2="28" y2="20" stroke="currentColor" stroke-width="1.5" />
+                                <line x1="12" y1="24" x2="24" y2="24" stroke="currentColor" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        <h4>Plan d'action 5W2H</h4>
+                        <p>Structurez vos plans d'action avec la méthode 5W2H (Who, What, When, Where, Why, How, How much).</p>
+                        <div class="tool-card__tags">
+                            <span class="badge">Bientôt disponible</span>
+                        </div>
+                        <button class="btn btn-secondary" disabled>À venir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tools-features">
+        <div class="container">
+            <div class="tools-features__header">
+                <span class="section-badge">Fonctionnalités communes</span>
+                <h3>Conçus pour les professionnels QSE</h3>
+                <p>Tous nos outils partagent les mêmes garanties de performance et de sécurité.</p>
+            </div>
+            <div class="tools-features__grid">
+                <div class="feature-card">
+                    <div class="feature-icon primary">
+                        <i data-lucide="download"></i>
+                    </div>
+                    <h4>Exports multiples</h4>
+                    <p>PDF, JPEG et JSON en un clic pour intégrer vos rapports dans vos revues de processus.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon success">
+                        <i data-lucide="smartphone"></i>
+                    </div>
+                    <h4>Responsive</h4>
+                    <p>Une expérience fluide sur ordinateur, tablette ou mobile sans installation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon warning">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <h4>Modifications instantanées</h4>
+                    <p>Vos analyses se mettent à jour en temps réel, prêtes à être partagées ou exportées.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon info">
+                        <i data-lucide="shield-check"></i>
+                    </div>
+                    <h4>Sécurisé</h4>
+                    <p>Données locales uniquement, conformité RGPD et hébergement français.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-</main>
 {% endblock %}

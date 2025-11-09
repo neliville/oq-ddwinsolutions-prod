@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\NewsletterSubscriber;
 use App\Form\NewsletterFormType;
 use App\Repository\NewsletterSubscriberRepository;
+use App\Service\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class NewsletterController extends AbstractController
 {
+    public function __construct(
+        private readonly NewsletterService $newsletterService,
+    ) {
+    }
+
     #[Route('/api/newsletter/subscribe', name: 'app_newsletter_subscribe', methods: ['POST'])]
     public function subscribe(
         Request $request,
@@ -21,7 +27,10 @@ final class NewsletterController extends AbstractController
         NewsletterSubscriberRepository $newsletterSubscriberRepository
     ): JsonResponse {
         $subscriber = new NewsletterSubscriber();
-        $form = $this->createForm(NewsletterFormType::class, $subscriber);
+        // Désactiver CSRF pour l'API (plus pratique pour les tests et appels AJAX)
+        $form = $this->createForm(NewsletterFormType::class, $subscriber, [
+            'csrf_protection' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -35,6 +44,13 @@ final class NewsletterController extends AbstractController
                     $existingSubscriber->setSubscribedAt(new \DateTimeImmutable());
                     $existingSubscriber->setUnsubscribedAt(null);
                     $entityManager->flush();
+
+                    // Envoyer l'email de bienvenue pour réactivation
+                    try {
+                        $this->newsletterService->sendWelcomeEmail($existingSubscriber);
+                    } catch (\Exception $e) {
+                        error_log('Erreur lors de l\'envoi de l\'email de réactivation : ' . $e->getMessage());
+                    }
 
                     return new JsonResponse([
                         'success' => true,
@@ -54,6 +70,15 @@ final class NewsletterController extends AbstractController
             // Sauvegarder en base de données
             $entityManager->persist($subscriber);
             $entityManager->flush();
+
+            // Envoyer l'email de bienvenue
+            try {
+                $this->newsletterService->sendWelcomeEmail($subscriber);
+            } catch (\Exception $e) {
+                // Log l'erreur mais ne bloque pas l'inscription
+                // TODO: Logger l'erreur dans un fichier log ou service de logging
+                error_log('Erreur lors de l\'envoi de l\'email de bienvenue : ' . $e->getMessage());
+            }
 
             return new JsonResponse([
                 'success' => true,

@@ -1,6 +1,6 @@
-# TODO - Migration vers Symfony + PostgreSQL
+# TODO - Migration vers Symfony + MySQL
 
-> **Objectif** : Transformer le site statique en application Symfony + PostgreSQL tout en conservant l'hébergement Azure App Service (PHP 8.2) et le CI/CD GitHub.
+> **Objectif** : Transformer le site statique en application Symfony + MySQL tout en conservant l'hébergement Azure App Service (PHP 8.2) et le CI/CD GitHub.
 
 ---
 
@@ -19,25 +19,33 @@
   - `/mentions-legales/` - Pages légales
 
 ### Ressources statiques
-- **CSS** : `/css/custom.css` (styles personnalisés)
+- **CSS** : 
+  - `/css/custom.css` - Variables CSS globales et styles communs
+  - `/css/ishikawa.css` - Styles spécifiques à la page Ishikawa (sans doublons)
 - **JavaScript** :
   - `/js/main.js` - Script principal (initialisation, navbar, AOS)
-  - `/js/ishikawa.js` - Logique de l'outil Ishikawa
+  - `/js/ishikawa.js` - Logique de l'outil Ishikawa (vanilla JS avec IIFE, compatible Turbo)
   - `/js/fivewhy.js` - Logique de l'outil 5 Pourquoi
   - `/js/blog-markdown.js` - Affichage des articles blog
 - **Images** : `/img/` - Logo, favicons, images
 - **Librairies externes** : Bootstrap 5.3.2, Lucide Icons, AOS, Font Awesome
 
 ### Fonctionnalités actuelles
-1. **Outils interactifs** (client-side uniquement)
+1. **Outils interactifs** :
    - Diagramme Ishikawa avec export PDF/JPEG/JSON
+     - ✅ Canvas responsive avec redimensionnement automatique
+     - ✅ Drag & drop pour catégories et causes
+     - ✅ Boutons toujours visibles avec bon contraste
+     - ✅ Masquage automatique des boutons quand modal ouvert
+     - ✅ Grille horizontale responsive pour les catégories
+     - ✅ Accessibilité complète (WCAG)
    - Méthode 5 Pourquoi avec export PDF
-   - Stockage local (localStorage) uniquement
+   - Stockage : localStorage pour utilisateurs non connectés, API REST pour utilisateurs connectés
    
-2. **Blog** : Articles en markdown statiques
-3. **Newsletter** : Formulaire (probablement non fonctionnel ou externe)
-4. **Tracking** : Google Tag Manager, Application Insights
-5. **Logging** : Azure Logic App endpoint pour les exports
+2. **Blog** : Articles dynamiques en base de données avec support Markdown
+3. **Newsletter** : Formulaire fonctionnel avec API REST et emails automatiques
+4. **Tracking** : Google Tag Manager, Application Insights, PageView en base de données
+5. **Logging** : Azure Logic App endpoint pour les exports (optionnel)
 
 ### Dépendances externes identifiées
 - Azure Logic App pour logging des exports (`LOG_ENDPOINT` dans `ishikawa.js`)
@@ -54,8 +62,8 @@
 #### ✅ Étape 0.1 : Vérifier les prérequis
 - [ ] PHP 8.2+ installé localement
 - [ ] Composer installé
-- [ ] PostgreSQL local (ou Docker) pour développement
-- [ ] Accès au portail Azure (App Service + Postgres)
+- [ ] MySQL local (ou Docker) pour développement
+- [ ] Accès au portail Azure (App Service + MySQL)
 - [ ] Secrets GitHub configurés (publish profile `AZURE_WEBAPP_PUBLISH_PROFILE`)
 
 #### ✅ Étape 0.2 : Créer la branche de travail
@@ -139,7 +147,7 @@ git mv sitemap.xml public/sitemap.xml 2>/dev/null || mv sitemap.xml public/sitem
 ```dotenv
 APP_ENV=dev
 APP_SECRET=dev-secret-change-me
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/oq?serverVersion=16&charset=utf8"
+DATABASE_URL="mysql://root:root@127.0.0.1:3306/oq?serverVersion=8.0&charset=utf8mb4"
 ```
 
 #### ✅ Étape 3.2 : Configurer `config/packages/framework.yaml`
@@ -246,6 +254,15 @@ php bin/console make:security:form-login
 - [ ] Vérifier la redirection après connexion
 - [ ] Vérifier la protection des routes admin
 
+#### ✅ Étape 5.5 : Réinitialisation de mot de passe
+- [x] Installer SymfonyCasts ResetPasswordBundle (`composer require symfonycasts/reset-password-bundle`)
+- [x] Générer l'infrastructure via `make:reset-password` (entité, contrôleur, formulaires, templates)
+- [x] Personnaliser les pages Twig (demande, confirmation, saisie du nouveau mot de passe) selon la charte UI/UX
+- [x] Configurer l'envoi d'email avec Symfony Mailer (expéditeur `support@outils-qualite.com`)
+- [x] Mettre à jour la page de connexion avec le lien « Mot de passe oublié ? »
+- [x] Créer les tests fonctionnels (`tests/ResetPasswordControllerTest.php`) pour couvrir le scénario complet
+- [x] Compiler les assets après ajout des styles propres aux pages d'authentification
+
 ---
 
 ### Phase 5.5 : Configuration de KnpMenuBundle
@@ -307,7 +324,11 @@ php bin/console make:security:form-login
 
 #### ✅ Étape 6.4 : Adapter les scripts JavaScript existants
 - [ ] Convertir `public/js/main.js` en contrôleur Stimulus si possible
-- [ ] Adapter `public/js/ishikawa.js` pour utiliser Stimulus/Turbo
+- [x] Adapter `public/js/ishikawa.js` pour utiliser vanilla JS avec IIFE (évite les conflits Turbo)
+  - ✅ Code encapsulé dans IIFE pour éviter la pollution globale
+  - ✅ Fonctions exposées via `window.ishikawaApp` pour les attributs onclick
+  - ✅ Attribut `data-turbo-eval="false"` sur le script pour éviter la réévaluation Turbo
+  - ✅ Gestion des modals avec classe `modal-open` pour masquer les boutons
 - [ ] Adapter `public/js/fivewhy.js` pour utiliser Stimulus/Turbo
 - [ ] Adapter `public/js/blog-markdown.js` pour utiliser Stimulus/Turbo
 - [ ] Conserver les scripts CDN (Bootstrap, Lucide Icons, AOS) ou les intégrer via AssetMapper si nécessaire
@@ -399,10 +420,11 @@ php bin/console make:security:form-login
 - [x] Créer `templates/ishikawa/index.html.twig`
   - Étendre `base_with_sidebar.html.twig` si connecté, sinon `base.html.twig`
   - Convertir `ishikawa/index.html` en template
-  - Utiliser un contrôleur Stimulus : `data-controller="ishikawa"` (à faire)
-  - Intégrer le script via AssetMapper ou Stimulus controller
+  - Utiliser vanilla JS (`ishikawa.js` avec IIFE) pour éviter les conflits Turbo
+  - Intégrer le script via `<script src="{{ asset('js/ishikawa.js') }}" data-turbo-eval="false">`
   - Bouton "Sauvegarder" visible uniquement si connecté (`{% if app.user %}`)
   - Message d'invitation à se connecter si non connecté
+  - ✅ **Améliorations UX/UI** : Boutons toujours visibles, masquage automatique quand modal ouvert, canvas responsive, grille horizontale pour catégories
 - [x] Créer `templates/five_why/index.html.twig`
   - Étendre `base_with_sidebar.html.twig` si connecté, sinon `base.html.twig`
   - Convertir `5pourquoi/index.html` en template
@@ -449,13 +471,15 @@ php bin/console make:security:form-login
   - Gestion des messages de succès/erreur avec JavaScript
 
 #### ✅ Étape 7.6 : Vérifier et tester les templates
-- [ ] Vérifier que tous les chemins d'assets utilisent `asset()` ou AssetMapper
-- [ ] Vérifier que les chemins relatifs sont corrects
-- [ ] Tester que les templates se compilent sans erreur
-- [ ] Vérifier que tous les scripts JavaScript sont chargés correctement via AssetMapper
-- [ ] Tester que Stimulus fonctionne avec les contrôleurs
-- [ ] Tester que Turbo fonctionne pour les navigations
-- [ ] Vérifier que les menus KnpMenu s'affichent correctement
+- [x] Vérifier que tous les chemins d'assets utilisent `asset()` ou AssetMapper
+- [x] Vérifier que les chemins relatifs sont corrects
+- [x] Tester que les templates se compilent sans erreur
+- [x] Vérifier que tous les scripts JavaScript sont chargés correctement (AssetMapper ou vanilla JS)
+- [x] Tester que Turbo fonctionne pour les navigations (pas de conflit avec ishikawa.js grâce à IIFE)
+- [x] Vérifier que les menus KnpMenu s'affichent correctement
+- [x] **Page Ishikawa** : Vérifier que tous les boutons sont visibles et fonctionnels
+- [x] **Page Ishikawa** : Vérifier que les modals masquent correctement les boutons d'action
+- [x] **Page Ishikawa** : Vérifier que le canvas est responsive et s'adapte aux différentes tailles d'écran
 
 #### ✅ Étape 7.7 : Nettoyer les fichiers HTML source (après conversion)
 > **Important** : Ne supprimer les fichiers HTML qu'après avoir vérifié que tout fonctionne avec Twig.
@@ -678,7 +702,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, intl, pdo_pgsql, opcache
+          extensions: mbstring, intl, pdo_mysql, opcache
           tools: composer
 
       - name: Install dependencies
@@ -713,16 +737,16 @@ jobs:
 #### ✅ Étape 13.3 : Configurer les variables d'application Azure
 - [ ] `APP_ENV=prod`
 - [ ] `APP_SECRET=<secret>` (générer un secret fort)
-- [ ] `DATABASE_URL=postgresql://<user>:<pass>@<host>:5432/<db>?sslmode=require`
+- [ ] `DATABASE_URL=mysql://<user>:<pass>@<host>:3306/<db>?serverVersion=8.0&charset=utf8mb4`
 - [ ] `SCM_DO_BUILD_DURING_DEPLOYMENT=true`
 
-#### ✅ Étape 13.4 : Vérifier la connexion PostgreSQL Azure
-- [ ] Tester la connexion depuis Azure App Service vers PostgreSQL
+#### ✅ Étape 13.4 : Vérifier la connexion MySQL Azure
+- [ ] Tester la connexion depuis Azure App Service vers MySQL
 - [ ] Vérifier que les règles de pare-feu permettent la connexion
 
 ---
 
-### Phase 14 : Base de données PostgreSQL (production)
+### Phase 14 : Base de données MySQL (production)
 
 #### ✅ Étape 14.1 : Exécuter les migrations en production
 ```bash
@@ -735,7 +759,7 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 - Via un script dans le workflow GitHub Actions (avec connexion SSH)
 
 #### ✅ Étape 14.2 : Vérifier que les migrations sont appliquées
-- [ ] Vérifier dans PostgreSQL Azure que les tables existent
+- [ ] Vérifier dans MySQL Azure que les tables existent
 - [ ] Vérifier la structure des tables
 
 ---
@@ -798,65 +822,109 @@ php bin/console make:controller Admin/UserController
 - [ ] Rendre le template `templates/admin/dashboard.html.twig`
 
 #### ✅ Étape 16.4 : Gestion des articles de blog (Admin)
-- [ ] Route `GET /admin/blog` - Liste des articles
-- [ ] Route `GET /admin/blog/new` - Créer un article
-- [ ] Route `GET /admin/blog/{id}/edit` - Modifier un article
-- [ ] Route `POST /admin/blog` - Sauvegarder un article
-- [ ] Route `DELETE /admin/blog/{id}` - Supprimer un article
-- [ ] Créer `BlogPostFormType` pour le formulaire
-- [ ] Gérer les uploads d'images pour les articles
-- [ ] Logger les actions dans `AdminLog`
+- [x] Route `GET /admin/blog` - Liste des articles
+- [x] Route `GET /admin/blog/new` - Créer un article
+- [x] Route `GET /admin/blog/{id}/edit` - Modifier un article
+- [x] Route `GET /admin/blog/{id}` - Voir un article
+- [x] Route `POST /admin/blog` - Sauvegarder un article (via formulaire)
+- [x] Route `POST /admin/blog/{id}/publish` - Publier un article
+- [x] Route `POST /admin/blog/{id}/unpublish` - Dépublier un article
+- [x] Route `POST /admin/blog/{id}/delete` - Supprimer un article
+- [x] Créer `BlogPostFormType` pour le formulaire
+- [x] Génération automatique de slug depuis le titre
+- [x] Gestion des catégories et tags dans le formulaire
+- [x] Filtres : tous, publiés, brouillons, mis en avant
+- [x] Pagination des articles
+- [x] Statistiques : publiés, brouillons, mis en avant
+- [x] Logger les actions dans `AdminLog`
+- [x] Templates Twig : `index.html.twig`, `new.html.twig`, `edit.html.twig`, `show.html.twig`
 
 #### ✅ Étape 16.5 : Gestion des catégories et tags
-- [ ] Route `GET /admin/categories` - Liste des catégories
-- [ ] Route `GET /admin/tags` - Liste des tags
-- [ ] CRUD pour les catégories
-- [ ] CRUD pour les tags
-- [ ] Logger les actions dans `AdminLog`
+- [x] Route `GET /admin/categories` - Liste des catégories
+- [x] Route `GET /admin/categories/new` - Créer une catégorie
+- [x] Route `GET /admin/categories/{id}/edit` - Modifier une catégorie
+- [x] Route `POST /admin/categories/{id}/delete` - Supprimer une catégorie
+- [x] Route `GET /admin/tags` - Liste des tags
+- [x] Route `GET /admin/tags/new` - Créer un tag
+- [x] Route `GET /admin/tags/{id}/edit` - Modifier un tag
+- [x] Route `POST /admin/tags/{id}/delete` - Supprimer un tag
+- [x] CRUD pour les catégories avec CategoryFormType
+- [x] CRUD pour les tags avec TagFormType
+- [x] Génération automatique de slug
+- [x] Validation : impossible de supprimer si utilisé par des articles
+- [x] Logger les actions dans `AdminLog`
+- [x] Templates Twig complets (index, new, edit) pour catégories et tags
 
 #### ✅ Étape 16.6 : Gestion des messages de contact
-- [ ] Route `GET /admin/contact` - Liste des messages
-- [ ] Route `GET /admin/contact/{id}` - Voir un message
-- [ ] Route `POST /admin/contact/{id}/mark-read` - Marquer comme lu
-- [ ] Route `POST /admin/contact/{id}/reply` - Répondre à un message
-- [ ] Filtres : non lus, lus, répondus
-- [ ] Logger les actions dans `AdminLog`
+- [x] Route `GET /admin/contact` - Liste des messages
+- [x] Route `GET /admin/contact/{id}` - Voir un message
+- [x] Route `POST /admin/contact/{id}/mark-read` - Marquer comme lu
+- [x] Route `POST /admin/contact/{id}/mark-unread` - Marquer comme non lu
+- [x] Route `POST /admin/contact/{id}/reply` - Répondre à un message
+- [x] Route `POST /admin/contact/{id}/delete` - Supprimer un message
+- [x] Filtres : non lus, lus, répondus, non répondus
+- [x] Pagination des messages
+- [x] Logger les actions dans `AdminLog`
+- [x] Templates Twig : `index.html.twig` et `show.html.twig`
 
 #### ✅ Étape 16.7 : Gestion de la newsletter
-- [ ] Route `GET /admin/newsletter` - Liste des abonnés
-- [ ] Route `GET /admin/newsletter/export` - Exporter la liste
-- [ ] Afficher les statistiques (actifs, désinscrits)
-- [ ] Filtrer par statut (actif/inactif)
+- [x] Route `GET /admin/newsletter` - Liste des abonnés
+- [x] Route `GET /admin/newsletter/export` - Exporter la liste (CSV)
+- [x] Route `POST /admin/newsletter/{id}/unsubscribe` - Désabonner
+- [x] Route `POST /admin/newsletter/{id}/delete` - Supprimer
+- [x] Afficher les statistiques (actifs, désinscrits, total)
+- [x] Filtrer par statut (actif/inactif)
+- [x] Pagination des abonnés
+- [x] Template Twig : `index.html.twig`
+- [x] NewsletterService pour l'envoi d'emails
+- [x] Email de bienvenue automatique lors de l'inscription
+- [x] Template d'email : `templates/emails/newsletter/welcome.html.twig`
+- [x] Configuration email via variables d'environnement (Cloudflare ready)
 
 #### ✅ Étape 16.8 : Analytics et tracking
-- [ ] Route `GET /admin/analytics` - Statistiques de visites
-- [ ] Afficher les statistiques :
-  - Pages les plus visitées
-  - Référents les plus fréquents
-  - Données géographiques (country, city)
-  - Appareils et navigateurs
-  - Utilisateurs connectés vs anonymes
-- [ ] Graphiques de tendances (nombre de visites par jour/mois)
-- [ ] Filtres par période
+- [x] Route `GET /admin/analytics` - Statistiques de visites
+- [x] Afficher les statistiques :
+  - [x] Pages les plus visitées
+  - [x] Référents les plus fréquents
+  - [x] Données géographiques (country, city)
+  - [x] Appareils et navigateurs
+  - [x] Utilisateurs connectés vs anonymes
+- [x] Graphiques de tendances (nombre de visites par jour/mois)
+- [x] Filtres par période (aujourd'hui, semaine, mois, année)
+- [x] Statistiques comparatives (hier, semaine dernière, mois dernier)
+- [x] PageViewRepository enrichi avec méthodes de statistiques
+- [x] Template Twig avec tableaux et graphiques de tendances
 
 #### ✅ Étape 16.9 : Logs d'administration
-- [ ] Route `GET /admin/logs` - Liste des logs
-- [ ] Afficher les actions d'administration :
-  - Utilisateur qui a effectué l'action
-  - Type d'action (CREATE, UPDATE, DELETE)
-  - Entité concernée
-  - Changements effectués
-  - Date et heure
-  - Adresse IP
-- [ ] Filtres : utilisateur, action, entité, période
-- [ ] Export des logs
+- [x] Route `GET /admin/logs` - Liste des logs
+- [x] Route `GET /admin/logs/export` - Export CSV des logs
+- [x] Afficher les actions d'administration :
+  - [x] Utilisateur qui a effectué l'action
+  - [x] Type d'action (CREATE, UPDATE, DELETE)
+  - [x] Entité concernée
+  - [x] Changements effectués
+  - [x] Date et heure
+  - [x] Adresse IP
+- [x] Filtres : utilisateur, action, entité, période
+- [x] Pagination des logs
+- [x] Export CSV des logs
+- [x] AdminLogRepository enrichi avec méthodes de filtrage
+- [x] Template Twig avec filtres et pagination
 
 #### ✅ Étape 16.10 : Gestion des utilisateurs
-- [ ] Route `GET /admin/users` - Liste des utilisateurs
-- [ ] Route `GET /admin/users/{id}/edit` - Modifier un utilisateur
-- [ ] Gérer les rôles (ROLE_USER, ROLE_ADMIN)
-- [ ] Activer/désactiver des comptes
-- [ ] Logger les actions dans `AdminLog`
+- [x] Route `GET /admin/users` - Liste des utilisateurs
+- [x] Route `GET /admin/users/{id}` - Voir un utilisateur
+- [x] Route `GET /admin/users/{id}/edit` - Modifier un utilisateur
+- [x] Route `POST /admin/users/{id}/delete` - Supprimer un utilisateur
+- [x] Gérer les rôles (ROLE_USER, ROLE_ADMIN)
+- [x] Modification de mot de passe
+- [x] Filtres par rôle (all, admin, user)
+- [x] Pagination
+- [x] Statistiques par rôle
+- [x] Protection : impossible de supprimer/modifier son propre compte
+- [x] Logger les actions dans `AdminLog`
+- [x] Templates Twig complets (index, show, edit)
+- [x] UserRepository enrichi avec méthodes de filtrage
 
 #### ✅ Étape 16.11 : Créer les templates d'administration
 - [ ] Créer `templates/admin/base.html.twig` - Layout admin
@@ -924,13 +992,17 @@ php bin/console make:controller Admin/UserController
 ## 🚀 Checklist finale
 
 ### Front-end
-- [ ] Site accessible depuis `/` (templates Twig)
-- [ ] Toutes les routes Twig fonctionnent
-- [ ] Tous les templates Twig s'affichent correctement
-- [ ] Tous les assets (CSS, JS, images) se chargent correctement
-- [ ] Blog fonctionne (affichage des articles)
-- [ ] Formulaire de contact fonctionne
-- [ ] Newsletter fonctionne
+- [x] Site accessible depuis `/` (templates Twig)
+- [x] Toutes les routes Twig fonctionnent
+- [x] Tous les templates Twig s'affichent correctement
+- [x] Tous les assets (CSS, JS, images) se chargent correctement
+- [x] Blog fonctionne (affichage des articles)
+- [x] Formulaire de contact fonctionne
+- [x] Newsletter fonctionne
+- [x] **Page Ishikawa** : UX/UI améliorée, accessibilité complète, responsive
+- [x] **Page Ishikawa** : Boutons toujours visibles avec bon contraste
+- [x] **Page Ishikawa** : Masquage automatique des boutons quand modal ouvert
+- [x] **Page Ishikawa** : Canvas responsive avec redimensionnement automatique
 
 ### Authentification et API
 - [ ] Auth fonctionnelle (connexion/déconnexion)
@@ -940,21 +1012,22 @@ php bin/console make:controller Admin/UserController
 - [ ] Tous les exports (PDF/JPEG/JSON) fonctionnent
 
 ### Administration
-- [ ] Espace admin accessible (`/admin`)
-- [ ] Dashboard admin avec statistiques
-- [ ] Gestion des articles de blog (CRUD)
-- [ ] Gestion des messages de contact
-- [ ] Gestion de la newsletter
-- [ ] Analytics et tracking fonctionnels
-- [ ] Logs d'administration consultables
-- [ ] Gestion des utilisateurs et rôles
+- [x] Espace admin accessible (`/admin`)
+- [x] Dashboard admin avec statistiques
+- [x] Gestion des articles de blog (CRUD)
+- [x] Gestion des messages de contact
+- [x] Gestion de la newsletter
+- [x] Analytics et tracking fonctionnels
+- [x] Logs d'administration consultables
+- [x] Gestion des utilisateurs et rôles
+- [x] Gestion des catégories et tags (CRUD)
 
-### Base de données
-- [ ] Toutes les entités créées (User, Record, BlogPost, Category, Tag, ContactMessage, NewsletterSubscriber, PageView, AdminLog)
-- [ ] Migrations générées et exécutées en local
+### Base de données MySQL
+- [x] Toutes les entités créées (User, BlogPost, Category, Tag, ContactMessage, NewsletterSubscriber, PageView, AdminLog, IshikawaAnalysis, FiveWhyAnalysis)
+- [x] Migrations générées et exécutées en local
 - [ ] Migrations exécutées en production
-- [ ] Base de données opérationnelle
-- [ ] Index configurés pour les performances
+- [x] Base de données MySQL opérationnelle en local
+- [x] Index configurés pour les performances (PageView, AdminLog)
 
 ### Déploiement
 - [ ] CI/CD passe au vert
@@ -965,152 +1038,13 @@ php bin/console make:controller Admin/UserController
 
 ---
 
-**Dernière mise à jour** : 2024-12-20
-**Statut global** : 🟡 En cours
+**Dernière mise à jour** : 2025-11-07
+**Statut global** : 🟢 En cours - SEO et Blog dynamique terminés, migration vers MySQL effectuée, **tests terminés (42/42 passent - 100%)**, Page Ishikawa améliorée (UX/UI, accessibilité, responsive), Stimulus restant, **CMS légal éditable depuis le back-office**
 
 ### Progrès récent
 - ✅ Phase 5 : Authentification complétée
-- ✅ Phase 5.5 : KnpMenuBundle configuré et corrigé
-- ✅ Phase 6 : AssetMapper, Stimulus et Turbo configurés
-- ✅ Phase 7.1-7.2 : Layout de base et page d'accueil convertis en Twig
-- ✅ Phase 7.1.1-7.1.2 : Layout avec sidebar et gestion conditionnelle créés
-- ✅ Phase 7.3-7.4 : Toutes les pages principales converties en templates Twig :
-  - ✅ Page Ishikawa (avec sidebar conditionnelle)
-  - ✅ Page 5 Pourquoi (avec sidebar conditionnelle)
-  - ✅ Page Outils (avec sidebar conditionnelle)
-  - ✅ Page Blog
-  - ✅ Page Contact
-  - ✅ Pages légales (Politique de confidentialité, Mentions légales)
-- ✅ Phase 7.5 : Composants Twig réutilisables créés (navbar, footer, sidebar, newsletter-form)
-- ✅ Phase 8.1-8.8 : Tous les contrôleurs créés et routes configurées
-- ✅ Phase 9 : Formulaires Symfony créés et intégrés :
-  - ✅ ContactFormType avec validation
-  - ✅ NewsletterFormType avec validation
-  - ✅ ContactController mis à jour avec gestion du formulaire
-  - ✅ NewsletterController créé avec API REST
-  - ✅ Templates mis à jour pour utiliser les formulaires Symfony
-- ✅ Phase 10 : API REST créées pour sauvegarder/charger les analyses :
-  - ✅ RecordController avec CRUD complet (GET, POST, PUT, DELETE)
-  - ✅ IshikawaController avec save/get/list
-  - ✅ FiveWhyController avec save/get/list
-  - ✅ Authentification requise (ROLE_USER) sur toutes les routes API
-  - ✅ Validation des permissions (uniquement les records de l'utilisateur)
-- ✅ Phase 18 : Modal de confirmation et amélioration des notifications :
-  - ✅ Installer `@stimulus-components/dialog` via npm
-  - ✅ Créer le composant modal de confirmation (`templates/components/delete-confirmation-modal.html.twig`)
-  - ✅ Créer le contrôleur Stimulus `delete_confirmation_controller.js`
-  - ✅ Remplacer les `confirm()` par le modal Stimulus Dialog
-  - ✅ Corriger les notifications d'export PDF/image/JSON pour qu'elles disparaissent après succès
-  - ✅ Stocker la référence de la notification actuelle (`currentToast`) et fermer la précédente avant d'afficher une nouvelle
-  - ✅ Corriger le bug dans `exportJSON()` de fivewhy.js où `filename` n'était pas défini
-  - ✅ Améliorer l'UX/UI de la page 5 Pourquoi :
-    - ✅ Réduire les espacements en haut (padding-top et margin-top) pour éviter trop de scroll
-    - ✅ Rendre le header plus compact avec moins de padding
-    - ✅ Optimiser les marges entre les sections (header, alerts, controls, container)
-    - ✅ Améliorer l'accessibilité :
-      - ✅ Ajouter des labels aria-label et aria-describedby
-      - ✅ Ajouter des rôles ARIA (role="main", role="region", role="toolbar")
-      - ✅ Améliorer le focus visible pour la navigation au clavier
-      - ✅ Ajouter des descriptions visuelles avec visually-hidden
-      - ✅ Améliorer le contraste des alertes
-    - ✅ Rendre les contrôles plus compacts avec des boutons de taille réduite (btn-sm)
-    - ✅ Responsive amélioré pour mobile
-    - ✅ Header plus compact avec moins d'espace vertical
-  - ✅ Garantir l'accès public aux pages Ishikawa et 5 Pourquoi :
-    - ✅ Ajouter explicitement les routes `/ishikawa` et `/5pourquoi` à `access_control` avec `PUBLIC_ACCESS` dans `security.yaml`
-    - ✅ Les utilisateurs non connectés peuvent accéder aux outils en lecture seule
-    - ✅ Message d'invitation à se connecter affiché pour sauvegarder
-  - ✅ Améliorer l'UX/UI de la page Ishikawa :
-    - ✅ Réduire les espacements en haut (padding-top et margin-top) pour éviter trop de scroll
-    - ✅ Rendre le header plus compact avec moins de padding
-    - ✅ Optimiser les marges entre les sections (header, alerts, controls, container)
-    - ✅ Améliorer l'accessibilité :
-      - ✅ Ajouter des labels aria-label et aria-describedby
-      - ✅ Ajouter des rôles ARIA (role="main", role="toolbar", role="region")
-      - ✅ Améliorer le focus visible pour la navigation au clavier
-      - ✅ Ajouter des descriptions visuelles avec visually-hidden
-      - ✅ Améliorer le contraste des alertes
-    - ✅ Rendre les contrôles plus compacts avec des boutons de taille réduite (btn-sm)
-    - ✅ Responsive amélioré pour mobile
-    - ✅ Réduire le margin-top du diagram-container de 8.5rem à 0
-    - ✅ Header plus compact avec moins d'espace vertical
-  - ✅ Phase 19 : Améliorations responsive et UX/UI :
-    - ✅ Correction de la responsivité de la sidebar :
-      - ✅ Ajout d'un bouton hamburger dans la navbar pour mobile
-      - ✅ Implémentation d'un overlay pour fermer la sidebar sur mobile
-      - ✅ Ajustement du margin-left du contenu principal (0 sur mobile, 280px sur desktop)
-      - ✅ JavaScript pour gérer le toggle de la sidebar avec support Turbo
-      - ✅ Amélioration de l'accessibilité (aria-label, gestion des événements)
-    - ✅ Correction du chevauchement de la navbar sur mobile :
-      - ✅ Augmentation du padding-top à 80px sur mobile pour éviter le chevauchement
-      - ✅ Définition d'une min-height pour la navbar sur mobile
-      - ✅ Ajout de règles CSS globales dans custom.css
-    - ✅ Simplification du footer pour utilisateurs connectés :
-      - ✅ Footer simplifié avec uniquement copyright et liens légaux pour utilisateurs connectés
-      - ✅ Footer complet conservé pour utilisateurs non connectés
-    - ✅ Amélioration de la page Ishikawa :
-      - ✅ Message d'avertissement mobile/tablette plus visible (alert Bootstrap) et affiché sur mobile ET tablette (d-md-none)
-      - ✅ Correction de l'initialisation des catégories (support amélioré pour Turbo et chargement asynchrone)
-      - ✅ Amélioration de la visibilité avec icône d'avertissement Lucide
-
----
-
-## 📊 Résumé des tâches restantes
-
-### Priorité haute - Fonctionnalités essentielles
-
-1. **Tests et validation fonctionnels** :
-   - [ ] Tester toutes les routes avec `php bin/console debug:router`
-   - [ ] Tester l'authentification (connexion/déconnexion)
-   - [ ] Tester toutes les routes API avec Postman ou curl
-   - [ ] Tester les formulaires (contact, newsletter)
-   - [ ] Vérifier la sauvegarde en base de données
-
-2. **Intégration JavaScript avec Stimulus** :
-   - [ ] Créer contrôleurs Stimulus pour ishikawa, fivewhy, blog, newsletter, contact
-   - [ ] Adapter les scripts existants pour utiliser l'API au lieu de localStorage
-   - [ ] Intégrer Turbo pour les soumissions de formulaires
-
-3. **Espace d'administration** (Phase 16) - **Priorité haute** :
-   - [ ] Configuration de l'authentification admin (ROLE_ADMIN)
-   - [ ] Dashboard d'administration avec statistiques
-   - [ ] Gestion CRUD des articles de blog
-   - [ ] Gestion des messages de contact
-   - [ ] Gestion de la newsletter
-   - [ ] Analytics et tracking
-   - [ ] Logs d'administration
-   - [ ] Gestion des utilisateurs et rôles
-
-4. **Base de données** :
-   - [ ] Vérifier que toutes les entités sont créées et migrées
-   - [ ] Exécuter les migrations en production
-   - [ ] Vérifier les index pour les performances
-
-### Priorité moyenne - Améliorations et nettoyage
-
-5. **Blog dynamique** :
-   - [ ] Route et template pour articles individuels (`/blog/{category}/{id}`)
-   - [ ] Intégration avec la base de données pour les articles
-
-6. **Nettoyage** :
-   - [ ] Supprimer les fichiers HTML source après vérification
-   - [ ] Vérifier que tous les chemins d'assets utilisent `asset()` ou AssetMapper
-
-### Priorité basse - Déploiement et optimisations
-
-7. **CI/CD et déploiement** :
-   - [ ] Configurer GitHub Actions pour le déploiement
-   - [ ] Configurer Azure App Service (PHP 8.2, chemin racine, variables d'environnement)
-   - [ ] Exécuter les migrations en production
-   - [ ] Tester le site en production
-
-8. **Optimisations** :
-   - [ ] Tests de performance
-   - [ ] Optimisations cache/CDN si nécessaire
-
-### Notes importantes
-
-- **La plupart des fonctionnalités front-end sont en place** : templates Twig, formulaires Symfony, API REST, responsive design
-- **Les fonctionnalités backend critiques sont en place** : authentification, entités, contrôleurs, routes
-- **Il reste principalement à faire** : tests, administration, intégration Stimulus, déploiement
+- ✅ Fonction « Mot de passe oublié » : bundle installé, pages personnalisées, email expédié, test fonctionnel en place
+- ✅ Phase 5.6 : KnpMenuBundle configuré et corrigé
+- ✅ Pages d’erreur 403/404/500 personnalisées avec design harmonisé et tests fonctionnels dédiés
+- ✅ Workflow GitHub Actions `deploy-o2switch.yml` configuré (Composer + asset-map + tests + rsync vers o2switch)
 

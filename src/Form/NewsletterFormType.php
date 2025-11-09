@@ -38,6 +38,7 @@ class NewsletterFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => NewsletterSubscriber::class,
+            'csrf_protection' => true, // Activé par défaut, peut être désactivé pour les API si nécessaire
         ]);
     }
 }
