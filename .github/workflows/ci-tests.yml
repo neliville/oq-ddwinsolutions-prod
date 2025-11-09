@@ -18,7 +18,7 @@ jobs:
     
     strategy:
       matrix:
-        php-version: ['8.2']
+        php-version: ['8.3']
         test-suite: ['unit', 'functional', 'integration']
     
     steps:
@@ -45,7 +45,7 @@ jobs:
         uses: codecov/codecov-action@v4
         if: matrix.test-suite == 'unit'
         with:
-          files: coverage-unit.xml,coverage-functional.xml,coverage-integration.xml
+          files: coverage-unit.xml
           fail_ci_if_error: false
 
   test-all:
@@ -60,7 +60,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: mbstring, intl, pdo_pgsql, pdo_sqlite, opcache, zip
           tools: composer
 
@@ -89,7 +89,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: mbstring, intl, pdo_pgsql, opcache, zip
           tools: composer
 
