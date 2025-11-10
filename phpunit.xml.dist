@@ -24,10 +24,16 @@
     </php>
     
     <coverage>
+        <report>
+            <clover outputFile="coverage/clover.xml"/>
+        </report>
+    </coverage>
+
+    <source>
         <include>
             <directory suffix=".php">src</directory>
         </include>
-    </coverage>
+    </source>
 
     <testsuites>
         <!-- Tests unitaires : rapides, isolés, sans base de données -->
