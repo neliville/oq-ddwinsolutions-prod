@@ -11,6 +11,12 @@ jobs:
 
     env:
       APP_ENV: prod
+      O2SWITCH_HOST: ${{ secrets.O2SWITCH_HOST }}
+      O2SWITCH_PORT: ${{ secrets.O2SWITCH_PORT }}
+      O2SWITCH_USER: ${{ secrets.O2SWITCH_USER }}
+      O2SWITCH_SSH_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
+      O2SWITCH_DEPLOY_PATH: ${{ secrets.O2SWITCH_DEPLOY_PATH }}
+      O2SWITCH_WEBROOT: ${{ secrets.O2SWITCH_WEBROOT }}
 
     steps:
       - name: Checkout
@@ -26,7 +32,6 @@ jobs:
       - name: Install dependencies (no dev)
         run: |
           composer install --no-dev --optimize-autoloader --no-interaction
-          # Si tu n'utilises pas AssetMapper, cette ligne ne fera rien de grave
           php bin/console asset-map:compile --env=prod || true
           php bin/console cache:clear --env=prod || true
 
@@ -47,41 +52,33 @@ jobs:
       - name: Upload release to o2switch
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.O2SWITCH_HOST }}
-          port: ${{ secrets.O2SWITCH_PORT }}
-          username: ${{ secrets.O2SWITCH_USER }}
-          key: ${{ secrets.O2SWITCH_SSH_KEY }}
+          host: ${{ env.O2SWITCH_HOST }}
+          port: ${{ env.O2SWITCH_PORT }}
+          username: ${{ env.O2SWITCH_USER }}
+          key: ${{ env.O2SWITCH_SSH_KEY }}
           source: release.zip
-          target: ${{ secrets.O2SWITCH_DEPLOY_PATH }}
+          target: ${{ env.O2SWITCH_DEPLOY_PATH }}
 
       - name: Unzip & deploy on o2switch
         uses: appleboy/ssh-action@v1.0.2
         with:
-          host: ${{ secrets.O2SWITCH_HOST }}
-          port: ${{ secrets.O2SWITCH_PORT }}
-          username: ${{ secrets.O2SWITCH_USER }}
-          key: ${{ secrets.O2SWITCH_SSH_KEY }}
+          host: ${{ env.O2SWITCH_HOST }}
+          port: ${{ env.O2SWITCH_PORT }}
+          username: ${{ env.O2SWITCH_USER }}
+          key: ${{ env.O2SWITCH_SSH_KEY }}
           script: |
             set -euo pipefail
 
-            # Aller dans le dossier tampon
-            cd "${{ secrets.O2SWITCH_DEPLOY_PATH }}"
+            cd "$O2SWITCH_DEPLOY_PATH"
 
-            # Décompression propre
             rm -rf release_tmp
             unzip -oq release.zip -d release_tmp
 
-            # Sync vers le dossier du projet en prod
-            # --delete : nettoie les vieux fichiers
-            # --exclude='.env*' : NE TOUCHE PAS à .env.prod.local sur le serveur
             rsync -a --delete --exclude='.env*' \
-              release_tmp/ "${{ secrets.O2SWITCH_WEBROOT }}/"
+              release_tmp/ "$O2SWITCH_WEBROOT/"
 
-            # Nettoyage
             rm -rf release_tmp release.zip
 
-            # Rebuild cache Symfony en prod
-            cd "${{ secrets.O2SWITCH_WEBROOT }}"
+            cd "$O2SWITCH_WEBROOT"
             php bin/console cache:clear --env=prod || true
-            # Décommente quand tu es prêt à automatiser les migrations :
             # php bin/console doctrine:migrations:migrate --env=prod --no-interaction || true

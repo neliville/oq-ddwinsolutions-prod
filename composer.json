@@ -35,7 +35,7 @@
         "symfony/yaml": "7.3.*",
         "symfonycasts/reset-password-bundle": "^1.23",
         "symfonycasts/sass-bundle": "^0.8.3",
-        "twbs/bootstrap": "5.3.8"
+        "twbs/bootstrap": "^5.3.8"
     },
     "config": {
         "allow-plugins": {
