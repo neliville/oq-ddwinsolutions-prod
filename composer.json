@@ -1,8 +1,8 @@
 {
-    "name": "symfony/skeleton",
+    "name": "oq-ddwinsolutions/plateforme-qualite",
     "type": "project",
-    "license": "MIT",
-    "description": "A minimal Symfony project recommended to create bare bones applications",
+    "license": "proprietary",
+    "description": "Plateforme Symfony pour la gestion d’outils qualité (Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, Pareto, Méthode 8D, etc.)",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
