@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - develop
+      - feat/symfony-app
   pull_request:
     branches:
       - main
       - develop
+      - feat/symfony-app
 
 jobs:
   tests:
