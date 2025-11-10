@@ -23,6 +23,12 @@
         <!-- DATABASE_URL défini ici pour utiliser SQLite en environnement de test -->
     </php>
     
+    <coverage>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+
     <testsuites>
         <!-- Tests unitaires : rapides, isolés, sans base de données -->
         <testsuite name="unit">
