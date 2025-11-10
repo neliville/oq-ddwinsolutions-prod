@@ -37,6 +37,9 @@ jobs:
         run: |
           composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
+      - name: Build Sass assets (test env)
+        run: php bin/console sass:build --env=test --no-interaction || true
+
       - name: Run PHPUnit tests
         run: |
           php bin/phpunit --testsuite=${{ matrix.test-suite }} --coverage-text --coverage-clover=coverage-${{ matrix.test-suite }}.xml --coverage-filter=src
@@ -67,6 +70,9 @@ jobs:
       - name: Install dependencies
         run: |
           composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+      - name: Build Sass assets (test env)
+        run: php bin/console sass:build --env=test --no-interaction || true
 
       - name: Run all tests
         run: |
