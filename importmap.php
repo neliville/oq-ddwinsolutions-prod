@@ -28,9 +28,6 @@ return [
     '@stimulus-components/dialog' => [
         'version' => '1.0.1',
     ],
-    '@symfony/ux-live-component' => [
-        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
-    ],
     '@stimulus-components/sortable' => [
         'version' => '5.0.3',
     ],
