@@ -39,7 +39,7 @@ jobs:
 
       - name: Run PHPUnit tests
         run: |
-          php bin/phpunit --testsuite=${{ matrix.test-suite }} --coverage-text --coverage-clover=coverage-${{ matrix.test-suite }}.xml
+          php bin/phpunit --testsuite=${{ matrix.test-suite }} --coverage-text --coverage-clover=coverage-${{ matrix.test-suite }}.xml --coverage-filter=src
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -74,7 +74,7 @@ jobs:
 
       - name: Check test coverage threshold
         run: |
-          php bin/phpunit --coverage-text --coverage-clover=coverage.xml
+          php bin/phpunit --coverage-text --coverage-clover=coverage.xml --coverage-filter=src
           # TODO: Ajouter un seuil de couverture minimum (ex: 70%)
           # php bin/phpunit --coverage-text | grep -E "Total.*:\s+([0-9]+)" || exit 1
 
