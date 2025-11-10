@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Integration;
 
 use App\Tests\TestCase\WebTestCaseWithDatabase;
 
