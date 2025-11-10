@@ -42,9 +42,9 @@ jobs:
       - name: Prepare test database (SQLite)
         run: |
           mkdir -p var/cache/test
+          rm -f var/cache/test/test.db
           php bin/console doctrine:database:create --env=test --if-not-exists || true
-          php bin/console doctrine:migrations:migrate --env=test --no-interaction || \
-          php bin/console doctrine:schema:update --env=test --force || true
+          php bin/console doctrine:schema:create --env=test --no-interaction
 
       - name: Run PHPUnit suite ${{ matrix.test-suite }}
         run: |
