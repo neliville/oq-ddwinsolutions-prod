@@ -14,6 +14,7 @@ class UsersControllerTest extends WebTestCaseWithDatabase
         $entityManager = $this->entityManager;
         $entityManager->createQuery('DELETE FROM App\\Entity\\User u')->execute();
         $this->loadAdminUser($entityManager);
+
         $this->loadSampleUsers($entityManager);
 
         $this->client->loginUser($this->getAdminUser($entityManager));
