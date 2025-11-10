@@ -25,14 +25,7 @@ abstract class WebTestCaseWithDatabase extends WebTestCase
         $this->entityManager = $container->get('doctrine.orm.entity_manager');
         $this->passwordHasher = $container->get(UserPasswordHasherInterface::class);
         
-        // Créer le schéma de base de données pour les tests
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        $schemaTool->dropDatabase();
-        if ($metadata !== []) {
-            $schemaTool->createSchema($metadata);
-        }
+        $this->refreshDatabaseSchema();
     }
 
     protected function tearDown(): void
@@ -86,6 +79,17 @@ abstract class WebTestCaseWithDatabase extends WebTestCase
         }
         
         $this->entityManager->flush();
+    }
+
+    protected function refreshDatabaseSchema(): void
+    {
+        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+
+        $schemaTool->dropDatabase();
+        if ($metadata !== []) {
+            $schemaTool->createSchema($metadata);
+        }
     }
 }
 
