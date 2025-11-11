@@ -41,12 +41,14 @@ jobs:
         run: |
           if [ -x "vendor/bin/phpunit" ]; then
             vendor/bin/phpunit --testdox
-          else
-            if [ -x "bin/phpunit" ]; then
+          elif [ -x "bin/phpunit" ]; then
+            if [ -x "vendor/symfony/phpunit-bridge/bin/simple-phpunit" ]; then
               php bin/phpunit --testdox
             else
-              echo "PHPUnit non disponible, étape ignorée."
+              echo "PHPUnit Bridge absent (dépendances dev non installées). Étape ignorée."
             fi
+          else
+            echo "PHPUnit non disponible, étape ignorée."
           fi
 
       - name: Prepare release archive
