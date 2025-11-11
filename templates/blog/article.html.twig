@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% set featuredImageUrl = post.image ? asset(post.image) : asset('img/og-default.jpg') %}
+{% set rawFeaturedImage = post.image
+    ? (post.image starts with 'http' ? post.image : asset(post.image))
+    : asset('img/logo.png') %}
+{% set featuredImageUrl = rawFeaturedImage starts with 'http'
+    ? rawFeaturedImage
+    : app.request.schemeAndHttpHost ~ rawFeaturedImage %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -15,7 +20,7 @@
 
 {% block og_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
 
-{% block og_image %}{{ app.request.schemeAndHttpHost ~ featuredImageUrl }}{% endblock %}
+{% block og_image %}{{ featuredImageUrl }}{% endblock %}
 
 {% block og_type %}article{% endblock %}
 
@@ -28,7 +33,7 @@
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": {{ post.title|json_encode|raw }},
-    "image": {{ (app.request.schemeAndHttpHost ~ featuredImageUrl)|json_encode|raw }},
+    "image": {{ featuredImageUrl|json_encode|raw }},
     "datePublished": {{ post.publishedAt|date('Y-m-d\\TH:i:sP')|json_encode|raw }},
     "dateModified": {{ (post.updatedAt ?: post.publishedAt)|date('Y-m-d\\TH:i:sP')|json_encode|raw }},
     "author": {
