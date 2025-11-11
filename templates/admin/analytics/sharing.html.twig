@@ -1,0 +1,286 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Partages Ishikawa | Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Partages et collaboration</h1>
+            <p class="text-muted mb-0">Suivi des liens Ishikawa partagés et visites associées</p>
+        </div>
+        <div>
+            <div class="btn-group" role="group" aria-label="Période">
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'today'}) }}" class="btn btn-sm {{ period == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">Aujourd'hui</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'week'}) }}" class="btn btn-sm {{ period == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">7 jours</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'month'}) }}" class="btn btn-sm {{ period == 'month' ? 'btn-primary' : 'btn-outline-primary' }}">30 jours</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'year'}) }}" class="btn btn-sm {{ period == 'year' ? 'btn-primary' : 'btn-outline-primary' }}">1 an</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Liens partagés (total)</h6>
+                    <h3 class="fw-bold mb-1">{{ shareTotals.totalShares|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">Depuis le lancement</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Liens actifs</h6>
+                    <h3 class="fw-bold mb-1">{{ shareTotals.activeShares|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">Liens non expirés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Partages (période)</h6>
+                    <h3 class="fw-bold mb-1">{{ shareTotals.sharesThisPeriod|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Visites via partage</h6>
+                    <h3 class="fw-bold mb-1">{{ shareTotals.shareVisitsThisPeriod|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">Cumul : {{ shareTotals.totalShareVisits|number_format(0, ',', ' ') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Créations de liens</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="shareCreationChart" height="220" aria-label="Évolution des partages"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Visites issues des partages</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="shareVisitChart" height="220" aria-label="Évolution des visites provenant des partages"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Top contributeurs</h5>
+                    <small class="text-muted">Top 5</small>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th class="text-end">Partages</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sharer in topSharers %}
+                                <tr>
+                                    <td>{{ sharer.email }}</td>
+                                    <td class="text-end fw-semibold">{{ sharer.shareCount|number_format(0, ',', ' ') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-4">Aucun partage enregistré</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Analyses les plus consultées</h5>
+                    <small class="text-muted">Via des liens partagés</small>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Analyse</th>
+                                    <th class="text-end">Visites</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for analysis in topSharedAnalyses %}
+                                <tr>
+                                    <td>{{ analysis.title }}</td>
+                                    <td class="text-end fw-semibold">{{ analysis.visitCount|number_format(0, ',', ' ') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-4">Aucune donnée</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Partages récents</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Analyse</th>
+                                    <th>Créé par</th>
+                                    <th>Créé le</th>
+                                    <th>Expire le</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for share in recentShares %}
+                                <tr>
+                                    <td>{{ share.title }}</td>
+                                    <td>{{ share.owner }}</td>
+                                    <td>{{ share.createdAt|date('d/m/Y H:i') }}</td>
+                                    <td>{{ share.expiresAt|date('d/m/Y H:i') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">Aucun partage récent</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Visites récentes</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Analyse</th>
+                                    <th>Token</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for visit in recentShareVisits %}
+                                <tr>
+                                    <td>{{ visit.title }}</td>
+                                    <td><code>{{ visit.token }}</code></td>
+                                    <td>{{ visit.visitedAt|date('d/m/Y H:i') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">Aucune visite récente</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" integrity="sha384-1+OxzI1+28HqkKqmXda3IIZeF1P0uohsEiL41Z8nfdXbra+XUl3Bd4Kp9Ezg4L7g" crossorigin="anonymous" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const shareChartData = {{ shareChart|json_encode|raw }};
+    const shareVisitChartData = {{ shareVisitChart|json_encode|raw }};
+
+    const shareCanvas = document.getElementById('shareCreationChart');
+    const shareVisitCanvas = document.getElementById('shareVisitChart');
+
+    if (shareCanvas && shareChartData.labels.length) {
+        new Chart(shareCanvas, {
+            type: 'bar',
+            data: {
+                labels: shareChartData.labels,
+                datasets: [{
+                    label: 'Partages créés',
+                    data: shareChartData.data,
+                    backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    if (shareVisitCanvas && shareVisitChartData.labels.length) {
+        new Chart(shareVisitCanvas, {
+            type: 'line',
+            data: {
+                labels: shareVisitChartData.labels,
+                datasets: [{
+                    label: 'Visites via partage',
+                    data: shareVisitChartData.data,
+                    borderColor: '#0ea5e9',
+                    backgroundColor: 'rgba(14, 165, 233, 0.15)',
+                    tension: 0.3,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -23,12 +23,147 @@ final class AnalyticsController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        // Période par défaut : 30 derniers jours
-        $period = $request->query->get('period', '30days');
-        
+        return $this->render('admin/analytics/index.html.twig');
+    }
+
+    #[Route('/traffic', name: 'traffic', methods: ['GET'])]
+    public function traffic(Request $request): Response
+    {
+        [$period, $start, $end, $now] = $this->resolvePeriod($request, 'month');
+
+        $totalVisits = $this->pageViewRepository->countByPeriod($start, $end);
+        $todayVisits = $this->pageViewRepository->countByPeriod($now->setTime(0, 0, 0), $now);
+        $authenticatedVisits = $this->pageViewRepository->countByUserType(true);
+        $anonymousVisits = $this->pageViewRepository->countByUserType(false);
+
+        $yesterdayStart = $now->modify('-1 day')->setTime(0, 0, 0);
+        $yesterdayEnd = $now->modify('-1 day')->setTime(23, 59, 59);
+        $yesterdayVisits = $this->pageViewRepository->countByPeriod($yesterdayStart, $yesterdayEnd);
+
+        $lastWeekStart = $now->modify('-14 days')->setTime(0, 0, 0);
+        $lastWeekEnd = $now->modify('-8 days')->setTime(23, 59, 59);
+        $lastWeekVisits = $this->pageViewRepository->countByPeriod($lastWeekStart, $lastWeekEnd);
+
+        $lastMonthStart = $now->modify('-60 days')->setTime(0, 0, 0);
+        $lastMonthEnd = $now->modify('-31 days')->setTime(23, 59, 59);
+        $lastMonthVisits = $this->pageViewRepository->countByPeriod($lastMonthStart, $lastMonthEnd);
+
+        $visitsByDay = $this->normalizeDailyData($this->pageViewRepository->findVisitsByDay($start, $end));
+        $visitsByMonth = $this->normalizeMonthlyData(
+            $this->pageViewRepository->findVisitsByMonth(
+                $now->modify('-365 days')->setTime(0, 0, 0),
+                $now
+            )
+        );
+
+        $mostVisitedPages = $this->pageViewRepository->findMostVisitedPages(5);
+        $topCountries = $this->pageViewRepository->findTopCountries(5);
+        $topDevices = $this->pageViewRepository->findTopDevices(5);
+
+        $visitsDailyChart = [
+            'labels' => array_map(
+                static fn (array $row): string => $row['date']?->format('d/m') ?? '',
+                $visitsByDay
+            ),
+            'data' => array_map(static fn (array $row): int => $row['count'], $visitsByDay),
+        ];
+
+        $visitsMonthlyChart = [
+            'labels' => array_map(static fn (array $row): string => $row['period'], $visitsByMonth),
+            'data' => array_map(static fn (array $row): int => $row['count'], $visitsByMonth),
+        ];
+
+        $deviceChart = [
+            'labels' => array_map(static fn (array $row): string => $row['device'] ?? 'Inconnu', $topDevices),
+            'data' => array_map(static fn (array $row): int => (int) $row['visitCount'], $topDevices),
+        ];
+
+        $countryChart = [
+            'labels' => array_map(static fn (array $row): string => $row['country'] ?? 'Inconnu', $topCountries),
+            'data' => array_map(static fn (array $row): int => (int) $row['visitCount'], $topCountries),
+        ];
+
+        return $this->render('admin/analytics/traffic.html.twig', [
+            'period' => $period,
+            'totalVisits' => $totalVisits,
+            'todayVisits' => $todayVisits,
+            'yesterdayVisits' => $yesterdayVisits,
+            'lastWeekVisits' => $lastWeekVisits,
+            'lastMonthVisits' => $lastMonthVisits,
+            'authenticatedVisits' => $authenticatedVisits,
+            'anonymousVisits' => $anonymousVisits,
+            'mostVisitedPages' => $mostVisitedPages,
+            'visitsDailyChart' => $visitsDailyChart,
+            'visitsMonthlyChart' => $visitsMonthlyChart,
+            'deviceChart' => $deviceChart,
+            'countryChart' => $countryChart,
+            'startDate' => $start,
+            'endDate' => $end,
+        ]);
+    }
+
+    #[Route('/sharing', name: 'sharing', methods: ['GET'])]
+    public function sharing(Request $request): Response
+    {
+        [$period, $start, $end, $now] = $this->resolvePeriod($request, 'month');
+
+        $shareTotals = [
+            'totalShares' => $this->shareRepository->countAll(),
+            'activeShares' => $this->shareRepository->countActive($now),
+            'sharesThisPeriod' => $this->shareRepository->countByPeriod($start, $end),
+            'totalShareVisits' => $this->shareVisitRepository->countAll(),
+            'shareVisitsThisPeriod' => $this->shareVisitRepository->countByPeriod($start, $end),
+        ];
+
+        $sharesByDay = $this->shareRepository->findSharesByDay($start, $end);
+        $shareVisitsByDay = $this->shareVisitRepository->findVisitsByDay($start, $end);
+
+        $shareChart = [
+            'labels' => array_map(
+                fn (array $row): string => $this->formatDateLabel($row['share_date'] ?? ''),
+                $sharesByDay
+            ),
+            'data' => array_map(static fn (array $row): int => (int) $row['share_count'], $sharesByDay),
+        ];
+
+        $shareVisitChart = [
+            'labels' => array_map(
+                fn (array $row): string => $this->formatDateLabel($row['visit_date'] ?? ''),
+                $shareVisitsByDay
+            ),
+            'data' => array_map(static fn (array $row): int => (int) $row['visit_count'], $shareVisitsByDay),
+        ];
+
+        $topSharers = $this->shareRepository->findTopSharers(5);
+        $topSharedAnalyses = $this->shareVisitRepository->findTopSharedAnalyses(5);
+        $recentShares = $this->shareRepository->findRecentShares(10);
+        $recentShareVisits = $this->shareVisitRepository->findRecentVisits(10);
+
+        return $this->render('admin/analytics/sharing.html.twig', [
+            'period' => $period,
+            'shareTotals' => $shareTotals,
+            'shareChart' => $shareChart,
+            'shareVisitChart' => $shareVisitChart,
+            'topSharers' => $topSharers,
+            'topSharedAnalyses' => $topSharedAnalyses,
+            'recentShares' => $recentShares,
+            'recentShareVisits' => $recentShareVisits,
+            'startDate' => $start,
+            'endDate' => $end,
+        ]);
+    }
+
+    /**
+     * @return array{0:string,1:\DateTimeImmutable,2:\DateTimeImmutable,3:\DateTimeImmutable}
+     */
+    private function resolvePeriod(Request $request, string $default = 'month'): array
+    {
+        $period = $request->query->get('period', $default);
         $now = new \DateTimeImmutable();
+        $end = $now;
+
         $start = match ($period) {
             'today' => $now->setTime(0, 0, 0),
             'week' => $now->modify('-7 days')->setTime(0, 0, 0),
@@ -37,38 +172,18 @@ final class AnalyticsController extends AbstractController
             default => $now->modify('-30 days')->setTime(0, 0, 0),
         };
 
-        // Statistiques globales
-        $totalVisits = $this->pageViewRepository->countByPeriod($start, $now);
-        $todayVisits = $this->pageViewRepository->countByPeriod(
-            $now->setTime(0, 0, 0),
-            $now
-        );
-        $authenticatedVisits = $this->pageViewRepository->countByUserType(true);
-        $anonymousVisits = $this->pageViewRepository->countByUserType(false);
+        return [$period, $start, $end, $now];
+    }
 
-        // Pages les plus visitées
-        $mostVisitedPages = $this->pageViewRepository->findMostVisitedPages(10);
-
-        // Top référents
-        $topReferers = $this->pageViewRepository->findTopReferers(10);
-
-        // Données géographiques
-        $topCountries = $this->pageViewRepository->findTopCountries(10);
-        $topCities = $this->pageViewRepository->findTopCities(10);
-
-        // Appareils
-        $topDevices = $this->pageViewRepository->findTopDevices(10);
-
-        // Tendances
-        $rawVisitsByDay = $this->pageViewRepository->findVisitsByDay($start, $now);
-        $rawVisitsByMonth = $this->pageViewRepository->findVisitsByMonth(
-            $now->modify('-365 days')->setTime(0, 0, 0),
-            $now
-        );
-
-        $visitsByDay = array_map(static function (array $row): array {
-            $dateString = $row['visit_date'] ?? $row['visitDate'] ?? null;
-            $count = (int) ($row['visit_count'] ?? $row['visitCount'] ?? 0);
+    /**
+     * @param array<int, array<string,mixed>> $rows
+     * @return array<int, array{date:\DateTimeImmutable|null, count:int}>
+     */
+    private function normalizeDailyData(array $rows): array
+    {
+        return array_map(static function (array $row): array {
+            $dateString = $row['visit_date'] ?? $row['date'] ?? null;
+            $count = (int) ($row['visit_count'] ?? $row['count'] ?? 0);
 
             $date = null;
             if ($dateString) {
@@ -82,126 +197,41 @@ final class AnalyticsController extends AbstractController
                 'date' => $date,
                 'count' => $count,
             ];
-        }, $rawVisitsByDay);
+        }, $rows);
+    }
 
-        $visitsByMonth = array_map(static function (array $row): array {
-            $monthString = $row['visit_month'] ?? $row['visitMonth'] ?? '';
-            $count = (int) ($row['visit_count'] ?? $row['visitCount'] ?? 0);
+    /**
+     * @param array<int, array<string,mixed>> $rows
+     * @return array<int, array{period:string, count:int}>
+     */
+    private function normalizeMonthlyData(array $rows): array
+    {
+        return array_map(static function (array $row): array {
+            $monthString = $row['visit_month'] ?? $row['period'] ?? '';
+            $count = (int) ($row['visit_count'] ?? $row['count'] ?? 0);
 
             return [
                 'period' => $monthString,
                 'count' => $count,
             ];
-        }, $rawVisitsByMonth);
+        }, $rows);
+    }
 
-        // Statistiques par période (hier, semaine dernière, mois dernier)
-        $yesterdayStart = $now->modify('-1 day')->setTime(0, 0, 0);
-        $yesterdayEnd = $now->modify('-1 day')->setTime(23, 59, 59);
-        $yesterdayVisits = $this->pageViewRepository->countByPeriod($yesterdayStart, $yesterdayEnd);
-
-        $lastWeekStart = $now->modify('-14 days')->setTime(0, 0, 0);
-        $lastWeekEnd = $now->modify('-8 days')->setTime(23, 59, 59);
-        $lastWeekVisits = $this->pageViewRepository->countByPeriod($lastWeekStart, $lastWeekEnd);
-
-        $lastMonthStart = $now->modify('-60 days')->setTime(0, 0, 0);
-        $lastMonthEnd = $now->modify('-31 days')->setTime(23, 59, 59);
-        $lastMonthVisits = $this->pageViewRepository->countByPeriod($lastMonthStart, $lastMonthEnd);
-
-        // Tableau détaillé des visites
-        $page = max(1, (int) $request->query->get('page', 1));
-        $limit = max(10, min(100, (int) $request->query->get('limit', 25)));
-
-        $fromInput = $request->query->get('from');
-        $toInput = $request->query->get('to');
-
-        $fromDate = $fromInput ? (\DateTimeImmutable::createFromFormat('Y-m-d', $fromInput) ?: null) : null;
-        $toDate = $toInput ? (\DateTimeImmutable::createFromFormat('Y-m-d', $toInput) ?: null) : null;
-
-        if ($fromDate instanceof \DateTimeImmutable) {
-            $fromDate = $fromDate->setTime(0, 0, 0);
+    private function formatDateLabel(?string $value): string
+    {
+        if (!$value) {
+            return '';
         }
 
-        if ($toDate instanceof \DateTimeImmutable) {
-            $toDate = $toDate->setTime(23, 59, 59);
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value) ?: null;
+        if (!$date) {
+            try {
+                $date = new \DateTimeImmutable($value);
+            } catch (\Exception) {
+                return $value;
+            }
         }
 
-        $filters = [
-            'from' => $fromDate ?? $start,
-            'to' => $toDate ?? $now,
-            'url' => $request->query->get('url'),
-            'referer' => $request->query->get('referer'),
-            'userEmail' => $request->query->get('userEmail'),
-            'method' => $request->query->get('method'),
-            'ipAddress' => $request->query->get('ipAddress'),
-            'sessionId' => $request->query->get('sessionId'),
-            'country' => $request->query->get('country'),
-            'city' => $request->query->get('city'),
-            'type' => $request->query->get('type'),
-        ];
-
-        $searchResult = $this->pageViewRepository->searchWithFilters($filters, $page, $limit);
-
-        $pageViews = $searchResult['data'];
-        $totalPageViews = $searchResult['total'];
-        $totalPages = (int) max(1, ceil($totalPageViews / $limit));
-
-        $filtersForView = [
-            'from' => ($fromDate ?? $start)->format('Y-m-d'),
-            'to' => ($toDate ?? $now)->format('Y-m-d'),
-            'url' => $request->query->get('url', ''),
-            'referer' => $request->query->get('referer', ''),
-            'userEmail' => $request->query->get('userEmail', ''),
-            'method' => $request->query->get('method', ''),
-            'ipAddress' => $request->query->get('ipAddress', ''),
-            'sessionId' => $request->query->get('sessionId', ''),
-            'country' => $request->query->get('country', ''),
-            'city' => $request->query->get('city', ''),
-            'type' => $request->query->get('type', ''),
-        ];
- 
-        $sharePeriodStart = (clone $now)->modify('-30 days')->setTime(0, 0, 0);
-        $shareTotals = [
-            'totalShares' => $this->shareRepository->countAll(),
-            'activeShares' => $this->shareRepository->countActive($now),
-            'sharesThisMonth' => $this->shareRepository->countByPeriod($sharePeriodStart, $now),
-            'totalShareVisits' => $this->shareVisitRepository->countAll(),
-            'shareVisitsThisMonth' => $this->shareVisitRepository->countByPeriod($sharePeriodStart, $now),
-        ];
-
-        $topSharers = $this->shareRepository->findTopSharers(5);
-        $topSharedAnalyses = $this->shareVisitRepository->findTopSharedAnalyses(5);
-        $recentShares = $this->shareRepository->findRecentShares(10);
-        $recentShareVisits = $this->shareVisitRepository->findRecentVisits(10);
-
-        return $this->render('admin/analytics/index.html.twig', [
-            'period' => $period,
-            'totalVisits' => $totalVisits,
-            'todayVisits' => $todayVisits,
-            'yesterdayVisits' => $yesterdayVisits,
-            'lastWeekVisits' => $lastWeekVisits,
-            'lastMonthVisits' => $lastMonthVisits,
-            'authenticatedVisits' => $authenticatedVisits,
-            'anonymousVisits' => $anonymousVisits,
-            'mostVisitedPages' => $mostVisitedPages,
-            'topReferers' => $topReferers,
-            'topCountries' => $topCountries,
-            'topCities' => $topCities,
-            'topDevices' => $topDevices,
-            'visitsByDay' => $visitsByDay,
-            'visitsByMonth' => $visitsByMonth,
-            'startDate' => $start,
-            'endDate' => $now,
-            'pageViews' => $pageViews,
-            'totalPageViews' => $totalPageViews,
-            'currentPage' => $page,
-            'pageSize' => $limit,
-            'totalPages' => $totalPages,
-            'filters' => $filtersForView,
-            'shareTotals' => $shareTotals,
-            'topSharers' => $topSharers,
-            'topSharedAnalyses' => $topSharedAnalyses,
-            'recentShares' => $recentShares,
-            'recentShareVisits' => $recentShareVisits,
-        ]);
+        return $date->format('d/m');
     }
 }

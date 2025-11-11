@@ -1,0 +1,311 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Trafic & audiences | Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Trafic et audiences</h1>
+            <p class="text-muted mb-0">Analyse du trafic sur la période sélectionnée</p>
+        </div>
+        <div>
+            <div class="btn-group" role="group" aria-label="Période">
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'today'}) }}" class="btn btn-sm {{ period == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">Aujourd'hui</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'week'}) }}" class="btn btn-sm {{ period == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">7 jours</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'month'}) }}" class="btn btn-sm {{ period == 'month' ? 'btn-primary' : 'btn-outline-primary' }}">30 jours</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'year'}) }}" class="btn btn-sm {{ period == 'year' ? 'btn-primary' : 'btn-outline-primary' }}">1 an</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Visites totales</h6>
+                            <h3 class="fw-bold mb-1">{{ totalVisits|number_format(0, ',', ' ') }}</h3>
+                            <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="activity" width="24" height="24" class="text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Aujourd'hui</h6>
+                            <h3 class="fw-bold mb-1">{{ todayVisits|number_format(0, ',', ' ') }}</h3>
+                            <small class="text-muted">Hier : {{ yesterdayVisits|number_format(0, ',', ' ') }}</small>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="trending-up" width="24" height="24" class="text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Utilisateurs connectés</h6>
+                            <h3 class="fw-bold mb-1">{{ authenticatedVisits|number_format(0, ',', ' ') }}</h3>
+                            <small class="text-muted">Semaine préc. : {{ lastWeekVisits|number_format(0, ',', ' ') }}</small>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="users" width="24" height="24" class="text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Visiteurs anonymes</h6>
+                            <h3 class="fw-bold mb-1">{{ anonymousVisits|number_format(0, ',', ' ') }}</h3>
+                            <small class="text-muted">Mois préc. : {{ lastMonthVisits|number_format(0, ',', ' ') }}</small>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="user" width="24" height="24" class="text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Visites quotidiennes</h5>
+                    <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+                </div>
+                <div class="card-body">
+                    <canvas id="trafficDailyChart" height="220" aria-label="Courbe des visites quotidiennes" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Visites mensuelles</h5>
+                    <small class="text-muted">12 derniers mois</small>
+                </div>
+                <div class="card-body">
+                    <canvas id="trafficMonthlyChart" height="220" aria-label="Histogramme des visites mensuelles" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Pages les plus visitées</h5>
+                    <small class="text-muted">Top 5</small>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Page</th>
+                                    <th class="text-end">Visites</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for page in mostVisitedPages %}
+                                <tr>
+                                    <td class="text-truncate" style="max-width: 320px;">
+                                        <code>{{ page.url }}</code>
+                                    </td>
+                                    <td class="text-end fw-semibold">{{ page.visitCount|number_format(0, ',', ' ') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-4">Aucune donnée disponible</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Répartition par pays</h5>
+                    <small class="text-muted">Top 5</small>
+                </div>
+                <div class="card-body">
+                    <canvas id="trafficCountryChart" height="220" role="img" aria-label="Répartition par pays"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Type d'appareils</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="trafficDeviceChart" height="220" role="img" aria-label="Répartition des appareils"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Synthèse rapide</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="text-muted">Période analysée</span>
+                            <strong>{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</strong>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="text-muted">Part des visiteurs connectés</span>
+                            {% set totalAudience = authenticatedVisits + anonymousVisits %}
+                            <strong>{{ totalAudience > 0 ? ((authenticatedVisits / totalAudience) * 100)|round(1) : 0 }}%</strong>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center py-2">
+                            <span class="text-muted">Visites moyennes / jour</span>
+                            {% set dayCount = visitsDailyChart.data|length > 0 ? visitsDailyChart.data|length : 1 %}
+                            {% set sumVisits = visitsDailyChart.data|reduce((carry, item) => carry + item, 0) %}
+                            <strong>{{ (sumVisits / dayCount)|round(1) }}</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" integrity="sha384-1+OxzI1+28HqkKqmXda3IIZeF1P0uohsEiL41Z8nfdXbra+XUl3Bd4Kp9Ezg4L7g" crossorigin="anonymous" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const dailyCtx = document.getElementById('trafficDailyChart');
+    const monthlyCtx = document.getElementById('trafficMonthlyChart');
+    const deviceCtx = document.getElementById('trafficDeviceChart');
+    const countryCtx = document.getElementById('trafficCountryChart');
+
+    const dailyData = {{ visitsDailyChart|json_encode|raw }};
+    const monthlyData = {{ visitsMonthlyChart|json_encode|raw }};
+    const deviceData = {{ deviceChart|json_encode|raw }};
+    const countryData = {{ countryChart|json_encode|raw }};
+
+    if (dailyCtx && dailyData.labels.length) {
+        new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: dailyData.labels,
+                datasets: [{
+                    label: 'Visites',
+                    data: dailyData.data,
+                    fill: false,
+                    borderColor: '#4f46e5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.15)',
+                    tension: 0.3,
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    if (monthlyCtx && monthlyData.labels.length) {
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: monthlyData.labels,
+                datasets: [{
+                    label: 'Visites',
+                    data: monthlyData.data,
+                    backgroundColor: 'rgba(14, 165, 233, 0.55)',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    if (deviceCtx && deviceData.labels.length) {
+        new Chart(deviceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: deviceData.labels,
+                datasets: [{
+                    data: deviceData.data,
+                    backgroundColor: ['#4f46e5', '#0ea5e9', '#f97316', '#22c55e', '#6366f1'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+
+    if (countryCtx && countryData.labels.length) {
+        new Chart(countryCtx, {
+            type: 'polarArea',
+            data: {
+                labels: countryData.labels,
+                datasets: [{
+                    data: countryData.data,
+                    backgroundColor: ['rgba(59,130,246,0.6)', 'rgba(16,185,129,0.6)', 'rgba(249,115,22,0.6)', 'rgba(168,85,247,0.6)', 'rgba(14,165,233,0.6)'],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

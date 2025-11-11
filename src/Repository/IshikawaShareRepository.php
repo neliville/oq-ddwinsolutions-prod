@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\IshikawaShare;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -99,6 +101,49 @@ class IshikawaShareRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getArrayResult();
+    }
+
+    /**
+     * @return array<int, array{share_date:string, share_count:int}>
+     */
+    public function findSharesByDay(\DateTimeInterface $start, \DateTimeInterface $end): array
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $platform = $connection->getDatabasePlatform()->getName();
+        $table = $this->getTableName($connection);
+
+        if ($platform === 'postgresql') {
+            $expression = "TO_CHAR(created_at, 'YYYY-MM-DD')";
+        } elseif ($platform === 'sqlite') {
+            $expression = "strftime('%Y-%m-%d', created_at)";
+        } else {
+            $expression = 'DATE(created_at)';
+        }
+
+        $sql = sprintf(
+            'SELECT %s AS share_date, COUNT(*) AS share_count FROM %s WHERE created_at BETWEEN :start AND :end GROUP BY share_date ORDER BY share_date ASC',
+            $expression,
+            $table
+        );
+
+        return $connection->executeQuery(
+            $sql,
+            [
+                'start' => $start,
+                'end' => $end,
+            ],
+            [
+                'start' => Types::DATETIME_MUTABLE,
+                'end' => Types::DATETIME_MUTABLE,
+            ]
+        )->fetchAllAssociative();
+    }
+
+    private function getTableName(Connection $connection): string
+    {
+        return $connection->quoteIdentifier(
+            $this->getEntityManager()->getClassMetadata(IshikawaShare::class)->getTableName()
+        );
     }
 }
 
