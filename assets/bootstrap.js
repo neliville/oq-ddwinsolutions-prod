@@ -14,6 +14,7 @@ import IshikawaCanvasController from './controllers/ishikawa_canvas_controller.j
 import IshikawaController from './controllers/ishikawa_controller.js';
 import IshikawaDragController from './controllers/ishikawa_drag_controller.js';
 import ProfileDropdownController from './controllers/profile_dropdown_controller.js';
+import NavbarController from './controllers/navbar_controller.js';
 
 const app = startStimulusApp();
 
@@ -32,5 +33,6 @@ app.register('ishikawa-canvas', IshikawaCanvasController);
 app.register('ishikawa', IshikawaController);
 app.register('ishikawa-drag', IshikawaDragController);
 app.register('profile-dropdown', ProfileDropdownController);
+app.register('navbar', NavbarController);
 
 window.Stimulus = app;

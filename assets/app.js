@@ -3,12 +3,10 @@ import '@hotwired/turbo';
 import './styles/app.scss';
 
 import './js/bootstrap.js';
-import { registerNavbar } from './js/components/navbar.js';
 import { registerNewsletterForms } from './js/components/newsletter.js';
 import { registerHomePage } from './js/pages/home.js';
 
 const initialiseFrontend = () => {
-  registerNavbar();
   registerNewsletterForms();
   registerHomePage();
 };
