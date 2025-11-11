@@ -1,4 +1,4 @@
-name: Deploy Symfony to o2switch
+name: Déploiement Symfony vers o2switch
 
 on:
   workflow_dispatch:
@@ -14,7 +14,9 @@ jobs:
       O2SWITCH_USER: ${{ secrets.O2SWITCH_USER }}
       O2SWITCH_SSH_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
       O2SWITCH_SSH_KEY_PASSPHRASE: ${{ secrets.O2SWITCH_SSH_KEY_PASSPHRASE }}
+      # Chemin vers le dossier de staging (zone temporaires) sur le serveur o2switch
       O2SWITCH_DEPLOY_PATH: ${{ secrets.O2SWITCH_DEPLOY_PATH }}
+      # Web-root de ton site (la racine publique) sur le serveur o2switch
       O2SWITCH_WEBROOT: ${{ secrets.O2SWITCH_WEBROOT }}
 
     steps:
@@ -28,19 +30,23 @@ jobs:
           extensions: mbstring, intl, pdo_mysql, opcache, zip
           tools: composer
 
-      - name: Install dependencies (no dev)
+      - name: Install dependencies (prod)
         run: |
           composer install --no-dev --optimize-autoloader --no-interaction
-          php bin/console asset-map:compile --env=prod || true
-          php bin/console cache:clear --env=prod || true
+          php bin/console asset-map:compile --env=prod
+          php bin/console cache:clear --env=prod
 
-      - name: Run PHPUnit (if configured)
+      - name: Run PHPUnit if exists
         if: hashFiles('phpunit.xml*') != ''
         run: |
           if [ -x "vendor/bin/phpunit" ]; then
             vendor/bin/phpunit --testdox
           else
-            php bin/phpunit --testdox || true
+            if [ -x "bin/phpunit" ]; then
+              php bin/phpunit --testdox
+            else
+              echo "PHPUnit non disponible, étape ignorée."
+            fi
           fi
 
       - name: Prepare release archive
@@ -70,16 +76,17 @@ jobs:
           script: |
             set -euo pipefail
 
-            cd "$O2SWITCH_DEPLOY_PATH"
+            cd "${{ env.O2SWITCH_DEPLOY_PATH }}"
 
             rm -rf release_tmp
             unzip -oq release.zip -d release_tmp
 
-            rsync -a --delete --exclude='.env*' \
-              release_tmp/ "$O2SWITCH_WEBROOT/"
+            # Copier dans ton dossier actuel du site
+            rsync -a --delete --exclude='.env*' release_tmp/ "${{ env.O2SWITCH_WEBROOT }}/"
 
             rm -rf release_tmp release.zip
 
-            cd "$O2SWITCH_WEBROOT"
-            php bin/console cache:clear --env=prod || true
+            cd "${{ env.O2SWITCH_WEBROOT }}"
+            php bin/console cache:clear --env=prod
+            # Si tu as des migrations :
             # php bin/console doctrine:migrations:migrate --env=prod --no-interaction || true

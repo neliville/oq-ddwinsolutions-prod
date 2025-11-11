@@ -6,10 +6,10 @@
   padding: var(--space-6) clamp(var(--space-4), 3vw, var(--space-6)) var(--space-12);
   background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
   color: var(--text-primary);
-  padding-top: calc(var(--space-6) + 56px);
+  padding-top: max(6.75rem, calc(var(--space-6) + 4.5rem));
 
   &--guest {
-    padding-top: calc(var(--space-10) + 56px);
+    padding-top: max(7.5rem, calc(var(--space-10) + 5rem));
   }
 
   .container {
@@ -445,6 +445,7 @@
 @media (max-width: 992px) {
   .qqoqccp-page {
     padding: var(--space-6) clamp(var(--space-3), 4vw, var(--space-5)) var(--space-10);
+    padding-top: max(6.75rem, calc(var(--space-6) + 4.75rem));
   }
 
   .qqoqccp-controls {
@@ -468,6 +469,7 @@
 @media (max-width: 640px) {
   .qqoqccp-page {
     padding: var(--space-5) var(--space-3) var(--space-8);
+    padding-top: max(6.75rem, calc(var(--space-6) + 5rem));
   }
 
   .qqoqccp-guide-card__grid {

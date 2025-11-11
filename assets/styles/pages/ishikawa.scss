@@ -13,6 +13,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: calc(100vh - 76px);
     padding: var(--space-6) clamp(var(--space-4), 3vw, var(--space-6)) var(--space-12);
+    padding-top: max(6.75rem, calc(var(--space-6) + 4.5rem));
     color: var(--text-primary);
     overflow-x: hidden;
     width: 100%;
@@ -663,6 +664,7 @@
 @media (max-width: 768px) {
     .ishikawa-page {
         padding: 16px;
+        padding-top: max(6.75rem, calc(var(--space-6) + 5rem));
     }
 
     .page-title {
@@ -1063,6 +1065,7 @@
 @media (max-width: 1280px) {
     .ishikawa-page {
         padding: 18px clamp(12px, 3vw, 20px) 32px;
+        padding-top: max(6.75rem, calc(var(--space-6) + 5rem));
     }
 
     .ishikawa-page .container-fluid {
@@ -1197,6 +1200,7 @@
     .ishikawa-page {
         padding: 12px;
         min-height: calc(100vh - 76px);
+        padding-top: max(7rem, calc(var(--space-6) + 5.25rem));
     }
 
     .page-header {

@@ -51,19 +51,15 @@ return [
     ],
     'bootstrap/js/dist/collapse' => [
         'version' => '5.3.8',
-        'type' => 'js',
     ],
     'bootstrap/js/dist/dropdown' => [
         'version' => '5.3.8',
-        'type' => 'js',
     ],
     'bootstrap/js/dist/modal' => [
         'version' => '5.3.8',
-        'type' => 'js',
     ],
     'bootstrap/js/dist/toast' => [
         'version' => '5.3.8',
-        'type' => 'js',
     ],
     '@popperjs/core' => [
         'version' => '2.11.8',
@@ -71,5 +67,8 @@ return [
     'bootstrap/dist/css/bootstrap.min.css' => [
         'version' => '5.3.8',
         'type' => 'css',
+    ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
     ],
 ];
