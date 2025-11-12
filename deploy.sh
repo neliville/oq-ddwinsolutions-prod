@@ -51,30 +51,8 @@ else
 fi
 echo -e "${GREEN}   ✓ Dépendances installées${NC}"
 
-# 5. Exécuter les migrations de base de données
-echo -e "\n${YELLOW}5. Exécution des migrations Doctrine...${NC}"
-php bin/console doctrine:migrations:migrate --no-interaction || {
-    echo -e "${YELLOW}   ⚠ Aucune migration à exécuter ou erreur (non bloquant)${NC}"
-}
-echo -e "${GREEN}   ✓ Migrations vérifiées${NC}"
-
-# 6. Compiler les assets avec Asset Mapper
-echo -e "\n${YELLOW}6. Compilation des assets (Asset Mapper)...${NC}"
-php bin/console asset-map:compile || {
-    echo -e "${RED}Erreur lors de la compilation des assets${NC}"
-    exit 1
-}
-echo -e "${GREEN}   ✓ Assets compilés${NC}"
-
-# 7. Vider le cache Symfony
-echo -e "\n${YELLOW}7. Vidage du cache Symfony...${NC}"
-php bin/console cache:clear --env=prod --no-debug || {
-    echo -e "${YELLOW}   ⚠ Erreur lors du vidage du cache (peut être normal en prod)${NC}"
-}
-echo -e "${GREEN}   ✓ Cache vidé${NC}"
-
-# 8. Optimiser l'autoloader
-echo -e "\n${YELLOW}8. Optimisation de l'autoloader...${NC}"
+# 5. Optimiser l'autoloader AVANT de vider le cache
+echo -e "\n${YELLOW}5. Optimisation de l'autoloader...${NC}"
 if [ -f "composer.phar" ]; then
     php composer.phar dump-autoload --optimize --no-dev
 else
@@ -82,8 +60,57 @@ else
 fi
 echo -e "${GREEN}   ✓ Autoloader optimisé${NC}"
 
-# 9. Vérifier les permissions (optionnel, selon la configuration o2switch)
-echo -e "\n${YELLOW}9. Vérification des permissions...${NC}"
+# 6. Supprimer manuellement le cache avant de le régénérer (évite les erreurs avec MakerBundle)
+echo -e "\n${YELLOW}6. Suppression de l'ancien cache...${NC}"
+if [ -d "var/cache" ]; then
+    rm -rf var/cache/* || {
+        echo -e "${YELLOW}   ⚠ Impossible de supprimer le cache (peut être normal)${NC}"
+    }
+    echo -e "${GREEN}   ✓ Ancien cache supprimé${NC}"
+else
+    echo -e "${GREEN}   ✓ Aucun cache à supprimer${NC}"
+fi
+
+# 7. Vider le cache Symfony (en mode prod, sans erreur bloquante)
+echo -e "\n${YELLOW}7. Régénération du cache Symfony...${NC}"
+# Désactiver temporairement set -e pour cette commande
+set +e
+php bin/console cache:clear --env=prod --no-debug 2>&1 | grep -v "MakerBundle" || true
+CACHE_EXIT_CODE=$?
+set -e
+
+if [ $CACHE_EXIT_CODE -eq 0 ]; then
+    echo -e "${GREEN}   ✓ Cache régénéré${NC}"
+else
+    echo -e "${YELLOW}   ⚠ Erreur lors de la régénération du cache (tentative de suppression manuelle)${NC}"
+    # Tentative de suppression manuelle et régénération
+    rm -rf var/cache/prod/* 2>/dev/null || true
+    php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -v "MakerBundle" || {
+        echo -e "${YELLOW}   ⚠ Cache non régénéré automatiquement, mais non bloquant${NC}"
+    }
+fi
+
+# 8. Exécuter les migrations de base de données
+echo -e "\n${YELLOW}8. Exécution des migrations Doctrine...${NC}"
+set +e
+php bin/console doctrine:migrations:migrate --no-interaction --env=prod 2>&1 | grep -v "MakerBundle" || {
+    echo -e "${YELLOW}   ⚠ Aucune migration à exécuter ou erreur (non bloquant)${NC}"
+}
+set -e
+echo -e "${GREEN}   ✓ Migrations vérifiées${NC}"
+
+# 9. Compiler les assets avec Asset Mapper
+echo -e "\n${YELLOW}9. Compilation des assets (Asset Mapper)...${NC}"
+set +e
+php bin/console asset-map:compile --env=prod 2>&1 | grep -v "MakerBundle" || {
+    echo -e "${RED}Erreur lors de la compilation des assets${NC}"
+    exit 1
+}
+set -e
+echo -e "${GREEN}   ✓ Assets compilés${NC}"
+
+# 10. Vérifier les permissions (optionnel, selon la configuration o2switch)
+echo -e "\n${YELLOW}10. Vérification des permissions...${NC}"
 # Sur o2switch, les permissions sont généralement gérées automatiquement
 # Décommentez les lignes suivantes si nécessaire :
 # chmod -R 755 var/

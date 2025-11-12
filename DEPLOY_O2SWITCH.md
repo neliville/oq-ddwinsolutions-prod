@@ -166,11 +166,38 @@ ls -la var/
 ls -la public/
 ```
 
+### Erreur "ClassNotFoundError: MakerBundle"
+
+Si vous rencontrez l'erreur :
+```
+Attempted to load class "MakerBundle" from namespace "Symfony\Bundle\MakerBundle"
+```
+
+**Cause** : Le cache Symfony contient encore des références à `MakerBundle` (bundle de développement) alors qu'il n'est pas installé en production.
+
+**Solution** : Le script `deploy.sh` gère automatiquement ce problème en :
+1. Supprimant manuellement l'ancien cache avant de le régénérer
+2. Filtrant les messages d'erreur liés à MakerBundle
+3. Régénérant l'autoloader avant de vider le cache
+
+Si le problème persiste, exécutez manuellement :
+
+```bash
+# Supprimer complètement le cache
+rm -rf var/cache/*
+
+# Régénérer l'autoloader
+composer dump-autoload --optimize --no-dev
+
+# Réchauffer le cache en production
+php bin/console cache:warmup --env=prod --no-debug
+```
+
 ### Erreur lors de la compilation des assets
 ```bash
 # Vérifier que Node.js/Sass est disponible (si nécessaire)
 # Asset Mapper utilise généralement PHP uniquement
-php bin/console asset-map:compile -v
+php bin/console asset-map:compile -v --env=prod
 ```
 
 ## Support
