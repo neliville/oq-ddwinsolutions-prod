@@ -236,7 +236,8 @@ Cette erreur survient lorsque Symfony essaie de charger `MakerBundle` qui n'est 
 
 ```bash
 # 1. Vérifier que les dépendances dev ne sont PAS installées
-composer install --no-dev --optimize-autoloader
+# IMPORTANT: Utiliser --no-scripts pour éviter l'exécution automatique de cache:clear
+composer install --no-dev --optimize-autoloader --no-scripts
 
 # 2. Vider COMPLÈTEMENT le cache (critique)
 rm -rf var/cache/*
@@ -255,12 +256,27 @@ php bin/console cache:warmup --env=prod --no-debug
 php bin/console asset-map:compile --env=prod --no-debug
 ```
 
-**Le script `deploy.sh` gère automatiquement cette séquence** depuis la version mise à jour.
+**Le script `deploy.sh` gère automatiquement cette séquence** depuis la version mise à jour, en utilisant `--no-scripts` pour éviter l'exécution automatique de `cache:clear` lors de `composer install`.
 
 **Causes courantes :**
 - Cache contenant des références à MakerBundle
 - Dépendances dev installées en production
 - Environnement mal configuré (APP_ENV != prod)
+- **Auto-scripts de Composer exécutant `cache:clear` automatiquement** (résolu avec `--no-scripts`)
+
+### Erreur "Script cache:clear returned with error code 255"
+
+Cette erreur survient lorsque `composer install` exécute automatiquement les `auto-scripts` définis dans `composer.json`, notamment `cache:clear`, qui échoue à cause de MakerBundle.
+
+**Solution :**
+
+Le script `deploy.sh` utilise maintenant `--no-scripts` lors de `composer install` pour éviter l'exécution automatique des scripts. Si vous exécutez manuellement `composer install`, utilisez :
+
+```bash
+composer install --no-dev --optimize-autoloader --no-scripts
+```
+
+Puis exécutez manuellement les commandes nécessaires après avoir vidé le cache.
 
 ## Support
 
