@@ -1136,7 +1136,7 @@
             if (!isReadonlyMode) {
                 actionsSection = `
                     <div class="category-card__footer">
-                        <div class="category-actions">
+                        <div class="ishikawa-category-actions">
                             <button class="btn btn-primary btn-icon tooltip" data-tooltip="Éditer" onclick="window.ishikawaApp.openCategoryModal(${index})" aria-label="Éditer la catégorie ${category.name}">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

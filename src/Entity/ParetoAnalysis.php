@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParetoAnalysisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,9 +37,13 @@ class ParetoAnalysis
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'analysis', targetEntity: ParetoShare::class, orphanRemoval: true)]
+    private Collection $shares;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->shares = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,7 +56,7 @@ class ParetoAnalysis
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -62,7 +68,7 @@ class ParetoAnalysis
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -74,7 +80,7 @@ class ParetoAnalysis
         return $this->data;
     }
 
-    public function setData(string $data): static
+    public function setData(string $data): self
     {
         $this->data = $data;
 
@@ -86,7 +92,7 @@ class ParetoAnalysis
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -98,7 +104,7 @@ class ParetoAnalysis
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -110,9 +116,34 @@ class ParetoAnalysis
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ParetoShare>
+     */
+    public function getShares(): Collection
+    {
+        return $this->shares;
+    }
+
+    public function addShare(ParetoShare $share): self
+    {
+        if (!$this->shares->contains($share)) {
+            $this->shares->add($share);
+            $share->setAnalysis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShare(ParetoShare $share): self
+    {
+        $this->shares->removeElement($share);
 
         return $this;
     }

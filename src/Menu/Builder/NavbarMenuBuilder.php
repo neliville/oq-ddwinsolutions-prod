@@ -38,8 +38,8 @@ final class NavbarMenuBuilder
         $this->addAnchorItem($menu, 'Fonctionnalités', 'app_home_index', 'fonctionnalites', $currentRoute);
         $this->addAnchorItem($menu, 'Expertise', 'app_home_index', 'expertise', $currentRoute);
 
-        $this->addRouteItem($menu, 'Blog', 'app_blog_index', $currentRoute);
-        $this->addRouteItem($menu, 'Contact', 'app_contact_index', $currentRoute);
+        $this->addRouteItem($menu, 'Blog', 'app_blog_index', $currentRoute, ['app_blog']);
+        $this->addRouteItem($menu, 'Contact', 'app_contact_index', $currentRoute, ['app_contact']);
 
         return $menu;
     }
@@ -64,9 +64,18 @@ final class NavbarMenuBuilder
         ]);
     }
 
-    private function addRouteItem(ItemInterface $menu, string $label, string $route, ?string $currentRoute): void
+    private function addRouteItem(ItemInterface $menu, string $label, string $route, ?string $currentRoute, array $matchingPrefixes = []): void
     {
         $isCurrent = $currentRoute === $route;
+
+        if (!$isCurrent && $currentRoute !== null) {
+            foreach ($matchingPrefixes as $prefix) {
+                if (str_starts_with($currentRoute, $prefix)) {
+                    $isCurrent = true;
+                    break;
+                }
+            }
+        }
 
         $menu->addChild($label, [
             'route' => $route,

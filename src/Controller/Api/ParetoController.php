@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\ParetoAnalysis;
+use App\Entity\ParetoShare;
 use App\Entity\User;
 use App\Repository\ParetoAnalysisRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/pareto')]
@@ -75,7 +77,61 @@ final class ParetoController extends AbstractController
         ], $isUpdate ? Response::HTTP_OK : Response::HTTP_CREATED);
     }
 
-    #[Route('/{id<\d+>}', name: 'app_api_pareto_get', methods: ['GET'])]
+    #[Route('/share', name: 'app_api_pareto_share', methods: ['POST'])]
+    public function share(
+        Request $request,
+        ParetoAnalysisRepository $repository,
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator
+    ): JsonResponse {
+        $payload = json_decode($request->getContent(), true);
+
+        if (!isset($payload['id'])) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'L\'identifiant de l\'analyse est requis pour le partage.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $analysis = $repository->findOneBy([
+            'id' => (int) $payload['id'],
+            'user' => $user,
+        ]);
+
+        if (!$analysis) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Analyse introuvable ou accès non autorisé.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $share = new ParetoShare();
+        $share->setAnalysis($analysis);
+        $share->setToken(bin2hex(random_bytes(24)));
+        $share->setExpiresAt(new \DateTimeImmutable('+1 month'));
+
+        $entityManager->persist($share);
+        $entityManager->flush();
+
+        $shareUrl = $urlGenerator->generate(
+            'app_pareto_share_view',
+            ['token' => $share->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Lien de partage Pareto généré.',
+            'data' => [
+                'url' => $shareUrl,
+                'expiresAt' => $share->getExpiresAt()->format('Y-m-d H:i:s'),
+            ],
+        ], Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id<\\d+>}', name: 'app_api_pareto_get', methods: ['GET'])]
     public function get(int $id, ParetoAnalysisRepository $repository): JsonResponse
     {
         $user = $this->getUser();
@@ -122,7 +178,7 @@ final class ParetoController extends AbstractController
         return new JsonResponse(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/{id<\d+>}', name: 'app_api_pareto_delete', methods: ['DELETE'])]
+    #[Route('/{id<\\d+>}', name: 'app_api_pareto_delete', methods: ['DELETE'])]
     public function delete(int $id, ParetoAnalysisRepository $repository, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();

@@ -476,14 +476,14 @@
     line-height: 1.2;
 }
 
-.category-actions {
+.ishikawa-category-actions {
     display: inline-flex !important;
     gap: 8px;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
-.ishikawa-page .category-actions .btn {
+.ishikawa-page .ishikawa-category-actions .btn {
     min-width: 26px;
     height: 26px;
     border-radius: var(--radius-sm);
@@ -499,29 +499,29 @@
     visibility: visible !important;
 }
 
-.ishikawa-page .category-actions button {
+.ishikawa-page .ishikawa-category-actions button {
     opacity: 1 !important;
     visibility: visible !important;
 }
 
-.ishikawa-page .category-actions .btn svg {
+.ishikawa-page .ishikawa-category-actions .btn svg {
     color: inherit;
     opacity: 1;
 }
 
-.ishikawa-page .category-actions .btn-primary {
+.ishikawa-page .ishikawa-category-actions .btn-primary {
     background: var(--primary);
     color: #fff;
     box-shadow: var(--shadow-sm);
 }
 
-.ishikawa-page .category-actions .btn-danger {
+.ishikawa-page .ishikawa-category-actions .btn-danger {
     background: var(--danger-color);
     color: white;
     box-shadow: var(--shadow-sm);
 }
 
-.ishikawa-page .category-actions .btn svg {
+.ishikawa-page .ishikawa-category-actions .btn svg {
     width: 12px;
     height: 12px;
 }
@@ -1291,12 +1291,12 @@
         font-size: 0.688rem;
     }
 
-    .ishikawa-page .category-actions .btn {
+    .ishikawa-page .ishikawa-category-actions .btn {
         min-width: 32px;
         height: 32px;
     }
 
-    .ishikawa-page .category-actions .btn svg {
+    .ishikawa-page .ishikawa-category-actions .btn svg {
         width: 14px;
         height: 14px;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QqoqccpAnalysisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,6 +22,9 @@ class QqoqccpAnalysis
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $subject = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -35,9 +40,13 @@ class QqoqccpAnalysis
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'analysis', targetEntity: QqoqccpShare::class, orphanRemoval: true)]
+    private Collection $shares;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->shares = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,9 +59,21 @@ class QqoqccpAnalysis
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -62,7 +83,7 @@ class QqoqccpAnalysis
         return $this->subject;
     }
 
-    public function setSubject(?string $subject): static
+    public function setSubject(?string $subject): self
     {
         $this->subject = $subject;
 
@@ -74,7 +95,7 @@ class QqoqccpAnalysis
         return $this->data;
     }
 
-    public function setData(string $data): static
+    public function setData(string $data): self
     {
         $this->data = $data;
 
@@ -86,7 +107,7 @@ class QqoqccpAnalysis
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -98,7 +119,7 @@ class QqoqccpAnalysis
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -110,9 +131,34 @@ class QqoqccpAnalysis
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QqoqccpShare>
+     */
+    public function getShares(): Collection
+    {
+        return $this->shares;
+    }
+
+    public function addShare(QqoqccpShare $share): self
+    {
+        if (!$this->shares->contains($share)) {
+            $this->shares->add($share);
+            $share->setAnalysis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShare(QqoqccpShare $share): self
+    {
+        $this->shares->removeElement($share);
 
         return $this;
     }

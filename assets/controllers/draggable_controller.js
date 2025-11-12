@@ -29,7 +29,7 @@ export default class extends Controller {
 
     startDrag(event) {
         // Ignorer si on clique sur les boutons d'action
-        if (event.target.closest('.category-actions')) {
+        if (event.target.closest('.ishikawa-category-actions')) {
             return;
         }
         

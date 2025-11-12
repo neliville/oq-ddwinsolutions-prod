@@ -45,6 +45,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Scripts globaux -->
     <script src="{{ asset('js/main.js') }}" data-turbo-track="reload"></script>
+    <script>
+        window.ishikawaReadonly = false;
+    </script>
     <!-- Ishikawa JS - Chargé après le DOM pour éviter les problèmes d'initialisation -->
     <script src="{{ asset('js/ishikawa.js') }}" data-turbo-track="reload"></script>
     

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tool.name ?? 'Analyse partagée' }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="container py-6">
+    <div class="mb-5">
+        <h1 class="h3 fw-bold mb-2">{{ tool.name ?? 'Analyse partagée' }}</h1>
+        <p class="text-muted mb-0">
+            Vous consultez une version partagée de cette analyse en lecture seule.
+            {% if tool.originRoute is defined %}
+                <a class="ms-1" href="{{ path(tool.originRoute) }}">Retourner à l'outil complet</a>.
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="alert alert-info shadow-sm" role="status">
+        L'affichage interactif complet sera prochainement disponible sur cette page partagée.
+        En attendant, vous pouvez importer l'analyse dans votre espace personnel pour continuer le travail.
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body">
+            <h2 class="h5 fw-semibold mb-3">Résumé de l'analyse</h2>
+            <dl class="row small mb-0">
+                <dt class="col-sm-4 text-muted">Titre</dt>
+                <dd class="col-sm-8">{{ analysis.title }}</dd>
+                {% if analysisData.subject is defined and analysisData.subject %}
+                    <dt class="col-sm-4 text-muted">Sujet</dt>
+                    <dd class="col-sm-8">{{ analysisData.subject }}</dd>
+                {% endif %}
+                <dt class="col-sm-4 text-muted">Partagée par</dt>
+                <dd class="col-sm-8">{{ analysis.user.email ?? 'Utilisateur OUTILS-QUALITÉ' }}</dd>
+                <dt class="col-sm-4 text-muted">Valide jusqu'au</dt>
+                <dd class="col-sm-8">{{ share.expiresAt|date('d/m/Y H:i') }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-white border-bottom-0">
+            <h2 class="h6 mb-0">Données du partage</h2>
+        </div>
+        <div class="card-body">
+            <pre class="bg-light p-3 rounded small overflow-auto mb-0">{{ analysisData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

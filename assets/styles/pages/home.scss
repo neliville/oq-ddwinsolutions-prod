@@ -328,6 +328,8 @@
       border-radius: 8px;
       text-decoration: none;
       transition: background 0.2s ease, color 0.2s ease, border 0.2s ease, transform 0.2s ease;
+      white-space: nowrap;
+      min-width: 140px;
 
       &.secondary {
         background: rgba(6, 182, 212, 0.15);

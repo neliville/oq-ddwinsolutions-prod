@@ -1,5 +1,6 @@
 @use '../core/variables';
 
+
 .dashboard-page {
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
   border-radius: var(--radius-xl);
@@ -52,6 +53,29 @@
   .btn-outline-warning {
     border-width: 1.5px;
     border-radius: var(--radius-md);
+  }
+
+  .dashboard-tool-link {
+    min-width: 140px;
+    padding-inline: 1.25rem;
+    white-space: nowrap;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    i {
+      flex-shrink: 0;
+    }
+
+    span {
+      flex-shrink: 0;
+    }
   }
 
   @media (max-width: 992px) {
