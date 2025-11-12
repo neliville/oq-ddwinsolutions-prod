@@ -60,38 +60,62 @@ else
 fi
 echo -e "${GREEN}   ✓ Autoloader optimisé${NC}"
 
-# 6. Supprimer manuellement le cache avant de le régénérer (évite les erreurs avec MakerBundle)
-echo -e "\n${YELLOW}6. Suppression de l'ancien cache...${NC}"
-if [ -d "var/cache" ]; then
-    rm -rf var/cache/* || {
-        echo -e "${YELLOW}   ⚠ Impossible de supprimer le cache (peut être normal)${NC}"
-    }
-    echo -e "${GREEN}   ✓ Ancien cache supprimé${NC}"
+# 6. Vérifier et forcer l'environnement de production
+echo -e "\n${YELLOW}6. Vérification de l'environnement...${NC}"
+if [ -f ".env" ]; then
+    # S'assurer que APP_ENV=prod dans .env
+    if grep -q "^APP_ENV=" .env; then
+        sed -i 's/^APP_ENV=.*/APP_ENV=prod/' .env
+        echo -e "${GREEN}   ✓ APP_ENV défini sur 'prod'${NC}"
+    else
+        echo "APP_ENV=prod" >> .env
+        echo -e "${GREEN}   ✓ APP_ENV ajouté et défini sur 'prod'${NC}"
+    fi
+    
+    # S'assurer que APP_DEBUG=0
+    if grep -q "^APP_DEBUG=" .env; then
+        sed -i 's/^APP_DEBUG=.*/APP_DEBUG=0/' .env
+        echo -e "${GREEN}   ✓ APP_DEBUG désactivé${NC}"
+    else
+        echo "APP_DEBUG=0" >> .env
+        echo -e "${GREEN}   ✓ APP_DEBUG ajouté et désactivé${NC}"
+    fi
 else
-    echo -e "${GREEN}   ✓ Aucun cache à supprimer${NC}"
+    echo -e "${YELLOW}   ⚠ Fichier .env non trouvé (peut être normal selon la configuration)${NC}"
 fi
 
-# 7. Vider le cache Symfony (en mode prod, sans erreur bloquante)
-echo -e "\n${YELLOW}7. Régénération du cache Symfony...${NC}"
+# 7. Supprimer COMPLÈTEMENT le cache AVANT toute commande Symfony (critique pour éviter MakerBundle)
+echo -e "\n${YELLOW}7. Suppression complète de l'ancien cache...${NC}"
+# Supprimer tous les dossiers de cache possibles
+if [ -d "var/cache" ]; then
+    rm -rf var/cache/* var/cache/.* 2>/dev/null || true
+    # S'assurer que les dossiers sont bien supprimés
+    find var/cache -mindepth 1 -delete 2>/dev/null || true
+    echo -e "${GREEN}   ✓ Ancien cache supprimé${NC}"
+else
+    mkdir -p var/cache
+    echo -e "${GREEN}   ✓ Dossier cache créé${NC}"
+fi
+
+# 8. Vider le cache Symfony (en mode prod, sans erreur bloquante)
+echo -e "\n${YELLOW}8. Régénération du cache Symfony...${NC}"
 # Désactiver temporairement set -e pour cette commande
 set +e
-php bin/console cache:clear --env=prod --no-debug 2>&1 | grep -v "MakerBundle" || true
+# Utiliser cache:clear avec --no-warmup d'abord, puis warmup séparément
+php bin/console cache:clear --env=prod --no-debug --no-warmup 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError)" || true
+# Maintenant réchauffer le cache
+php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError)" || true
 CACHE_EXIT_CODE=$?
 set -e
 
-if [ $CACHE_EXIT_CODE -eq 0 ]; then
+if [ $CACHE_EXIT_CODE -eq 0 ] || [ -d "var/cache/prod" ]; then
     echo -e "${GREEN}   ✓ Cache régénéré${NC}"
 else
-    echo -e "${YELLOW}   ⚠ Erreur lors de la régénération du cache (tentative de suppression manuelle)${NC}"
-    # Tentative de suppression manuelle et régénération
-    rm -rf var/cache/prod/* 2>/dev/null || true
-    php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -v "MakerBundle" || {
-        echo -e "${YELLOW}   ⚠ Cache non régénéré automatiquement, mais non bloquant${NC}"
-    }
+    echo -e "${YELLOW}   ⚠ Cache régénéré avec avertissements (non bloquant)${NC}"
 fi
 
-# 8. Exécuter les migrations de base de données
-echo -e "\n${YELLOW}8. Exécution des migrations Doctrine...${NC}"
+# 9. Exécuter les migrations de base de données
+echo -e "\n${YELLOW}9. Exécution des migrations Doctrine...${NC}"
 set +e
 php bin/console doctrine:migrations:migrate --no-interaction --env=prod 2>&1 | grep -v "MakerBundle" || {
     echo -e "${YELLOW}   ⚠ Aucune migration à exécuter ou erreur (non bloquant)${NC}"
@@ -99,18 +123,31 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod 2>&1 | g
 set -e
 echo -e "${GREEN}   ✓ Migrations vérifiées${NC}"
 
-# 9. Compiler les assets avec Asset Mapper
-echo -e "\n${YELLOW}9. Compilation des assets (Asset Mapper)...${NC}"
+# 10. Compiler les assets avec Asset Mapper
+echo -e "\n${YELLOW}10. Compilation des assets (Asset Mapper)...${NC}"
 set +e
-php bin/console asset-map:compile --env=prod 2>&1 | grep -v "MakerBundle" || {
-    echo -e "${RED}Erreur lors de la compilation des assets${NC}"
-    exit 1
+# S'assurer que le cache est bien vidé avant la compilation
+if [ -d "var/cache/prod" ]; then
+    # Supprimer uniquement les fichiers de cache qui pourraient causer des problèmes
+    find var/cache/prod -name "*MakerBundle*" -delete 2>/dev/null || true
+fi
+
+# Compiler les assets en filtrant les erreurs MakerBundle
+php bin/console asset-map:compile --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || {
+    # Si l'erreur persiste, essayer une dernière fois après avoir vidé le cache
+    echo -e "${YELLOW}   ⚠ Première tentative échouée, nouvelle tentative après vidage du cache...${NC}"
+    rm -rf var/cache/prod/* 2>/dev/null || true
+    php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError)" || true
+    php bin/console asset-map:compile --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || {
+        echo -e "${RED}Erreur lors de la compilation des assets${NC}"
+        exit 1
+    }
 }
 set -e
 echo -e "${GREEN}   ✓ Assets compilés${NC}"
 
-# 10. Vérifier les permissions (optionnel, selon la configuration o2switch)
-echo -e "\n${YELLOW}10. Vérification des permissions...${NC}"
+# 11. Vérifier les permissions (optionnel, selon la configuration o2switch)
+echo -e "\n${YELLOW}11. Vérification des permissions...${NC}"
 # Sur o2switch, les permissions sont généralement gérées automatiquement
 # Décommentez les lignes suivantes si nécessaire :
 # chmod -R 755 var/

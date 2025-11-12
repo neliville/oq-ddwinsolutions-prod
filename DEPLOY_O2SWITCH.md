@@ -200,6 +200,68 @@ php bin/console cache:warmup --env=prod --no-debug
 php bin/console asset-map:compile -v --env=prod
 ```
 
+### Web Profiler visible en production
+
+Si le Web Profiler de Symfony apparaît en production (barre d'outils en bas de page), cela indique que l'environnement n'est pas correctement configuré.
+
+**Solution immédiate sur o2switch :**
+
+```bash
+# 1. Vérifier/modifier le fichier .env
+nano .env  # ou votre éditeur préféré
+
+# 2. S'assurer que ces lignes sont présentes et correctes :
+APP_ENV=prod
+APP_DEBUG=0
+
+# 3. Vider complètement le cache
+rm -rf var/cache/*
+
+# 4. Régénérer le cache en production
+php bin/console cache:warmup --env=prod --no-debug
+```
+
+**Le script `deploy.sh` gère automatiquement cette vérification** depuis la version mise à jour.
+
+**Vérification :**
+- Le Web Profiler ne doit **jamais** apparaître en production
+- Il expose des informations sensibles (routes, requêtes, données)
+- Il ralentit les performances
+
+### Erreur "ClassNotFoundError: MakerBundle" en production
+
+Cette erreur survient lorsque Symfony essaie de charger `MakerBundle` qui n'est pas installé en production (il est dans `require-dev`).
+
+**Solution immédiate sur o2switch :**
+
+```bash
+# 1. Vérifier que les dépendances dev ne sont PAS installées
+composer install --no-dev --optimize-autoloader
+
+# 2. Vider COMPLÈTEMENT le cache (critique)
+rm -rf var/cache/*
+
+# 3. Régénérer l'autoloader
+composer dump-autoload --optimize --no-dev
+
+# 4. Vérifier l'environnement dans .env
+# APP_ENV=prod
+# APP_DEBUG=0
+
+# 5. Réchauffer le cache en production
+php bin/console cache:warmup --env=prod --no-debug
+
+# 6. Maintenant compiler les assets
+php bin/console asset-map:compile --env=prod --no-debug
+```
+
+**Le script `deploy.sh` gère automatiquement cette séquence** depuis la version mise à jour.
+
+**Causes courantes :**
+- Cache contenant des références à MakerBundle
+- Dépendances dev installées en production
+- Environnement mal configuré (APP_ENV != prod)
+
 ## Support
 
 - Documentation o2switch : https://faq.o2switch.fr/
