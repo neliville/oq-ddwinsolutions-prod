@@ -223,6 +223,24 @@ php bin/console cache:warmup --env=prod --no-debug
 
 **Le script `deploy.sh` gère automatiquement cette vérification** depuis la version mise à jour.
 
+**Important :** Ne créez **PAS** de fichier `config/packages/prod/web_profiler.yaml` en production. Le `WebProfilerBundle` n'est pas installé en production (il est dans `require-dev`), donc Symfony ne peut pas charger sa configuration. Le bundle est déjà désactivé dans `config/bundles.php` pour l'environnement `prod`, ce qui est suffisant.
+
+**Erreur "Did you forget to install or enable the WebProfilerBundle?" :**
+
+Si vous voyez cette erreur lors du déploiement, c'est qu'un fichier `config/packages/prod/web_profiler.yaml` existe et tente de charger la configuration du Web Profiler alors que le bundle n'est pas installé en production.
+
+**Solution :**
+```bash
+# Supprimer le fichier problématique
+rm -f config/packages/prod/web_profiler.yaml
+
+# Vider le cache
+rm -rf var/cache/*
+
+# Réchauffer le cache
+php bin/console cache:warmup --env=prod --no-debug
+```
+
 **Vérification :**
 - Le Web Profiler ne doit **jamais** apparaître en production
 - Il expose des informations sensibles (routes, requêtes, données)
