@@ -60,6 +60,7 @@ final class BlogController extends AbstractController
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalPosts' => $totalPosts,
+            'show_public_navbar' => true,
         ]);
     }
 
@@ -87,6 +88,7 @@ final class BlogController extends AbstractController
             'post' => $post,
             'relatedPosts' => $relatedPosts,
             'newsletterForm' => $form,
+            'show_public_navbar' => true,
         ]);
     }
 }

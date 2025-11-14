@@ -157,7 +157,10 @@
     
     {% set show_sidebar_toggle = show_sidebar_toggle is defined ? show_sidebar_toggle : false %}
     {% set current_route = app.request.attributes.get('_route') %}
-    {% set show_public_navbar = show_public_navbar is defined ? show_public_navbar : (app.user is null or current_route == 'app_home_index') %}
+    {# Routes publiques qui doivent toujours afficher la navbar publique #}
+    {% set public_routes = ['app_home_index', 'app_blog_index', 'app_blog_article', 'app_contact_index', 'app_legal_politique_confidentialite', 'app_legal_mentions_legales'] %}
+    {% set is_public_route = current_route in public_routes %}
+    {% set show_public_navbar = show_public_navbar is defined ? show_public_navbar : (app.user is null or is_public_route) %}
 
     <!-- Navigation -->
     {% if show_public_navbar %}
