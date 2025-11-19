@@ -47,7 +47,8 @@
 
   &:hover {
     border-color: var(--primary);
-    background: var(--gray-50);
+    background: var(--primary);
+    color: #ffffff !important;
   }
 }
 
