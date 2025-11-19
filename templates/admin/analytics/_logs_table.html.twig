@@ -9,7 +9,28 @@
                             <h5 class="mb-0">Logs de navigation des utilisateurs</h5>
                             <small class="text-muted">Total : {{ totalLogs|number_format(0, ',', ' ') }} visite(s)</small>
                         </div>
-                        <div class="d-flex gap-2 flex-wrap">
+                        <div class="d-flex gap-2 flex-wrap align-items-center">
+                            {# Date Range Picker #}
+                            <div data-controller="date-range" 
+                                 data-date-range-turbo-frame-value="navigation-logs-frame"
+                                 data-date-range-date-from-value="{{ request.query.get('date_from') }}"
+                                 data-date-range-date-to-value="{{ request.query.get('date_to') }}"
+                                 class="d-flex align-items-center gap-2">
+                                <label for="date_range" class="form-label small mb-0 d-none d-md-block">Période :</label>
+                                <div class="input-group input-group-sm" style="width: 300px;">
+                                    <span class="input-group-text bg-white">
+                                        <i data-lucide="calendar" width="16" height="16"></i>
+                                    </span>
+                                    <input type="text" 
+                                           id="date_range" 
+                                           data-date-range-target="input"
+                                           class="form-control" 
+                                           placeholder="Sélectionner une période"
+                                           readonly
+                                           value="{% if request.query.get('date_from') and request.query.get('date_to') %}{{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}{% endif %}"
+                                           style="background: white; cursor: pointer;">
+                                </div>
+                            </div>
                             <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#logsFilters" aria-expanded="false" aria-controls="logsFilters">
                                 <i data-lucide="filter" width="16" height="16" class="me-1"></i>Filtres
                             </button>
@@ -20,15 +41,23 @@
                 {# Section des filtres (collapsible) #}
                 <div class="collapse" id="logsFilters">
                     <div class="card-body bg-light border-bottom">
-                        <form method="get" action="{{ path('app_admin_analytics_logs') }}" data-turbo-frame="navigation-logs-frame" class="row g-3">
-                            <div class="col-md-3">
-                                <label for="date_from" class="form-label small">Date de début</label>
-                                <input type="date" class="form-control form-control-sm" id="date_from" name="date_from" value="{{ request.query.get('date_from') }}">
+                        <form method="get" action="{{ path('app_admin_analytics_logs') }}" data-turbo-frame="navigation-logs-frame" class="row g-3" id="logsFiltersForm">
+                            {# Inputs cachés pour les dates (utilisés par le datepicker) #}
+                            <input type="hidden" id="date_from" name="date_from" value="{{ request.query.get('date_from') }}">
+                            <input type="hidden" id="date_to" name="date_to" value="{{ request.query.get('date_to') }}">
+                            
+                            {# Affichage de la période sélectionnée #}
+                            {% if request.query.get('date_from') and request.query.get('date_to') %}
+                            <div class="col-12">
+                                <div class="alert alert-info alert-sm py-2 mb-0 d-flex align-items-center gap-2">
+                                    <i data-lucide="info" width="16" height="16"></i>
+                                    <small>
+                                        <strong>Période sélectionnée :</strong> 
+                                        {{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}
+                                    </small>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label for="date_to" class="form-label small">Date de fin</label>
-                                <input type="date" class="form-control form-control-sm" id="date_to" name="date_to" value="{{ request.query.get('date_to') }}">
-                            </div>
+                            {% endif %}
                             <div class="col-md-2">
                                 <label for="user_type" class="form-label small">Type utilisateur</label>
                                 <select class="form-select form-select-sm" id="user_type" name="user_type">
