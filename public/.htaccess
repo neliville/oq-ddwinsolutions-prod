@@ -69,6 +69,25 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     
+    # Normaliser www/non-www (choisir une version canonique - ici non-www)
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+    
+    # Rediriger les anciennes URLs article-template.html vers le blog
+    RewriteCond %{REQUEST_URI} ^/article-template\.html [NC]
+    RewriteRule ^article-template\.html$ /blog/ [R=301,L]
+    
+    # Rediriger les anciennes URLs .html vers les nouvelles routes (sauf fichiers statiques)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} ^/(ishikawa|5pourquoi|outils|blog|contact)\.html$ [NC]
+    RewriteRule ^(.*)\.html$ /$1/ [R=301,L]
+    
+    # Rediriger les URLs avec trailing slash vers sans trailing slash (sauf pour la racine)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteCond %{REQUEST_URI} !^/$
+    RewriteRule ^ %1 [R=301,L]
+    
     # Rediriger vers index.php si le fichier n'existe pas
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

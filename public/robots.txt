@@ -1,19 +1,17 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://www.outils-qualite.com/sitemap.xml
+# Sitemap (URL canonique sans www)
+Sitemap: https://outils-qualite.com/sitemap.xml
 
-# Disallow admin areas (if any)
+# Disallow admin areas
 Disallow: /admin/
 Disallow: /private/
+Disallow: /api/
 
-# Allow all quality tools
-Allow: /ishikawa.html
-Allow: /5pourquoi.html
-Allow: /outils.html
-Allow: /blog.html
-Allow: /contact.html
+# Bloquer les anciennes URLs obsolètes
+Disallow: /article-template.html
+Disallow: /*.html$
 
 # Crawl delay
 Crawl-delay: 1

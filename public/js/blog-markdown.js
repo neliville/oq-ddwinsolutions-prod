@@ -987,7 +987,7 @@ function createArticleCard(article, index) {
                 </div>
                 
                 <h3 class="card-title h5 fw-bold mb-3">
-                    <a href="/article-template.html?category=${article.categoryId}&id=${article.id}" 
+                    <a href="/blog/${article.category.slug}/${article.slug}" 
                        class="text-decoration-none text-dark stretched-link">
                         ${article.title}
                     </a>

@@ -37,8 +37,35 @@
 {# Robots #}
 {% set robots = seo_robots_raw|default('index, follow') %}
 
-{# URL canonique #}
-{% set canonical_url = seo_canonical_raw|default(current_url) %}
+{# URL canonique - normaliser pour éviter les doublons #}
+{% if seo_canonical_raw %}
+    {% set canonical_url = seo_canonical_raw %}
+{% else %}
+    {# Générer l'URL canonique depuis la route actuelle #}
+    {% set route_name = app.request.attributes.get('_route') %}
+    {% if route_name and route_name != 'app_error' %}
+        {% try %}
+            {% set canonical_url = absolute_url(path(route_name, app.request.attributes.get('_route_params', {}))) %}
+        {% catch %}
+            {% set canonical_url = app.request.uri %}
+        {% endtry %}
+    {% else %}
+        {% set canonical_url = app.request.uri %}
+    {% endif %}
+{% endif %}
+
+{# Normaliser l'URL canonique : HTTPS, sans www, sans trailing slash (sauf racine) #}
+{# Supprimer www #}
+{% set canonical_url = canonical_url|replace({'www.': ''}) %}
+{# Forcer HTTPS #}
+{% set canonical_url = canonical_url|replace({'http://': 'https://'}) %}
+{# Supprimer le trailing slash sauf pour la racine #}
+{% if canonical_url|slice(-1) == '/' %}
+    {% set url_without_slash = canonical_url|slice(0, -1) %}
+    {% if url_without_slash|split('/')|length > 3 %}
+        {% set canonical_url = url_without_slash %}
+    {% endif %}
+{% endif %}
 
 <!-- Meta Tags SEO -->
 <title>{{ page_title }}</title>
@@ -47,10 +74,8 @@
 <meta name="robots" content="{{ robots }}">
 <meta name="author" content="{{ app_name }}">
 
-{# URL canonique #}
-{% if canonical_url %}
+{# URL canonique - toujours présente pour éviter les doublons #}
 <link rel="canonical" href="{{ canonical_url }}">
-{% endif %}
 
 {# Meta tags pour mobile #}
 <meta name="theme-color" content="#0d6efd">
