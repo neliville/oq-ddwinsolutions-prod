@@ -72,10 +72,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
 
-    <!-- Google Fonts (préchargement pour améliorer les performances) -->
+    <!-- Google Fonts (optimisé avec font-display: swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Optimisation font-display pour les polices */
+        @font-face {
+            font-family: 'Inter';
+            font-display: swap;
+        }
+    </style>
 
     <!-- Custom CSS (critique, chargé immédiatement) -->
     <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
@@ -102,8 +109,9 @@
         }
     </style>
 
-    <!-- Google Tag Manager -->
+    <!-- Google Tag Manager (différé pour améliorer les performances) -->
     <script>
+        // Différer le chargement de GTM après le chargement de la page
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('consent', 'default', {
@@ -112,18 +120,29 @@
             'ad_user_data': 'denied',
             'ad_personalization': 'denied'
         });
-    </script>
-    <script>
-        (function(w,d,s,l,i){
-            w[l]=w[l]||[];
-            w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-            var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),
-                dl=l!='dataLayer'?'&l='+l:'';
-            j.async=true;
-            j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-            f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-PNCNWR54');
+        
+        // Charger GTM après le chargement de la page
+        function loadGTM() {
+            (function(w,d,s,l,i){
+                w[l]=w[l]||[];
+                w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),
+                    dl=l!='dataLayer'?'&l='+l:'';
+                j.async=true;
+                j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-PNCNWR54');
+        }
+        
+        // Charger GTM après un court délai
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(loadGTM, 1000);
+            });
+        } else {
+            setTimeout(loadGTM, 1000);
+        }
     </script>
     <!-- End Google Tag Manager -->
 

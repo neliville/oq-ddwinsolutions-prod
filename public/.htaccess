@@ -1,0 +1,83 @@
+# Configuration Apache pour optimiser les performances et le SEO
+
+# Activer la compression GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+</IfModule>
+
+# Configuration des durées de cache pour améliorer les performances
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images - cache 1 an (avec versioning dans les noms de fichiers)
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS et JavaScript versionnés - cache 1 an
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    
+    # Fonts - cache 1 an
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # HTML - pas de cache (toujours frais)
+    ExpiresByType text/html "access plus 0 seconds"
+    
+    # JSON, XML - cache 1 heure
+    ExpiresByType application/json "access plus 1 hour"
+    ExpiresByType application/xml "access plus 1 hour"
+    ExpiresByType text/xml "access plus 1 hour"
+</IfModule>
+
+# Headers de cache pour les fichiers statiques versionnés
+<IfModule mod_headers.c>
+    # Cache 1 an pour les fichiers avec hash dans le nom (versionnés)
+    <FilesMatch "\.(js|css|woff|woff2|png|jpg|jpeg|gif|webp|svg|ico)$">
+        # Vérifier si le fichier contient un hash (8+ caractères alphanumériques)
+        <If "%{REQUEST_URI} =~ /[a-zA-Z0-9]{8,}/">
+            Header set Cache-Control "public, max-age=31536000, immutable"
+        </If>
+        # Sinon, cache plus court pour les fichiers non versionnés
+        <Else>
+            Header set Cache-Control "public, max-age=604800"
+        </Else>
+    </FilesMatch>
+    
+    # Pas de cache pour HTML
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# Redirection vers index.php pour Symfony
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Rediriger vers HTTPS si disponible
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Rediriger vers index.php si le fichier n'existe pas
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Sécurité - masquer les informations du serveur
+<IfModule mod_headers.c>
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
