@@ -19,15 +19,22 @@ export default class extends Controller {
         dateTo: String,
     };
 
-    static outlets = [];
 
     connect() {
-        this.initializeFlatpickr();
+        // Attendre que le DOM soit prêt
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.initializeFlatpickr();
+            });
+        } else {
+            this.initializeFlatpickr();
+        }
     }
 
     disconnect() {
         if (this.flatpickr) {
             this.flatpickr.destroy();
+            this.flatpickr = null;
         }
     }
 
@@ -77,9 +84,12 @@ export default class extends Controller {
 
             this.flatpickr = new Flatpickr(this.inputTarget, options);
 
-            // Mettre à jour l'affichage initial
+            // Mettre à jour l'affichage initial si des dates sont déjà sélectionnées
             if (defaultDateFrom && defaultDateTo) {
                 this.updateInputDisplay(defaultDateFrom, defaultDateTo);
+            } else {
+                // Si aucune date n'est sélectionnée, afficher un placeholder
+                this.inputTarget.placeholder = 'Sélectionner une période';
             }
 
             // Ajouter des presets de dates rapides après un court délai
@@ -177,41 +187,50 @@ export default class extends Controller {
     }
 
     addPresets() {
-        // Ajouter des boutons de presets après l'initialisation
-        const flatpickrContainer = document.querySelector('.flatpickr-calendar');
-        if (flatpickrContainer && !flatpickrContainer.querySelector('.flatpickr-presets')) {
-            const presetsContainer = document.createElement('div');
-            presetsContainer.className = 'flatpickr-presets p-2';
-            presetsContainer.style.cssText = 'background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem;';
-            
-            const presets = [
-                { label: 'Aujourd\'hui', days: 0 },
-                { label: '7 derniers jours', days: 7 },
-                { label: '30 derniers jours', days: 30 },
-                { label: '3 derniers mois', days: 90 },
-            ];
+        // Attendre que le calendrier soit rendu
+        const checkAndAddPresets = () => {
+            const flatpickrContainer = document.querySelector('.flatpickr-calendar');
+            if (flatpickrContainer && !flatpickrContainer.querySelector('.flatpickr-presets')) {
+                const presetsContainer = document.createElement('div');
+                presetsContainer.className = 'flatpickr-presets p-2';
+                presetsContainer.style.cssText = 'background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem;';
+                
+                const presets = [
+                    { label: 'Aujourd\'hui', days: 0 },
+                    { label: '7 derniers jours', days: 7 },
+                    { label: '30 derniers jours', days: 30 },
+                    { label: '3 derniers mois', days: 90 },
+                ];
 
-            presets.forEach(preset => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'btn btn-sm btn-outline-secondary';
-                button.style.cssText = 'font-size: 0.75rem; padding: 0.25rem 0.5rem;';
-                button.textContent = preset.label;
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.setPresetDate(preset.days);
+                presets.forEach(preset => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn btn-sm btn-outline-secondary';
+                    button.style.cssText = 'font-size: 0.75rem; padding: 0.25rem 0.5rem; white-space: nowrap;';
+                    button.textContent = preset.label;
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        this.setPresetDate(preset.days);
+                    });
+                    presetsContainer.appendChild(button);
                 });
-                presetsContainer.appendChild(button);
-            });
 
-            // Insérer au début du conteneur
-            const firstChild = flatpickrContainer.firstChild;
-            if (firstChild) {
-                flatpickrContainer.insertBefore(presetsContainer, firstChild);
-            } else {
-                flatpickrContainer.appendChild(presetsContainer);
+                // Insérer au début du conteneur
+                const firstChild = flatpickrContainer.firstChild;
+                if (firstChild) {
+                    flatpickrContainer.insertBefore(presetsContainer, firstChild);
+                } else {
+                    flatpickrContainer.appendChild(presetsContainer);
+                }
+            } else if (!flatpickrContainer) {
+                // Réessayer après un court délai si le calendrier n'est pas encore rendu
+                setTimeout(checkAndAddPresets, 100);
             }
-        }
+        };
+        
+        // Attendre un peu pour que Flatpickr rende le calendrier
+        setTimeout(checkAndAddPresets, 200);
     }
 
     setPresetDate(days) {
