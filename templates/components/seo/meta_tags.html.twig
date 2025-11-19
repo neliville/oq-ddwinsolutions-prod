@@ -44,13 +44,18 @@
     {# Générer l'URL canonique depuis la route actuelle #}
     {% set route_name = app.request.attributes.get('_route') %}
     {% if route_name and route_name != 'app_error' %}
-        {% try %}
-            {% set canonical_url = absolute_url(path(route_name, app.request.attributes.get('_route_params', {}))) %}
-        {% catch %}
-            {% set canonical_url = app.request.uri %}
-        {% endtry %}
+        {# Construire l'URL depuis le pathInfo pour éviter les erreurs de route #}
+        {% set canonical_url = absolute_url(app.request.pathInfo) %}
+        {# Supprimer les paramètres de requête pour l'URL canonique #}
+        {% if '?' in canonical_url %}
+            {% set canonical_url = canonical_url|split('?')|first %}
+        {% endif %}
     {% else %}
         {% set canonical_url = app.request.uri %}
+        {# Supprimer les paramètres de requête pour l'URL canonique #}
+        {% if '?' in canonical_url %}
+            {% set canonical_url = canonical_url|split('?')|first %}
+        {% endif %}
     {% endif %}
 {% endif %}
 
