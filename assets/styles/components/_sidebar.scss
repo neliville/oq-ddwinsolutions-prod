@@ -1,0 +1,47 @@
+// Styles pour la sidebar
+.sidebar {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar a:hover {
+    background-color: #f8f9fa !important;
+}
+
+.sidebar a.bg-primary:hover {
+    background-color: #0d6efd !important;
+}
+
+// Style spécifique pour le bouton de déconnexion
+// Utilisation de sélecteurs plus spécifiques pour garantir la priorité
+.sidebar .sidebar-nav .list-unstyled li a.text-danger {
+    color: #dc3545 !important;
+    transition: all 0.2s ease;
+    
+    i,
+    span {
+        color: #dc3545 !important;
+        transition: color 0.2s ease;
+    }
+    
+    &:hover {
+        background-color: #dc3545 !important;
+        color: #ffffff !important;
+        
+        i,
+        span {
+            color: #ffffff !important;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        
+        &.show {
+            transform: translateX(0);
+        }
+    }
+}
+
