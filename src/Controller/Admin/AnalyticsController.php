@@ -33,29 +33,50 @@ final class AnalyticsController extends AbstractController
     {
         [$period, $start, $end, $now] = $this->resolvePeriod($request, 'today');
 
+        // Calculer les dates de référence (créer de nouvelles instances pour éviter les modifications)
+        $todayStart = (clone $now)->setTime(0, 0, 0);
+        $todayEnd = (clone $now)->setTime(23, 59, 59);
+        
+        // Hier (jour précédent)
+        $yesterday = (clone $now)->modify('-1 day');
+        $yesterdayStart = $yesterday->setTime(0, 0, 0);
+        $yesterdayEnd = (clone $yesterday)->setTime(23, 59, 59);
+        
+        // Semaine précédente (même jour il y a 7 jours)
+        $lastWeekDay = (clone $now)->modify('-7 days');
+        $lastWeekStart = $lastWeekDay->setTime(0, 0, 0);
+        $lastWeekEnd = (clone $lastWeekDay)->setTime(23, 59, 59);
+        
+        // Mois précédent (même jour il y a 30 jours)
+        $lastMonthDay = (clone $now)->modify('-30 days');
+        $lastMonthStart = $lastMonthDay->setTime(0, 0, 0);
+        $lastMonthEnd = (clone $lastMonthDay)->setTime(23, 59, 59);
+        
+        // Visites pour la période sélectionnée
         $totalVisits = $this->pageViewRepository->countByPeriod($start, $end);
-        $todayVisits = $this->pageViewRepository->countByPeriod($now->setTime(0, 0, 0), $now);
-        $authenticatedVisits = $this->pageViewRepository->countByUserType(true);
-        $anonymousVisits = $this->pageViewRepository->countByUserType(false);
-
-        $yesterdayStart = $now->modify('-1 day')->setTime(0, 0, 0);
-        $yesterdayEnd = $now->modify('-1 day')->setTime(23, 59, 59);
+        
+        // Visites aujourd'hui
+        $todayVisits = $this->pageViewRepository->countByPeriod($todayStart, $todayEnd);
+        
+        // Visites hier
         $yesterdayVisits = $this->pageViewRepository->countByPeriod($yesterdayStart, $yesterdayEnd);
-
-        $lastWeekStart = $now->modify('-14 days')->setTime(0, 0, 0);
-        $lastWeekEnd = $now->modify('-8 days')->setTime(23, 59, 59);
+        
+        // Visites semaine précédente (même jour de la semaine il y a 7 jours)
         $lastWeekVisits = $this->pageViewRepository->countByPeriod($lastWeekStart, $lastWeekEnd);
-
-        $lastMonthStart = $now->modify('-60 days')->setTime(0, 0, 0);
-        $lastMonthEnd = $now->modify('-31 days')->setTime(23, 59, 59);
+        
+        // Visites mois précédent (même jour il y a 30 jours)
         $lastMonthVisits = $this->pageViewRepository->countByPeriod($lastMonthStart, $lastMonthEnd);
+        
+        // Utilisateurs connectés et anonymes pour la période sélectionnée
+        $authenticatedVisits = $this->pageViewRepository->countByUserTypeAndPeriod(true, $start, $end);
+        $anonymousVisits = $this->pageViewRepository->countByUserTypeAndPeriod(false, $start, $end);
 
         $visitsByDay = $this->normalizeDailyData($this->pageViewRepository->findVisitsByDay($start, $end));
+        
+        // Pour les visites mensuelles, utiliser les 12 derniers mois
+        $yearStart = (clone $now)->modify('-365 days')->setTime(0, 0, 0);
         $visitsByMonth = $this->normalizeMonthlyData(
-            $this->pageViewRepository->findVisitsByMonth(
-                $now->modify('-365 days')->setTime(0, 0, 0),
-                $now
-            )
+            $this->pageViewRepository->findVisitsByMonth($yearStart, $now)
         );
 
         $mostVisitedPages = $this->pageViewRepository->findMostVisitedPages(5);

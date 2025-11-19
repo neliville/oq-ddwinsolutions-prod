@@ -105,6 +105,24 @@ class PageViewRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult() ?? 0;
     }
 
+    public function countByUserTypeAndPeriod(bool $authenticated, \DateTimeInterface $start, \DateTimeInterface $end): int
+    {
+        $qb = $this->createQueryBuilder('pv')
+            ->select('COUNT(pv.id)')
+            ->where('pv.visitedAt >= :start')
+            ->andWhere('pv.visitedAt <= :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end);
+
+        if ($authenticated) {
+            $qb->andWhere('pv.user IS NOT NULL');
+        } else {
+            $qb->andWhere('pv.user IS NULL');
+        }
+
+        return $qb->getQuery()->getSingleScalarResult() ?? 0;
+    }
+
     public function findVisitsByDay(\DateTimeInterface $start, \DateTimeInterface $end): array
     {
         $connection = $this->getEntityManager()->getConnection();
