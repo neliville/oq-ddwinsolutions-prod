@@ -740,6 +740,13 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Masquer le drag-hint quand un modal est ouvert */
+.ishikawa-page.modal-open .drag-hint {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 .drag-hint[data-visible="true"] {
     display: flex;
     opacity: 1;
@@ -770,7 +777,7 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 1200; /* Au-dessus du drag-hint (1100) */
     left: 0;
     top: 0;
     width: 100%;
@@ -778,6 +785,8 @@
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     animation: fadeIn 0.3s;
+    overflow-y: auto; /* Permettre le scroll si nécessaire */
+    padding: 20px; /* Espace pour éviter que le contenu touche les bords */
 }
 
 @keyframes fadeIn {
@@ -787,18 +796,27 @@
 
 .ishikawa-page .modal-content {
     background-color: white;
-    margin: 5% auto;
+    margin: 80px auto 40px; /* Plus d'espace en haut pour éviter le drag-hint */
     border-radius: 16px;
     width: 90%;
     max-width: 600px;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
     animation: slideIn 0.3s;
-    max-height: 85vh;
+    max-height: calc(100vh - 160px); /* Ajuster pour tenir compte du padding */
     display: flex;
     flex-direction: column;
     overflow: hidden;
     border: none;
     outline: none;
+    position: relative; /* Pour le positionnement du header */
+}
+
+/* Sur mobile, réduire la marge supérieure */
+@media (max-width: 768px) {
+    .ishikawa-page .modal-content {
+        margin-top: 60px;
+        max-height: calc(100vh - 120px);
+    }
 }
 
 @keyframes slideIn {
@@ -815,14 +833,16 @@
 .modal-header {
     background: var(--gradient-primary);
     color: white;
+    position: relative; /* Position relative pour le ::before */
+    z-index: 10; /* Au-dessus du contenu du modal */
+    border-radius: 16px 16px 0 0; /* Arrondir seulement le haut */
     padding: 24px 28px;
-    border-radius: 16px 16px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
     overflow: hidden;
     border: none;
+    flex-shrink: 0; /* Empêcher le header de rétrécir */
 }
 
 .modal-header::before {

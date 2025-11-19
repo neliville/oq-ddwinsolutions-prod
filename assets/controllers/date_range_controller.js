@@ -173,10 +173,17 @@ export default class extends Controller {
             
             // Fusionner les paramètres (les nouveaux remplacent les anciens)
             for (const [key, value] of params.entries()) {
-                currentParams.set(key, value);
+                if (value) {
+                    currentParams.set(key, value);
+                } else {
+                    currentParams.delete(key);
+                }
             }
             
             const url = form.action + '?' + currentParams.toString();
+            
+            // Afficher une notification
+            this.showNotification('Période mise à jour', 'success');
             
             // Naviguer dans le Turbo Frame
             turboFrame.src = url;
@@ -184,6 +191,70 @@ export default class extends Controller {
             // Fallback : soumettre normalement
             form.requestSubmit();
         }
+    }
+
+    showNotification(message, type = 'info') {
+        // Essayer d'utiliser le contrôleur notifications s'il existe
+        const notificationsElement = document.querySelector('[data-controller*="notifications"]');
+        if (notificationsElement) {
+            const notificationsController = this.application.getControllerForElementAndIdentifier(
+                notificationsElement,
+                'notifications'
+            );
+            
+            if (notificationsController) {
+                notificationsController.displayNotification({
+                    currentTarget: { dataset: { notificationsMessageValue: message, notificationsTypeValue: type } }
+                });
+                return;
+            }
+        }
+        
+        // Fallback direct à Toastify
+        this.loadToastify().then(() => {
+            if (window.Toastify) {
+                const colors = {
+                    success: '#22c55e',
+                    error: '#ef4444',
+                    warning: '#f59e0b',
+                    info: '#3b82f6',
+                };
+                
+                window.Toastify({
+                    text: message,
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'right',
+                    backgroundColor: colors[type] || colors.info,
+                    stopOnFocus: true,
+                }).showToast();
+            }
+        });
+    }
+    
+    async loadToastify() {
+        if (window.Toastify) {
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve, reject) => {
+            if (!document.querySelector('link[href*="toastify"]')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css';
+                document.head.appendChild(link);
+            }
+
+            if (!window.Toastify) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/toastify-js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            } else {
+                resolve();
+            }
+        });
     }
 
     addPresets() {

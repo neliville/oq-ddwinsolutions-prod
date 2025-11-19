@@ -3,11 +3,31 @@
     <div class="row g-4 mt-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom">
+                <div class="card-header bg-white border-bottom" data-controller="filters-panel notifications">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                        <div>
-                            <h5 class="mb-0">Logs de navigation des utilisateurs</h5>
-                            <small class="text-muted">Total : {{ totalLogs|number_format(0, ',', ' ') }} visite(s)</small>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">Logs de navigation des utilisateurs</h5>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <small class="text-muted">Total : {{ totalLogs|number_format(0, ',', ' ') }} visite(s)</small>
+                                {# Badge de période active #}
+                                {% if request.query.get('date_from') and request.query.get('date_to') %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                    <i data-lucide="calendar" width="12" height="12"></i>
+                                    <span>{{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}</span>
+                                </span>
+                                {% endif %}
+                                {# Badges pour autres filtres actifs #}
+                                {% if request.query.get('user_type') %}
+                                <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 0.75rem;">
+                                    {% if request.query.get('user_type') == 'authenticated' %}Utilisateurs connectés{% else %}Visiteurs anonymes{% endif %}
+                                </span>
+                                {% endif %}
+                                {% if request.query.get('url') %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.75rem;">
+                                    URL filtrée
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="d-flex gap-2 flex-wrap align-items-center">
                             {# Date Range Picker #}
@@ -31,7 +51,14 @@
                                            style="background: white; cursor: pointer;">
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#logsFilters" aria-expanded="false" aria-controls="logsFilters">
+                            <button class="btn btn-sm btn-outline-secondary" 
+                                    type="button" 
+                                    data-filters-panel-target="toggle"
+                                    data-action="click->filters-panel#toggle"
+                                    aria-expanded="false" 
+                                    aria-controls="logsFilters"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#logsFilters">
                                 <i data-lucide="filter" width="16" height="16" class="me-1"></i>Filtres
                             </button>
                         </div>
@@ -39,22 +66,66 @@
                 </div>
                 
                 {# Section des filtres (collapsible) #}
-                <div class="collapse" id="logsFilters">
+                <div class="collapse" 
+                     id="logsFilters" 
+                     data-filters-panel-target="panel">
                     <div class="card-body bg-light border-bottom">
-                        <form method="get" action="{{ path('app_admin_analytics_logs') }}" data-turbo-frame="navigation-logs-frame" class="row g-3" id="logsFiltersForm">
+                        <form method="get" 
+                              action="{{ path('app_admin_analytics_logs') }}" 
+                              data-turbo-frame="navigation-logs-frame" 
+                              class="row g-3" 
+                              id="logsFiltersForm">
                             {# Inputs cachés pour les dates (utilisés par le datepicker) #}
                             <input type="hidden" id="date_from" name="date_from" value="{{ request.query.get('date_from') }}">
                             <input type="hidden" id="date_to" name="date_to" value="{{ request.query.get('date_to') }}">
                             
-                            {# Affichage de la période sélectionnée #}
-                            {% if request.query.get('date_from') and request.query.get('date_to') %}
+                            {# Affichage des filtres actifs #}
+                            {% set hasActiveFilters = request.query.get('date_from') or request.query.get('user_type') or request.query.get('url') or request.query.get('user_email') or request.query.get('country') or request.query.get('device') or request.query.get('ip') %}
+                            {% if hasActiveFilters %}
                             <div class="col-12">
-                                <div class="alert alert-info alert-sm py-2 mb-0 d-flex align-items-center gap-2">
-                                    <i data-lucide="info" width="16" height="16"></i>
-                                    <small>
-                                        <strong>Période sélectionnée :</strong> 
-                                        {{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}
-                                    </small>
+                                <div class="alert alert-info alert-sm py-2 mb-0">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <i data-lucide="info" width="16" height="16"></i>
+                                            <small><strong>Filtres actifs :</strong></small>
+                                            {% if request.query.get('date_from') and request.query.get('date_to') %}
+                                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                <i data-lucide="calendar" width="12" height="12" class="me-1"></i>
+                                                {{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('user_type') %}
+                                            <span class="badge bg-info bg-opacity-10 text-info">
+                                                {% if request.query.get('user_type') == 'authenticated' %}Utilisateurs connectés{% else %}Visiteurs anonymes{% endif %}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('url') %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                URL: {{ request.query.get('url')|slice(0, 30) }}{% if request.query.get('url')|length > 30 %}...{% endif %}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('user_email') %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                Email: {{ request.query.get('user_email')|slice(0, 20) }}{% if request.query.get('user_email')|length > 20 %}...{% endif %}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('country') %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                Pays: {{ request.query.get('country') }}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('device') %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                Appareil: {{ request.query.get('device') }}
+                                            </span>
+                                            {% endif %}
+                                            {% if request.query.get('ip') %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                IP: {{ request.query.get('ip') }}
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             {% endif %}
@@ -114,10 +185,19 @@
                                 </select>
                             </div>
                             <div class="col-12 d-flex gap-2">
-                                <button type="submit" class="btn btn-sm btn-primary">
+                                <button type="submit" 
+                                        class="btn btn-sm btn-primary"
+                                        data-action="click->notifications#displayNotification"
+                                        data-notifications-message-value="Filtres appliqués avec succès"
+                                        data-notifications-type-value="success">
                                     <i data-lucide="search" width="16" height="16" class="me-1"></i>Appliquer
                                 </button>
-                                <a href="{{ path('app_admin_analytics_logs') }}" class="btn btn-sm btn-outline-secondary" data-turbo-frame="navigation-logs-frame">
+                                <a href="{{ path('app_admin_analytics_logs') }}" 
+                                   class="btn btn-sm btn-outline-secondary" 
+                                   data-turbo-frame="navigation-logs-frame"
+                                   data-action="click->notifications#displayNotification"
+                                   data-notifications-message-value="Filtres réinitialisés"
+                                   data-notifications-type-value="info">
                                     <i data-lucide="x" width="16" height="16" class="me-1"></i>Réinitialiser
                                 </a>
                             </div>
