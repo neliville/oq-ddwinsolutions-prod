@@ -2,7 +2,7 @@
 
 {% set rawFeaturedImage = post.image
     ? (post.image starts with 'http' ? post.image : asset(post.image))
-    : asset('img/logo.png') %}
+    : asset('img/logo.webp') %}
 {% set featuredImageUrl = rawFeaturedImage starts with 'http'
     ? rawFeaturedImage
     : app.request.schemeAndHttpHost ~ rawFeaturedImage %}

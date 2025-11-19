@@ -13,6 +13,8 @@
   color: var(--primary);
   background: #fff;
   transition: all var(--transition-base);
+  white-space: nowrap; // Empêche le wrapping du texte
+  padding: 0.5rem 1rem; // Padding suffisant pour éviter le wrapping
 
   &:hover {
     background: var(--primary);
@@ -23,6 +25,21 @@
     outline: 3px solid rgba(79, 70, 229, 0.35);
     outline-offset: 2px;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+  }
+
+  // Empêcher le wrapping du texte dans le label
+  .sidebar-toggle-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    flex-shrink: 0;
+  }
+
+  // S'assurer que l'icône ne rétrécit pas
+  i[data-lucide],
+  svg {
+    flex-shrink: 0;
   }
 }
 
