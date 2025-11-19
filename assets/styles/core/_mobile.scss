@@ -1,0 +1,140 @@
+// Amélioration de la compatibilité mobile
+// Conformité aux recommandations Google pour mobile-friendly
+
+// Tailles de police minimales pour mobile (minimum 16px pour éviter le zoom automatique)
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; // Évite le zoom automatique sur iOS
+    line-height: 1.6;
+  }
+
+  // Augmenter la taille des polices pour une meilleure lisibilité
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  }
+
+  h4 {
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
+  }
+
+  p, li, span, a {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+  }
+
+  // Cibles tactiles minimales (44x44px recommandé par Google)
+  a, button, input[type="button"], input[type="submit"], 
+  .btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    touch-action: manipulation; // Améliore la réactivité tactile
+  }
+
+  // Espacement entre les éléments interactifs
+  .btn + .btn,
+  a + a,
+  button + button {
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
+
+  // Améliorer l'espacement des liens dans les listes
+  ul li a,
+  ol li a {
+    padding: 0.5rem 0;
+    display: block;
+    min-height: 44px;
+    line-height: 1.5;
+  }
+
+  // Formulaires
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px; // Évite le zoom automatique sur iOS
+    min-height: 44px;
+    padding: 0.75rem;
+  }
+
+  // Améliorer l'espacement des cartes et conteneurs
+  .card,
+  .card-body {
+    padding: 1rem;
+  }
+
+  // Navigation mobile
+  .navbar-nav .nav-link {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  // Footer - améliorer l'espacement
+  footer a {
+    min-height: 44px;
+    padding: 0.5rem 0;
+    display: inline-block;
+  }
+
+  // Icônes sociales - taille minimale
+  .btn-sm.rounded-circle {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Optimisations pour très petits écrans
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+
+  // Augmenter encore plus les cibles tactiles sur très petits écrans
+  .btn {
+    min-height: 48px;
+    padding: 0.875rem 1.5rem;
+  }
+
+  // Espacement supplémentaire entre les sections
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+// Amélioration de la performance tactile
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+// Désactiver les animations sur mobile si l'utilisateur préfère réduire les animations
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
