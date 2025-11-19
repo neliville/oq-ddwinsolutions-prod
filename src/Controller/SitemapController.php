@@ -22,16 +22,39 @@ final class SitemapController extends AbstractController
     public function index(): Response
     {
         // Routes publiques statiques
-        $staticRoutes = [
-            ['url' => $this->router->generate('app_home_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_ishikawa_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_fivewhy_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_outils_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_blog_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.8', 'changefreq' => 'weekly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_contact_index', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_legal_politique_confidentialite', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.5', 'changefreq' => 'yearly', 'lastmod' => date('Y-m-d')],
-            ['url' => $this->router->generate('app_legal_mentions_legales', [], UrlGeneratorInterface::ABSOLUTE_URL), 'priority' => '0.5', 'changefreq' => 'yearly', 'lastmod' => date('Y-m-d')],
+        $staticRoutes = [];
+        $today = date('Y-m-d');
+        
+        // Routes principales
+        $routesToAdd = [
+            ['route' => 'app_home_index', 'priority' => '1.0', 'changefreq' => 'weekly'],
+            ['route' => 'app_ishikawa_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_fivewhy_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_qqoqccp_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_amdec_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_pareto_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_eightd_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_outils_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_blog_index', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['route' => 'app_contact_index', 'priority' => '0.7', 'changefreq' => 'monthly'],
+            ['route' => 'app_legal_politique_confidentialite', 'priority' => '0.5', 'changefreq' => 'yearly'],
+            ['route' => 'app_legal_mentions_legales', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ];
+        
+        foreach ($routesToAdd as $routeConfig) {
+            try {
+                $url = $this->router->generate($routeConfig['route'], [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $staticRoutes[] = [
+                    'url' => $url,
+                    'priority' => $routeConfig['priority'],
+                    'changefreq' => $routeConfig['changefreq'],
+                    'lastmod' => $today,
+                ];
+            } catch (\Exception $e) {
+                // Route non disponible, on skip
+                continue;
+            }
+        }
 
         // Articles de blog publiés
         $blogPosts = $this->blogPostRepository->findPublishedByCategory(null, 1, 1000);
@@ -73,19 +96,49 @@ final class SitemapController extends AbstractController
 
         $xml .= '</urlset>';
 
-        $response = new Response($xml);
-        $response->headers->set('Content-Type', 'application/xml; charset=utf-8');
+        $response = new Response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=utf-8',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+        
+        // Cache pour 1 heure (le sitemap change peu souvent)
+        $response->setPublic();
+        $response->setMaxAge(3600);
+        $response->setSharedMaxAge(3600);
 
         return $response;
     }
 
     private function generateUrlElement(string $url, string $priority, string $changefreq, string $lastmod): string
     {
+        // S'assurer que l'URL est valide et absolue
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return '';
+        }
+        
+        // Normaliser l'URL (supprimer les fragments, s'assurer du protocole)
+        // Ne pas supprimer le slash final pour la page d'accueil
+        if (preg_match('#^https?://[^/]+$#', $url)) {
+            // Page d'accueil, garder le slash final
+            $url = rtrim($url, '/') . '/';
+        } else {
+            $url = rtrim($url, '/');
+        }
+        
+        if (!preg_match('#^https?://#', $url)) {
+            return '';
+        }
+        
+        // Valider et formater lastmod (format ISO 8601 ou YYYY-MM-DD)
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $lastmod)) {
+            $lastmod = date('Y-m-d');
+        }
+        
         return "  <url>\n" .
                "    <loc>" . htmlspecialchars($url, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</loc>\n" .
-               "    <priority>" . htmlspecialchars($priority, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</priority>\n" .
-               "    <changefreq>" . htmlspecialchars($changefreq, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</changefreq>\n" .
                "    <lastmod>" . htmlspecialchars($lastmod, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</lastmod>\n" .
+               "    <changefreq>" . htmlspecialchars($changefreq, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</changefreq>\n" .
+               "    <priority>" . htmlspecialchars($priority, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "</priority>\n" .
                "  </url>\n";
     }
 }
