@@ -59,7 +59,7 @@
                         <div>
                             <h6 class="text-muted text-uppercase small mb-2">Utilisateurs connectés</h6>
                             <h3 class="fw-bold mb-1">{{ authenticatedVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">Semaine préc. : {{ lastWeekVisits|number_format(0, ',', ' ') }}</small>
+                            <small class="text-muted">Semaine préc. : {{ authenticatedLastWeek|number_format(0, ',', ' ') }}</small>
                         </div>
                         <div class="bg-info bg-opacity-10 rounded-circle p-3">
                             <i data-lucide="users" width="24" height="24" class="text-info"></i>
@@ -75,7 +75,7 @@
                         <div>
                             <h6 class="text-muted text-uppercase small mb-2">Visiteurs anonymes</h6>
                             <h3 class="fw-bold mb-1">{{ anonymousVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">Mois préc. : {{ lastMonthVisits|number_format(0, ',', ' ') }}</small>
+                            <small class="text-muted">Mois préc. : {{ anonymousLastMonth|number_format(0, ',', ' ') }}</small>
                         </div>
                         <div class="bg-warning bg-opacity-10 rounded-circle p-3">
                             <i data-lucide="user" width="24" height="24" class="text-warning"></i>

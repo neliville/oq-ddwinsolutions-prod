@@ -42,15 +42,13 @@ final class AnalyticsController extends AbstractController
         $yesterdayStart = $yesterday->setTime(0, 0, 0);
         $yesterdayEnd = (clone $yesterday)->setTime(23, 59, 59);
         
-        // Semaine précédente (même jour il y a 7 jours)
-        $lastWeekDay = (clone $now)->modify('-7 days');
-        $lastWeekStart = $lastWeekDay->setTime(0, 0, 0);
-        $lastWeekEnd = (clone $lastWeekDay)->setTime(23, 59, 59);
+        // Semaine précédente complète (7 jours avant aujourd'hui, sur 7 jours)
+        $lastWeekEnd = (clone $now)->modify('-1 day')->setTime(23, 59, 59);
+        $lastWeekStart = (clone $lastWeekEnd)->modify('-6 days')->setTime(0, 0, 0);
         
-        // Mois précédent (même jour il y a 30 jours)
-        $lastMonthDay = (clone $now)->modify('-30 days');
-        $lastMonthStart = $lastMonthDay->setTime(0, 0, 0);
-        $lastMonthEnd = (clone $lastMonthDay)->setTime(23, 59, 59);
+        // Mois précédent complet (30 jours avant aujourd'hui, sur 30 jours)
+        $lastMonthEnd = (clone $now)->modify('-1 day')->setTime(23, 59, 59);
+        $lastMonthStart = (clone $lastMonthEnd)->modify('-29 days')->setTime(0, 0, 0);
         
         // Visites pour la période sélectionnée
         $totalVisits = $this->pageViewRepository->countByPeriod($start, $end);
@@ -61,15 +59,19 @@ final class AnalyticsController extends AbstractController
         // Visites hier
         $yesterdayVisits = $this->pageViewRepository->countByPeriod($yesterdayStart, $yesterdayEnd);
         
-        // Visites semaine précédente (même jour de la semaine il y a 7 jours)
+        // Visites semaine précédente complète (7 jours)
         $lastWeekVisits = $this->pageViewRepository->countByPeriod($lastWeekStart, $lastWeekEnd);
         
-        // Visites mois précédent (même jour il y a 30 jours)
+        // Visites mois précédent complet (30 jours)
         $lastMonthVisits = $this->pageViewRepository->countByPeriod($lastMonthStart, $lastMonthEnd);
         
         // Utilisateurs connectés et anonymes pour la période sélectionnée
         $authenticatedVisits = $this->pageViewRepository->countByUserTypeAndPeriod(true, $start, $end);
         $anonymousVisits = $this->pageViewRepository->countByUserTypeAndPeriod(false, $start, $end);
+        
+        // Comparaisons : utilisateurs connectés/anonymes pour les périodes précédentes
+        $authenticatedLastWeek = $this->pageViewRepository->countByUserTypeAndPeriod(true, $lastWeekStart, $lastWeekEnd);
+        $anonymousLastMonth = $this->pageViewRepository->countByUserTypeAndPeriod(false, $lastMonthStart, $lastMonthEnd);
 
         $visitsByDay = $this->normalizeDailyData($this->pageViewRepository->findVisitsByDay($start, $end));
         
@@ -127,6 +129,8 @@ final class AnalyticsController extends AbstractController
             'lastMonthVisits' => $lastMonthVisits,
             'authenticatedVisits' => $authenticatedVisits,
             'anonymousVisits' => $anonymousVisits,
+            'authenticatedLastWeek' => $authenticatedLastWeek,
+            'anonymousLastMonth' => $anonymousLastMonth,
             'mostVisitedPages' => $mostVisitedPages,
             'visitsDailyChart' => $visitsDailyChart,
             'visitsMonthlyChart' => $visitsMonthlyChart,
