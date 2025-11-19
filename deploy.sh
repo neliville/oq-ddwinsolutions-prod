@@ -33,6 +33,39 @@ else
     echo -e "${GREEN}   ✓ Aucune modification locale${NC}"
 fi
 
+# 2.5. Gérer les fichiers non suivis qui seraient écrasés par le merge
+echo -e "\n${YELLOW}2.5. Gestion des fichiers non suivis...${NC}"
+# Récupérer la liste des fichiers qui seraient écrasés
+git fetch origin main
+UNTRACKED_FILES=$(git ls-files --others --exclude-standard)
+CONFLICTING_FILES=""
+
+# Vérifier quels fichiers non suivis seraient écrasés par le merge
+for file in $UNTRACKED_FILES; do
+    if git ls-tree -r origin/main --name-only | grep -q "^$file$"; then
+        CONFLICTING_FILES="$CONFLICTING_FILES $file"
+    fi
+done
+
+if [ -n "$CONFLICTING_FILES" ]; then
+    echo -e "${YELLOW}   Fichiers non suivis détectés qui seraient écrasés:${NC}"
+    for file in $CONFLICTING_FILES; do
+        echo -e "     - $file"
+        # Sauvegarder le fichier avant de le supprimer
+        if [ -f "$file" ]; then
+            BACKUP_FILE="${file}.backup.$(date +%Y%m%d_%H%M%S)"
+            cp "$file" "$BACKUP_FILE" 2>/dev/null || true
+            echo -e "       → Sauvegardé dans $BACKUP_FILE"
+            # Supprimer le fichier non suivi
+            rm -f "$file"
+            echo -e "       → Fichier supprimé (sera remplacé par la version Git)${NC}"
+        fi
+    done
+    echo -e "${GREEN}   ✓ Fichiers conflictuels gérés${NC}"
+else
+    echo -e "${GREEN}   ✓ Aucun fichier non suivi conflictuel${NC}"
+fi
+
 # 3. Récupérer les dernières modifications
 echo -e "\n${YELLOW}3. Récupération des dernières modifications depuis GitHub...${NC}"
 git fetch origin main
