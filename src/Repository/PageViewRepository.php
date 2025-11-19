@@ -192,15 +192,28 @@ class PageViewRepository extends ServiceEntityRepository
     /**
      * @return array{data: PageView[], total: int}
      */
-    public function searchWithFilters(array $filters, int $page = 1, int $limit = 50): array
+    public function searchWithFilters(array $filters, int $page = 1, int $limit = 50, string $sortBy = 'visitedAt', string $sortOrder = 'DESC'): array
     {
         $page = max(1, $page);
         $limit = max(1, min(200, $limit));
 
         $qb = $this->createQueryBuilder('pv')
             ->leftJoin('pv.user', 'u')
-            ->addSelect('u')
-            ->orderBy('pv.visitedAt', 'DESC');
+            ->addSelect('u');
+        
+        // Gestion du tri
+        $allowedSorts = [
+            'visitedAt' => 'pv.visitedAt',
+            'url' => 'pv.url',
+            'user' => 'u.email',
+            'country' => 'pv.country',
+            'device' => 'pv.device',
+            'ipAddress' => 'pv.ipAddress',
+        ];
+        
+        $sortField = $allowedSorts[$sortBy] ?? 'pv.visitedAt';
+        $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+        $qb->orderBy($sortField, $sortOrder);
 
         if (!empty($filters['from'])) {
             $qb
@@ -226,7 +239,14 @@ class PageViewRepository extends ServiceEntityRepository
                 ->setParameter('referer', '%' . $filters['referer'] . '%');
         }
 
-        if (!empty($filters['userEmail'])) {
+        if (isset($filters['userType'])) {
+            if ($filters['userType'] === 'authenticated') {
+                $qb->andWhere('pv.user IS NOT NULL');
+            } elseif ($filters['userType'] === 'anonymous') {
+                $qb->andWhere('pv.user IS NULL');
+            }
+        } elseif (isset($filters['userEmail'])) {
+            // Recherche par email
             $qb
                 ->andWhere('u.email LIKE :userEmail')
                 ->setParameter('userEmail', '%' . $filters['userEmail'] . '%');

@@ -1,0 +1,295 @@
+{# Template partiel pour le tableau des logs avec filtres et tri indépendants #}
+<turbo-frame id="navigation-logs-frame">
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div>
+                            <h5 class="mb-0">Logs de navigation des utilisateurs</h5>
+                            <small class="text-muted">Total : {{ totalLogs|number_format(0, ',', ' ') }} visite(s)</small>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#logsFilters" aria-expanded="false" aria-controls="logsFilters">
+                                <i data-lucide="filter" width="16" height="16" class="me-1"></i>Filtres
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                {# Section des filtres (collapsible) #}
+                <div class="collapse" id="logsFilters">
+                    <div class="card-body bg-light border-bottom">
+                        <form method="get" action="{{ path('app_admin_analytics_logs') }}" data-turbo-frame="navigation-logs-frame" class="row g-3">
+                            <div class="col-md-3">
+                                <label for="date_from" class="form-label small">Date de début</label>
+                                <input type="date" class="form-control form-control-sm" id="date_from" name="date_from" value="{{ request.query.get('date_from') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="date_to" class="form-label small">Date de fin</label>
+                                <input type="date" class="form-control form-control-sm" id="date_to" name="date_to" value="{{ request.query.get('date_to') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="user_type" class="form-label small">Type utilisateur</label>
+                                <select class="form-select form-select-sm" id="user_type" name="user_type">
+                                    <option value="">Tous</option>
+                                    <option value="authenticated" {{ request.query.get('user_type') == 'authenticated' ? 'selected' : '' }}>Connectés</option>
+                                    <option value="anonymous" {{ request.query.get('user_type') == 'anonymous' ? 'selected' : '' }}>Anonymes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="sort" class="form-label small">Trier par</label>
+                                <select class="form-select form-select-sm" id="sort" name="sort">
+                                    <option value="visitedAt" {{ sortBy == 'visitedAt' ? 'selected' : '' }}>Date</option>
+                                    <option value="url" {{ sortBy == 'url' ? 'selected' : '' }}>URL</option>
+                                    <option value="user" {{ sortBy == 'user' ? 'selected' : '' }}>Utilisateur</option>
+                                    <option value="country" {{ sortBy == 'country' ? 'selected' : '' }}>Pays</option>
+                                    <option value="device" {{ sortBy == 'device' ? 'selected' : '' }}>Appareil</option>
+                                    <option value="ipAddress" {{ sortBy == 'ipAddress' ? 'selected' : '' }}>IP</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="order" class="form-label small">Ordre</label>
+                                <select class="form-select form-select-sm" id="order" name="order">
+                                    <option value="desc" {{ sortOrder == 'desc' ? 'selected' : '' }}>Décroissant</option>
+                                    <option value="asc" {{ sortOrder == 'asc' ? 'selected' : '' }}>Croissant</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="url" class="form-label small">URL (recherche)</label>
+                                <input type="text" class="form-control form-control-sm" id="url" name="url" value="{{ request.query.get('url') }}" placeholder="Rechercher une URL...">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="user_email" class="form-label small">Email utilisateur</label>
+                                <input type="text" class="form-control form-control-sm" id="user_email" name="user_email" value="{{ request.query.get('user_email') }}" placeholder="Email...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="country" class="form-label small">Pays</label>
+                                <input type="text" class="form-control form-control-sm" id="country" name="country" value="{{ request.query.get('country') }}" placeholder="Pays...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="device" class="form-label small">Appareil</label>
+                                <input type="text" class="form-control form-control-sm" id="device" name="device" value="{{ request.query.get('device') }}" placeholder="Appareil...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="ip" class="form-label small">IP</label>
+                                <input type="text" class="form-control form-control-sm" id="ip" name="ip" value="{{ request.query.get('ip') }}" placeholder="IP...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="limit" class="form-label small">Par page</label>
+                                <select class="form-select form-select-sm" id="limit" name="limit">
+                                    <option value="10" {{ limit == 10 ? 'selected' : '' }}>10</option>
+                                    <option value="25" {{ limit == 25 ? 'selected' : '' }}>25</option>
+                                    <option value="50" {{ limit == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ limit == 100 ? 'selected' : '' }}>100</option>
+                                </select>
+                            </div>
+                            <div class="col-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i data-lucide="search" width="16" height="16" class="me-1"></i>Appliquer
+                                </button>
+                                <a href="{{ path('app_admin_analytics_logs') }}" class="btn btn-sm btn-outline-secondary" data-turbo-frame="navigation-logs-frame">
+                                    <i data-lucide="x" width="16" height="16" class="me-1"></i>Réinitialiser
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 180px;">
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'visitedAt', order: sortBy == 'visitedAt' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            Date & Heure
+                                            {% if sortBy == 'visitedAt' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width: 200px;">
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'user', order: sortBy == 'user' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            Utilisateur
+                                            {% if sortBy == 'user' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'url', order: sortBy == 'url' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            Page visitée
+                                            {% if sortBy == 'url' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width: 120px;">Référent</th>
+                                    <th style="width: 100px;">
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'country', order: sortBy == 'country' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            Pays
+                                            {% if sortBy == 'country' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width: 100px;">
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'device', order: sortBy == 'device' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            Appareil
+                                            {% if sortBy == 'device' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width: 100px;">
+                                        <a href="{{ path('app_admin_analytics_logs', request.query.all|merge({sort: 'ipAddress', order: sortBy == 'ipAddress' and sortOrder == 'desc' ? 'asc' : 'desc'})) }}" 
+                                           data-turbo-frame="navigation-logs-frame" 
+                                           class="text-decoration-none text-dark">
+                                            IP
+                                            {% if sortBy == 'ipAddress' %}
+                                                <i data-lucide="{{ sortOrder == 'asc' ? 'arrow-up' : 'arrow-down' }}" width="14" height="14" class="ms-1"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in navigationLogs %}
+                                <tr>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ log.visitedAt|date('d/m/Y') }}<br>
+                                            {{ log.visitedAt|date('H:i:s') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if log.user %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                                    <span class="text-primary fw-semibold small">{{ log.user.email|slice(0, 1)|upper }}</span>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold small">{{ log.user.email }}</div>
+                                                    <small class="text-success">Connecté</small>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                                    <i data-lucide="user" width="16" height="16" class="text-secondary"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small">Visiteur anonyme</div>
+                                                    <small class="text-muted">Session: {{ log.sessionId|slice(0, 8) }}...</small>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <code class="text-primary small">{{ log.url|slice(0, 60) }}{% if log.url|length > 60 %}...{% endif %}</code>
+                                        {% if log.method %}
+                                            <span class="badge bg-info bg-opacity-10 text-info ms-1">{{ log.method }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.referer %}
+                                            <small class="text-muted text-truncate d-block" style="max-width: 120px;" title="{{ log.referer }}">
+                                                {{ log.referer|slice(0, 30) }}...
+                                            </small>
+                                        {% else %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">Direct</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.country %}
+                                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ log.country }}</span>
+                                            {% if log.city %}
+                                                <br><small class="text-muted">{{ log.city }}</small>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted small">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.device %}
+                                            <small class="text-muted">{{ log.device }}</small>
+                                        {% else %}
+                                            <span class="text-muted small">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted font-monospace">{{ log.ipAddress ?? '-' }}</small>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-5">
+                                        <i data-lucide="inbox" width="48" height="48" class="text-muted mb-2"></i>
+                                        <div>Aucun log de navigation disponible</div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if totalPages > 1 %}
+                <div class="card-footer bg-white border-top">
+                    <nav aria-label="Pagination des logs">
+                        <ul class="pagination pagination-sm mb-0 justify-content-center">
+                            {% if currentPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_admin_analytics_logs', request.query.all|merge({page: currentPage - 1})) }}" 
+                                   data-turbo-frame="navigation-logs-frame" 
+                                   aria-label="Page précédente">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for pageNum in 1..totalPages %}
+                                {% if pageNum == currentPage %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ pageNum }}</span>
+                                </li>
+                                {% elseif pageNum <= 3 or pageNum > totalPages - 3 or (pageNum >= currentPage - 1 and pageNum <= currentPage + 1) %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('app_admin_analytics_logs', request.query.all|merge({page: pageNum})) }}" 
+                                       data-turbo-frame="navigation-logs-frame">{{ pageNum }}</a>
+                                </li>
+                                {% elseif pageNum == 4 or pageNum == totalPages - 3 %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if currentPage < totalPages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_admin_analytics_logs', request.query.all|merge({page: currentPage + 1})) }}" 
+                                   data-turbo-frame="navigation-logs-frame" 
+                                   aria-label="Page suivante">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</turbo-frame>
+

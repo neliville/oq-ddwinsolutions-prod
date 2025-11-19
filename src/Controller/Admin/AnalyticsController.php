@@ -108,18 +108,6 @@ final class AnalyticsController extends AbstractController
             'data' => array_map(static fn (array $row): int => (int) $row['visitCount'], $topCountries),
         ];
 
-        // Récupérer les logs de navigation récents avec pagination
-        $page = max(1, $request->query->getInt('page', 1));
-        $limit = 25;
-        $filters = [
-            'from' => $start,
-            'to' => $end,
-        ];
-        $logsResult = $this->pageViewRepository->searchWithFilters($filters, $page, $limit);
-        $navigationLogs = $logsResult['data'];
-        $totalLogs = $logsResult['total'];
-        $totalPages = (int) ceil($totalLogs / $limit);
-
         return $this->render('admin/analytics/traffic.html.twig', [
             'period' => $period,
             'totalVisits' => $totalVisits,
@@ -138,10 +126,95 @@ final class AnalyticsController extends AbstractController
             'countryChart' => $countryChart,
             'startDate' => $start,
             'endDate' => $end,
+        ]);
+    }
+
+    #[Route('/logs', name: 'logs', methods: ['GET'])]
+    public function logs(Request $request): Response
+    {
+        // Paramètres de pagination
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = max(10, min(100, $request->query->getInt('limit', 25)));
+        
+        // Paramètres de tri
+        $sortBy = $request->query->get('sort', 'visitedAt');
+        $sortOrder = $request->query->get('order', 'desc');
+        $allowedSorts = ['visitedAt', 'url', 'user', 'country', 'device', 'ipAddress'];
+        $sortBy = in_array($sortBy, $allowedSorts) ? $sortBy : 'visitedAt';
+        $sortOrder = in_array(strtolower($sortOrder), ['asc', 'desc']) ? strtolower($sortOrder) : 'desc';
+        
+        // Filtres
+        $filters = [];
+        
+        // Filtre par date
+        if ($request->query->get('date_from')) {
+            try {
+                $filters['from'] = new \DateTimeImmutable($request->query->get('date_from'));
+            } catch (\Exception) {
+                // Ignorer si la date est invalide
+            }
+        }
+        
+        if ($request->query->get('date_to')) {
+            try {
+                $dateTo = new \DateTimeImmutable($request->query->get('date_to'));
+                $filters['to'] = $dateTo->setTime(23, 59, 59);
+            } catch (\Exception) {
+                // Ignorer si la date est invalide
+            }
+        }
+        
+        // Filtre par type d'utilisateur
+        if ($request->query->get('user_type')) {
+            $userType = $request->query->get('user_type');
+            if ($userType === 'authenticated') {
+                $filters['userType'] = 'authenticated';
+            } elseif ($userType === 'anonymous') {
+                $filters['userType'] = 'anonymous';
+            }
+        }
+        
+        // Filtre par email utilisateur (seulement si pas de filtre par type)
+        if ($request->query->get('user_email') && !isset($filters['userType'])) {
+            $filters['userEmail'] = $request->query->get('user_email');
+        }
+        
+        // Filtre par URL
+        if ($request->query->get('url')) {
+            $filters['url'] = $request->query->get('url');
+        }
+        
+        // Filtre par pays
+        if ($request->query->get('country')) {
+            $filters['country'] = $request->query->get('country');
+        }
+        
+        // Filtre par appareil
+        if ($request->query->get('device')) {
+            $filters['device'] = $request->query->get('device');
+        }
+        
+        // Filtre par IP
+        if ($request->query->get('ip')) {
+            $filters['ipAddress'] = $request->query->get('ip');
+        }
+        
+        // Récupérer les logs avec filtres et pagination
+        $logsResult = $this->pageViewRepository->searchWithFilters($filters, $page, $limit, $sortBy, $sortOrder);
+        $navigationLogs = $logsResult['data'];
+        $totalLogs = $logsResult['total'];
+        $totalPages = (int) ceil($totalLogs / $limit);
+        
+        return $this->render('admin/analytics/_logs_table.html.twig', [
             'navigationLogs' => $navigationLogs,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalLogs' => $totalLogs,
+            'limit' => $limit,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'filters' => $filters,
+            'request' => $request,
         ]);
     }
 
