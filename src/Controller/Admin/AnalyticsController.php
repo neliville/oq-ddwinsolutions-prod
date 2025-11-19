@@ -31,7 +31,7 @@ final class AnalyticsController extends AbstractController
     #[Route('/traffic', name: 'traffic', methods: ['GET'])]
     public function traffic(Request $request): Response
     {
-        [$period, $start, $end, $now] = $this->resolvePeriod($request, 'month');
+        [$period, $start, $end, $now] = $this->resolvePeriod($request, 'today');
 
         $totalVisits = $this->pageViewRepository->countByPeriod($start, $end);
         $todayVisits = $this->pageViewRepository->countByPeriod($now->setTime(0, 0, 0), $now);
@@ -85,6 +85,18 @@ final class AnalyticsController extends AbstractController
             'data' => array_map(static fn (array $row): int => (int) $row['visitCount'], $topCountries),
         ];
 
+        // Récupérer les logs de navigation récents avec pagination
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 25;
+        $filters = [
+            'from' => $start,
+            'to' => $end,
+        ];
+        $logsResult = $this->pageViewRepository->searchWithFilters($filters, $page, $limit);
+        $navigationLogs = $logsResult['data'];
+        $totalLogs = $logsResult['total'];
+        $totalPages = (int) ceil($totalLogs / $limit);
+
         return $this->render('admin/analytics/traffic.html.twig', [
             'period' => $period,
             'totalVisits' => $totalVisits,
@@ -101,6 +113,10 @@ final class AnalyticsController extends AbstractController
             'countryChart' => $countryChart,
             'startDate' => $start,
             'endDate' => $end,
+            'navigationLogs' => $navigationLogs,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalLogs' => $totalLogs,
         ]);
     }
 
