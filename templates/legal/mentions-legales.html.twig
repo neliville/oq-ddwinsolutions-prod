@@ -22,8 +22,12 @@
             </div>
             <div class="col-lg-4" data-aos="fade-left">
                 <figure>
-                    <img src="{{ asset('img/mentions-legales.webp') }}" alt="Image de réglementation"
-                        class="img-fluid rounded-3 shadow-lg">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: 'img/mentions-legales.webp',
+                        alt: 'Image de réglementation',
+                        width: 900,
+                        height: 600
+                    } %}
                     <figcaption><small>Source: Unsplash | Sasun Bughdaryan.</small></figcaption>
                 </figure>
             </div>

@@ -23,8 +23,12 @@
             </div>
             <div class="col-lg-4" data-aos="fade-left">
                 <figure>
-                    <img src="{{ asset('img/markus-winkler-contact-unsplash.webp') }}" alt="Image de contact"
-                        class="img-fluid rounded-3 shadow-lg">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: 'img/markus-winkler-contact-unsplash.webp',
+                        alt: 'Image de contact',
+                        width: 900,
+                        height: 600
+                    } %}
                     <figcaption><small>Source: Unsplash | Markus Winkler.</small></figcaption>
                 </figure>
             </div>

@@ -92,9 +92,14 @@ php bin/phpunit --testsuite=integration
 
 Le fichier `phpunit.xml.dist` configure :
 - **Environnement de test** : `APP_ENV=test`
-- **Base de données** : SQLite en mémoire
-- **TestSuites** : unit, functional, integration, all
-- **Couverture de code** : Exclusion des entités et migrations
+- **Base de données** : SQLite (fichier `var/cache/test/test.db`)
+- **TestSuites** : `unit`, `functional`, `integration`
+- **Rigueur** : `failOnRisky="true"` et `failOnWarning="true"` pour CI
+- **Couverture** : non activée par défaut (évite l'exigence d'Xdebug en local)
+
+> 💡 **Couverture**  
+> Active-la uniquement lorsque tu disposes d’un driver (Xdebug, PCOV).  
+> Exemple : `XDEBUG_MODE=coverage php bin/phpunit --coverage-text`.
 
 ### WebTestCaseWithDatabase
 
@@ -154,8 +159,9 @@ php bin/phpunit --testsuite=integration
 
 **Avec couverture de code :**
 ```bash
-php bin/phpunit --coverage-text
-php bin/phpunit --coverage-html coverage/
+# nécessite Xdebug ou PCOV
+XDEBUG_MODE=coverage php bin/phpunit --coverage-text
+XDEBUG_MODE=coverage php bin/phpunit --coverage-html coverage/
 ```
 
 **Avec testdox (sortie lisible) :**

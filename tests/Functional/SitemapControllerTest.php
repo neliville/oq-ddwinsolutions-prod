@@ -43,12 +43,12 @@ class SitemapControllerTest extends WebTestCase
 
         // Vérifier que les routes principales sont présentes (URLs absolues)
         $this->assertStringContainsString('<loc>', $xml);
-        $this->assertStringContainsString('http://localhost/', $xml);
-        $this->assertStringContainsString('/ishikawa/', $xml);
-        $this->assertStringContainsString('/5pourquoi/', $xml);
-        $this->assertStringContainsString('/outils/', $xml);
-        $this->assertStringContainsString('/blog', $xml);
-        $this->assertStringContainsString('/contact/', $xml);
+        $this->assertStringContainsString('http://localhost</loc>', $xml);
+        $this->assertStringContainsString('http://localhost/ishikawa', $xml);
+        $this->assertStringContainsString('http://localhost/5pourquoi', $xml);
+        $this->assertStringContainsString('http://localhost/outils', $xml);
+        $this->assertStringContainsString('http://localhost/blog', $xml);
+        $this->assertStringContainsString('http://localhost/contact', $xml);
 
         // Vérifier la structure d'une URL
         $this->assertStringContainsString('<priority>', $xml);

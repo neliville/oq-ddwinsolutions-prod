@@ -23,12 +23,6 @@
         <!-- DATABASE_URL défini ici pour utiliser SQLite en environnement de test -->
     </php>
     
-    <coverage>
-        <report>
-            <clover outputFile="coverage/clover.xml"/>
-        </report>
-    </coverage>
-
     <source>
         <include>
             <directory suffix=".php">src</directory>

@@ -135,8 +135,8 @@ $this->assertSelectorTextContains('.alert-success', 'Message de succès');
 # 1. Exécuter tous les tests
 php bin/phpunit
 
-# 2. Vérifier la couverture
-php bin/phpunit --coverage-text
+# 2. Vérifier la couverture (nécessite Xdebug ou PCOV)
+XDEBUG_MODE=coverage php bin/phpunit --coverage-text
 
 # 3. Vérifier le lint
 composer validate

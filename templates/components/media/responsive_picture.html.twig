@@ -1,0 +1,38 @@
+{% set image_path = path ?? default_path ?? null %}
+{% if image_path %}
+    {% set is_absolute = image_path matches '/^https?:\\/\\//i' %}
+    {% set normalized_path = is_absolute ? image_path : (image_path starts with '/' ? image_path|slice(1) : image_path) %}
+    {% set loading_attr = loading|default('lazy') %}
+    {% set decoding_attr = decoding|default('async') %}
+    {% set width_attr = width|default(null) %}
+    {% set height_attr = height|default(null) %}
+    {% set img_class = class|default('img-fluid rounded-3 shadow-lg') %}
+    {% set alt_attr = alt|default('Illustration') %}
+    {% if is_absolute %}
+        <img src="{{ normalized_path }}"
+             alt="{{ alt_attr }}"
+             class="{{ img_class }}"
+             loading="{{ loading_attr }}"
+             decoding="{{ decoding_attr }}"
+             {% if width_attr %}width="{{ width_attr }}"{% endif %}
+             {% if height_attr %}height="{{ height_attr }}"{% endif %}>
+    {% else %}
+        {% set fallback_filter = fallback_filter|default('cover_jpeg') %}
+        {% set webp_filter = webp_filter|default('cover_webp') %}
+        {% set fallback_src = asset((normalized_path)|imagine_filter(fallback_filter)) %}
+        <picture>
+            {% if webp_filter %}
+                {% set webp_src = asset((normalized_path)|imagine_filter(webp_filter)) %}
+                <source srcset="{{ webp_src }}" type="image/webp">
+            {% endif %}
+            <img src="{{ fallback_src }}"
+                 alt="{{ alt_attr }}"
+                 class="{{ img_class }}"
+                 loading="{{ loading_attr }}"
+                 decoding="{{ decoding_attr }}"
+                 {% if width_attr %}width="{{ width_attr }}"{% endif %}
+                 {% if height_attr %}height="{{ height_attr }}"{% endif %}>
+        </picture>
+    {% endif %}
+{% endif %}
+

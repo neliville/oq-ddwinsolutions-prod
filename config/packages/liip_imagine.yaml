@@ -1,0 +1,52 @@
+liip_imagine:
+    driver: "gd"
+    twig:
+        mode: lazy
+
+    resolvers:
+        default:
+            web_path: ~
+
+    loaders:
+        default:
+            filesystem:
+                data_root:
+                    - '%kernel.project_dir%/public'
+
+    filter_sets:
+        cache: ~
+
+        hero_webp:
+            quality: 72
+            format: webp
+            filters:
+                thumbnail: { size: [1280, 800], mode: inset }
+                strip: ~
+
+        hero_jpeg:
+            quality: 78
+            filters:
+                thumbnail: { size: [1280, 800], mode: inset }
+                strip: ~
+
+        cover_webp:
+            quality: 70
+            format: webp
+            filters:
+                thumbnail: { size: [900, 600], mode: outbound }
+                strip: ~
+
+        cover_jpeg:
+            quality: 75
+            filters:
+                thumbnail: { size: [900, 600], mode: outbound }
+                strip: ~
+
+        card_mobile:
+            quality: 68
+            format: webp
+            filters:
+                thumbnail: { size: [600, 400], mode: outbound }
+                strip: ~
+
+

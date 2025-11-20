@@ -33,6 +33,15 @@ function initEasyMDEEditor() {
     textarea.easyMDEInstance = easyMDE;
 }
 
+function destroyEasyMDEEditor() {
+    const textarea = document.getElementById('{{ form.content.vars.id }}');
+    if (textarea && textarea.easyMDEInstance) {
+        textarea.easyMDEInstance.toTextArea();
+        textarea.easyMDEInstance = null;
+        textarea.dataset.easymdeInitialized = 'false';
+    }
+}
+
 function initFeaturedImagePreview() {
     const input = document.getElementById('{{ form.featuredImage.vars.id }}');
     const wrapper = document.getElementById('blog-image-preview-edit-wrapper');
@@ -71,9 +80,18 @@ function initBlogEditors() {
     initFeaturedImagePreview();
 }
 
-document.addEventListener('DOMContentLoaded', initBlogEditors);
-document.addEventListener('turbo:load', initBlogEditors);
-document.addEventListener('turbo:render', initBlogEditors);
+function scheduleBlogEditorsInit() {
+    window.requestAnimationFrame(initBlogEditors);
+}
+
+document.addEventListener('DOMContentLoaded', scheduleBlogEditorsInit);
+document.addEventListener('turbo:load', scheduleBlogEditorsInit);
+document.addEventListener('turbo:render', scheduleBlogEditorsInit);
+document.addEventListener('turbo:before-cache', destroyEasyMDEEditor);
+
+if (document.readyState !== 'loading') {
+    scheduleBlogEditorsInit();
+}
 </script>
 {% endblock %}
 
@@ -82,7 +100,7 @@ document.addEventListener('turbo:render', initBlogEditors);
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a href="{{ path('app_admin_blog_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
+            <a href="{{ path('app_admin_blog_index') }}" class="btn btn-sm btn-outline-secondary mb-2" data-turbo="false">
                 <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
                 Retour à la liste
             </a>
@@ -103,7 +121,7 @@ document.addEventListener('turbo:render', initBlogEditors);
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
                     
                     <div class="mb-3">
                         {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
@@ -197,7 +215,7 @@ document.addEventListener('turbo:render', initBlogEditors);
                             Publier maintenant
                         </button>
                         {% endif %}
-                        <a href="{{ path('app_admin_blog_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_blog_index') }}" class="btn btn-outline-secondary" data-turbo="false">
                             Annuler
                         </a>
                     </div>
@@ -243,12 +261,12 @@ document.addEventListener('turbo:render', initBlogEditors);
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" class="btn btn-outline-primary btn-sm" data-turbo="false">
                             <i data-lucide="eye" width="14" height="14" class="me-1"></i>
                             Voir l'article
                         </a>
                         {% if post.publishedAt %}
-                        <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline">
+                        <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline" data-turbo="false">
                             <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
                             <button type="submit" class="btn btn-outline-warning btn-sm w-100">
                                 <i data-lucide="eye-off" width="14" height="14" class="me-1"></i>
@@ -256,7 +274,7 @@ document.addEventListener('turbo:render', initBlogEditors);
                             </button>
                         </form>
                         {% else %}
-                        <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline">
+                        <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline" data-turbo="false">
                             <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
                             <button type="submit" class="btn btn-outline-success btn-sm w-100">
                                 <i data-lucide="check" width="14" height="14" class="me-1"></i>
@@ -266,7 +284,8 @@ document.addEventListener('turbo:render', initBlogEditors);
                         {% endif %}
                         <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" 
                               class="d-inline"
-                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');"
+                              data-turbo="false">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
                             <button type="submit" class="btn btn-outline-danger btn-sm w-100">
                                 <i data-lucide="trash-2" width="14" height="14" class="me-1"></i>

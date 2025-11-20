@@ -151,7 +151,12 @@ body {
             </div>
             <div class="col-lg-4 text-center">
                 {% if post.image %}
-                <img src="{{ asset(post.image) }}" alt="{{ post.title }}" class="img-fluid rounded-3 shadow-lg" loading="lazy">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: post.image,
+                        alt: post.title,
+                        width: 900,
+                        height: 600
+                    } %}
                 {% elseif post.category and post.category.icon %}
                 <div class="d-inline-block">
                     <div class="bg-{{ post.category.color|default('primary') }} bg-opacity-10 rounded-3 p-4 p-md-5" aria-hidden="true">
@@ -159,7 +164,12 @@ body {
                     </div>
                 </div>
                 {% else %}
-                <img src="{{ asset('img/blog-5why.webp') }}" alt="{{ post.title }}" class="img-fluid rounded-3 shadow-lg" loading="lazy">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: 'img/blog-5why.webp',
+                        alt: post.title,
+                        width: 900,
+                        height: 600
+                    } %}
                 {% endif %}
             </div>
         </div>

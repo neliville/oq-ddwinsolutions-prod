@@ -20,7 +20,12 @@
             </div>
             <div class="col-lg-4" data-aos="fade-left">
                 <figure>
-                    <img src="{{ asset(meta.image|default('img/mentions-legales.webp')) }}" alt="{{ page.title }}" class="img-fluid rounded-3 shadow-lg">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: meta.image|default('img/mentions-legales.webp'),
+                        alt: page.title,
+                        width: 900,
+                        height: 600
+                    } %}
                     <figcaption><small>Source: Unsplash.</small></figcaption>
                 </figure>
             </div>

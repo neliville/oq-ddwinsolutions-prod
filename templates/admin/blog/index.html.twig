@@ -11,7 +11,7 @@
             <p class="text-muted mb-0">Gérer les articles de blog</p>
         </div>
         <div>
-            <a href="{{ path('app_admin_blog_new') }}" class="btn btn-primary">
+            <a href="{{ path('app_admin_blog_new') }}" class="btn btn-primary" data-turbo="false">
                 <i data-lucide="plus" width="16" height="16" class="me-1"></i>
                 Nouvel article
             </a>
@@ -162,22 +162,22 @@
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" 
-                                       class="btn btn-outline-primary" title="Voir">
+                                       class="btn btn-outline-primary" title="Voir" data-turbo="false">
                                         <i data-lucide="eye" width="14" height="14"></i>
                                     </a>
                                     <a href="{{ path('app_admin_blog_edit', {id: post.id}) }}" 
-                                       class="btn btn-outline-secondary" title="Modifier">
+                                       class="btn btn-outline-secondary" title="Modifier" data-turbo="false">
                                         <i data-lucide="edit" width="14" height="14"></i>
                                     </a>
                                     {% if post.publishedAt %}
-                                    <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline">
+                                    <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="d-inline" data-turbo="false">
                                         <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
                                         <button type="submit" class="btn btn-outline-warning" title="Dépublier">
                                             <i data-lucide="eye-off" width="14" height="14"></i>
                                         </button>
                                     </form>
                                     {% else %}
-                                    <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline">
+                                    <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="d-inline" data-turbo="false">
                                         <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
                                         <button type="submit" class="btn btn-outline-success" title="Publier">
                                             <i data-lucide="check" width="14" height="14"></i>
@@ -186,7 +186,8 @@
                                     {% endif %}
                                     <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" 
                                           class="d-inline" 
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');"
+                                          data-turbo="false">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
                                         <button type="submit" class="btn btn-outline-danger" title="Supprimer">
                                             <i data-lucide="trash-2" width="14" height="14"></i>

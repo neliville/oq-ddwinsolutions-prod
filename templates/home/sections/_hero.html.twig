@@ -41,13 +41,15 @@
             </div>
             <div class="col-lg-6 offset-xl-1" data-aos="fade-left">
                 <div class="hero-visual shadow-xl">
-                    <img src="{{ asset('img/dashboard-mock.svg') }}"
-                         alt="Mockup tableau de bord OUTILS-QUALITÉ"
-                         class="img-fluid rounded-4"
-                         loading="lazy"
-                         decoding="async"
-                         width="960"
-                         height="720">
+                    {% include 'components/media/responsive_picture.html.twig' with {
+                        path: 'img/hero.webp',
+                        alt: 'Mockup tableau de bord OUTILS-QUALITÉ',
+                        class: 'img-fluid rounded-4',
+                        width: 1280,
+                        height: 800,
+                        webp_filter: 'hero_webp',
+                        fallback_filter: 'hero_jpeg'
+                    } %}
                     <div class="hero-chip hero-chip--trust shadow hero-chip--floating">
                         <i data-lucide="shield-check" class="text-success" aria-hidden="true"></i>
                         <div>

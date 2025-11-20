@@ -27,7 +27,12 @@
                 </p>
             </div>
             <div class="col-lg-4" data-aos="fade-left">
-                <img src="{{ asset('img/mentions-legales.webp') }}" alt="Politique de confidentialité" class="img-fluid rounded-3 shadow-lg">
+                {% include 'components/media/responsive_picture.html.twig' with {
+                    path: 'img/mentions-legales.webp',
+                    alt: 'Politique de confidentialité',
+                    width: 900,
+                    height: 600
+                } %}
             </div>
         </div>
     </div>

@@ -23,7 +23,12 @@
                 </p>
             </div>
             <div class="col-lg-4" data-aos="fade-left">
-                <img src="{{ asset('img/blog-5why.webp') }}" alt="Blog qualité" class="img-fluid rounded-3 shadow-lg">
+                {% include 'components/media/responsive_picture.html.twig' with {
+                    path: 'img/blog-5why.webp',
+                    alt: 'Blog qualité',
+                    width: 900,
+                    height: 600
+                } %}
             </div>
         </div>
     </div>
@@ -60,7 +65,13 @@
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
                 <div class="card border-0 shadow-sm h-100">
                     {% if featuredPost.image %}
-                    <img src="{{ asset(featuredPost.image) }}" class="card-img-top" alt="{{ featuredPost.title }}" loading="lazy">
+                        {% include 'components/media/responsive_picture.html.twig' with {
+                            path: featuredPost.image,
+                            alt: featuredPost.title,
+                            class: 'card-img-top',
+                            width: 900,
+                            height: 600
+                        } %}
                     {% endif %}
                     <div class="card-body p-4">
                         {% if featuredPost.category %}
@@ -99,7 +110,13 @@
             <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
                 <div class="card border-0 shadow-sm h-100">
                     {% if post.image %}
-                    <img src="{{ asset(post.image) }}" class="card-img-top" alt="{{ post.title }}" loading="lazy">
+                        {% include 'components/media/responsive_picture.html.twig' with {
+                            path: post.image,
+                            alt: post.title,
+                            class: 'card-img-top',
+                            width: 900,
+                            height: 600
+                        } %}
                     {% endif %}
                     <div class="card-body p-4">
                         <div class="d-flex align-items-start mb-3">
