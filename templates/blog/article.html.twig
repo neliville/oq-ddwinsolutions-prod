@@ -45,7 +45,7 @@
         "name": "OUTILS-QUALITÉ",
         "logo": {
             "@type": "ImageObject",
-            "url": {{ (app.request.schemeAndHttpHost ~ asset('img/logo.png'))|json_encode|raw }}
+            "url": {{ (app.request.schemeAndHttpHost ~ asset('img/logo.webp'))|json_encode|raw }}
         }
     },
     "description": {{ (post.excerpt|striptags)|json_encode|raw }},

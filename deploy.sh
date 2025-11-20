@@ -90,11 +90,13 @@ echo -e "${GREEN}   ✓ Code mis à jour${NC}"
 echo -e "\n${YELLOW}4. Installation des dépendances Composer...${NC}"
 # Désactiver temporairement set -e pour composer install
 set +e
+COMPOSER_BASE_CMD="install --no-dev --optimize-autoloader --no-interaction --no-scripts --prefer-dist --no-progress"
+
 if [ -f "composer.phar" ]; then
-    php composer.phar install --no-dev --optimize-autoloader --no-interaction --no-scripts 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
+    php composer.phar $COMPOSER_BASE_CMD 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
     COMPOSER_EXIT=$?
 else
-    composer install --no-dev --optimize-autoloader --no-interaction --no-scripts 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
+    composer $COMPOSER_BASE_CMD 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
     COMPOSER_EXIT=$?
 fi
 set -e

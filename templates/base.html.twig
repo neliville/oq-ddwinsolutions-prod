@@ -85,27 +85,20 @@
     </style>
 
     <!-- Custom CSS (critique, chargé immédiatement) -->
-    <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('styles/app.scss') }}" rel="stylesheet">
 
-    <!-- CSS non critiques (chargés de manière différée) -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    
-    <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
+    <!-- Bibliothèques tierces -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
 
     {% block head %}{% endblock %}
 
     <style>
         html.is-loading body {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        html:not(.is-loading) body {
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.2s ease-out;
         }
     </style>
 
@@ -202,56 +195,34 @@
     {% block javascripts %}
     {% endblock %}
 
-    <!-- Initialize Lucide Icons (différé pour améliorer les performances) -->
+    <link rel="stylesheet" href="{{ asset('cookie-banner/silktide-consent-manager.css') }}">
+    <script src="{{ asset('cookie-banner/silktide-consent-manager.js') }}" defer></script>
+
     <script>
-        // Différer le chargement de Lucide Icons
-        function loadLucideIcons() {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
-            script.async = true;
-            script.onload = function() {
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            };
-            document.head.appendChild(script);
-        }
-
-        // Différer le chargement de AOS
-        function loadAOS() {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
-            script.async = true;
-            script.onload = function() {
-                if (typeof AOS !== 'undefined') {
-                    AOS.init({
-                        duration: 800,
-                        easing: "ease-in-out",
-                        once: true,
-                        offset: 100,
-                    });
-                }
-            };
-            document.head.appendChild(script);
-        }
-
-        // Charger les scripts non critiques après le chargement de la page
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function () {
-                document.documentElement.classList.remove('is-loading');
-                // Charger les scripts non critiques après un court délai
-                setTimeout(function() {
-                    loadLucideIcons();
-                    loadAOS();
-                }, 100);
-            });
-        } else {
+        function finalizeNonCriticalAssets() {
             document.documentElement.classList.remove('is-loading');
-            setTimeout(function() {
-                loadLucideIcons();
-                loadAOS();
-            }, 100);
+
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-in-out',
+                    once: true,
+                    offset: 100,
+                });
+            }
         }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', finalizeNonCriticalAssets);
+        } else {
+            finalizeNonCriticalAssets();
+        }
+
+        document.addEventListener('turbo:load', finalizeNonCriticalAssets);
     </script>
 </body>
 

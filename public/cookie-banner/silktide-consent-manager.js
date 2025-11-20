@@ -1,4 +1,12 @@
 // Silktide Consent Manager - https://silktide.com/consent-manager/  
+(function () {
+  if (window.silktideCookieBannerManager && window.silktideCookieBannerManager.__initialized) {
+    console.warn('Silktide Cookie Banner already initialized.');
+    return;
+  }
+
+  window.silktideCookieBannerManager = window.silktideCookieBannerManager || {};
+  window.silktideCookieBannerManager.__initialized = true;
 
 class SilktideCookieBanner {
   constructor(config) {
@@ -788,8 +796,6 @@ class SilktideCookieBanner {
   }
 }
 
-(function () {
-  window.silktideCookieBannerManager = {};
 
   let config = {};
   let cookieBanner;
