@@ -339,8 +339,8 @@
                     <input type="text" data-team-field="name" placeholder="Nom" value="${member.name ?? ''}">
                     <input type="text" data-team-field="role" placeholder="Fonction" value="${member.role ?? ''}">
                     <input type="text" data-team-field="expertise" placeholder="Expertise" value="${member.expertise ?? ''}">
-                    <button type="button" class="btn btn-outline-danger btn-sm" data-team-action="remove">
-                        <i class="fas fa-times"></i>
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-remove" data-team-action="remove" aria-label="Supprimer ce membre">
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             `
@@ -379,9 +379,11 @@
                             <label>Membres de l’équipe</label>
                             <span class="helper">Précisez nom, fonction et expertise de chaque membre.</span>
                             <div class="eightd-team-list" data-team-list></div>
-                            <button type="button" class="btn btn-outline-success btn-sm mt-2" data-team-action="add">
-                                <i class="fas fa-user-plus me-2"></i>Ajouter un membre
-                            </button>
+                            <div class="eightd-add-member-wrapper">
+                                <button type="button" class="btn btn-outline-success btn-sm" data-team-action="add">
+                                    <i class="fas fa-user-plus me-2"></i>Ajouter un membre
+                                </button>
+                            </div>
                         </div>
                     `
                     : '';

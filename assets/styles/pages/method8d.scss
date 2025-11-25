@@ -338,11 +338,55 @@
 
 .eightd-member-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto;
+  grid-template-columns: 1fr 1fr 1fr auto;
   gap: var(--space-2);
+  align-items: center;
 
-  button {
-    min-width: 44px;
+  input {
+    min-width: 0;
+  }
+
+  .btn-remove {
+    min-width: 46px;
+    max-width: 46px;
+    height: 38px;
+    border: 2px solid #ef4444 !important;
+    color: #ef4444 !important;
+    font-weight: 600;
+    background: #fff !important;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+
+    &:hover {
+      background: #ef4444 !important;
+      color: #fff !important;
+      border-color: #dc2626 !important;
+      transform: scale(1.05);
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(239, 68, 68, 0.35);
+      outline-offset: 2px;
+    }
+
+    i {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.eightd-add-member-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-3);
+
+  .btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem;
+    min-height: 38px;
   }
 }
 
@@ -482,11 +526,25 @@
   }
 
   .eightd-member-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: var(--space-2);
 
-    button {
-      grid-column: span 2;
-      width: 100%;
+    .btn-remove {
+      grid-column: auto;
+      max-width: 46px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .eightd-member-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+
+      .btn-remove {
+        grid-column: 1;
+        max-width: 100%;
+        width: 100%;
+      }
     }
   }
 }

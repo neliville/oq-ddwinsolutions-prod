@@ -315,11 +315,46 @@
     .admin-sidebar {
         box-shadow: 2px 0 8px rgba(0,0,0,0.1);
     }
-    .admin-sidebar a:hover {
+    .admin-sidebar a:hover:not(.btn-outline-danger) {
         background-color: #f8f9fa !important;
     }
     .admin-sidebar a.bg-primary:hover {
         background-color: #0d6efd !important;
+    }
+    /* Style spécifique pour le bouton de déconnexion - Surcharge Bootstrap */
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2,
+    .admin-sidebar .btn-outline-danger {
+        border: 2px solid #ef4444 !important;
+        color: #ef4444 !important;
+        background: #fff !important;
+        background-color: #fff !important;
+        font-weight: 600 !important;
+    }
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2 *,
+    .admin-sidebar .btn-outline-danger * {
+        color: #ef4444 !important;
+    }
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover,
+    .admin-sidebar .btn-outline-danger:hover {
+        background: #ef4444 !important;
+        background-color: #ef4444 !important;
+        border-color: #dc2626 !important;
+        border: 2px solid #dc2626 !important;
+        color: #ffffff !important;
+    }
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover *,
+    .admin-sidebar .btn-outline-danger:hover *,
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover i,
+    .admin-sidebar .btn-outline-danger:hover i,
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover [data-lucide],
+    .admin-sidebar .btn-outline-danger:hover [data-lucide],
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover svg,
+    .admin-sidebar .btn-outline-danger:hover svg,
+    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover svg *,
+    .admin-sidebar .btn-outline-danger:hover svg * {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
     }
     .admin-sidebar .collapse {
         transition: height 0.3s ease;

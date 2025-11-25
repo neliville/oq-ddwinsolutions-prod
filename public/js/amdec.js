@@ -176,7 +176,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="button" class="btn btn-outline-danger btn-sm" data-action="remove">
+                        <button type="button" class="btn btn-outline-danger btn-sm btn-remove" data-action="remove">
                             <i class="fas fa-trash-alt me-2"></i>Supprimer
                         </button>
                     </div>

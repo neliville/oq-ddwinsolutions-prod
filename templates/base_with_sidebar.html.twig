@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% set show_sidebar_toggle = app.user is not null %}
+{% set show_public_navbar = false %}
 
 {% block body %}
 {% if app.user %}

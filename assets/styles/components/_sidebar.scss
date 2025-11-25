@@ -34,6 +34,94 @@
     }
 }
 
+// Style pour le bouton de déconnexion dans le footer de la sidebar
+// Utilisation d'une spécificité très élevée pour surcharger Bootstrap et les styles inline
+.admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2,
+.admin-sidebar .btn-outline-danger,
+.sidebar .btn-outline-danger {
+    border: 2px solid #ef4444 !important;
+    color: #ef4444 !important;
+    background: #fff !important;
+    transition: all 0.2s ease !important;
+    font-weight: 600 !important;
+    position: relative;
+    z-index: 1;
+
+    // Assurer que le texte et l'icône sont visibles par défaut
+    &,
+    * {
+        color: #ef4444 !important;
+    }
+
+    i,
+    [data-lucide],
+    svg,
+    span,
+    text {
+        color: #ef4444 !important;
+        fill: #ef4444 !important;
+        stroke: #ef4444 !important;
+    }
+
+    // Surcharger Bootstrap et le style inline au survol avec une spécificité maximale
+    &:hover,
+    &:hover:focus,
+    &:hover:active {
+        background: #ef4444 !important;
+        background-color: #ef4444 !important;
+        border-color: #dc2626 !important;
+        border: 2px solid #dc2626 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        color: #ffffff !important;
+
+        // Forcer la couleur blanche au survol pour TOUS les éléments enfants
+        &,
+        *,
+        ::before,
+        ::after {
+            color: #ffffff !important;
+        }
+
+        i,
+        [data-lucide],
+        svg,
+        span,
+        text,
+        path,
+        circle,
+        rect,
+        line,
+        polyline,
+        polygon {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            stroke: #ffffff !important;
+        }
+
+        // Surcharger spécifiquement les styles Bootstrap pour les icônes Lucide
+        [data-lucide] {
+            color: #ffffff !important;
+            
+            svg {
+                color: #ffffff !important;
+                fill: #ffffff !important;
+                
+                * {
+                    color: #ffffff !important;
+                    fill: #ffffff !important;
+                    stroke: #ffffff !important;
+                }
+            }
+        }
+    }
+
+    &:focus-visible {
+        outline: 3px solid rgba(239, 68, 68, 0.35) !important;
+        outline-offset: 2px !important;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);

@@ -8,435 +8,425 @@
 {% endblock %}
 
 {% block content %}
-<!-- Main Content -->
-<main class="pt-5 mt-4">
+<main class="creations-page" role="main" aria-label="Mes créations">
     <div class="container-fluid">
-        <!-- Header -->
-        <div class="header text-center mb-5" data-aos="fade-up">
-            <h1 class="display-4 fw-bold mb-3">Mes créations</h1>
-            <p class="lead text-muted">Consultez et gérez toutes vos analyses sauvegardées</p>
-        </div>
+        <header class="creations-header" data-aos="fade-up">
+            <h1>Mes créations</h1>
+            <p class="lead">Consultez et gérez toutes vos analyses sauvegardées</p>
+        </header>
 
-        <!-- Stats -->
-        <div class="row mb-4 g-3">
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="100">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-file-alt fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ totalRecords }}</h3>
-                        <p class="text-muted mb-0">Total des créations</p>
-                    </div>
+        <div class="creations-stats" role="region" aria-label="Statistiques des créations">
+            <div class="creations-stat-card creations-stat-card--total" tabindex="0" role="article" aria-label="Total des créations">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ totalRecords }}</div>
+                <p class="creations-stat-card__label">Total des créations</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="200">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-project-diagram fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ ishikawaRecords|length }}</h3>
-                        <p class="text-muted mb-0">Diagrammes Ishikawa</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--ishikawa" tabindex="0" role="article" aria-label="Diagrammes Ishikawa">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-project-diagram" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ ishikawaRecords|length }}</div>
+                <p class="creations-stat-card__label">Diagrammes Ishikawa</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="300">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-question-circle fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ fiveWhyRecords|length }}</h3>
-                        <p class="text-muted mb-0">Analyses 5 Pourquoi</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--fivewhy" tabindex="0" role="article" aria-label="Analyses 5 Pourquoi">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-question-circle" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ fiveWhyRecords|length }}</div>
+                <p class="creations-stat-card__label">Analyses 5 Pourquoi</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="350">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-list-check fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ qqoqccpRecords|length }}</h3>
-                        <p class="text-muted mb-0">Analyses QQOQCCP</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--qqoqccp" tabindex="0" role="article" aria-label="Analyses QQOQCCP">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-list-check" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ qqoqccpRecords|length }}</div>
+                <p class="creations-stat-card__label">Analyses QQOQCCP</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="400">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-exclamation-triangle fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ amdecRecords|length }}</h3>
-                        <p class="text-muted mb-0">Analyses AMDEC</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--amdec" tabindex="0" role="article" aria-label="Analyses AMDEC">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ amdecRecords|length }}</div>
+                <p class="creations-stat-card__label">Analyses AMDEC</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="450">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-chart-line fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ paretoRecords|length }}</h3>
-                        <p class="text-muted mb-0">Analyses Pareto</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--pareto" tabindex="0" role="article" aria-label="Analyses Pareto">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ paretoRecords|length }}</div>
+                <p class="creations-stat-card__label">Analyses Pareto</p>
             </div>
-            <div class="col-md-4 col-lg-3 col-xl-2" data-aos="fade-up" data-aos-delay="500">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body text-center p-4">
-                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fas fa-layer-group fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold mb-1">{{ eightDRecords|length }}</h3>
-                        <p class="text-muted mb-0">Méthodes 8D</p>
-                    </div>
+            <div class="creations-stat-card creations-stat-card--eightd" tabindex="0" role="article" aria-label="Méthodes 8D">
+                <div class="creations-stat-card__icon">
+                    <i class="fas fa-layer-group" aria-hidden="true"></i>
                 </div>
+                <div class="creations-stat-card__value">{{ eightDRecords|length }}</div>
+                <p class="creations-stat-card__label">Méthodes 8D</p>
             </div>
         </div>
 
         {% if totalRecords == 0 %}
-        <!-- Empty State -->
-        <div class="text-center py-5" data-aos="fade-up">
-            <div class="card border-0 shadow-sm mx-auto" style="max-width: 500px;">
-                <div class="card-body p-5">
-                    <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
-                    <h4 class="text-muted mb-3">Aucune création sauvegardée</h4>
-                    <p class="text-muted mb-4">Commencez à créer vos analyses avec nos outils et sauvegardez-les pour les retrouver ici.</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
-                            <i class="fas fa-project-diagram me-2"></i>Créer un diagramme Ishikawa
-                        </a>
-                        <a href="{{ path('app_fivewhy_index') }}" class="btn btn-info">
-                            <i class="fas fa-question-circle me-2"></i>Créer une analyse 5 Pourquoi
-                        </a>
-                        <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-list-check me-2"></i>Créer une analyse QQOQCCP
-                        </a>
-                        <a href="{{ path('app_amdec_index') }}" class="btn btn-outline-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Créer une analyse AMDEC
-                        </a>
-                        <a href="{{ path('app_pareto_index') }}" class="btn btn-outline-info">
-                            <i class="fas fa-chart-line me-2"></i>Créer une analyse Pareto
-                        </a>
-                        <a href="{{ path('app_eightd_index') }}" class="btn btn-outline-warning">
-                            <i class="fas fa-layer-group me-2"></i>Lancer une méthode 8D
-                        </a>
-                    </div>
-                </div>
+        <div class="creations-empty" role="status" aria-live="polite">
+            <div class="creations-empty__icon" aria-hidden="true">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h2 class="creations-empty__title">Aucune création sauvegardée</h2>
+            <p class="creations-empty__description">Commencez à créer vos analyses avec nos outils et sauvegardez-les pour les retrouver ici.</p>
+            <div class="creations-empty__actions">
+                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                    <i class="fas fa-project-diagram" aria-hidden="true"></i>
+                    <span>Créer un diagramme Ishikawa</span>
+                </a>
+                <a href="{{ path('app_fivewhy_index') }}" class="btn btn-info">
+                    <i class="fas fa-question-circle" aria-hidden="true"></i>
+                    <span>Créer une analyse 5 Pourquoi</span>
+                </a>
+                <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-list-check" aria-hidden="true"></i>
+                    <span>Créer une analyse QQOQCCP</span>
+                </a>
+                <a href="{{ path('app_amdec_index') }}" class="btn btn-outline-danger">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>Créer une analyse AMDEC</span>
+                </a>
+                <a href="{{ path('app_pareto_index') }}" class="btn btn-outline-info">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span>Créer une analyse Pareto</span>
+                </a>
+                <a href="{{ path('app_eightd_index') }}" class="btn btn-outline-warning">
+                    <i class="fas fa-layer-group" aria-hidden="true"></i>
+                    <span>Lancer une méthode 8D</span>
+                </a>
             </div>
         </div>
         {% else %}
-        <!-- Diagrammes Ishikawa -->
         {% if ishikawaRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-project-diagram me-2 text-primary"></i>Diagrammes Ishikawa
+        <section class="creations-section" aria-labelledby="ishikawa-heading">
+            <div class="creations-section__header">
+                <h2 id="ishikawa-heading">
+                    <i class="fas fa-project-diagram" aria-hidden="true"></i>
+                    <span>Diagrammes Ishikawa</span>
                 </h2>
                 <span class="badge bg-primary">{{ ishikawaRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in ishikawaRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-2 me-3">
-                                    <i class="fas fa-project-diagram fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_ishikawa_index') }}?load={{ record.id }}" class="btn btn-sm btn-primary flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button 
-                                        class="btn btn-sm btn-danger" 
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_ishikawa_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer ce diagramme Ishikawa ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--ishikawa" role="article" aria-labelledby="ishikawa-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="ishikawa-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_ishikawa_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger le diagramme Ishikawa {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button 
+                                class="creation-btn creation-btn--delete" 
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_ishikawa_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer ce diagramme Ishikawa ? Cette action est irréversible."
+                                aria-label="Supprimer le diagramme Ishikawa {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
 
-        <!-- Analyses 5 Pourquoi -->
         {% if fiveWhyRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up" data-aos-delay="100">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-question-circle me-2 text-info"></i>Analyses 5 Pourquoi
+        <section class="creations-section" aria-labelledby="fivewhy-heading">
+            <div class="creations-section__header">
+                <h2 id="fivewhy-heading">
+                    <i class="fas fa-question-circle" aria-hidden="true"></i>
+                    <span>Analyses 5 Pourquoi</span>
                 </h2>
                 <span class="badge bg-info">{{ fiveWhyRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in fiveWhyRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-info bg-opacity-10 text-info rounded-3 p-2 me-3">
-                                    <i class="fas fa-question-circle fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_fivewhy_index') }}?load={{ record.id }}" class="btn btn-sm btn-info flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button 
-                                        class="btn btn-sm btn-danger" 
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_fivewhy_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--fivewhy" role="article" aria-labelledby="fivewhy-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="fivewhy-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_fivewhy_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse 5 Pourquoi {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button 
+                                class="creation-btn creation-btn--delete" 
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_fivewhy_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible."
+                                aria-label="Supprimer l'analyse 5 Pourquoi {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
 
-        <!-- Analyses QQOQCCP -->
         {% if qqoqccpRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up" data-aos-delay="150">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-list-check me-2 text-secondary"></i>Analyses QQOQCCP
+        <section class="creations-section" aria-labelledby="qqoqccp-heading">
+            <div class="creations-section__header">
+                <h2 id="qqoqccp-heading">
+                    <i class="fas fa-list-check" aria-hidden="true"></i>
+                    <span>Analyses QQOQCCP</span>
                 </h2>
                 <span class="badge bg-secondary">{{ qqoqccpRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in qqoqccpRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 p-2 me-3">
-                                    <i class="fas fa-list-check fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted d-block">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                    {% if record.updatedAt %}
-                                    <small class="text-muted">Dernière mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_qqoqccp_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-secondary flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button 
-                                        class="btn btn-sm btn-danger" 
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_qqoqccp_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse QQOQCCP ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--qqoqccp" role="article" aria-labelledby="qqoqccp-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-list-check"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="qqoqccp-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% if record.updatedAt %}
+                                <span>
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_qqoqccp_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse QQOQCCP {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button 
+                                class="creation-btn creation-btn--delete" 
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_qqoqccp_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse QQOQCCP ? Cette action est irréversible."
+                                aria-label="Supprimer l'analyse QQOQCCP {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
 
-        <!-- Analyses AMDEC -->
         {% if amdecRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up" data-aos-delay="200">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Analyses AMDEC
+        <section class="creations-section" aria-labelledby="amdec-heading">
+            <div class="creations-section__header">
+                <h2 id="amdec-heading">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>Analyses AMDEC</span>
                 </h2>
                 <span class="badge bg-danger">{{ amdecRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in amdecRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-danger bg-opacity-10 text-danger rounded-3 p-2 me-3">
-                                    <i class="fas fa-exclamation-triangle fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted d-block">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                    {% if record.updatedAt %}
-                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_amdec_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-danger flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button
-                                        class="btn btn-sm btn-danger"
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_amdec_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--amdec" role="article" aria-labelledby="amdec-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="amdec-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% if record.updatedAt %}
+                                <span>
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_amdec_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse AMDEC {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button
+                                class="creation-btn creation-btn--delete"
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_amdec_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible."
+                                aria-label="Supprimer l'analyse AMDEC {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
 
-        <!-- Analyses Pareto -->
         {% if paretoRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up" data-aos-delay="250">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-chart-line me-2 text-info"></i>Analyses Pareto
+        <section class="creations-section" aria-labelledby="pareto-heading">
+            <div class="creations-section__header">
+                <h2 id="pareto-heading">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span>Analyses Pareto</span>
                 </h2>
                 <span class="badge bg-info">{{ paretoRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in paretoRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-info bg-opacity-10 text-info rounded-3 p-2 me-3">
-                                    <i class="fas fa-chart-line fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted d-block">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                    {% if record.updatedAt %}
-                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_pareto_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-info flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button
-                                        class="btn btn-sm btn-danger"
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_pareto_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--pareto" role="article" aria-labelledby="pareto-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="pareto-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% if record.updatedAt %}
+                                <span>
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_pareto_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse Pareto {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button
+                                class="creation-btn creation-btn--delete"
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_pareto_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible."
+                                aria-label="Supprimer l'analyse Pareto {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
 
-        <!-- Méthodes 8D -->
         {% if eightDRecords|length > 0 %}
-        <section class="mb-5" data-aos="fade-up" data-aos-delay="300">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-layer-group me-2 text-warning"></i>Rapports Méthode 8D
+        <section class="creations-section" aria-labelledby="eightd-heading">
+            <div class="creations-section__header">
+                <h2 id="eightd-heading">
+                    <i class="fas fa-layer-group" aria-hidden="true"></i>
+                    <span>Rapports Méthode 8D</span>
                 </h2>
                 <span class="badge bg-warning text-dark">{{ eightDRecords|length }}</span>
             </div>
-            <div class="row g-4">
+            <div class="creations-grid">
                 {% for record in eightDRecords %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-2 me-3">
-                                    <i class="fas fa-layer-group fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-semibold mb-1">{{ record.title }}</h5>
-                                    <small class="text-muted d-block">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                    {% if record.updatedAt %}
-                                    <small class="text-muted">Mise à jour : {{ record.updatedAt|date('d/m/Y à H:i') }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="{{ path('app_eightd_index') }}?load={{ record.id }}" class="btn btn-sm btn-outline-warning flex-fill">
-                                    <i class="fas fa-folder-open me-1"></i>Charger
-                                </a>
-                                <div data-controller="dialog delete-confirmation">
-                                    <button
-                                        class="btn btn-sm btn-danger"
-                                        data-action="click->dialog#open"
-                                        data-dialog-url-value="{{ path('app_api_eightd_delete', {id: record.id}) }}"
-                                        data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible."
-                                    >
-                                        <i class="fas fa-trash me-1"></i>Supprimer
-                                    </button>
-                                    {% include 'components/delete-confirmation-modal.html.twig' %}
-                                </div>
+                <article class="creation-card creation-card--eightd" role="article" aria-labelledby="eightd-{{ record.id }}-title">
+                    <div class="creation-card__header">
+                        <div class="creation-card__icon" aria-hidden="true">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="creation-card__content">
+                            <h3 class="creation-card__title" id="eightd-{{ record.id }}-title">{{ record.title }}</h3>
+                            <div class="creation-card__meta">
+                                <span>
+                                    <i class="fas fa-calendar" aria-hidden="true"></i>
+                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% if record.updatedAt %}
+                                <span>
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
+                                </span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="creation-card__actions">
+                        <a href="{{ path('app_eightd_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger le rapport 8D {{ record.title }}">
+                            <i class="fas fa-folder-open" aria-hidden="true"></i>
+                            <span>Charger</span>
+                        </a>
+                        <div data-controller="dialog delete-confirmation">
+                            <button
+                                class="creation-btn creation-btn--delete"
+                                data-action="click->dialog#open"
+                                data-dialog-url-value="{{ path('app_api_eightd_delete', {id: record.id}) }}"
+                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible."
+                                aria-label="Supprimer le rapport 8D {{ record.title }}"
+                            >
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                <span class="visually-hidden">Supprimer</span>
+                            </button>
+                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         </section>
@@ -447,8 +437,8 @@
 {% endblock %}
 
 {% block stylesheets %}
-<!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('styles/pages/creations.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block javascripts %}
