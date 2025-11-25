@@ -49,7 +49,7 @@ final class ContactController extends AbstractController
                 error_log('Erreur lors de l\'envoi de l\'accusé de réception : ' . $exception->getMessage());
             }
 
-            $this->addFlash('success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
+            $this->addFlash('contact_success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
 
             // Rediriger pour éviter la double soumission
             return $this->redirectToRoute('app_contact_index');

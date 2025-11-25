@@ -21,7 +21,14 @@
                         Pour nous aider à améliorer nos contenus, pouvez-vous nous dire pourquoi vous vous désabonnez&nbsp;?
                     </p>
 
-                    {{ form_start(form, {'method': 'POST', 'attr': {'class': 'unsubscribe-form'}}) }}
+                    {{ form_start(form, {
+                        'method': 'POST',
+                        'action': path('app_newsletter_unsubscribe', {token: token}),
+                        'attr': {
+                            'class': 'unsubscribe-form',
+                            'data-turbo': 'false'
+                        }
+                    }) }}
                         <div class="mb-4">
                             {{ form_label(form.reasons, null, {'label_attr': {'class': 'form-label fw-semibold mb-3'}}) }}
                             <div class="form-check-group">
@@ -42,11 +49,11 @@
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" data-turbo="false">
                                 <i class="fas fa-paper-plane me-2"></i>
                                 Envoyer mon retour
                             </button>
-                            <button type="submit" name="skip" value="1" class="btn btn-outline-secondary">
+                            <button type="submit" name="skip" value="1" class="btn btn-outline-secondary" data-turbo="false">
                                 Passer cette étape
                             </button>
                         </div>

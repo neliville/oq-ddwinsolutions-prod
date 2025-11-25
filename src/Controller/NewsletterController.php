@@ -149,13 +149,30 @@ final class NewsletterController extends AbstractController
         $form = $this->createForm(UnsubscribeReasonType::class, $dto);
         $form->handleRequest($request);
 
-        // Si le formulaire est soumis et valide, effectuer le désabonnement
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UnsubscribeReasonDto $dto */
-            $dto = $form->getData();
-            $reasons = $dto->getReasons();
-            $comment = $dto->getComment();
+        // Vérifier si le bouton "skip" a été cliqué
+        $skip = $request->request->get('skip') === '1' || $request->request->has('skip');
 
+        // Si le formulaire est soumis
+        if ($form->isSubmitted()) {
+            // Si skip est cliqué, désabonner sans validation
+            if ($skip) {
+                $reasons = [];
+                $comment = null;
+            } elseif ($form->isValid()) {
+                // Sinon, valider le formulaire et récupérer les données
+                /** @var UnsubscribeReasonDto $dto */
+                $dto = $form->getData();
+                $reasons = $dto->getReasons() ?? [];
+                $comment = $dto->getComment();
+            } else {
+                // Formulaire soumis mais invalide (sans skip), réafficher avec erreurs
+                return $this->render('newsletter/unsubscribe.html.twig', [
+                    'email' => $subscriber->getEmail(),
+                    'form' => $form,
+                ]);
+            }
+
+            // Effectuer le désabonnement
             $subscriber->unsubscribe($reasons, $comment);
             $entityManager->flush();
 
@@ -168,6 +185,7 @@ final class NewsletterController extends AbstractController
         return $this->render('newsletter/unsubscribe.html.twig', [
             'email' => $subscriber->getEmail(),
             'form' => $form,
+            'token' => $token,
         ]);
     }
 }
