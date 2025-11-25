@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\UnsubscribeReasonDto;
 use App\Entity\NewsletterSubscriber;
 use App\Form\NewsletterFormType;
 use App\Form\UnsubscribeReasonType;
@@ -143,19 +144,17 @@ final class NewsletterController extends AbstractController
             ]);
         }
 
-        // Créer le formulaire avec les données par défaut
-        $formData = [
-            'reasons' => [],
-            'comment' => null,
-        ];
-        $form = $this->createForm(UnsubscribeReasonType::class, $formData);
+        // Créer le formulaire avec le DTO
+        $dto = new UnsubscribeReasonDto();
+        $form = $this->createForm(UnsubscribeReasonType::class, $dto);
         $form->handleRequest($request);
 
         // Si le formulaire est soumis et valide, effectuer le désabonnement
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $reasons = $data['reasons'] ?? [];
-            $comment = $data['comment'] ?? null;
+            /** @var UnsubscribeReasonDto $dto */
+            $dto = $form->getData();
+            $reasons = $dto->getReasons();
+            $comment = $dto->getComment();
 
             $subscriber->unsubscribe($reasons, $comment);
             $entityManager->flush();

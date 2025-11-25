@@ -21,7 +21,7 @@
                         Pour nous aider à améliorer nos contenus, pouvez-vous nous dire pourquoi vous vous désabonnez&nbsp;?
                     </p>
 
-                    {{ form_start(form, {'attr': {'class': 'unsubscribe-form'}}) }}
+                    {{ form_start(form, {'method': 'POST', 'attr': {'class': 'unsubscribe-form'}}) }}
                         <div class="mb-4">
                             {{ form_label(form.reasons, null, {'label_attr': {'class': 'form-label fw-semibold mb-3'}}) }}
                             <div class="form-check-group">

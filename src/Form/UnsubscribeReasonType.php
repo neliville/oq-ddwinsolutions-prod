@@ -2,10 +2,12 @@
 
 namespace App\Form;
 
+use App\Dto\UnsubscribeReasonDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UnsubscribeReasonType extends AbstractType
 {
@@ -37,6 +39,13 @@ class UnsubscribeReasonType extends AbstractType
                     'placeholder' => 'Votre commentaire...',
                 ],
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => UnsubscribeReasonDto::class,
+        ]);
     }
 }
 

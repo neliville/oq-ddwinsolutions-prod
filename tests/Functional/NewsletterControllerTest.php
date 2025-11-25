@@ -167,4 +167,116 @@ class NewsletterControllerTest extends WebTestCaseWithDatabase
 
         $this->assertEmailCount(1);
     }
+
+    public function testUnsubscribeFormDisplay(): void
+    {
+        $subscriber = new NewsletterSubscriber();
+        $subscriber->setEmail('unsubscribe-test@example.com');
+        $subscriber->setActive(true);
+        $this->entityManager->persist($subscriber);
+        $this->entityManager->flush();
+
+        $token = $subscriber->getUnsubscribeToken();
+        $this->client->request('GET', '/newsletter/unsubscribe/' . $token);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Vous êtes bien désinscrit(e)');
+        $this->assertSelectorExists('form');
+        $this->assertSelectorExists('input[type="checkbox"]');
+    }
+
+    public function testUnsubscribeWithReasons(): void
+    {
+        $subscriber = new NewsletterSubscriber();
+        $subscriber->setEmail('unsubscribe-reasons@example.com');
+        $subscriber->setActive(true);
+        $this->entityManager->persist($subscriber);
+        $this->entityManager->flush();
+
+        $token = $subscriber->getUnsubscribeToken();
+        $crawler = $this->client->request('GET', '/newsletter/unsubscribe/' . $token);
+        
+        $form = $crawler->selectButton('Envoyer mon retour')->form();
+        
+        // Récupérer le nom du formulaire depuis le DOM (basé sur le DTO)
+        $formName = $form->getName();
+        
+        // Pour les cases à cocher multiples (expanded => true), Symfony génère des champs avec indices numériques
+        // Les indices correspondent à l'ordre des choix dans le formulaire (0 = too_many, 1 = not_relevant)
+        // On utilise setValue() avec la valeur du choix pour cocher chaque case
+        $form[$formName . '[reasons][0]']->setValue('too_many');
+        $form[$formName . '[reasons][1]']->setValue('not_relevant');
+        $form[$formName . '[comment]'] = 'Le contenu ne m\'intéresse plus.';
+
+        $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Merci pour votre retour');
+
+        // Récupérer l'entité depuis la base de données
+        $this->entityManager->clear();
+        $subscriber = $this->entityManager->getRepository(NewsletterSubscriber::class)
+            ->findOneBy(['email' => 'unsubscribe-reasons@example.com']);
+        $this->assertNotNull($subscriber, 'Subscriber should exist in database');
+        $this->assertFalse($subscriber->isActive());
+        $this->assertNotNull($subscriber->getUnsubscribedAt());
+        $reasons = $subscriber->getUnsubscribeReasons();
+        $this->assertIsArray($reasons);
+        $this->assertNotEmpty($reasons);
+        $this->assertContains('too_many', $reasons);
+        $this->assertContains('not_relevant', $reasons);
+        $this->assertEquals('Le contenu ne m\'intéresse plus.', $subscriber->getUnsubscribeComment());
+    }
+
+    public function testUnsubscribeWithoutReasons(): void
+    {
+        $subscriber = new NewsletterSubscriber();
+        $subscriber->setEmail('unsubscribe-skip@example.com');
+        $subscriber->setActive(true);
+        $this->entityManager->persist($subscriber);
+        $this->entityManager->flush();
+
+        $token = $subscriber->getUnsubscribeToken();
+        $crawler = $this->client->request('GET', '/newsletter/unsubscribe/' . $token);
+        
+        // Soumettre le formulaire sans sélectionner de raisons
+        $form = $crawler->selectButton('Passer cette étape')->form();
+        $this->client->submit($form);
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Merci pour votre retour');
+
+        // Récupérer l'entité depuis la base de données
+        $this->entityManager->clear();
+        $subscriber = $this->entityManager->getRepository(NewsletterSubscriber::class)
+            ->findOneBy(['email' => 'unsubscribe-skip@example.com']);
+        $this->assertNotNull($subscriber);
+        $this->assertFalse($subscriber->isActive());
+        $this->assertNotNull($subscriber->getUnsubscribedAt());
+    }
+
+    public function testUnsubscribeAlreadyUnsubscribed(): void
+    {
+        $subscriber = new NewsletterSubscriber();
+        $subscriber->setEmail('already-unsubscribed@example.com');
+        $subscriber->setActive(false);
+        $subscriber->unsubscribe();
+        $this->entityManager->persist($subscriber);
+        $this->entityManager->flush();
+
+        $token = $subscriber->getUnsubscribeToken();
+        $this->client->request('GET', '/newsletter/unsubscribe/' . $token);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Vous êtes déjà désabonné');
+    }
+
+    public function testUnsubscribeWithInvalidToken(): void
+    {
+        $this->client->request('GET', '/newsletter/unsubscribe/invalid-token-12345');
+
+        $this->assertResponseRedirects('/');
+        $this->client->followRedirect();
+        // Vérifier qu'on est bien redirigé vers la page d'accueil
+        $this->assertResponseIsSuccessful();
+    }
 }
