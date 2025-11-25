@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\NewsletterSubscriber;
 use App\Form\NewsletterFormType;
+use App\Form\UnsubscribeReasonType;
 use App\Repository\NewsletterSubscriberRepository;
 use App\Service\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,9 +122,10 @@ final class NewsletterController extends AbstractController
         ], Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/newsletter/unsubscribe/{token}', name: 'app_newsletter_unsubscribe', methods: ['GET'])]
+    #[Route('/newsletter/unsubscribe/{token}', name: 'app_newsletter_unsubscribe', methods: ['GET', 'POST'])]
     public function unsubscribe(
         string $token,
+        Request $request,
         NewsletterSubscriberRepository $newsletterSubscriberRepository,
         EntityManagerInterface $entityManager
     ): Response {
@@ -134,16 +136,39 @@ final class NewsletterController extends AbstractController
             return $this->redirectToRoute('app_home_index');
         }
 
+        // Si déjà désabonné, afficher un message
         if (!$subscriber->isActive()) {
-            $this->addFlash('info', 'Vous êtes déjà désabonné de notre newsletter.');
-            return $this->redirectToRoute('app_home_index');
+            return $this->render('newsletter/unsubscribe_already.html.twig', [
+                'email' => $subscriber->getEmail(),
+            ]);
         }
 
-        $subscriber->unsubscribe();
-        $entityManager->flush();
+        // Créer le formulaire avec les données par défaut
+        $formData = [
+            'reasons' => [],
+            'comment' => null,
+        ];
+        $form = $this->createForm(UnsubscribeReasonType::class, $formData);
+        $form->handleRequest($request);
 
-        $this->addFlash('success', 'Vous avez été désabonné de notre newsletter avec succès.');
+        // Si le formulaire est soumis et valide, effectuer le désabonnement
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $reasons = $data['reasons'] ?? [];
+            $comment = $data['comment'] ?? null;
 
-        return $this->redirectToRoute('app_home_index');
+            $subscriber->unsubscribe($reasons, $comment);
+            $entityManager->flush();
+
+            return $this->render('newsletter/unsubscribe_success.html.twig', [
+                'email' => $subscriber->getEmail(),
+            ]);
+        }
+
+        // Afficher le formulaire de désabonnement
+        return $this->render('newsletter/unsubscribe.html.twig', [
+            'email' => $subscriber->getEmail(),
+            'form' => $form,
+        ]);
     }
 }

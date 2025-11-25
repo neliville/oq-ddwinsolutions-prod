@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Désabonnement confirmé | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Vous avez été désabonné de notre newsletter avec succès.{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h1 class="h3 mb-4">Merci pour votre retour !</h1>
+                    
+                    <div class="alert alert-success mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        L'adresse <strong>{{ email }}</strong> a été désabonnée avec succès.
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        Votre avis nous aide à améliorer nos contenus et nos services.
+                    </p>
+
+                    <a href="{{ path('app_home_index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

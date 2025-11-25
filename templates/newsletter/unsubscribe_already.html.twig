@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déjà désabonné | OUTILS-QUALITÉ{% endblock %}
+
+{% block meta_description %}Vous êtes déjà désabonné de notre newsletter.{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-info-circle text-info" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h1 class="h3 mb-4">Vous êtes déjà désabonné</h1>
+                    
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        L'adresse <strong>{{ email }}</strong> est déjà désabonnée de notre newsletter.
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        Vous ne recevrez plus d'emails de notre part.
+                    </p>
+
+                    <a href="{{ path('app_home_index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

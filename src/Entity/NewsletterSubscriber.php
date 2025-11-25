@@ -34,6 +34,12 @@ class NewsletterSubscriber
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $source = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $unsubscribeReasons = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $unsubscribeComment = null;
+
     public function __construct()
     {
         $this->subscribedAt = new \DateTimeImmutable();
@@ -117,10 +123,36 @@ class NewsletterSubscriber
         return $this;
     }
 
-    public function unsubscribe(): static
+    public function getUnsubscribeReasons(): ?array
+    {
+        return $this->unsubscribeReasons;
+    }
+
+    public function setUnsubscribeReasons(?array $unsubscribeReasons): static
+    {
+        $this->unsubscribeReasons = $unsubscribeReasons;
+
+        return $this;
+    }
+
+    public function getUnsubscribeComment(): ?string
+    {
+        return $this->unsubscribeComment;
+    }
+
+    public function setUnsubscribeComment(?string $unsubscribeComment): static
+    {
+        $this->unsubscribeComment = $unsubscribeComment;
+
+        return $this;
+    }
+
+    public function unsubscribe(?array $reasons = null, ?string $comment = null): static
     {
         $this->active = false;
         $this->unsubscribedAt = new \DateTimeImmutable();
+        $this->unsubscribeReasons = $reasons;
+        $this->unsubscribeComment = $comment;
 
         return $this;
     }
