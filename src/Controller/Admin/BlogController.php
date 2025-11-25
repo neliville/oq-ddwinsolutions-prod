@@ -9,11 +9,13 @@ use App\Repository\AdminLogRepository;
 use App\Repository\BlogPostRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\TagRepository;
+use App\Service\ImageOptimizerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +35,7 @@ final class BlogController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,
         private readonly SluggerInterface $slugger,
+        private readonly ImageOptimizerService $imageOptimizer,
         #[Autowire(param: 'blog_images_directory')] private readonly string $blogImagesDirectory,
     ) {
     }
@@ -277,7 +280,16 @@ final class BlogController extends AbstractController
             }
         }
 
-        $post->setImage(sprintf('uploads/blog/%s', $newFilename));
+        $imagePath = sprintf('uploads/blog/%s', $newFilename);
+        $post->setImage($imagePath);
+
+        // Générer automatiquement les variantes LiipImagine
+        try {
+            $this->imageOptimizer->generateBlogImageVariants($imagePath);
+        } catch (\Exception $e) {
+            // Ne pas bloquer si la génération des variantes échoue
+            // Les variantes seront générées à la volée lors de l'affichage
+        }
 
         return true;
     }
@@ -289,5 +301,74 @@ final class BlogController extends AbstractController
         $extension = $imageFile->guessExtension() ?: $imageFile->getClientOriginalExtension() ?: 'jpg';
 
         return sprintf('%s-%s.%s', $slug, uniqid('', true), $extension);
+    }
+
+    /**
+     * Endpoint API pour l'upload dynamique d'image avec prévisualisation
+     */
+    #[Route('/upload-image-preview', name: 'upload_image_preview', methods: ['POST'])]
+    public function uploadImagePreview(Request $request): JsonResponse
+    {
+        $imageFile = $request->files->get('image');
+        
+        if (!$imageFile instanceof UploadedFile) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Aucun fichier image fourni.',
+            ], 400);
+        }
+
+        // Validation basique
+        $allowedMimeTypes = ['image/jpeg', 'image/webp'];
+        if (!in_array($imageFile->getMimeType(), $allowedMimeTypes, true)) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Format non supporté. Utilisez JPG ou WEBP.',
+            ], 400);
+        }
+
+        if ($imageFile->getSize() > 4 * 1024 * 1024) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Le fichier est trop volumineux (max 4 Mo).',
+            ], 400);
+        }
+
+        // Créer un nom de fichier temporaire
+        $tempFilename = sprintf('preview-%s.%s', uniqid('', true), $imageFile->guessExtension() ?: 'jpg');
+        $tempPath = $this->blogImagesDirectory . '/temp/' . $tempFilename;
+
+        // Créer le dossier temp s'il n'existe pas
+        $tempDir = dirname($tempPath);
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0775, true);
+        }
+
+        try {
+            $imageFile->move(dirname($tempPath), basename($tempPath));
+            
+            // Chemin relatif depuis public/
+            $relativePath = sprintf('uploads/blog/temp/%s', $tempFilename);
+            
+            // Générer les variantes
+            $variants = $this->imageOptimizer->generateBlogImageVariants($relativePath);
+            
+            // Générer l'URL de prévisualisation
+            $previewUrl = $this->imageOptimizer->generateVariant($relativePath, 'card_desktop') 
+                ?: $relativePath;
+
+            return new JsonResponse([
+                'success' => true,
+                'previewUrl' => $previewUrl,
+                'originalUrl' => $relativePath,
+                'variants' => $variants,
+                'tempFilename' => $tempFilename,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Erreur lors du traitement de l\'image : ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -49,4 +49,11 @@ liip_imagine:
                 thumbnail: { size: [600, 400], mode: outbound }
                 strip: ~
 
+        card_desktop:
+            quality: 70
+            format: webp
+            filters:
+                thumbnail: { size: [800, 533], mode: outbound }
+                strip: ~
+
 

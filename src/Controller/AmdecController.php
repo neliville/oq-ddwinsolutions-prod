@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AmdecController extends AbstractController
 {
-    #[Route('/amdec/', name: 'app_amdec_index')]
+    #[Route('/amdec', name: 'app_amdec_index')]
     public function index(Request $request): Response
     {
         $loadId = $request->query->get('load');

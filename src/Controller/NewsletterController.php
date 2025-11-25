@@ -28,12 +28,23 @@ final class NewsletterController extends AbstractController
     ): JsonResponse {
         $subscriber = new NewsletterSubscriber();
         // Désactiver CSRF pour l'API (plus pratique pour les tests et appels AJAX)
+        // Accepter les champs supplémentaires pour éviter l'erreur "extra fields"
         $form = $this->createForm(NewsletterFormType::class, $subscriber, [
             'csrf_protection' => false,
+            'allow_extra_fields' => true,
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // Si le formulaire n'est pas soumis, retourner une erreur
+        if (!$form->isSubmitted()) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Le formulaire n\'a pas été soumis correctement.',
+                'errors' => ['Veuillez réessayer.'],
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($form->isValid()) {
             // Vérifier si l'email existe déjà
             $existingSubscriber = $newsletterSubscriberRepository->findOneBy(['email' => $subscriber->getEmail()]);
 
@@ -91,10 +102,21 @@ final class NewsletterController extends AbstractController
         foreach ($form->getErrors(true) as $error) {
             $errors[] = $error->getMessage();
         }
+        
+        // Récupérer les erreurs de validation des champs
+        foreach ($form->all() as $child) {
+            foreach ($child->getErrors() as $error) {
+                $errors[] = $error->getMessage();
+            }
+        }
+
+        $errorMessage = !empty($errors) 
+            ? implode(' ', array_unique($errors))
+            : 'Erreur lors de l\'inscription. Veuillez vérifier votre adresse email.';
 
         return new JsonResponse([
             'success' => false,
-            'message' => 'Erreur lors de l\'inscription.',
+            'message' => $errorMessage,
             'errors' => $errors,
         ], Response::HTTP_BAD_REQUEST);
     }

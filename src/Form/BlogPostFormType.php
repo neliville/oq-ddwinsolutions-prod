@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Image;
 
 class BlogPostFormType extends AbstractType
 {
@@ -55,15 +55,25 @@ class BlogPostFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'accept' => 'image/jpeg,image/webp',
+                    'data-controller' => 'image-upload',
+                    'data-image-upload-preview-target' => 'input',
                 ],
                 'constraints' => [
-                    new File([
+                    new Image([
                         'maxSize' => '4M',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/webp',
                         ],
                         'mimeTypesMessage' => 'Veuillez télécharger une image au format JPG ou WEBP.',
+                        'minWidth' => 400,
+                        'minHeight' => 300,
+                        'maxWidth' => 4000,
+                        'maxHeight' => 3000,
+                        'minWidthMessage' => 'L\'image doit faire au moins {{ min_width }}px de large (actuellement {{ width }}px).',
+                        'minHeightMessage' => 'L\'image doit faire au moins {{ min_height }}px de haut (actuellement {{ height }}px).',
+                        'maxWidthMessage' => 'L\'image ne doit pas dépasser {{ max_width }}px de large (actuellement {{ width }}px).',
+                        'maxHeightMessage' => 'L\'image ne doit pas dépasser {{ max_height }}px de haut (actuellement {{ height }}px).',
                     ]),
                 ],
             ])

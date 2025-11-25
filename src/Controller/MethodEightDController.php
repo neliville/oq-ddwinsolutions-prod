@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MethodEightDController extends AbstractController
 {
-    #[Route('/methode-8d/', name: 'app_eightd_index')]
+    #[Route('/methode-8d', name: 'app_eightd_index')]
     public function index(Request $request): Response
     {
         $loadId = $request->query->get('load');

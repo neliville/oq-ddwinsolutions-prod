@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class QqoqccpController extends AbstractController
 {
-    #[Route('/qqoqccp/', name: 'app_qqoqccp_index')]
+    #[Route('/qqoqccp', name: 'app_qqoqccp_index')]
     public function index(Request $request): Response
     {
         $loadId = $request->query->get('load');

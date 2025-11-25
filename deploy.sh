@@ -215,6 +215,28 @@ php bin/console asset-map:compile --env=prod --no-debug 2>&1 | grep -vE "(MakerB
 set -e
 echo -e "${GREEN}   ✓ Assets compilés${NC}"
 
+# 10.5 Générer les dérivés LiipImagine (images critiques)
+echo -e "\n${YELLOW}10.5 Génération des dérivés LiipImagine...${NC}"
+LIIP_IMAGES=(
+    "img/hero.webp --filter=hero_webp --filter=hero_jpeg"
+    "img/blog-5why.webp --filter=cover_webp --filter=cover_jpeg --filter=card_mobile"
+    "img/markus-winkler-contact-unsplash.webp --filter=cover_webp --filter=cover_jpeg --filter=card_mobile"
+    "img/mentions-legales.webp --filter=cover_webp --filter=cover_jpeg --filter=card_mobile"
+)
+
+for entry in "${LIIP_IMAGES[@]}"; do
+    set +e
+    php bin/console liip:imagine:cache:resolve ${entry} --env=prod --no-debug >/dev/null 2>&1
+    STATUS=$?
+    set -e
+
+    if [ $STATUS -eq 0 ]; then
+        echo -e "${GREEN}   ✓ ${entry%% *} générée(s)${NC}"
+    else
+        echo -e "${YELLOW}   ⚠ Impossible de générer ${entry%% *} (vérifier l'extension php-gd ou imagick)${NC}"
+    }
+done
+
 # 11. Vérifier les permissions (optionnel, selon la configuration o2switch)
 echo -e "\n${YELLOW}11. Vérification des permissions...${NC}"
 # Sur o2switch, les permissions sont généralement gérées automatiquement

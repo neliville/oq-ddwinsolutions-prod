@@ -13,7 +13,7 @@ final class LegalController extends AbstractController
     {
     }
 
-    #[Route('/politique-de-confidentialite/', name: 'app_legal_politique_confidentialite')]
+    #[Route('/politique-de-confidentialite', name: 'app_legal_politique_confidentialite')]
     public function politiqueConfidentialite(): Response
     {
         return $this->renderCmsPage('privacy-policy', [
@@ -24,7 +24,7 @@ final class LegalController extends AbstractController
         ]);
     }
 
-    #[Route('/conditions-utilisation/', name: 'app_legal_conditions_utilisation')]
+    #[Route('/conditions-utilisation', name: 'app_legal_conditions_utilisation')]
     public function conditionsUtilisation(): Response
     {
         return $this->renderCmsPage('terms-of-use', [
@@ -35,7 +35,7 @@ final class LegalController extends AbstractController
         ]);
     }
 
-    #[Route('/mentions-legales/', name: 'app_legal_mentions_legales')]
+    #[Route('/mentions-legales', name: 'app_legal_mentions_legales')]
     public function mentionsLegales(): Response
     {
         return $this->renderCmsPage('legal-notice', [

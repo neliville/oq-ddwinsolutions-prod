@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class FiveWhyController extends AbstractController
 {
-    #[Route('/5pourquoi/', name: 'app_fivewhy_index')]
+    #[Route('/5pourquoi', name: 'app_fivewhy_index')]
     public function index(Request $request): Response
     {
         $loadId = $request->query->get('load');

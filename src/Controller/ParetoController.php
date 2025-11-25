@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ParetoController extends AbstractController
 {
-    #[Route('/pareto/', name: 'app_pareto_index')]
+    #[Route('/pareto', name: 'app_pareto_index')]
     public function index(Request $request): Response
     {
         $loadId = $request->query->get('load');

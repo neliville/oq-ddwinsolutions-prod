@@ -18,7 +18,7 @@ final class ContactController extends AbstractController
     ) {
     }
 
-    #[Route('/contact/', name: 'app_contact_index')]
+    #[Route('/contact', name: 'app_contact_index')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $contactMessage = new ContactMessage();

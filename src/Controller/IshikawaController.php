@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class IshikawaController extends AbstractController
 {
-    #[Route('/ishikawa/', name: 'app_ishikawa_index')]
+    #[Route('/ishikawa', name: 'app_ishikawa_index')]
     public function index(Request $request): Response
     {
         // Récupérer l'ID depuis le paramètre de requête ?load=ID

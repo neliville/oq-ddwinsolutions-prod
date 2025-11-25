@@ -42,42 +42,8 @@ function destroyEasyMDEEditor() {
     }
 }
 
-function initFeaturedImagePreview() {
-    const input = document.getElementById('{{ form.featuredImage.vars.id }}');
-    const wrapper = document.getElementById('blog-image-preview-edit-wrapper');
-    const img = document.getElementById('blog-image-preview-edit');
-
-    if (!input || !wrapper || !img || input.dataset.previewInitialized === 'true') {
-        return;
-    }
-
-    input.dataset.previewInitialized = 'true';
-
-    input.addEventListener('change', (event) => {
-        const file = event.target.files && event.target.files[0];
-        if (!file) {
-            {% if post.image %}
-            wrapper.classList.remove('d-none');
-            img.src = '{{ asset(post.image) }}';
-            {% else %}
-            wrapper.classList.add('d-none');
-            img.src = '#';
-            {% endif %}
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            img.src = e.target?.result ?? '#';
-            wrapper.classList.remove('d-none');
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
 function initBlogEditors() {
     initEasyMDEEditor();
-    initFeaturedImagePreview();
 }
 
 function scheduleBlogEditorsInit() {
@@ -142,22 +108,54 @@ if (document.readyState !== 'loading') {
                         {{ form_errors(form.excerpt) }}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3" data-controller="image-upload" data-image-upload-upload-url-value="{{ path('app_admin_blog_upload_image_preview') }}">
                         {{ form_label(form.featuredImage, null, {'label_attr': {'class': 'form-label'}}) }}
                         {% if post.image %}
                         <div class="mb-2" id="blog-image-preview-edit-wrapper">
                             <p class="small text-muted mb-2">Image actuelle</p>
-                            <img id="blog-image-preview-edit" src="{{ asset(post.image) }}" alt="Image actuelle de l'article" class="img-fluid rounded shadow-sm">
-                        </div>
-                        {% else %}
-                        <div class="mb-2 d-none" id="blog-image-preview-edit-wrapper">
-                            <p class="small text-muted mb-2">Aperçu de l'image</p>
-                            <img id="blog-image-preview-edit" src="#" alt="Aperçu de l'image" class="img-fluid rounded shadow-sm">
+                            <img id="blog-image-preview-edit" src="{{ asset(post.image) }}" alt="Image actuelle de l'article" class="img-fluid rounded shadow-sm mb-2">
+                            {% if post.image %}
+                            <div class="small text-muted mb-2">
+                                <strong>Variantes disponibles :</strong>
+                                <div class="mt-1">
+                                    {% set cover_webp = post.image|imagine_filter('cover_webp') %}
+                                    {% set cover_jpeg = post.image|imagine_filter('cover_jpeg') %}
+                                    {% set card_desktop = post.image|imagine_filter('card_desktop') %}
+                                    {% set card_mobile = post.image|imagine_filter('card_mobile') %}
+                                    {% if cover_webp %}<a href="{{ cover_webp }}" target="_blank" class="text-decoration-none me-2">Cover WebP</a>{% endif %}
+                                    {% if cover_jpeg %}<a href="{{ cover_jpeg }}" target="_blank" class="text-decoration-none me-2">Cover JPEG</a>{% endif %}
+                                    {% if card_desktop %}<a href="{{ card_desktop }}" target="_blank" class="text-decoration-none me-2">Card Desktop</a>{% endif %}
+                                    {% if card_mobile %}<a href="{{ card_mobile }}" target="_blank" class="text-decoration-none">Card Mobile</a>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                         {% endif %}
-                        {{ form_widget(form.featuredImage, {'attr': {'class': 'form-control'}}) }}
-                        <div class="form-text">Formats acceptés : JPG ou WEBP (4&nbsp;Mo maximum).</div>
+                        {{ form_widget(form.featuredImage, {'attr': {'class': 'form-control', 'data-image-upload-target': 'input'}}) }}
+                        <div class="form-text">Formats acceptés : JPG ou WEBP (4&nbsp;Mo maximum). Dimensions recommandées : min 400x300px, max 4000x3000px.</div>
                         {{ form_errors(form.featuredImage) }}
+                        
+                        <!-- Loader -->
+                        <div class="mt-2 d-none" data-image-upload-target="loading">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
+                            <span class="ms-2 text-muted">Génération des variantes optimisées...</span>
+                        </div>
+                        
+                        <!-- Erreur -->
+                        <div class="mt-2 alert alert-danger d-none" data-image-upload-target="error" role="alert"></div>
+                        
+                        <!-- Prévisualisation nouvelle image -->
+                        <div class="mt-3 d-none" data-image-upload-target="previewWrapper" id="blog-image-preview-edit-new-wrapper">
+                            <p class="small text-muted mb-2">Aperçu de la nouvelle image</p>
+                            <img data-image-upload-target="preview" id="blog-image-preview-edit-new" src="#" alt="Aperçu de l'image" class="img-fluid rounded shadow-sm mb-2">
+                            <div data-image-upload-target="variants"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-upload#clearPreview">
+                                <i data-lucide="x" width="14" height="14" class="me-1"></i>
+                                Supprimer l'aperçu
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
