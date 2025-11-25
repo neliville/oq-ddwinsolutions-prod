@@ -234,7 +234,7 @@ for entry in "${LIIP_IMAGES[@]}"; do
         echo -e "${GREEN}   ✓ ${entry%% *} générée(s)${NC}"
     else
         echo -e "${YELLOW}   ⚠ Impossible de générer ${entry%% *} (vérifier l'extension php-gd ou imagick)${NC}"
-    }
+    fi
 done
 
 # 11. Vérifier les permissions (optionnel, selon la configuration o2switch)
