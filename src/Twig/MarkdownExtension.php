@@ -122,10 +122,28 @@ class MarkdownExtension extends AbstractExtension
             if (preg_match('/^(#{2,6})\s+(.+)$/', $line, $matches)) {
                 $level = strlen($matches[1]); // Nombre de #
                 $title = trim($matches[2]);
+                // Enlever les emojis et icônes du titre
+                $title = preg_replace('/[\x{1F300}-\x{1F9FF}]|📑|🎯|💡|⚠️|✅|❌/u', '', $title);
+                $title = trim($title);
                 $slug = $this->slugify($title);
                 
                 // Ne pas utiliser d'indentation pour éviter la détection comme code
                 // Les listes plates sont mieux rendues
+                $toc[] = '- [' . $title . '](#' . $slug . ')';
+            }
+            // Détecter également les titres HTML (<h2 id="...">Titre</h2>)
+            elseif (preg_match('/<h([2-6])(?: id="([^"]+)")?[^>]*>(.+?)<\/h\1>/', $line, $matches)) {
+                $level = (int)$matches[1];
+                $existingId = $matches[2] ?? ''; // ID existant si présent
+                $title = strip_tags($matches[3]); // Titre sans balises HTML
+                $title = html_entity_decode($title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                // Enlever les emojis et icônes du titre
+                $title = preg_replace('/[\x{1F300}-\x{1F9FF}]|📑|🎯|💡|⚠️|✅|❌/u', '', $title);
+                $title = trim($title);
+                
+                // Utiliser l'ID existant ou générer un slug
+                $slug = !empty($existingId) ? $existingId : $this->slugify($title);
+                
                 $toc[] = '- [' . $title . '](#' . $slug . ')';
             }
         }

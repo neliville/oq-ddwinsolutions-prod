@@ -48,6 +48,9 @@ Contenu de la conclusion...
 - [Première partie](#premiere-partie)
   - [Sous-section 1.1](#sous-section-1-1)
   - [Sous-section 1.2](#sous-section-1-2)
+```
+
+> **💡 Compatibilité :** Le système détecte automatiquement les titres Markdown (`##`) et HTML (`<h2>`), permettant une compatibilité avec les contenus existants
 - [Conclusion](#conclusion)
 
 ---
