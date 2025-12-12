@@ -12,52 +12,129 @@
 {{ parent() }}
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script>
+let editorInitTimeout = null;
+let editorInitAttempts = 0;
+const MAX_INIT_ATTEMPTS = 10;
+
 function initEasyMDEEditor() {
     const textarea = document.getElementById('{{ form.content.vars.id }}');
+    
+    // Si le textarea n'existe pas ou est déjà initialisé, on arrête
     if (!textarea || textarea.dataset.easymdeInitialized === 'true') {
         return;
     }
 
-    const easyMDE = new EasyMDE({
-        element: textarea,
-        spellChecker: false,
-        forceSync: true,
-        minHeight: '300px',
-        toolbar: [
-            'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list',
-            '|', 'link', 'image', 'table', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'
-        ],
-    });
+    // Vérifier si Font Awesome est chargé en testant si les icônes sont présentes
+    const faLink = document.querySelector('link[href*="font-awesome"]');
+    if (faLink && !document.fonts || editorInitAttempts >= MAX_INIT_ATTEMPTS) {
+        // Initialiser directement si on ne peut pas détecter ou après plusieurs tentatives
+        createEditor(textarea);
+        return;
+    }
 
-    textarea.dataset.easymdeInitialized = 'true';
-    textarea.easyMDEInstance = easyMDE;
+    // Attendre que Font Awesome soit complètement chargé
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+            // Petit délai supplémentaire pour s'assurer que les icônes sont disponibles
+            setTimeout(() => {
+                createEditor(textarea);
+            }, 100);
+        }).catch(() => {
+            // En cas d'erreur, initialiser quand même
+            createEditor(textarea);
+        });
+    } else {
+        // Fallback : attendre un peu plus
+        setTimeout(() => {
+            createEditor(textarea);
+        }, 200);
+    }
+}
+
+function createEditor(textarea) {
+    if (textarea.dataset.easymdeInitialized === 'true') {
+        return;
+    }
+
+    try {
+        const easyMDE = new EasyMDE({
+            element: textarea,
+            spellChecker: false,
+            forceSync: true,
+            minHeight: '300px',
+            toolbar: [
+                'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list',
+                '|', 'link', 'image', 'table', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'
+            ],
+        });
+
+        textarea.dataset.easymdeInitialized = 'true';
+        textarea.easyMDEInstance = easyMDE;
+        
+        console.log('EasyMDE initialized successfully');
+    } catch (error) {
+        console.error('Error initializing EasyMDE:', error);
+        
+        // Réessayer si on n'a pas atteint le max de tentatives
+        if (editorInitAttempts < MAX_INIT_ATTEMPTS) {
+            editorInitAttempts++;
+            setTimeout(() => {
+                initEasyMDEEditor();
+            }, 300);
+        }
+    }
 }
 
 function destroyEasyMDEEditor() {
     const textarea = document.getElementById('{{ form.content.vars.id }}');
     if (textarea && textarea.easyMDEInstance) {
-        textarea.easyMDEInstance.toTextArea();
-        textarea.easyMDEInstance = null;
-        textarea.dataset.easymdeInitialized = 'false';
+        try {
+            textarea.easyMDEInstance.toTextArea();
+            textarea.easyMDEInstance = null;
+            textarea.dataset.easymdeInitialized = 'false';
+        } catch (error) {
+            console.error('Error destroying EasyMDE:', error);
+        }
     }
-}
-
-function initBlogEditors() {
-    initEasyMDEEditor();
+    
+    // Nettoyer le timeout si présent
+    if (editorInitTimeout) {
+        clearTimeout(editorInitTimeout);
+        editorInitTimeout = null;
+    }
+    
+    // Réinitialiser le compteur
+    editorInitAttempts = 0;
 }
 
 function scheduleBlogEditorsInit() {
-    window.requestAnimationFrame(initBlogEditors);
+    // Annuler toute initialisation en cours
+    if (editorInitTimeout) {
+        clearTimeout(editorInitTimeout);
+    }
+    
+    // Réinitialiser le compteur
+    editorInitAttempts = 0;
+    
+    // Programmer l'initialisation avec un délai pour laisser la page se charger
+    editorInitTimeout = setTimeout(() => {
+        initEasyMDEEditor();
+    }, 150);
 }
 
+// Événements de chargement
 document.addEventListener('DOMContentLoaded', scheduleBlogEditorsInit);
 document.addEventListener('turbo:load', scheduleBlogEditorsInit);
 document.addEventListener('turbo:render', scheduleBlogEditorsInit);
 document.addEventListener('turbo:before-cache', destroyEasyMDEEditor);
 
+// Si la page est déjà chargée
 if (document.readyState !== 'loading') {
     scheduleBlogEditorsInit();
 }
+
+// Nettoyage avant de quitter la page
+window.addEventListener('beforeunload', destroyEasyMDEEditor);
 </script>
 {% endblock %}
 
@@ -159,7 +236,45 @@ if (document.readyState !== 'loading') {
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(form.content, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            {{ form_label(form.content, null, {'label_attr': {'class': 'form-label mb-0'}}) }}
+                            <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="collapse" data-bs-target="#markdownHelp">
+                                <i data-lucide="help-circle" width="14" height="14" class="me-1"></i>
+                                Aide Markdown & Ancres
+                            </button>
+                        </div>
+                        
+                        <!-- Aide Markdown -->
+                        <div class="collapse mb-3" id="markdownHelp">
+                            <div class="card card-body bg-light">
+                                <h6 class="fw-bold mb-2">💡 Sommaire automatique</h6>
+                                <p class="small mb-2">Insérez <code>[TOC]</code> ou <code>[[TOC]]</code> n'importe où dans votre article pour générer automatiquement un sommaire à partir de vos titres (h2-h6).</p>
+                                
+                                <h6 class="fw-bold mb-2 mt-3">🔗 Ancres automatiques</h6>
+                                <p class="small mb-2">Chaque titre génère automatiquement une ancre. Par exemple :</p>
+                                <ul class="small mb-2">
+                                    <li><code>## Introduction</code> → ancre <code>#introduction</code></li>
+                                    <li><code>### Étape 1 : Diagnostic</code> → ancre <code>#etape-1-diagnostic</code></li>
+                                </ul>
+                                
+                                <h6 class="fw-bold mb-2 mt-3">📝 Syntaxe Markdown</h6>
+                                <div class="row small">
+                                    <div class="col-md-6">
+                                        <code>## Titre niveau 2</code><br>
+                                        <code>### Titre niveau 3</code><br>
+                                        <code>**gras**</code><br>
+                                        <code>*italique*</code>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <code>[lien](#ancre)</code><br>
+                                        <code>![image](url)</code><br>
+                                        <code>- liste</code><br>
+                                        <code>`code`</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 15}}) }}
                         {{ form_errors(form.content) }}
                     </div>

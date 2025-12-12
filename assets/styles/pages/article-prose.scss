@@ -16,6 +16,61 @@
     margin-top: 2em;
     margin-bottom: 1em;
     color: #111827;
+    position: relative;
+    scroll-margin-top: 80px; // Pour compenser la hauteur du header fixe
+}
+
+/* Styles pour les liens d'ancrage des titres */
+.article-content.prose h1 .heading-permalink,
+.article-content.prose h2 .heading-permalink,
+.article-content.prose h3 .heading-permalink,
+.article-content.prose h4 .heading-permalink,
+.article-content.prose h5 .heading-permalink,
+.article-content.prose h6 .heading-permalink {
+    opacity: 0;
+    position: absolute;
+    left: -1.5em;
+    padding-right: 0.5em;
+    text-decoration: none;
+    color: #9ca3af;
+    font-weight: 400;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.article-content.prose h1:hover .heading-permalink,
+.article-content.prose h2:hover .heading-permalink,
+.article-content.prose h3:hover .heading-permalink,
+.article-content.prose h4:hover .heading-permalink,
+.article-content.prose h5:hover .heading-permalink,
+.article-content.prose h6:hover .heading-permalink {
+    opacity: 1;
+}
+
+.article-content.prose .heading-permalink:hover {
+    color: #0d6efd;
+}
+
+/* Souligner le titre quand on arrive via une ancre */
+.article-content.prose h1:target,
+.article-content.prose h2:target,
+.article-content.prose h3:target,
+.article-content.prose h4:target,
+.article-content.prose h5:target,
+.article-content.prose h6:target {
+    background-color: #fef3c7;
+    padding: 0.25rem 0.5rem;
+    margin-left: -0.5rem;
+    border-radius: 0.25rem;
+    animation: highlight-fade 2s ease-out;
+}
+
+@keyframes highlight-fade {
+    0% {
+        background-color: #fef3c7;
+    }
+    100% {
+        background-color: transparent;
+    }
 }
 
 .article-content.prose h1 {
@@ -112,6 +167,12 @@
     padding: 0;
     border-radius: 0;
     font-size: 0.875em;
+}
+
+/* S'assurer que les listes n'ont jamais de fond sombre */
+.article-content.prose ul,
+.article-content.prose ol {
+    background-color: transparent !important;
 }
 
 .article-content.prose hr {
