@@ -35,6 +35,18 @@ jobs:
           tools: composer
           coverage: xdebug
 
+      - name: Create .env file for CI
+        run: |
+          cat > .env << 'EOF'
+          ###> symfony/framework-bundle ###
+          APP_ENV=test
+          APP_SECRET=ci-secret-key-for-tests-only
+          APP_DEBUG=0
+          DATABASE_URL="sqlite:///%kernel.project_dir%/var/cache/test/test.db"
+          MAILER_DSN=null://null
+          ###< symfony/framework-bundle ###
+          EOF
+
       - name: Install dependencies
         run: |
           composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
