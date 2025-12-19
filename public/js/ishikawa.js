@@ -410,13 +410,77 @@
     }
 
     async function requestConfirmation(options = {}, fallbackMessage = 'Êtes-vous sûr de vouloir continuer ?') {
+        // Essayer d'abord avec le modal Bootstrap (si disponible)
+        const modalElement = document.getElementById('globalConfirmationModal');
+        if (modalElement && window.Stimulus) {
+            try {
+                const title = options.title || 'Confirmation';
+                const message = options.message || fallbackMessage;
+                const confirmText = options.confirmText || 'Confirmer';
+                const cancelText = options.cancelText || 'Annuler';
+                const confirmClass = options.type === 'danger' ? 'btn-danger' : options.type === 'warning' ? 'btn-warning' : 'btn-primary';
+
+                // Mettre à jour le modal
+                const messageElement = modalElement.querySelector('[data-confirmation-modal-target="message"]');
+                const titleElement = modalElement.querySelector('.modal-title');
+                const confirmButton = modalElement.querySelector('button[data-action*="onConfirmed"]');
+                const cancelButton = modalElement.querySelector('button.btn-secondary');
+
+                if (messageElement) messageElement.textContent = message;
+                if (titleElement) {
+                    const icon = titleElement.querySelector('i');
+                    titleElement.innerHTML = '';
+                    if (icon) titleElement.appendChild(icon);
+                    titleElement.appendChild(document.createTextNode(' ' + title));
+                }
+                if (confirmButton) {
+                    confirmButton.textContent = confirmText;
+                    confirmButton.className = `btn ${confirmClass}`;
+                }
+                if (cancelButton) {
+                    cancelButton.textContent = cancelText;
+                }
+
+                // Stocker la fonction resolve
+                return new Promise((resolve) => {
+                    const resolveId = 'confirmResolve_' + Date.now();
+                    window[resolveId] = resolve;
+                    modalElement.dataset.confirmPromiseResolve = resolveId;
+
+                    // Réinitialiser les icônes Lucide
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+
+                    // Ouvrir le modal
+                    const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                    if (modalController && typeof modalController.show === 'function') {
+                        modalController.show();
+                    } else {
+                        const bootstrapLib = window.bootstrap;
+                        if (bootstrapLib?.Modal) {
+                            const modalInstance = new bootstrapLib.Modal(modalElement);
+                            modalInstance.show();
+                        } else {
+                            resolve(window.confirm(message));
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Ishikawa: erreur lors de l\'ouverture du modal de confirmation', error);
+            }
+        }
+
+        // Fallback vers la fonction globale de main.js
         if (typeof window.showConfirmationModal === 'function') {
             try {
                 return await window.showConfirmationModal(options);
             } catch (error) {
-                console.error('Ishikawa: erreur lors de l’ouverture du modal de confirmation', error);
+                console.error('Ishikawa: erreur lors de l\'ouverture du modal de confirmation', error);
             }
         }
+
+        // Dernier fallback vers confirm() natif
         return window.confirm(options.message || fallbackMessage);
     }
 

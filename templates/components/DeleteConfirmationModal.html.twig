@@ -1,0 +1,60 @@
+{# Composant Modal de confirmation de suppression réutilisable #}
+{# Usage:
+    {% component DeleteConfirmationModal with {
+        id: 'delete-modal-123',
+        title: 'Confirmation de suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer cet élément ?',
+        deleteUrl: '/api/delete/123',
+        deleteMethod: 'DELETE',
+        redirectUrl: null
+    } %}
+    {% endcomponent %}
+#}
+<div {{ attributes.defaults({
+    class: 'modal fade',
+    tabindex: '-1',
+    'aria-hidden': 'true',
+    id: id ? id : false,
+    style: 'display: none;'
+}) }}
+    {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
+    data-turbo="false"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" {{ stimulus_controller('delete-confirmation', {
+            url: deleteUrl,
+            method: deleteMethod ?? 'DELETE',
+            redirect: redirectUrl
+        }) }}>
+            <div class="modal-header">
+                <h5 class="modal-title d-flex align-items-center">
+                    <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2"></i>
+                    {{ title ?? 'Confirmation de suppression' }}
+                </h5>
+                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p data-delete-confirmation-target="message">
+                    {{ message ?? 'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.' }}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-action="bootstrap-modal#hide">Annuler</button>
+                <button 
+                    type="button" 
+                    class="btn btn-danger" 
+                    data-action="click->delete-confirmation#onConfirmed"
+                    data-delete-confirmation-url-value="{{ deleteUrl }}"
+                    data-delete-confirmation-method-value="{{ deleteMethod ?? 'DELETE' }}"
+                    {% if redirectUrl %}
+                    data-delete-confirmation-redirect-value="{{ redirectUrl }}"
+                    {% endif %}
+                >
+                    <i data-lucide="trash-2" width="18" height="18" class="me-1"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

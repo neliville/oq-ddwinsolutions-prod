@@ -279,18 +279,13 @@ async function removeWhyStep(index) {
     return
   }
 
-  let confirmed = true
-
-  if (typeof window.showConfirmationModal === 'function') {
-    confirmed = await window.showConfirmationModal({
-      title: 'Supprimer cette étape',
-      message: 'Êtes-vous sûr de vouloir supprimer cette étape ? Cette action est irréversible.',
-      type: 'danger',
-      confirmText: 'Supprimer',
-    })
-  } else {
-    confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cette étape ?')
-  }
+  const confirmed = await showConfirmationModalBootstrap(
+    "Confirmation de suppression",
+    "Êtes-vous sûr de vouloir supprimer cette étape ?",
+    "Supprimer",
+    "Annuler",
+    "btn-danger"
+  );
 
   if (!confirmed) {
     return
@@ -425,8 +420,15 @@ function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
   rootCauseDiv.style.display = "block"
 }
 
-function resetAnalysis() {
-  if (confirm("Êtes-vous sûr de vouloir recommencer l'analyse ? Toutes les données seront perdues.")) {
+async function resetAnalysis() {
+  const confirmed = await showConfirmationModalBootstrap(
+    "Confirmation",
+    "Êtes-vous sûr de vouloir recommencer l'analyse ? Toutes les données seront perdues.",
+    "Oui, recommencer",
+    "Annuler"
+  );
+
+  if (confirmed) {
     fiveWhyData.problemStatement = ""
     fiveWhyData.whySteps = [{ question: "", answer: "" }]
     fiveWhyData.rootCause = ""
@@ -437,6 +439,85 @@ function resetAnalysis() {
     updateRootCauseDisplay()
     showNotification("Analyse réinitialisée")
   }
+}
+
+/**
+ * Fonction utilitaire pour afficher un modal de confirmation Bootstrap
+ * Remplace confirm() natif par un modal Bootstrap
+ * Compatible avec la fonction globale de main.js
+ */
+function showConfirmationModalBootstrap(title, message, confirmText = 'Confirmer', cancelText = 'Annuler', confirmClass = 'btn-primary') {
+  return new Promise((resolve) => {
+    const modalElement = document.getElementById('globalConfirmationModal');
+    if (!modalElement) {
+      // Fallback vers la fonction de main.js si elle existe
+      if (window.showConfirmationModal && typeof window.showConfirmationModal === 'function') {
+        return window.showConfirmationModal({
+          title,
+          message,
+          confirmText,
+          cancelText,
+          type: confirmClass === 'btn-danger' ? 'danger' : confirmClass === 'btn-warning' ? 'warning' : 'primary'
+        });
+      }
+      // Dernier fallback vers confirm() natif
+      const result = window.confirm(message);
+      resolve(result);
+      return;
+    }
+
+    // Mettre à jour le message et les textes
+    const messageElement = modalElement.querySelector('[data-confirmation-modal-target="message"]');
+    const titleElement = modalElement.querySelector('.modal-title');
+    const confirmButton = modalElement.querySelector('button[data-action*="onConfirmed"]');
+    const cancelButton = modalElement.querySelector('button.btn-secondary');
+
+    if (messageElement) {
+      messageElement.textContent = message;
+    }
+    if (titleElement) {
+      const icon = titleElement.querySelector('i');
+      titleElement.innerHTML = '';
+      if (icon) {
+        titleElement.appendChild(icon);
+      }
+      titleElement.appendChild(document.createTextNode(' ' + title));
+    }
+    if (confirmButton) {
+      confirmButton.textContent = confirmText;
+      confirmButton.className = `btn ${confirmClass}`;
+    }
+    if (cancelButton) {
+      cancelButton.textContent = cancelText;
+    }
+
+    // Stocker la fonction resolve dans un identifiant unique
+    const resolveId = 'confirmResolve_' + Date.now();
+    window[resolveId] = resolve;
+    modalElement.dataset.confirmPromiseResolve = resolveId;
+
+    // Réinitialiser les icônes Lucide
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // Ouvrir le modal
+    const modalController = window.Stimulus?.getControllerForElementAndIdentifier?.(modalElement, 'bootstrap-modal');
+    if (modalController && typeof modalController.show === 'function') {
+      modalController.show();
+    } else {
+      // Fallback vers Bootstrap natif
+      const bootstrapLib = window.bootstrap;
+      if (bootstrapLib?.Modal) {
+        const modalInstance = new bootstrapLib.Modal(modalElement);
+        modalInstance.show();
+      } else {
+        // Dernier fallback vers confirm() natif
+        const result = window.confirm(message);
+        resolve(result);
+      }
+    }
+  });
 }
 
 // Fonctions d'export
@@ -491,14 +572,14 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
 
   ctx.textAlign = "center"
   ctx.fillStyle = "#1f2937"
-  ctx.font = "bold 30px Inter, sans-serif"
+  ctx.font = "bold 30px Arial, sans-serif"
   ctx.fillText(context.titleText, finalCanvas.width / 2, headerHeight / 2 + 8)
 
-  ctx.font = "16px Inter, sans-serif"
+  ctx.font = "16px Arial, sans-serif"
   ctx.fillStyle = "#475569"
   ctx.fillText(`Exporté le ${context.exportLocale}`, finalCanvas.width / 2, headerHeight - 24)
 
-  ctx.font = "14px Inter, sans-serif"
+  ctx.font = "14px Arial, sans-serif"
   ctx.fillStyle = "#334155"
   ctx.fillText(context.descriptionText.substring(0, 150), finalCanvas.width / 2, headerHeight - 2)
 
@@ -508,7 +589,7 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
   ctx.save()
   ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2)
   ctx.rotate(-Math.PI / 6)
-  ctx.font = "26px Inter, sans-serif"
+  ctx.font = "26px Arial, sans-serif"
   ctx.fillStyle = "rgba(148, 163, 184, 0.18)"
   ctx.fillText("OUTILS-QUALITÉ", 0, 0)
   ctx.restore()
@@ -516,7 +597,7 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
   const summaryStart = contentOffsetY + capturedCanvas.height + padding
   ctx.textAlign = "center"
   ctx.fillStyle = "#1f2937"
-  ctx.font = "15px Inter, sans-serif"
+  ctx.font = "15px Arial, sans-serif"
   ctx.fillText(
     `Étapes complétées : ${context.completedSteps}/${context.totalSteps} · Longueur du problème : ${context.problem.length} caractères`,
     finalCanvas.width / 2,
@@ -524,14 +605,14 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
   )
 
   ctx.fillStyle = "#475569"
-  ctx.font = "14px Inter, sans-serif"
+  ctx.font = "14px Arial, sans-serif"
   const rootCauseLabel = context.hasRootCause
     ? `Cause racine : ${context.rootCause.slice(0, 80)}${context.rootCause.length > 80 ? "…" : ""}`
     : "Cause racine non identifiée"
   ctx.fillText(rootCauseLabel, finalCanvas.width / 2, summaryStart + 24)
 
   ctx.fillStyle = "#94a3b8"
-  ctx.font = "12px Inter, sans-serif"
+  ctx.font = "12px Arial, sans-serif"
   ctx.fillText("© OUTILS-QUALITÉ - www.outils-qualite.com", finalCanvas.width / 2, finalCanvas.height - footerHeight / 2)
 
   return finalCanvas
@@ -603,6 +684,8 @@ function exportFiveWhy(format) {
     border-radius: 0 !important;
   `
 
+  let exportSuccess = false
+
   window
     .html2canvas(context.container, {
       scale: 2,
@@ -613,40 +696,63 @@ function exportFiveWhy(format) {
       height: context.container.scrollHeight,
     })
     .then((canvas) => {
-      const exportCanvas = buildFiveWhyCanvas(canvas, context)
+      try {
+        const exportCanvas = buildFiveWhyCanvas(canvas, context)
 
-      if (format === "pdf") {
-        const pdf = new jsPDF("portrait")
-        const pageWidth = pdf.internal.pageSize.getWidth()
-        const pageHeight = pdf.internal.pageSize.getHeight()
-        const imgData = exportCanvas.toDataURL("image/png", 0.95)
-        const ratio = Math.min(pageWidth / exportCanvas.width, pageHeight / exportCanvas.height)
-        const imgWidth = exportCanvas.width * ratio
-        const imgHeight = exportCanvas.height * ratio
-        const marginX = (pageWidth - imgWidth) / 2
-        const marginY = (pageHeight - imgHeight) / 2
-        pdf.addImage(imgData, "PNG", marginX, marginY, imgWidth, imgHeight)
-        pdf.save(`5pourquoi-${Date.now()}.pdf`)
-        showNotification("Export PDF généré.", "success")
-        trackExport("5pourquoi", "PDF", baseMetadata)
-      } else {
-        const mime = format === "jpeg" ? "image/jpeg" : "image/png"
-        const dataUrl = exportCanvas.toDataURL(mime, 0.95)
-        const link = document.createElement("a")
-        link.href = dataUrl
-        const extension = format === "jpeg" ? "jpg" : "png"
-        link.download = `5pourquoi-${Date.now()}.${extension}`
-        link.click()
-        showNotification(`Export ${format === "jpeg" ? "JPEG" : "PNG"} généré.`, "success")
-        trackExport("5pourquoi", format.toUpperCase(), baseMetadata)
+        if (format === "pdf") {
+          const pdf = new jsPDF("portrait")
+          const pageWidth = pdf.internal.pageSize.getWidth()
+          const pageHeight = pdf.internal.pageSize.getHeight()
+          const imgData = exportCanvas.toDataURL("image/png", 0.95)
+          const ratio = Math.min(pageWidth / exportCanvas.width, pageHeight / exportCanvas.height)
+          const imgWidth = exportCanvas.width * ratio
+          const imgHeight = exportCanvas.height * ratio
+          const marginX = (pageWidth - imgWidth) / 2
+          const marginY = (pageHeight - imgHeight) / 2
+          pdf.addImage(imgData, "PNG", marginX, marginY, imgWidth, imgHeight)
+          pdf.save(`5pourquoi-${Date.now()}.pdf`)
+          exportSuccess = true
+          showNotification("Export PDF généré.", "success")
+          try {
+            trackExport("5pourquoi", "PDF", baseMetadata)
+          } catch (trackError) {
+            console.warn("Erreur lors du tracking de l'export PDF:", trackError)
+          }
+        } else {
+          const mime = format === "jpeg" ? "image/jpeg" : "image/png"
+          const dataUrl = exportCanvas.toDataURL(mime, 0.95)
+          const link = document.createElement("a")
+          link.href = dataUrl
+          const extension = format === "jpeg" ? "jpg" : "png"
+          link.download = `5pourquoi-${Date.now()}.${extension}`
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          exportSuccess = true
+          showNotification(`Export ${format === "jpeg" ? "JPEG" : "PNG"} généré.`, "success")
+          try {
+            trackExport("5pourquoi", format.toUpperCase(), baseMetadata)
+          } catch (trackError) {
+            console.warn(`Erreur lors du tracking de l'export ${format.toUpperCase()}:`, trackError)
+          }
+        }
+      } catch (exportError) {
+        console.error("Erreur lors de la génération de l'export:", exportError)
+        showNotification("Erreur lors de la génération de l'export.", "error")
       }
     })
     .catch((error) => {
-      console.error("Erreur lors de l’export 5 Pourquoi :", error)
-      showNotification("Erreur lors de la génération de l’export.", "error")
+      console.error("Erreur lors de la capture html2canvas:", error)
+      if (!exportSuccess) {
+        showNotification("Erreur lors de la génération de l'export.", "error")
+      }
     })
     .finally(() => {
-      context.container.style.cssText = originalStyle
+      try {
+        context.container.style.cssText = originalStyle
+      } catch (styleError) {
+        console.warn("Erreur lors de la restauration du style:", styleError)
+      }
     })
 }
 
@@ -696,3 +802,6 @@ window.checkForNextStep = checkForNextStep
 window.updateAddButtonVisibility = updateAddButtonVisibility
 window.addWhyStepFrom = addWhyStepFrom
 window.generateRootCause = generateRootCause
+window.renderWhyChain = renderWhyChain
+window.updateRootCauseDisplay = updateRootCauseDisplay
+window.renderRootCauseTrigger = renderRootCauseTrigger

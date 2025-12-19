@@ -69,6 +69,7 @@ class RouteTest extends WebTestCase
 
         // Tester toutes les routes publiques
         // Selon la doc Symfony, SQLite en mémoire persiste pendant toute la durée du test
+        $client->followRedirects();
         foreach ($publicRoutes as [$method, $url]) {
             $client->request($method, $url);
             $this->assertResponseIsSuccessful(

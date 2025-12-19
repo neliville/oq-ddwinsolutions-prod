@@ -4,17 +4,16 @@ namespace App\Tests\Integration;
 
 use App\Tests\TestCase\WebTestCaseWithDatabase;
 
-class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
+class ApiAmdecControllerTest extends WebTestCaseWithDatabase
 {
-
-    public function testApiFiveWhySaveRequiresAuthentication(): void
+    public function testApiAmdecSaveRequiresAuthentication(): void
     {
         $client = $this->client;
         $client->followRedirects(false);
-        $client->request('POST', '/api/fivewhy/save', [], [], [
+        $client->request('POST', '/api/amdec/save', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
-            'title' => 'Test 5 Why',
+            'title' => 'Test AMDEC',
             'content' => [],
         ]));
 
@@ -25,34 +24,34 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         );
     }
 
-    public function testApiFiveWhySaveWithAuthentication(): void
+    public function testApiAmdecSaveWithAuthentication(): void
     {
         $user = $this->createTestUser();
         $client = $this->client;
         $client->loginUser($user);
 
-        $client->request('POST', '/api/fivewhy/save', [], [], [
+        $client->request('POST', '/api/amdec/save', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
-            'title' => 'Test 5 Pourquoi Analysis',
-            'content' => ['questions' => []],
+            'title' => 'Test AMDEC Analysis',
+            'content' => ['subject' => 'Test', 'entries' => []],
         ]));
 
         $this->assertResponseStatusCodeSame(201);
         $this->assertJson($client->getResponse()->getContent());
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertTrue($response['success'] ?? false);
-        $this->assertSame('Test 5 Pourquoi Analysis', $response['data']['title'] ?? null);
+        $this->assertSame('Test AMDEC Analysis', $response['data']['title'] ?? null);
         $this->assertNotEmpty($response['data']['id'] ?? null);
     }
 
-    public function testApiFiveWhyListWithAuthentication(): void
+    public function testApiAmdecListWithAuthentication(): void
     {
         $user = $this->createTestUser();
         $client = $this->client;
         $client->loginUser($user);
 
-        $client->request('GET', '/api/fivewhy/list');
+        $client->request('GET', '/api/amdec/list');
 
         $this->assertResponseIsSuccessful();
         $this->assertJson($client->getResponse()->getContent());
@@ -60,18 +59,18 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         $this->assertArrayHasKey('data', $response);
     }
 
-    public function testApiFiveWhyGetWithAuthentication(): void
+    public function testApiAmdecGetWithAuthentication(): void
     {
         $user = $this->createTestUser();
         $client = $this->client;
         $client->loginUser($user);
 
         // Créer d'abord une analyse
-        $client->request('POST', '/api/fivewhy/save', [], [], [
+        $client->request('POST', '/api/amdec/save', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
-            'title' => 'Test 5 Why Get',
-            'content' => ['questions' => []],
+            'title' => 'Test AMDEC Get',
+            'content' => ['subject' => 'Test', 'entries' => []],
         ]));
 
         $saveResponse = json_decode($client->getResponse()->getContent(), true);
@@ -80,7 +79,7 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         $this->assertNotEmpty($analysisId);
 
         // Récupérer l'analyse
-        $client->request('GET', "/api/fivewhy/{$analysisId}");
+        $client->request('GET', "/api/amdec/{$analysisId}");
 
         $this->assertResponseIsSuccessful();
         $this->assertJson($client->getResponse()->getContent());
@@ -89,53 +88,18 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         $this->assertSame($analysisId, $response['data']['id'] ?? null);
     }
 
-    public function testApiFiveWhyUpdateWithAuthentication(): void
+    public function testApiAmdecDeleteWithAuthentication(): void
     {
         $user = $this->createTestUser();
         $client = $this->client;
         $client->loginUser($user);
 
         // Créer d'abord une analyse
-        $client->request('POST', '/api/fivewhy/save', [], [], [
+        $client->request('POST', '/api/amdec/save', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
-            'title' => 'Test 5 Why Original',
-            'content' => ['questions' => []],
-        ]));
-
-        $saveResponse = json_decode($client->getResponse()->getContent(), true);
-        $analysisId = $saveResponse['data']['id'] ?? null;
-
-        $this->assertNotEmpty($analysisId);
-
-        // Mettre à jour l'analyse
-        $client->request('POST', '/api/fivewhy/save', [], [], [
-            'CONTENT_TYPE' => 'application/json',
-        ], json_encode([
-            'id' => $analysisId,
-            'title' => 'Test 5 Why Updated',
-            'content' => ['questions' => []],
-        ]));
-
-        $this->assertResponseStatusCodeSame(200);
-        $this->assertJson($client->getResponse()->getContent());
-        $response = json_decode($client->getResponse()->getContent(), true);
-        $this->assertTrue($response['success'] ?? false);
-        $this->assertSame('Test 5 Why Updated', $response['data']['title'] ?? null);
-    }
-
-    public function testApiFiveWhyDeleteWithAuthentication(): void
-    {
-        $user = $this->createTestUser();
-        $client = $this->client;
-        $client->loginUser($user);
-
-        // Créer d'abord une analyse
-        $client->request('POST', '/api/fivewhy/save', [], [], [
-            'CONTENT_TYPE' => 'application/json',
-        ], json_encode([
-            'title' => 'Test 5 Why Delete',
-            'content' => ['questions' => []],
+            'title' => 'Test AMDEC Delete',
+            'content' => ['subject' => 'Test', 'entries' => []],
         ]));
 
         $saveResponse = json_decode($client->getResponse()->getContent(), true);
@@ -144,7 +108,7 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         $this->assertNotEmpty($analysisId);
 
         // Supprimer l'analyse
-        $client->request('DELETE', "/api/fivewhy/{$analysisId}");
+        $client->request('DELETE', "/api/amdec/{$analysisId}");
 
         $this->assertResponseIsSuccessful();
         $this->assertJson($client->getResponse()->getContent());
@@ -152,3 +116,4 @@ class ApiFiveWhyControllerTest extends WebTestCaseWithDatabase
         $this->assertTrue($response['success'] ?? false);
     }
 }
+

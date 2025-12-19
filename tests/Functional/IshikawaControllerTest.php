@@ -9,6 +9,7 @@ class IshikawaControllerTest extends WebTestCase
     public function testIshikawaPageIsAccessible(): void
     {
         $client = static::createClient();
+        $client->followRedirects();
         $client->request('GET', '/ishikawa/');
 
         $this->assertResponseIsSuccessful();
@@ -18,6 +19,7 @@ class IshikawaControllerTest extends WebTestCase
     public function testIshikawaPageIsAccessibleWithoutAuthentication(): void
     {
         $client = static::createClient();
+        $client->followRedirects();
         $client->request('GET', '/ishikawa/');
 
         $this->assertResponseIsSuccessful();

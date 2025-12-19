@@ -9,6 +9,7 @@ class FiveWhyControllerTest extends WebTestCase
     public function testFiveWhyPageIsAccessible(): void
     {
         $client = static::createClient();
+        $client->followRedirects();
         $client->request('GET', '/5pourquoi/');
 
         $this->assertResponseIsSuccessful();
@@ -19,6 +20,7 @@ class FiveWhyControllerTest extends WebTestCase
     public function testFiveWhyPageIsAccessibleWithoutAuthentication(): void
     {
         $client = static::createClient();
+        $client->followRedirects();
         $client->request('GET', '/5pourquoi/');
 
         $this->assertResponseIsSuccessful();

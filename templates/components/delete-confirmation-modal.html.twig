@@ -26,7 +26,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-action="dialog#close">Annuler</button>
-                <button type="button" class="btn btn-danger" data-action="dialog:confirmed->delete-confirmation#onConfirmed dialog#close">
+                <button type="button" class="btn btn-danger" data-action="click->delete-confirmation#onConfirmed">
                     <i data-lucide="trash-2" width="18" height="18" class="me-1"></i>
                     Supprimer
                 </button>
@@ -37,12 +37,14 @@
 
 <style>
 .delete-confirmation-dialog {
-    border: none;
+    border: none !important;
     border-radius: 0.5rem;
-    padding: 0;
+    padding: 0 !important;
     max-width: 500px;
     width: 90%;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background: transparent;
+    overflow: hidden;
 }
 
 .delete-confirmation-dialog::backdrop {
@@ -72,17 +74,22 @@
 @keyframes fadeOut {
     from {
         opacity: 1;
-        transform: scale(1);
+        transform: translate(-50%, -50%) scale(1);
     }
     to {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translate(-50%, -50%) scale(0.95);
     }
 }
 
 .modal-content {
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 .modal-header {
@@ -91,6 +98,9 @@
     justify-content: space-between;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #dee2e6;
+    background: #ffffff;
+    border-radius: 0.5rem 0.5rem 0 0;
+    margin: 0;
 }
 
 .modal-title {
@@ -99,10 +109,13 @@
     font-weight: 600;
     display: flex;
     align-items: center;
+    color: #212529;
 }
 
 .modal-body {
     padding: 1.5rem;
+    background: #ffffff;
+    margin: 0;
 }
 
 .modal-footer {
@@ -111,6 +124,9 @@
     justify-content: flex-end;
     padding: 1rem 1.5rem;
     border-top: 1px solid #dee2e6;
+    background: #ffffff;
+    border-radius: 0 0 0.5rem 0.5rem;
+    margin: 0;
 }
 </style>
 

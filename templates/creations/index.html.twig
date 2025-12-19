@@ -133,21 +133,28 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button 
                                 class="creation-btn creation-btn--delete" 
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_ishikawa_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer ce diagramme Ishikawa ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-ishikawa-{{ record.id }}"
                                 aria-label="Supprimer le diagramme Ishikawa {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
                         </div>
                     </div>
                 </article>
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-ishikawa-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer ce diagramme Ishikawa ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_ishikawa_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
                 {% endfor %}
             </div>
         </section>
@@ -184,21 +191,28 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button 
                                 class="creation-btn creation-btn--delete" 
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_fivewhy_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-fivewhy-{{ record.id }}"
                                 aria-label="Supprimer l'analyse 5 Pourquoi {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
                         </div>
                     </div>
                 </article>
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-fivewhy-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_fivewhy_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
                 {% endfor %}
             </div>
         </section>
@@ -241,21 +255,28 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button 
                                 class="creation-btn creation-btn--delete" 
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_qqoqccp_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse QQOQCCP ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-qqoqccp-{{ record.id }}"
                                 aria-label="Supprimer l'analyse QQOQCCP {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
                         </div>
                     </div>
                 </article>
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-qqoqccp-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer cette analyse QQOQCCP ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_qqoqccp_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
                 {% endfor %}
             </div>
         </section>
@@ -298,18 +319,25 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button
                                 class="creation-btn creation-btn--delete"
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_amdec_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-amdec-{{ record.id }}"
                                 aria-label="Supprimer l'analyse AMDEC {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                            {% component DeleteConfirmationModal with {
+                                id: 'delete-amdec-' ~ record.id,
+                                title: 'Confirmation de suppression',
+                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible.',
+                                deleteUrl: path('app_api_amdec_delete', {id: record.id}),
+                                deleteMethod: 'DELETE'
+                            } %}
+                            {% endcomponent %}
                         </div>
                     </div>
                 </article>
@@ -355,18 +383,25 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button
                                 class="creation-btn creation-btn--delete"
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_pareto_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-pareto-{{ record.id }}"
                                 aria-label="Supprimer l'analyse Pareto {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                            {% component DeleteConfirmationModal with {
+                                id: 'delete-pareto-' ~ record.id,
+                                title: 'Confirmation de suppression',
+                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible.',
+                                deleteUrl: path('app_api_pareto_delete', {id: record.id}),
+                                deleteMethod: 'DELETE'
+                            } %}
+                            {% endcomponent %}
                         </div>
                     </div>
                 </article>
@@ -412,18 +447,25 @@
                             <i class="fas fa-folder-open" aria-hidden="true"></i>
                             <span>Charger</span>
                         </a>
-                        <div data-controller="dialog delete-confirmation">
+                        <div>
                             <button
                                 class="creation-btn creation-btn--delete"
-                                data-action="click->dialog#open"
-                                data-dialog-url-value="{{ path('app_api_eightd_delete', {id: record.id}) }}"
-                                data-dialog-message-value="Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible."
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#delete-eightd-{{ record.id }}"
                                 aria-label="Supprimer le rapport 8D {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 <span class="visually-hidden">Supprimer</span>
                             </button>
-                            {% include 'components/delete-confirmation-modal.html.twig' %}
+                            {% component DeleteConfirmationModal with {
+                                id: 'delete-eightd-' ~ record.id,
+                                title: 'Confirmation de suppression',
+                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible.',
+                                deleteUrl: path('app_api_eightd_delete', {id: record.id}),
+                                deleteMethod: 'DELETE'
+                            } %}
+                            {% endcomponent %}
                         </div>
                     </div>
                 </article>
@@ -439,7 +481,11 @@
 {% block stylesheets %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('styles/pages/creations.scss') }}" data-turbo-track="reload">
+<!-- Toastify CSS pour les notifications (même style que Ishikawa / exports PDF) -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 {% endblock %}
 
 {% block javascripts %}
+<!-- Toastify JS pour les notifications (même style que Ishikawa / exports PDF) -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 {% endblock %}

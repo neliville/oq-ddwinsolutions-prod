@@ -655,62 +655,89 @@
                 return;
             }
 
-            const existingModal = document.getElementById('paretoLoadModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            const modalHtml = `
-                <div class="modal fade" id="paretoLoadModal" tabindex="-1" aria-labelledby="paretoLoadModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="paretoLoadModalLabel">Mes analyses Pareto</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="list-group">
-                                    ${analyses
-                                        .map(
-                                            (analysis) => `
-                                            <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                                                <div class="d-flex justify-content-between">
-                                                    <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                                                    <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                                                </div>
-                                                <p class="mb-0 text-muted small">${analysis.description || 'Analyse Pareto'}</p>
-                                            </button>
-                                        `
-                                        )
-                                        .join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-
+            // Trouver le modal existant (créé via le composant Twig)
             const modalElement = document.getElementById('paretoLoadModal');
-            const bootstrapLib = await getBootstrapLib();
-            if (!bootstrapLib?.Modal) {
-                notify('Le module d’interface Bootstrap n’est pas disponible pour afficher vos analyses Pareto.', 'error');
-                modalElement.remove();
+            if (!modalElement) {
+                notify('Le modal n\'est pas disponible.', 'error');
                 return;
             }
 
-            modalElement.querySelectorAll('[data-analysis-id]').forEach((button) => {
+            // Trouver la liste dans le modal
+            const listContainer = modalElement.querySelector('#paretoAnalysesList');
+            if (!listContainer) {
+                notify('Le conteneur de la liste n\'est pas disponible.', 'error');
+                return;
+            }
+
+            // Générer le HTML de la liste des analyses
+            const listHtml = analyses
+                .map(
+                    (analysis) => `
+                    <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
+                            <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                        </div>
+                        <p class="mb-0 text-muted small">${analysis.description || 'Analyse Pareto'}</p>
+                    </button>
+                `
+                )
+                .join('');
+
+            listContainer.innerHTML = listHtml;
+
+            // Ajouter les event listeners pour charger les analyses
+            listContainer.querySelectorAll('[data-analysis-id]').forEach((button) => {
                 button.addEventListener('click', async (event) => {
                     const selectedId = event.currentTarget.getAttribute('data-analysis-id');
                     await loadPareto(selectedId);
-                    const bootstrapModal = bootstrapLib.Modal.getInstance(modalElement);
-                    bootstrapModal?.hide();
+                    
+                    // Fermer le modal via le contrôleur bootstrap-modal
+                    let modalController = null;
+                    
+                    if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                        try {
+                            modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                        } catch (e) {
+                            console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
+                        }
+                    }
+
+                    if (modalController && typeof modalController.hide === 'function') {
+                        modalController.hide();
+                    } else {
+                        // Fallback vers Bootstrap natif
+                        const bootstrapLib = await getBootstrapLib();
+                        const bootstrapModal = bootstrapLib?.Modal?.getInstance?.(modalElement);
+                        bootstrapModal?.hide();
+                    }
                 });
             });
 
-            const modalInstance = new bootstrapLib.Modal(modalElement);
-            modalInstance.show();
+            // Ouvrir le modal via le contrôleur bootstrap-modal
+            // Stimulus est exposé via window.Stimulus (voir assets/bootstrap.js)
+            let modalController = null;
+            
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try {
+                    modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                } catch (e) {
+                    console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
+                }
+            }
+
+            if (modalController && typeof modalController.show === 'function') {
+                modalController.show();
+            } else {
+                // Fallback vers Bootstrap natif
+                const bootstrapLib = await getBootstrapLib();
+                if (!bootstrapLib?.Modal) {
+                    notify('Le module d\'interface Bootstrap n\'est pas disponible pour afficher vos analyses Pareto.', 'error');
+                    return;
+                }
+                const modalInstance = new bootstrapLib.Modal(modalElement);
+                modalInstance.show();
+            }
         } catch (error) {
             console.error(error);
             notify(error.message || 'Erreur lors du chargement des analyses.', 'error');

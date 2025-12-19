@@ -12,7 +12,7 @@ export default class extends Controller {
     static targets = ['button', 'menu'];
 
     connect() {
-        console.debug('[profile-dropdown] connect', this.element);
+        // console.debug('[profile-dropdown] connect', this.element);
         this.isOpen = false;
         this.handleDocumentClick = this.handleDocumentClick.bind(this);
         this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
@@ -38,7 +38,7 @@ export default class extends Controller {
 
     toggle(event) {
         event.preventDefault();
-        console.debug('[profile-dropdown] toggle', { isOpen: this.isOpen, target: event.target });
+        // console.debug('[profile-dropdown] toggle', { isOpen: this.isOpen, target: event.target });
         this.isOpen ? this.close() : this.open();
     }
 
@@ -48,7 +48,7 @@ export default class extends Controller {
         }
 
         event.preventDefault();
-        console.debug('[profile-dropdown] openWithKeyboard', { key: event.key });
+        // console.debug('[profile-dropdown] openWithKeyboard', { key: event.key });
         if (!this.isOpen) {
             this.open();
         }
@@ -71,7 +71,7 @@ export default class extends Controller {
         this.menuTarget.removeAttribute('hidden');
         this.menuTarget.classList.add('show');
         this.menuTarget.style.display = 'block';
-        console.debug('[profile-dropdown] open -> show menu');
+        // console.debug('[profile-dropdown] open -> show menu');
 
         if (this.hasButtonTarget) {
             this.buttonTarget.setAttribute('aria-expanded', 'true');
@@ -100,7 +100,7 @@ export default class extends Controller {
         this.menuTarget.setAttribute('hidden', '');
         this.menuTarget.classList.remove('show');
         this.menuTarget.style.display = '';
-        console.debug('[profile-dropdown] close -> hide menu');
+        // console.debug('[profile-dropdown] close -> hide menu');
 
         if (this.hasButtonTarget) {
             this.buttonTarget.setAttribute('aria-expanded', 'false');
@@ -112,7 +112,7 @@ export default class extends Controller {
 
     handleDocumentClick(event) {
         if (!this.element.contains(event.target)) {
-            console.debug('[profile-dropdown] document click outside -> closing');
+            // console.debug('[profile-dropdown] document click outside -> closing');
             this.close();
         }
     }

@@ -67,6 +67,9 @@
                 <button id="saveBtn" class="btn btn-success btn-sm" onclick="saveFiveWhy()" aria-label="Sauvegarder l'analyse">
                     <i class="fas fa-save" aria-hidden="true"></i> Sauvegarder
                 </button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openFiveWhySaved()" aria-label="Charger une analyse 5 Pourquoi">
+                    <i class="fas fa-folder-open me-2"></i>Mes analyses
+                </button>
                 {% endif %}
 
                 <div class="dropdown export-dropdown" data-controller="dropdown-basic">
@@ -122,6 +125,14 @@
             </div>
         </div>
     </div>
+
+    {# Modal pour afficher les analyses 5 Pourquoi sauvegardées #}
+    {% if app.user %}
+    {% component FiveWhyAnalysesModal with {
+        id: 'fiveWhyLoadModal'
+    } %}
+    {% endcomponent %}
+    {% endif %}
 </main>
 {% endblock %}
 
@@ -212,23 +223,39 @@
             fiveWhyData.rootCause = rootCauseValue;
             fiveWhyData.rootCauseReady = Boolean(rawContent.rootCauseReady || rootCauseValue.length);
 
-            const problemInput = document.getElementById('problemStatement');
-            if (problemInput) {
-                problemInput.value = fiveWhyData.problemStatement;
-            }
-
-            renderWhyChain();
-            updateAddButtonVisibility();
-            updateRootCauseDisplay({
-                force: fiveWhyData.rootCauseReady,
-                answerOverride: rootCauseValue,
-            });
-
-            if (fiveWhyData.rootCauseReady) {
-                const rootCauseDiv = document.getElementById('rootCause');
-                if (rootCauseDiv) {
-                    rootCauseDiv.style.display = 'block';
+            // Attendre que le DOM soit prêt avant de rendre
+            const renderData = () => {
+                const problemInput = document.getElementById('problemStatement');
+                if (problemInput) {
+                    problemInput.value = fiveWhyData.problemStatement;
                 }
+
+                if (typeof window.renderWhyChain === 'function') {
+                    window.renderWhyChain();
+                }
+                if (typeof window.updateAddButtonVisibility === 'function') {
+                    window.updateAddButtonVisibility();
+                }
+                if (typeof window.updateRootCauseDisplay === 'function') {
+                    window.updateRootCauseDisplay({
+                        force: fiveWhyData.rootCauseReady,
+                        answerOverride: rootCauseValue,
+                    });
+                }
+
+                if (fiveWhyData.rootCauseReady) {
+                    const rootCauseDiv = document.getElementById('rootCause');
+                    if (rootCauseDiv) {
+                        rootCauseDiv.style.display = 'block';
+                    }
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', renderData);
+            } else {
+                // DOM déjà chargé, rendre immédiatement
+                renderData();
             }
 
             if (options.id) {
@@ -387,6 +414,176 @@
             }).showToast();
         }
     }
+
+    async function openFiveWhySaved() {
+        if (!{{ app.user ? 'true' : 'false' }}) {
+            Toastify({
+                text: "Connectez-vous pour accéder à vos analyses.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
+            }).showToast();
+            return;
+        }
+
+        try {
+            const response = await fetch('{{ path('app_api_fivewhy_list') }}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+
+            const data = await response.json();
+            const analyses = data.data || [];
+
+            if (!analyses.length) {
+                Toastify({
+                    text: "Aucune analyse 5 Pourquoi sauvegardée.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                }).showToast();
+                return;
+            }
+
+            // Trouver le modal existant (créé via le composant Twig)
+            const modalElement = document.getElementById('fiveWhyLoadModal');
+            if (!modalElement) {
+                Toastify({
+                    text: "Le modal n'est pas disponible.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                }).showToast();
+                return;
+            }
+
+            // Trouver la liste dans le modal
+            const listContainer = modalElement.querySelector('#fiveWhyAnalysesList');
+            if (!listContainer) {
+                Toastify({
+                    text: "Le conteneur de la liste n'est pas disponible.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                }).showToast();
+                return;
+            }
+
+            // Générer le HTML de la liste des analyses
+            const listHtml = analyses
+                .map(
+                    (analysis) => `
+                    <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
+                            <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                        </div>
+                        <p class="mb-0 text-muted small">${analysis.problem || 'Analyse 5 Pourquoi'}</p>
+                    </button>
+                `
+                )
+                .join('');
+
+            listContainer.innerHTML = listHtml;
+
+            // Réinitialiser les icônes Lucide
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Ajouter les event listeners pour charger les analyses
+            listContainer.querySelectorAll('[data-analysis-id]').forEach((button) => {
+                button.addEventListener('click', async (event) => {
+                    const selectedId = event.currentTarget.getAttribute('data-analysis-id');
+                    await loadFiveWhy(selectedId);
+                    
+                    // Fermer le modal via le contrôleur bootstrap-modal
+                    let modalController = null;
+                    
+                    if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                        try {
+                            modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                        } catch (e) {
+                            console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
+                        }
+                    }
+
+                    if (modalController && typeof modalController.hide === 'function') {
+                        modalController.hide();
+                    } else {
+                        // Fallback vers Bootstrap natif
+                        const bootstrapLib = window.bootstrap || (await new Promise(resolve => {
+                            if (window.bootstrap) resolve(window.bootstrap);
+                            else setTimeout(() => resolve(window.bootstrap), 100);
+                        }));
+                        const bootstrapModal = bootstrapLib?.Modal?.getInstance?.(modalElement);
+                        bootstrapModal?.hide();
+                    }
+                });
+            });
+
+            // Réinitialiser les icônes Lucide
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Ouvrir le modal via le contrôleur bootstrap-modal
+            let modalController = null;
+            
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try {
+                    modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                } catch (e) {
+                    console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
+                }
+            }
+
+            if (modalController && typeof modalController.show === 'function') {
+                modalController.show();
+            } else {
+                // Fallback vers Bootstrap natif
+                const bootstrapLib = window.bootstrap || (await new Promise(resolve => {
+                    if (window.bootstrap) resolve(window.bootstrap);
+                    else setTimeout(() => resolve(window.bootstrap), 100);
+                }));
+                if (!bootstrapLib?.Modal) {
+                    Toastify({
+                        text: "Le module d'interface Bootstrap n'est pas disponible.",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                    }).showToast();
+                    return;
+                }
+                const modalInstance = new bootstrapLib.Modal(modalElement);
+                modalInstance.show();
+            }
+        } catch (error) {
+            console.error(error);
+            Toastify({
+                text: error.message || 'Erreur lors du chargement des analyses.',
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+            }).showToast();
+        }
+    }
+
+    window.openFiveWhySaved = openFiveWhySaved;
 
     async function loadFiveWhy(id, { silent = false } = {}) {
         if (!{{ app.user ? 'true' : 'false' }}) {

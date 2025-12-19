@@ -1,0 +1,34 @@
+{# Modal pour afficher la liste des analyses Ishikawa sauvegardées #}
+<div {{ attributes.defaults({
+    class: 'modal fade',
+    tabindex: '-1',
+    'aria-hidden': 'true',
+    id: id ? id : 'ishikawaLoadModal',
+    style: 'display: none;'
+}) }}
+    {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+    data-turbo="false"
+>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title d-flex align-items-center">
+                    <i data-lucide="folder-open" width="24" height="24" class="me-2"></i>
+                    Mes analyses Ishikawa
+                </h5>
+                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group" id="ishikawaAnalysesList">
+                    {# Le contenu sera injecté dynamiquement par JavaScript #}
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

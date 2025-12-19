@@ -29,6 +29,14 @@
     <div class="ishikawa-content">
         {{ include('components/ishikawa_canvas.html.twig', { diagramId: diagramId }) }}
     </div>
+
+    {# Modal pour afficher les analyses Ishikawa sauvegardées #}
+    {% if app.user %}
+    {% component IshikawaAnalysesModal with {
+        id: 'ishikawaLoadModal'
+    } %}
+    {% endcomponent %}
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -213,6 +221,167 @@
                 shareBtn.innerHTML = '<i class="fas fa-share-alt me-2"></i>Partager';
             }
         }
+
+        async function openIshikawaSaved() {
+            if (!{{ app.user ? 'true' : 'false' }}) {
+                const Toastify = window.Toastify;
+                if (Toastify) {
+                    Toastify({
+                        text: "Connectez-vous pour accéder à vos analyses.",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
+                    }).showToast();
+                }
+                return;
+            }
+
+            try {
+                const response = await fetch('{{ path('app_api_ishikawa_list') }}', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                const data = await response.json();
+                const analyses = data.data || [];
+
+                if (!analyses.length) {
+                    const Toastify = window.Toastify;
+                    if (Toastify) {
+                        Toastify({
+                            text: "Aucune analyse Ishikawa sauvegardée.",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
+                        }).showToast();
+                    }
+                    return;
+                }
+
+                // Trouver le modal existant (créé via le composant Twig)
+                const modalElement = document.getElementById('ishikawaLoadModal');
+                if (!modalElement) {
+                    const Toastify = window.Toastify;
+                    if (Toastify) {
+                        Toastify({
+                            text: "Le modal n'est pas disponible.",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                        }).showToast();
+                    }
+                    return;
+                }
+
+                // Trouver la liste dans le modal
+                const listContainer = modalElement.querySelector('#ishikawaAnalysesList');
+                if (!listContainer) {
+                    const Toastify = window.Toastify;
+                    if (Toastify) {
+                        Toastify({
+                            text: "Le conteneur de la liste n'est pas disponible.",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                        }).showToast();
+                    }
+                    return;
+                }
+
+                // Générer le HTML de la liste des analyses
+                const listHtml = analyses
+                    .map(
+                        (analysis) => `
+                        <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
+                                <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                            </div>
+                            <p class="mb-0 text-muted small">${analysis.problem || 'Diagramme Ishikawa'}</p>
+                        </button>
+                    `
+                    )
+                    .join('');
+
+                listContainer.innerHTML = listHtml;
+
+                // Réinitialiser les icônes Lucide
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+
+                // Ajouter les event listeners pour charger les analyses
+                listContainer.querySelectorAll('[data-analysis-id]').forEach((button) => {
+                    button.addEventListener('click', async (event) => {
+                        const selectedId = event.currentTarget.getAttribute('data-analysis-id');
+                        // Rediriger vers la page avec l'ID
+                        window.location.href = '{{ path('app_ishikawa_index') }}?load=' + selectedId;
+                    });
+                });
+
+                // Ouvrir le modal via le contrôleur bootstrap-modal
+                let modalController = null;
+                
+                if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                    try {
+                        modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                    } catch (e) {
+                        console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
+                    }
+                }
+
+                if (modalController && typeof modalController.show === 'function') {
+                    modalController.show();
+                } else {
+                    // Fallback vers Bootstrap natif
+                    const bootstrapLib = window.bootstrap || (await new Promise(resolve => {
+                        if (window.bootstrap) resolve(window.bootstrap);
+                        else setTimeout(() => resolve(window.bootstrap), 100);
+                    }));
+                    if (!bootstrapLib?.Modal) {
+                        const Toastify = window.Toastify;
+                        if (Toastify) {
+                            Toastify({
+                                text: "Le module d'interface Bootstrap n'est pas disponible.",
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                            }).showToast();
+                        }
+                        return;
+                    }
+                    const modalInstance = new bootstrapLib.Modal(modalElement);
+                    modalInstance.show();
+                }
+            } catch (error) {
+                console.error(error);
+                const Toastify = window.Toastify;
+                if (Toastify) {
+                    Toastify({
+                        text: error.message || 'Erreur lors du chargement des analyses.',
+                        duration: 5000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                    }).showToast();
+                }
+            }
+        }
+
+        window.openIshikawaSaved = openIshikawaSaved;
     </script>
     {% endif %}
 

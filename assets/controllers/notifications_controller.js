@@ -40,11 +40,12 @@ export default class extends Controller {
         if (message) {
             this.loadToastify().then(() => {
                 if (window.Toastify) {
+                    // Palette alignée sur les notifications Ishikawa (création, export PDF)
                     const colors = {
-                        success: '#22c55e',
-                        error: '#ef4444',
-                        warning: '#f59e0b',
-                        info: '#3b82f6',
+                        success: '#2ecc71',
+                        error: '#e74c3c',
+                        warning: '#f39c12',
+                        info: '#3498db',
                     };
 
                     window.Toastify({
@@ -92,11 +93,12 @@ export default class extends Controller {
     show(message, type = 'info') {
         this.loadToastify().then(() => {
             if (window.Toastify) {
+                // Palette alignée sur les notifications Ishikawa (création, export PDF)
                 const colors = {
-                    success: '#22c55e',
-                    error: '#ef4444',
-                    warning: '#f59e0b',
-                    info: '#3b82f6',
+                    success: '#2ecc71',
+                    error: '#e74c3c',
+                    warning: '#f39c12',
+                    info: '#3498db',
                 };
 
                 window.Toastify({

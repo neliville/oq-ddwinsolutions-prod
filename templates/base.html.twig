@@ -204,6 +204,20 @@
     <!-- Footer -->
     {% include 'components/footer.html.twig' %}
 
+    {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
+    <div data-controller="notifications" class="d-none" aria-hidden="true"></div>
+
+    {# Modal de confirmation global réutilisable #}
+    {% component ConfirmationModal with {
+        id: 'globalConfirmationModal',
+        title: 'Confirmation',
+        message: 'Êtes-vous sûr de vouloir continuer ?',
+        confirmText: 'Confirmer',
+        cancelText: 'Annuler',
+        confirmClass: 'btn-primary'
+    } %}
+    {% endcomponent %}
+
     <!-- AssetMapper JavaScript -->
     {% block importmap %}{{ importmap('app') }}{% endblock %}
 

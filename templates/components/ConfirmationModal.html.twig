@@ -1,0 +1,56 @@
+{# Modal de confirmation réutilisable #}
+{# Usage:
+    {% component ConfirmationModal with {
+        id: 'confirm-reset',
+        title: 'Confirmation',
+        message: 'Êtes-vous sûr de vouloir recommencer ?',
+        confirmText: 'Oui',
+        cancelText: 'Annuler'
+    } %}
+    {% endcomponent %}
+#}
+<div {{ attributes.defaults({
+    class: 'modal fade',
+    tabindex: '-1',
+    'aria-hidden': 'true',
+    id: id ? id : false,
+    style: 'display: none;'
+}) }}
+    {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+    {{ stimulus_controller('confirmation-modal', {
+        confirmCallback: 'window.confirmCallback',
+        cancelCallback: 'window.cancelCallback'
+    }) }}
+    data-turbo="false"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title d-flex align-items-center">
+                    <i data-lucide="alert-circle" width="24" height="24" class="text-info me-2"></i>
+                    {{ title }}
+                </h5>
+                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p data-confirmation-modal-target="message">
+                    {{ message }}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-action="click->confirmation-modal#onCancelled bootstrap-modal#hide">
+                    {{ cancelText }}
+                </button>
+                <button 
+                    type="button" 
+                    class="btn {{ confirmClass }}" 
+                    data-action="click->confirmation-modal#onConfirmed"
+                    data-confirmation-modal-confirm-callback-value=""
+                >
+                    {{ confirmText }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

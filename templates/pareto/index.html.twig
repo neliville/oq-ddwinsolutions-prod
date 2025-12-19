@@ -123,6 +123,12 @@
             <div class="pareto-insights" id="paretoInsights"></div>
         </section>
     </div>
+
+    {# Modal pour afficher les analyses Pareto sauvegardées #}
+    {% component ParetoAnalysesModal with {
+        id: 'paretoLoadModal'
+    } %}
+    {% endcomponent %}
 </main>
 {% endblock %}
 

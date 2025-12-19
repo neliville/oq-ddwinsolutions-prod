@@ -11,6 +11,10 @@ on:
       - main
       - develop
       - feat/symfony-app
+  schedule:
+    # Exécution quotidienne à 2h du matin UTC pour s'assurer que les tests fonctionnent toujours
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permet d'exécuter manuellement
 
 jobs:
   tests:
