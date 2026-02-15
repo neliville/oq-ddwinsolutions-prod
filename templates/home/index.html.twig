@@ -12,7 +12,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/pages/home.scss') }}" data-turbo-track="reload">
+    <link rel="stylesheet" href="{{ asset('styles/site/home.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block body %}
@@ -398,6 +398,9 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                 </div>
             </div>
         </section>
+
+        <!-- FAQ -->
+        {% include 'home/sections/_faq.html.twig' %}
 
         <!-- Newsletter -->
         <section id="newsletter" class="newsletter-wrapper">

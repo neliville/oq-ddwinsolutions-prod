@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Repository\AdminLogRepository;
 use App\Repository\BlogPostRepository;
 use App\Repository\ContactMessageRepository;
+use App\Repository\LeadRepository;
 use App\Repository\NewsletterSubscriberRepository;
 use App\Repository\PageViewRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ final class DashboardController extends AbstractController
         private readonly PageViewRepository $pageViewRepository,
         private readonly BlogPostRepository $blogPostRepository,
         private readonly AdminLogRepository $adminLogRepository,
+        private readonly LeadRepository $leadRepository,
     ) {
     }
 
@@ -58,6 +60,12 @@ final class DashboardController extends AbstractController
         // Activité récente
         $recentActivity = $this->adminLogRepository->findRecent(10);
 
+        // Statistiques des leads (utilisation des outils)
+        $leadsTotal = $this->leadRepository->count([]);
+        $leadsToday = $this->leadRepository->countByPeriod($todayStart, $now);
+        $leadsLastWeek = $this->leadRepository->countByPeriod($lastWeekStart, $now);
+        $recentLeads = $this->leadRepository->findRecent(5);
+
         return $this->render('admin/dashboard/index.html.twig', [
             'unreadMessagesCount' => $unreadMessagesCount,
             'messagesToday' => $messagesToday,
@@ -73,6 +81,10 @@ final class DashboardController extends AbstractController
             'mostVisitedPages' => $mostVisitedPages,
             'mostViewedPosts' => $mostViewedPosts,
             'recentActivity' => $recentActivity,
+            'leadsTotal' => $leadsTotal,
+            'leadsToday' => $leadsToday,
+            'leadsLastWeek' => $leadsLastWeek,
+            'recentLeads' => $recentLeads,
         ]);
     }
 }

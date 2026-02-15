@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\ContactMessage;
+use App\Entity\Lead;
 use App\Entity\NewsletterSubscriber;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -88,6 +89,53 @@ class MailerService
                 'app_name' => $this->appName,
                 'app_url' => $this->appUrl,
                 'app_email' => $this->appEmail,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Envoie un email de confirmation après utilisation d'un outil (capture lead).
+     */
+    public function sendToolConfirmationEmail(Lead $lead): void
+    {
+        $recipientEmail = $lead->getEmail();
+        if (null === $recipientEmail || '' === trim($recipientEmail)) {
+            return;
+        }
+
+        $toolLabel = $lead->getTool() ?: 'outil';
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->appEmail, $this->appName))
+            ->to(new Address($recipientEmail, $lead->getName() ?: null))
+            ->subject('Merci d\'avoir utilisé notre ' . $toolLabel . ' – ' . $this->appName)
+            ->htmlTemplate('emails/lead/confirmation.html.twig')
+            ->textTemplate('emails/lead/confirmation.txt.twig')
+            ->context([
+                'lead' => $lead,
+                'app_name' => $this->appName,
+                'app_url' => $this->appUrl,
+                'app_email' => $this->appEmail,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Notifie l'admin d'un lead qualifié (score > 50).
+     */
+    public function sendAdminLeadNotification(Lead $lead): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->appEmail, $this->appName))
+            ->to(new Address($this->appEmail, $this->appName))
+            ->subject('[Lead qualifié] ' . ($lead->getEmail() ?? 'Sans email') . ' – ' . ($lead->getTool() ?? 'N/A'))
+            ->htmlTemplate('emails/lead/admin_notification.html.twig')
+            ->textTemplate('emails/lead/admin_notification.txt.twig')
+            ->context([
+                'lead' => $lead,
+                'app_name' => $this->appName,
+                'app_url' => $this->appUrl,
             ]);
 
         $this->mailer->send($email);

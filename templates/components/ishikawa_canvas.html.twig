@@ -59,7 +59,7 @@
     <div class="canvas-area">
         <div class="canvas-header">
             <div class="canvas-title">Diagramme en arêtes de poisson</div>
-            <div class="canvas-actions">
+            <div class="canvas-actions d-flex flex-wrap align-items-center gap-2" role="toolbar" aria-label="Actions disponibles">
                 {% if app.user and not readonly %}
                     <button id="saveIshikawaBtn" class="btn btn-success btn-sm" onclick="saveIshikawa()" aria-label="Sauvegarder le diagramme">
                         <i class="fas fa-save" aria-hidden="true"></i>
@@ -73,6 +73,7 @@
                         Partager
                     </button>
                 {% endif %}
+                {% if app.user %}
                 <div class="dropdown export-dropdown" data-controller="dropdown-basic">
                     <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="exportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
                         <i class="fas fa-download me-2" aria-hidden="true"></i>
@@ -84,6 +85,9 @@
                         <li><button class="dropdown-item" onclick="window.ishikawaApp.exportDiagram('json')">Exporter en JSON</button></li>
                     </ul>
                 </div>
+                {% else %}
+                {% include 'components/tool_actions_login.html.twig' %}
+                {% endif %}
                 {% if not readonly %}
                     <div class="dropdown" data-controller="dropdown-basic">
                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="resetDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options de réinitialisation">

@@ -55,10 +55,21 @@ php bin/console doctrine:migrations:migrate
 php bin/console app:create-admin-user
 ```
 
-6. **Compiler les assets**
+6. **Compiler les assets (SCSS → CSS)**
+
+Les styles (dont la page d'accueil et la FAQ) sont en SCSS et doivent être compilés pour s'appliquer en local :
+
 ```bash
-npm run build
+php bin/console sass:build
 ```
+
+Pour recompiler automatiquement à chaque modification des fichiers `.scss` :
+
+```bash
+php bin/console sass:build --watch
+```
+
+(Si vous utilisez `symfony server:start`, vous pouvez ajouter un worker SASS dans `.symfony.local.yaml` pour lancer le watcher automatiquement.)
 
 7. **Lancer le serveur de développement**
 ```bash
@@ -66,6 +77,18 @@ symfony server:start
 # ou
 php -S localhost:8000 -t public/
 ```
+
+## 🏗️ Architecture
+
+L’application suit une structure inspirée BMAD (Site, Tools, Lead) avec :
+
+- **Application/** : Use cases (LeadService, CreateLead, TrackingService, etc.).
+- **Controller/** : API (Record, Ishikawa, FiveWhy, Pareto, Amdec, Qqoqccp, EightD, Lead, ToolSuggest), Admin, Public (pages SEO, lead).
+- **Lead/** : Domaine lead (BrevoSyncService, QuotaService) et freemium (User.plan, quotas).
+- **Tools/** : Points d’entrée IA (ToolAnalysisInterface, DTOs, endpoint `/api/tools/{tool}/suggest`).
+- **Infrastructure/Mail** : Messenger (LeadCreatedMessage, SyncLeadToBrevoMessage, scoring, qualification, enrichment).
+
+Détails : [bmad/architecture.md](bmad/architecture.md). Migration et déploiement : [bmad/migration-guide.md](bmad/migration-guide.md).
 
 ## 📦 Déploiement
 

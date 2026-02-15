@@ -119,6 +119,30 @@
                 </div>
             </div>
         </div>
+
+        <!-- Leads (utilisation des outils) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted text-uppercase small mb-2">Leads</h6>
+                            <h3 class="fw-bold mb-0">{{ leadsTotal }}</h3>
+                            <small class="text-muted">
+                                <i data-lucide="user-plus" width="14" height="14" class="me-1"></i>
+                                {{ leadsToday }} aujourd'hui · {{ leadsLastWeek }} cette semaine
+                            </small>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i data-lucide="target" width="24" height="24" class="text-warning"></i>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_admin_leads_index') }}" class="btn btn-sm btn-outline-warning mt-3 w-100">
+                        Voir les leads
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Graphiques et détails -->
@@ -340,9 +364,9 @@
         </div>
     </div>
 
-    <!-- Activité récente -->
+    <!-- Activité récente et Derniers leads -->
     <div class="row g-4">
-        <div class="col-12">
+        <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom">
                     <h5 class="mb-0">
@@ -405,6 +429,33 @@
                     <div class="text-center py-4">
                         <i data-lucide="activity" width="48" height="48" class="text-muted mb-2"></i>
                         <p class="text-muted mb-0">Aucune activité récente</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i data-lucide="target" width="20" height="20" class="me-2"></i>
+                        Derniers leads
+                    </h5>
+                    <a href="{{ path('app_admin_leads_index') }}" class="btn btn-sm btn-outline-warning">Voir tout</a>
+                </div>
+                <div class="card-body">
+                    {% if recentLeads|length > 0 %}
+                    <ul class="list-unstyled mb-0">
+                        {% for lead in recentLeads %}
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                            <span class="small">{{ lead.email ?? 'Invité' }}</span>
+                            <span class="badge bg-secondary small">{{ lead.tool ?? lead.source ?? '—' }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        Aucun lead récent
                     </div>
                     {% endif %}
                 </div>

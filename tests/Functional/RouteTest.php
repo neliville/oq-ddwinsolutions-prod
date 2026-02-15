@@ -83,10 +83,9 @@ class RouteTest extends WebTestCase
         $client = static::createClient();
         $client->followRedirects(false);
         
+        // Routes API qui exigent ROLE_USER (App\Tools\Api\* ou équivalent)
         $protectedRoutes = [
             ['GET', '/api/records'],
-            ['POST', '/api/ishikawa/save'],
-            ['POST', '/api/fivewhy/save'],
         ];
 
         foreach ($protectedRoutes as [$method, $route]) {

@@ -1755,6 +1755,9 @@
             link.click();
             URL.revokeObjectURL(url);
             showNotification('Export JSON terminé.', 'success');
+            if (window.ishikawaIsGuest) {
+                document.dispatchEvent(new CustomEvent('show-save-guest-modal'));
+            }
             trackIshikawaExport('json');
             return;
         }
@@ -1813,6 +1816,9 @@
                 pdf.save(`${filenameBase}.pdf`);
                 showNotification('PDF exporté avec succès.', 'success');
                 trackIshikawaExport('pdf');
+                if (window.ishikawaIsGuest) {
+                    document.dispatchEvent(new CustomEvent('show-save-guest-modal'));
+                }
             }).catch(() => {
                 showNotification('Erreur lors de la génération du PDF.', 'error');
             }).finally(() => {

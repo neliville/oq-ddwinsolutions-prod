@@ -1,23 +1,28 @@
 # Guide de déploiement - Symfony sur o2switch
 
-Ce document décrit la stratégie de déploiement actuelle : le code est hébergé sur GitHub et déployé automatiquement vers o2switch via SSH/rsync grâce au workflow `Deploy Symfony to o2switch`.
+Ce document décrit la stratégie de déploiement actuelle : le code est hébergé sur GitHub et déployé vers o2switch via SSH/rsync grâce au workflow `Déploiement Symfony vers o2switch`.
+
+## 🌿 Branches
+
+- **`feat/symfony-app`** : branche de **développement actuelle**. C’est ici que se fait tout le travail (nouvelles fonctionnalités, correctifs).
+- **`main`** : branche de **production**. On merge `feat/symfony-app` dans `main` lorsque tout est prêt ; le déploiement en production part de `main`.
 
 ## 📋 Vue d’ensemble
 
 ```
-feature/*  ──▶  Pull Request ──▶  merge main
-                         │
-                         ▼
-                 CI tests (ci-tests.yml)
-                         │
-                         ▼
-             Deploy Symfony to o2switch (auto)
+feat/symfony-app (dev)  ──▶  Pull Request  ──▶  merge main (prod)
+                                    │
+                                    ▼
+                            CI tests (ci-tests.yml)
+                                    │
+                                    ▼
+                    Deploy Symfony to o2switch (manuel ou auto)
 ```
 
-- **Branche `feature/*`** : développement local + push → exécution des tests CI.
+- **Branche `feat/symfony-app`** : développement + push → exécution des tests CI.
 - **Pull Request vers `main`** : revue + tests obligatoires.
-- **Merge sur `main`** : déclenche automatiquement le workflow de déploiement o2switch (tests + build + SCP/rsync).
-- **Workflow manuel** : possible via l’onglet GitHub Actions (`workflow_dispatch`) pour relancer un déploiement sur `main`.
+- **Merge sur `main`** : base à jour pour la production ; déploiement o2switch (workflow manuel `workflow_dispatch` ou automatique si configuré).
+- **Workflow manuel** : onglet GitHub Actions → « Déploiement Symfony vers o2switch » → Run workflow (depuis `main`).
 
 ## 🔐 Pré-requis côté o2switch
 
@@ -76,7 +81,9 @@ Principales étapes :
 
 ## 🔄 Règles de branche & CI
 
-- `ci-tests.yml` reste la référence pour les tests automatiques (unitaires, fonctionnels, intégration). Il doit passer avant tout merge.
+- **Développement** : travailler sur `feat/symfony-app` ; les pushes déclenchent les tests CI (`ci-tests.yml`).
+- **Mise en production** : ouvrir une Pull Request `feat/symfony-app` → `main` ; une fois mergé, déployer depuis `main`.
+- `ci-tests.yml` reste la référence pour les tests automatiques (unitaires, fonctionnels, intégration). Il doit passer avant tout merge vers `main`.
 - Protéger la branche `main` (GitHub Settings > Branches) :
   - Require PR reviews.
   - Require status checks (`ci-tests`).

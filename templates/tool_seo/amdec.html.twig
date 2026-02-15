@@ -1,0 +1,28 @@
+{% extends 'tool_seo/base.html.twig' %}
+
+{% block faq %}
+    <div class="faq-item">
+        <h3 class="faq-question">Qu'est-ce qu'une analyse AMDEC ?</h3>
+        <div class="faq-answer">
+            <p>L'AMDEC (Analyse des Modes de Défaillance, de leurs Effets et de leur Criticité) est une méthode d'analyse préventive qui permet d'identifier et d'évaluer les risques potentiels d'un processus, d'un produit ou d'un système.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <h3 class="faq-question">Comment calculer la criticité ?</h3>
+        <div class="faq-answer">
+            <p>La criticité est calculée en multipliant trois facteurs :</p>
+            <ul>
+                <li><strong>Gravité</strong> : Impact du mode de défaillance</li>
+                <li><strong>Occurrence</strong> : Probabilité d'apparition</li>
+                <li><strong>Détection</strong> : Capacité à détecter le problème</li>
+            </ul>
+            <p>Notre outil calcule automatiquement la criticité pour chaque mode de défaillance.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <h3 class="faq-question">L'outil est-il gratuit ?</h3>
+        <div class="faq-answer">
+            <p>Oui, l'outil est 100% gratuit et sans limitation.</p>
+        </div>
+    </div>
+{% endblock %}

@@ -36,6 +36,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(length: 20, options: ['default' => 'free'])]
+    private string $plan = 'free';
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $premiumUntil = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $exportCountThisMonth = 0;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastExportReset = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -124,6 +136,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getPlan(): string
+    {
+        return $this->plan;
+    }
+
+    public function setPlan(string $plan): static
+    {
+        $this->plan = $plan;
+
+        return $this;
+    }
+
+    public function getPremiumUntil(): ?\DateTimeImmutable
+    {
+        return $this->premiumUntil;
+    }
+
+    public function setPremiumUntil(?\DateTimeImmutable $premiumUntil): static
+    {
+        $this->premiumUntil = $premiumUntil;
+
+        return $this;
+    }
+
+    public function getExportCountThisMonth(): int
+    {
+        return $this->exportCountThisMonth;
+    }
+
+    public function setExportCountThisMonth(int $exportCountThisMonth): static
+    {
+        $this->exportCountThisMonth = $exportCountThisMonth;
+
+        return $this;
+    }
+
+    public function getLastExportReset(): ?\DateTimeImmutable
+    {
+        return $this->lastExportReset;
+    }
+
+    public function setLastExportReset(?\DateTimeImmutable $lastExportReset): static
+    {
+        $this->lastExportReset = $lastExportReset;
 
         return $this;
     }

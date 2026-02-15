@@ -33,6 +33,7 @@ security:
                 delete_cookies:
                     REMEMBERME: { path: / }
 
+        # Seuls les ROLE_ADMIN peuvent accéder à ^/admin ; les ROLE_USER sont redirigés vers le dashboard
         admin:
             pattern: ^/admin
             lazy: true
@@ -45,13 +46,20 @@ security:
             logout:
                 path: app_logout
                 target: app_home_index
-            access_denied_url: app_login
+            access_denied_url: /dashboard
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/api/newsletter/subscribe, roles: PUBLIC_ACCESS }
+        - { path: ^/api/lead, roles: PUBLIC_ACCESS }
+        - { path: ^/api/ishikawa/save, roles: PUBLIC_ACCESS }
+        - { path: ^/api/fivewhy/save, roles: PUBLIC_ACCESS }
+        - { path: ^/api/amdec/save, roles: PUBLIC_ACCESS }
+        - { path: ^/api/pareto/save, roles: PUBLIC_ACCESS }
+        - { path: ^/api/qqoqccp/save, roles: PUBLIC_ACCESS }
+        - { path: ^/api/eightd/save, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: ROLE_USER }
         - { path: ^/ishikawa, roles: PUBLIC_ACCESS }
         - { path: ^/5pourquoi, roles: PUBLIC_ACCESS }

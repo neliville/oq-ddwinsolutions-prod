@@ -8,7 +8,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/pages/ishikawa.scss') }}" data-turbo-track="reload">
+    <link rel="stylesheet" href="{{ asset('styles/tools/ishikawa.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block content %}
@@ -36,6 +36,8 @@
         id: 'ishikawaLoadModal'
     } %}
     {% endcomponent %}
+    {% else %}
+    {% include 'components/save_guest_modal.html.twig' %}
     {% endif %}
 </div>
 {% endblock %}
@@ -55,10 +57,20 @@
     <script src="{{ asset('js/main.js') }}" data-turbo-track="reload"></script>
     <script>
         window.ishikawaReadonly = false;
+        window.ishikawaIsGuest = {{ app.user ? 'false' : 'true' }};
     </script>
     <!-- Ishikawa JS - Chargé après le DOM pour éviter les problèmes d'initialisation -->
     <script src="{{ asset('js/ishikawa.js') }}" data-turbo-track="reload"></script>
-    
+    {% if not app.user %}
+    <script>
+        document.addEventListener('show-save-guest-modal', function () {
+            var el = document.getElementById('saveGuestModal');
+            if (el && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
+                window.bootstrap.Modal.getOrCreateInstance(el).show();
+            }
+        });
+    </script>
+    {% endif %}
     {% if app.user %}
     <script>
         // Fonction de sauvegarde via API (similaire à saveFiveWhy)
@@ -109,7 +121,7 @@
                     payload.id = existingId;
                 }
 
-                const response = await fetch('{{ path('app_api_ishikawa_save') }}', {
+                const response = await fetch('{{ path('app_tool_ishikawa_save') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -239,7 +251,7 @@
             }
 
             try {
-                const response = await fetch('{{ path('app_api_ishikawa_list') }}', {
+                const response = await fetch('{{ path('app_tool_ishikawa_list') }}', {
                     method: 'GET',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
@@ -389,7 +401,7 @@
     <script>
         (function() {
             const isAuthenticated = Boolean({{ app.user ? 1 : 0 }});
-            const requestUrl = '{{ path('app_api_ishikawa_get', {id: diagramId}) }}';
+            const requestUrl = '{{ path('app_tool_ishikawa_get', {id: diagramId}) }}';
 
             function notify(message, type = 'info') {
                 const Toastify = window.Toastify;

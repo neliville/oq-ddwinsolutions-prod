@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tool.name }} - Outil qualité gratuit en ligne{% endblock %}
+
+{% block meta_description %}{{ tool.description }}{% endblock %}
+
+{% block meta_keywords %}{{ tool.keywords }}{% endblock %}
+
+{% set seo_route = tool.slug == '5-pourquoi' ? 'app_tool_seo_5pourquoi' : (tool.slug == '8d' ? 'app_tool_seo_8d' : 'app_tool_seo_' ~ tool.slug) %}
+{% block canonical_url %}{{ url(seo_route) }}{% endblock %}
+
+{% block og_title %}{{ tool.name }} - Outil qualité gratuit{% endblock %}
+
+{% block og_description %}{{ tool.description }}{% endblock %}
+
+{% block og_image %}{{ absolute_url(asset('img/og-' ~ tool.slug ~ '.jpg')) }}{% endblock %}
+
+{% block og_url %}{{ url(seo_route) }}{% endblock %}
+
+{% block og_type %}website{% endblock %}
+
+{% block schema_type %}SoftwareApplication{% endblock %}
+
+{% block schema_data %}
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "{{ tool.name }}",
+    "description": "{{ tool.description }}",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+    },
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+    }
+}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/tools/tool_seo.scss') }}" data-turbo-track="reload">
+{% endblock %}
+
+{% block body %}
+    <div class="tool-seo-page">
+        <!-- Hero Section -->
+        <section class="tool-seo-hero">
+            <div class="container">
+                <div class="tool-seo-hero__content">
+                    <div class="tool-seo-hero__badge">
+                        <span class="badge-dot"></span>
+                        Outil gratuit • Sans installation • RGPD
+                    </div>
+                    <h1 class="tool-seo-hero__title">{{ tool.name }}</h1>
+                    <p class="tool-seo-hero__description">{{ tool.description }}</p>
+                    <div class="tool-seo-hero__cta">
+                        {% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
+                        <a href="{{ path(tool_route) }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play-circle me-2" aria-hidden="true"></i>
+                            Utiliser l'outil gratuitement
+                        </a>
+                        <a href="#fonctionnalites" class="btn btn-outline-primary btn-lg">
+                            En savoir plus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Description Section -->
+        <section class="tool-seo-description">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="tool-seo-description__content">
+                            <h2>Qu'est-ce que {{ tool.name }} ?</h2>
+                            <p class="lead">{{ tool.long_description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="fonctionnalites" class="tool-seo-features">
+            <div class="container">
+                <h2 class="section-title">Fonctionnalités</h2>
+                <div class="row g-4">
+                    {% for feature in tool.features %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card">
+                            <div class="feature-card__icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="feature-card__title">{{ feature }}</h3>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases Section -->
+        <section class="tool-seo-use-cases">
+            <div class="container">
+                <h2 class="section-title">Cas d'usage</h2>
+                <div class="row g-4">
+                    {% for useCase in tool.use_cases %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="use-case-card">
+                            <div class="use-case-card__icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <p class="use-case-card__text">{{ useCase }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="tool-seo-cta">
+            <div class="container">
+                <div class="tool-seo-cta__content">
+                    <h2>Prêt à commencer ?</h2>
+                    <p>Créez votre première analyse en quelques minutes, sans inscription requise.</p>
+                    {% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
+                    <a href="{{ path(tool_route) }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket me-2" aria-hidden="true"></i>
+                        Commencer maintenant
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="tool-seo-faq">
+            <div class="container">
+                <h2 class="section-title">Questions fréquentes</h2>
+                <div class="faq-list">
+                    {% block faq %}{% endblock %}
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

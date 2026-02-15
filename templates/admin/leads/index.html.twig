@@ -1,0 +1,81 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Leads | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Leads</h1>
+            <p class="text-muted mb-0">Prospects issus de l'utilisation des outils et formulaires</p>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-1">Total</h6>
+                    <h3 class="fw-bold mb-0">{{ total }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-1">Source : outil</h6>
+                    <h3 class="fw-bold mb-0">{{ bySource.tool }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-1">Par outil (Ishikawa / 5 Pourquoi)</h6>
+                    <p class="mb-0">{{ byTool.ishikawa }} / {{ byTool.fivewhy }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if leads|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Source</th>
+                            <th>Outil</th>
+                            <th>Type</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lead in leads %}
+                        <tr>
+                            <td>{{ lead.email ?? '—' }}</td>
+                            <td><span class="badge bg-secondary">{{ lead.source ?? '—' }}</span></td>
+                            <td>{{ lead.tool ?? '—' }}</td>
+                            <td>{{ lead.type ?? '—' }}</td>
+                            <td>{{ lead.score ?? '—' }}</td>
+                            <td>{{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5 text-muted">
+                <i data-lucide="users" width="48" height="48" class="mb-2"></i>
+                <p class="mb-0">Aucun lead enregistré</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

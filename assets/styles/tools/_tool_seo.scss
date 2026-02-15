@@ -1,0 +1,283 @@
+// Styles pour les pages SEO des outils
+
+.tool-seo-page {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+// Hero Section
+.tool-seo-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+
+    &__content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    }
+
+    &__title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    &__description {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    &__cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+// Description Section
+.tool-seo-description {
+    padding: 3rem 0;
+
+    &__content {
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .lead {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #64748b;
+        }
+    }
+}
+
+// Features Section
+.tool-seo-features {
+    padding: 3rem 0;
+    background: #f8fafc;
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        color: #1e293b;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &__icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        &__title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+    }
+}
+
+// Use Cases Section
+.tool-seo-use-cases {
+    padding: 3rem 0;
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        color: #1e293b;
+    }
+
+    .use-case-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        transition: border-color 0.2s;
+        height: 100%;
+
+        &:hover {
+            border-color: #667eea;
+        }
+
+        &__icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        &__text {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.6;
+        }
+    }
+}
+
+// CTA Section
+.tool-seo-cta {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+
+    &__content {
+        max-width: 600px;
+        margin: 0 auto;
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+    }
+}
+
+// FAQ Section
+.tool-seo-faq {
+    padding: 3rem 0;
+    background: #f8fafc;
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        color: #1e293b;
+    }
+
+    .faq-list {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .faq-question {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1e293b;
+        padding: 1.5rem;
+        margin: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: 300;
+        }
+
+        &:hover {
+            background: #f8fafc;
+        }
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem 1.5rem;
+        color: #64748b;
+        line-height: 1.8;
+
+        p {
+            margin-bottom: 1rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .tool-seo-hero {
+        padding: 2rem 0;
+
+        &__title {
+            font-size: 2rem;
+        }
+
+        &__description {
+            font-size: 1rem;
+        }
+
+        &__cta {
+            flex-direction: column;
+            align-items: stretch;
+
+            .btn {
+                width: 100%;
+            }
+        }
+    }
+
+    .tool-seo-cta {
+        padding: 2rem 0;
+
+        &__content h2 {
+            font-size: 1.75rem;
+        }
+    }
+}

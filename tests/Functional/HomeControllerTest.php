@@ -12,7 +12,7 @@ class HomeControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Vos outils qualité professionnels');
+        $this->assertSelectorTextContains('h1', 'Outils QSE simples et gratuits');
     }
 
     public function testHomePageContainsExpectedSections(): void

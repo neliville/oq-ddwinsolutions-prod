@@ -224,29 +224,19 @@
   }
 }
 
-// Styles pour les contrôles spécifiques à chaque page
-.five-why-controls,
-.pareto-controls,
-.amdec-controls,
-.eightd-controls {
-  // Hérite des styles de .tool-controls ci-dessus
-}
 
-// Styles spécifiques pour les actions du canvas Ishikawa
-.canvas-actions {
+// Bloc "Connectez-vous pour télécharger" (utilisateur non connecté) — même rendu sur toutes les pages
+.tool-actions-login {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
   align-items: center;
-
-  .btn {
-    // Hérite des styles de .tool-controls ci-dessus
-  }
+  gap: var(--space-2);
 }
 
 // Responsive
 @media (max-width: 992px) {
   .tool-controls,
+  .tool-actions-bar,
   .five-why-controls,
   .pareto-controls,
   .amdec-controls,
@@ -265,6 +255,7 @@
 
 @media (max-width: 640px) {
   .tool-controls,
+  .tool-actions-bar,
   .five-why-controls,
   .pareto-controls,
   .amdec-controls,
@@ -275,6 +266,10 @@
       width: 100%;
       justify-content: center;
     }
+  }
+
+  .tool-actions-login {
+    width: 100%;
   }
 }
 

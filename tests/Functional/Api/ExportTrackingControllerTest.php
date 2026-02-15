@@ -2,28 +2,33 @@
 
 namespace App\Tests\Functional\Api;
 
-use App\Entity\ExportLog;
-use App\Entity\User;
 use App\Repository\ExportLogRepository;
-use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\TestCase\WebTestCaseWithDatabase;
+use Symfony\Component\HttpFoundation\Response;
 
-class ExportTrackingControllerTest extends WebTestCase
+class ExportTrackingControllerTest extends WebTestCaseWithDatabase
 {
+    public function testTrackExportRequiresAuthentication(): void
+    {
+        $this->client->followRedirects(false);
+        $this->client->request(
+            'POST',
+            '/analytics/track-export',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['tool' => 'ishikawa', 'format' => 'pdf'], JSON_THROW_ON_ERROR)
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertResponseRedirects();
+        $this->assertStringContainsString('/login', $this->client->getResponse()->headers->get('Location') ?? '');
+    }
+
     public function testTrackExportPersistsLog(): void
     {
-        $client = static::createClient();
-        $entityManager = static::getContainer()->get('doctrine')->getManager();
-        $schemaTool = new SchemaTool($entityManager);
-        $classes = [
-            $entityManager->getClassMetadata(ExportLog::class),
-            $entityManager->getClassMetadata(User::class),
-        ];
-        try {
-            $schemaTool->dropSchema($classes);
-        } catch (\Exception $exception) {
-        }
-        $schemaTool->createSchema($classes);
+        $user = $this->createTestUser();
+        $this->client->loginUser($user);
 
         $payload = [
             'tool' => 'fivewhy',
@@ -33,7 +38,7 @@ class ExportTrackingControllerTest extends WebTestCase
             ],
         ];
 
-        $client->request(
+        $this->client->request(
             'POST',
             '/analytics/track-export',
             [],
@@ -44,7 +49,7 @@ class ExportTrackingControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $responseData = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $responseData = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('ok', $responseData['status']);
 
         /** @var ExportLogRepository $repository */
@@ -61,20 +66,10 @@ class ExportTrackingControllerTest extends WebTestCase
 
     public function testTrackExportValidatesPayload(): void
     {
-        $client = static::createClient();
-        $entityManager = static::getContainer()->get('doctrine')->getManager();
-        $schemaTool = new SchemaTool($entityManager);
-        $classes = [
-            $entityManager->getClassMetadata(ExportLog::class),
-            $entityManager->getClassMetadata(User::class),
-        ];
-        try {
-            $schemaTool->dropSchema($classes);
-        } catch (\Exception $exception) {
-        }
-        $schemaTool->createSchema($classes);
+        $user = $this->createTestUser();
+        $this->client->loginUser($user);
 
-        $client->request(
+        $this->client->request(
             'POST',
             '/analytics/track-export',
             [],
@@ -85,7 +80,7 @@ class ExportTrackingControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(400);
 
-        $responseData = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $responseData = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('error', $responseData['status']);
         $this->assertStringContainsString('Missing', $responseData['message']);
     }

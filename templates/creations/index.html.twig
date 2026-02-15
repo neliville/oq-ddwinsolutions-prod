@@ -151,7 +151,7 @@
                     id: 'delete-ishikawa-' ~ record.id,
                     title: 'Confirmation de suppression',
                     message: 'Êtes-vous sûr de vouloir supprimer ce diagramme Ishikawa ? Cette action est irréversible.',
-                    deleteUrl: path('app_api_ishikawa_delete', {id: record.id}),
+                    deleteUrl: path('app_tool_ishikawa_delete', {id: record.id}),
                     deleteMethod: 'DELETE'
                 } %}
                 {% endcomponent %}
@@ -209,7 +209,7 @@
                     id: 'delete-fivewhy-' ~ record.id,
                     title: 'Confirmation de suppression',
                     message: 'Êtes-vous sûr de vouloir supprimer cette analyse 5 Pourquoi ? Cette action est irréversible.',
-                    deleteUrl: path('app_api_fivewhy_delete', {id: record.id}),
+                    deleteUrl: path('app_tool_fivewhy_delete', {id: record.id}),
                     deleteMethod: 'DELETE'
                 } %}
                 {% endcomponent %}
@@ -480,7 +480,7 @@
 
 {% block stylesheets %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('styles/pages/creations.scss') }}" data-turbo-track="reload">
+<link rel="stylesheet" href="{{ asset('styles/tools/creations.scss') }}" data-turbo-track="reload">
 <!-- Toastify CSS pour les notifications (même style que Ishikawa / exports PDF) -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 {% endblock %}

@@ -1,0 +1,19 @@
+{# Modal pour invités après sauvegarde / utilisation d'un outil : inciter à créer un compte ou se connecter #}
+<div class="modal fade" id="saveGuestModal" tabindex="-1" aria-labelledby="saveGuestModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h2 class="modal-title h5" id="saveGuestModalTitle">Sauvegarder votre travail définitivement ?</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <p class="mb-0">Votre travail est enregistré localement sur cet appareil. Pour le retrouver sur tous vos appareils et ne rien perdre, créez un compte gratuit ou connectez-vous.</p>
+            </div>
+            <div class="modal-footer border-0 flex-wrap gap-2">
+                <a href="{{ path('app_register') }}" class="btn btn-primary">Créer un compte gratuit</a>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Se connecter</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Plus tard</button>
+            </div>
+        </div>
+    </div>
+</div>

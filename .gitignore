@@ -39,3 +39,7 @@ var/data.db-journal
 
 # Déploiement / archives
 /release.zip
+
+# Symfony local / PHPUnit
+.symfony.local.yaml
+bin/.phpunit.result.cache

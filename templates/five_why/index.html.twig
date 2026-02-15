@@ -52,47 +52,37 @@
         </div>
 
         <!-- Controls compacts -->
-        <div class="five-why-controls" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
-            <div class="d-flex flex-wrap gap-2 align-items-center">
-                <button class="btn btn-primary btn-sm" onclick="resetAnalysis()" aria-label="Réinitialiser l'analyse">
-                    <i class="fas fa-refresh" aria-hidden="true"></i> Nouvelle analyse
+        <div class="five-why-controls tool-actions-bar d-flex flex-wrap align-items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
+            <button class="btn btn-primary btn-sm" onclick="resetAnalysis()" aria-label="Réinitialiser l'analyse">
+                <i class="fas fa-refresh me-2" aria-hidden="true"></i>Nouvelle analyse
+            </button>
+            <button id="addWhyStepButton" class="btn btn-info btn-sm" onclick="addWhyStep()" aria-label="Ajouter une étape Pourquoi">
+                <i class="fas fa-plus me-2"></i>Générer le rapport
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="resetWhySteps()" aria-label="Réinitialiser les étapes" style="display:none;" id="resetWhyBtn">
+                <i class="fas fa-eraser me-2"></i>Réinitialiser
+            </button>
+            {% if app.user %}
+            <button id="saveBtn" class="btn btn-success btn-sm" onclick="saveFiveWhy()" aria-label="Sauvegarder l'analyse">
+                <i class="fas fa-save me-2" aria-hidden="true"></i>Sauvegarder
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openFiveWhySaved()" aria-label="Charger une analyse 5 Pourquoi">
+                <i class="fas fa-folder-open me-2"></i>Mes analyses
+            </button>
+            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
+                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="fiveWhyExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                    <i class="fas fa-download me-2" aria-hidden="true"></i>Exporter
                 </button>
-
-                <button id="addWhyStepButton" class="btn btn-secondary btn-sm" onclick="addWhyStep()" aria-label="Ajouter une étape Pourquoi">
-                    <i class="fas fa-plus me-2"></i> Ajouter un "Pourquoi"
-                </button>
-
-                <!-- Bouton Sauvegarder (visible uniquement si connecté) -->
-                {% if app.user %}
-                <button id="saveBtn" class="btn btn-success btn-sm" onclick="saveFiveWhy()" aria-label="Sauvegarder l'analyse">
-                    <i class="fas fa-save" aria-hidden="true"></i> Sauvegarder
-                </button>
-                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openFiveWhySaved()" aria-label="Charger une analyse 5 Pourquoi">
-                    <i class="fas fa-folder-open me-2"></i>Mes analyses
-                </button>
-                {% endif %}
-
-                <div class="dropdown export-dropdown" data-controller="dropdown-basic">
-                    <button
-                        class="btn btn-info btn-sm dropdown-toggle"
-                        type="button"
-                        id="fiveWhyExportDropdown"
-                        data-dropdown-basic-target="button"
-                        data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        aria-label="Options d'export"
-                    >
-                        <i class="fas fa-download me-2" aria-hidden="true"></i>Exporter
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="fiveWhyExportDropdown" data-dropdown-basic-target="menu" hidden role="menu">
-                        <li><button class="dropdown-item" type="button" onclick="exportPNG()" role="menuitem">Exporter en PNG</button></li>
-                        <li><button class="dropdown-item" type="button" onclick="exportJPEG()" role="menuitem">Exporter en JPEG</button></li>
-                        <li><button class="dropdown-item" type="button" onclick="exportPDF()" role="menuitem">Exporter en PDF</button></li>
-                        <li><button class="dropdown-item" type="button" onclick="exportJSON()" role="menuitem">Exporter en JSON</button></li>
-                    </ul>
-                </div>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="fiveWhyExportDropdown" data-dropdown-basic-target="menu" hidden role="menu">
+                    <li><button class="dropdown-item" type="button" onclick="exportPNG()" role="menuitem">Exporter en PNG</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportJPEG()" role="menuitem">Exporter en JPEG</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportPDF()" role="menuitem">Exporter en PDF</button></li>
+                    <li><button class="dropdown-item" type="button" onclick="exportJSON()" role="menuitem">Exporter en JSON</button></li>
+                </ul>
             </div>
+            {% else %}
+            {% include 'components/tool_actions_login.html.twig' %}
+            {% endif %}
         </div>
 
         <!-- Five Why Container -->
@@ -132,6 +122,8 @@
         id: 'fiveWhyLoadModal'
     } %}
     {% endcomponent %}
+    {% else %}
+    {% include 'components/save_guest_modal.html.twig' %}
     {% endif %}
 </main>
 {% endblock %}
@@ -143,7 +135,7 @@
 <!-- Toastify CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-<link rel="stylesheet" href="{{ asset('styles/pages/five-why.scss') }}" data-turbo-track="reload">
+<link rel="stylesheet" href="{{ asset('styles/tools/five-why.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block javascripts %}
@@ -269,14 +261,17 @@
     async function saveFiveWhy() {
         if (!{{ app.user ? 'true' : 'false' }}) {
             Toastify({
-                text: "Vous devez être connecté pour sauvegarder.",
+                text: "Connectez-vous pour sauvegarder définitivement.",
                 duration: 3000,
                 close: true,
                 gravity: "top",
                 position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
+                backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
             }).showToast();
-            window.location.href = '{{ path('app_login') }}';
+            var modalEl = document.getElementById('saveGuestModal');
+            if (modalEl && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
+                window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            }
             return;
         }
 
@@ -317,7 +312,7 @@
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sauvegarde...';
             }
 
-            const response = await fetch('{{ path('app_api_fivewhy_save') }}', {
+            const response = await fetch('{{ path('app_tool_fivewhy_save') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -381,7 +376,7 @@
         }
 
         try {
-            const response = await fetch('{{ path('app_api_fivewhy_list') }}', {
+            const response = await fetch('{{ path('app_tool_fivewhy_list') }}', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -429,7 +424,7 @@
         }
 
         try {
-            const response = await fetch('{{ path('app_api_fivewhy_list') }}', {
+            const response = await fetch('{{ path('app_tool_fivewhy_list') }}', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -591,7 +586,7 @@
         }
 
         try {
-            const baseUrl = `{{ path('app_api_fivewhy_get', {id: 0}) }}`;
+            const baseUrl = `{{ path('app_tool_fivewhy_get', {id: 0}) }}`;
             const requestUrl = baseUrl.replace(/0$/, String(id));
             const response = await fetch(requestUrl, {
                 method: 'GET',
@@ -693,7 +688,7 @@
         }
 
         try {
-            const response = await fetch('{{ path('app_api_fivewhy_list') }}', {
+            const response = await fetch('{{ path('app_tool_fivewhy_list') }}', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',

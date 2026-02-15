@@ -1,0 +1,12 @@
+Nouveau lead qualifié (score > 50)
+
+Email : {{ lead.email ?? '—' }}
+Nom : {{ lead.name ?? '—' }}
+Source : {{ lead.source ?? '—' }}
+Outil : {{ lead.tool ?? '—' }}
+Score : {{ lead.score ?? '—' }}
+Type : {{ lead.type ?? '—' }}
+Date : {{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}
+
+---
+{{ app_name }} – Notification automatique

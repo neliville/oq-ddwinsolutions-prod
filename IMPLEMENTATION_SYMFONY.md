@@ -124,7 +124,7 @@ php bin/console make:reset-password --with-tests
 
 4. Ajouter le lien « Mot de passe oublié ? » dans la page de connexion (`templates/security/login.html.twig`).
 
-5. Relancer la compilation des assets si des styles dédiés sont créés (`php bin/console asset-map:compile`).
+5. Relancer la compilation des assets si des styles dédiés sont créés : en local `php bin/console sass:build` (ou `sass:build --watch`), en prod `php bin/console asset-map:compile`.
 
 6. Exécuter le test fonctionnel généré/adapté (`php bin/phpunit tests/ResetPasswordControllerTest.php`).
 

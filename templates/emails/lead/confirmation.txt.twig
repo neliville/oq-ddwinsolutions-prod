@@ -1,0 +1,13 @@
+Merci d'avoir utilisé notre outil
+
+Bonjour{% if lead.name %} {{ lead.name }}{% endif %},
+
+Merci d'avoir utilisé notre outil sur {{ app_name }}.
+
+Nous espérons qu'il vous a été utile. N'hésitez pas à découvrir nos autres outils d'analyse qualité sur notre site.
+
+Accéder au site : {{ app_url }}
+
+---
+{{ app_name }} | Outils d'analyse qualité
+Cet email a été envoyé à {{ lead.email }}

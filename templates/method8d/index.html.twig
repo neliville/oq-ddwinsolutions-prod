@@ -64,7 +64,7 @@
             {% endfor %}
         </section>
 
-        <section class="eightd-controls" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
+        <section class="eightd-controls tool-actions-bar d-flex flex-wrap align-items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
             <button class="btn btn-primary btn-sm" type="button" onclick="newEightDAnalysis()" aria-label="Initialiser un exemple de rapport 8D">
                 <i class="fas fa-sync-alt me-2"></i>Nouvelle analyse
             </button>
@@ -81,7 +81,6 @@
             <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openEightDSaved()" aria-label="Charger une analyse 8D sauvegardée">
                 <i class="fas fa-folder-open me-2"></i>Mes analyses
             </button>
-            {% endif %}
             <div class="dropdown export-dropdown" data-controller="dropdown-basic">
                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="eightdExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
                     <i class="fas fa-download me-2"></i>Exporter
@@ -92,6 +91,9 @@
                     <li><button class="dropdown-item" type="button" onclick="exportEightD('json')">Exporter en JSON</button></li>
                 </ul>
             </div>
+            {% else %}
+            {% include 'components/tool_actions_login.html.twig' %}
+            {% endif %}
         </section>
 
         <section class="eightd-problem-card" data-aos="fade-up" data-aos-delay="140">
@@ -148,7 +150,7 @@
 {% block stylesheets %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<link rel="stylesheet" href="{{ asset('styles/pages/method8d.scss') }}" data-turbo-track="reload">
+<link rel="stylesheet" href="{{ asset('styles/tools/method8d.scss') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block javascripts %}

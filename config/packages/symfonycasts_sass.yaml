@@ -1,7 +1,7 @@
 symfonycasts_sass:
     root_sass:
         - 'assets/styles/app.scss'
-        - 'assets/styles/pages/ishikawa.scss'
-        - 'assets/styles/pages/home.scss'
-        - 'assets/styles/pages/article-prose.scss'
-        - 'assets/styles/pages/five-why.scss'
+        - 'assets/styles/site/home.scss'
+        - 'assets/styles/site/article-prose.scss'
+        - 'assets/styles/tools/ishikawa.scss'
+        - 'assets/styles/tools/five-why.scss'

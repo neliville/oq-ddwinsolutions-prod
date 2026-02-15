@@ -48,5 +48,10 @@ services:
         arguments:
             $mailerService: '@App\Service\MailerService'
 
+    # Brevo sync (Lead → API Brevo contacts). Si BREVO_API_KEY absent, la sync est ignorée.
+    App\Lead\Infrastructure\Brevo\BrevoSyncService:
+        arguments:
+            $brevoApiKey: '%env(default::BREVO_API_KEY)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

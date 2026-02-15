@@ -3,3 +3,33 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+site_controllers:
+    resource:
+        path: ../src/Site/Controller/
+        namespace: App\Site\Controller
+    type: attribute
+
+tools_controllers:
+    resource:
+        path: ../src/Tools/Controller/
+        namespace: App\Tools\Controller
+    type: attribute
+
+tools_api:
+    resource:
+        path: ../src/Tools/Api/
+        namespace: App\Tools\Api
+    type: attribute
+
+tools_share:
+    resource:
+        path: ../src/Tools/Share/
+        namespace: App\Tools\Share
+    type: attribute
+
+lead_controllers:
+    resource:
+        path: ../src/Lead/Controller/
+        namespace: App\Lead\Controller
+    type: attribute
