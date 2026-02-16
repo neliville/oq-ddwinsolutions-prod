@@ -1,8 +1,8 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Méthode 8D | Résolution structurée de problèmes{% endblock %}
+{% block title %}Méthode 8D en Ligne — Résolution de Problèmes Structurée | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Pilotez vos résolutions de problèmes avec la méthode 8D : équipe pluridisciplinaire, containment, causes racines, plan d'actions et capitalisation.{% endblock %}
+{% block meta_description %}Pilotez vos résolutions de problèmes avec la méthode 8D en ligne. 8 disciplines, suivi de progression, export PDF et JSON. Outil gratuit.{% endblock %}
 
 {% block meta_keywords %}méthode 8d, 8 disciplines, résolution de problème, containment, plan d'action, qualité{% endblock %}
 
@@ -21,14 +21,32 @@
 }
 {% endblock %}
 
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Méthode 8D en ligne","url":{{ absolute_url(path('app_eightd_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Pilotez vos résolutions de problèmes avec la méthode 8D en ligne. 8 disciplines, suivi de progression, export PDF et JSON. Outil gratuit.","featureList":["8 disciplines","Suivi de progression","Export PDF et JSON","Gratuit"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Méthode 8D","item":{{ absolute_url(path('app_eightd_index'))|json_encode|raw }}}]}
+{% endblock %}
+
 {% block content %}
 <main class="eightd-page{% if not app.user %} eightd-page--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Méthode 8D" } %}
         <input type="hidden" id="eightdAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="eightd-header" data-aos="fade-up">
             <h1>Méthode 8D</h1>
-            <p class="lead">Pilotez votre résolution de problème en 8 disciplines : de la constitution de l'équipe jusqu'à la capitalisation des apprentissages.</p>
+            <p class="lead">Structurez votre résolution de problème de façon professionnelle et collaborative : équipe, containment, causes racines, plan d'actions et capitalisation.</p>
+            {% set meta = tool_meta('eightd') %}
+            {% if meta %}
+            <div class="d-flex flex-wrap gap-2 mb-2" role="list">
+                <span class="badge bg-secondary" role="listitem">Niveau : {{ meta.level }}</span>
+                {% for tag in meta.tags %}
+                <span class="badge bg-light text-dark" role="listitem">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </header>
 
         {% if not app.user %}
@@ -42,6 +60,18 @@
         <section class="eightd-notice" data-aos="fade-up" data-aos-delay="60">
             <h2>🛠️ Pourquoi utiliser la méthode 8D ?</h2>
             <p>La méthode 8D (Eight Disciplines) est la démarche standard industrialisée par Ford pour éradiquer un problème à la source. Elle structure la résolution autour d'une équipe pluridisciplinaire, des actions de containment, de l'analyse des causes racines et d'une capitalisation finale. Elle est très utilisée dans l'automobile (IATF 16949), l'aéronautique, le manufacturing et tout environnement orienté client.</p>
+        </section>
+
+        <section class="mb-4" aria-labelledby="eightd-when-heading" data-aos="fade-up" data-aos-delay="65">
+            <h2 id="eightd-when-heading" class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
+            <ul class="mb-0">
+                <li><strong>Pour quel type de problème :</strong> réclamation client, non-conformité récurrente, incident majeur, demande de résolution structurée (IATF, aéronautique)</li>
+                <li>Niveau requis : <strong>Intermédiaire</strong></li>
+            </ul>
+        </section>
+        <section class="mb-4 p-3 bg-light rounded" aria-labelledby="eightd-example-heading" data-aos="fade-up" data-aos-delay="68">
+            <h2 id="eightd-example-heading" class="h6 fw-bold mb-2">Exemple concret</h2>
+            <p class="mb-0">Défaut de collage sur panneau porte : D0 préparation → D1 équipe 8D constituée → D2 problème décrit (quoi, où, quand, combien) → D3 containment client/process → D4 causes racines (5M, 5P) → D5 actions correctives → D6 validation → D7 prévention → D8 félicitations et partage. Plan d'action généré et suivi dans l'outil.</p>
         </section>
 
         <section class="eightd-overview" data-aos="fade-up" data-aos-delay="70">
@@ -62,6 +92,41 @@
                 <p>{{ label }}</p>
             </article>
             {% endfor %}
+        </section>
+
+        <nav class="eightd-step-nav d-flex flex-wrap gap-2 mb-4" aria-label="Navigation par étapes 8D" data-aos="fade-up" data-aos-delay="72">
+            <span class="me-2 align-self-center small text-muted">Aller à l'étape :</span>
+            <a href="#d0" class="btn btn-sm btn-outline-primary">D0</a>
+            <a href="#d1" class="btn btn-sm btn-outline-primary">D1</a>
+            <a href="#d2" class="btn btn-sm btn-outline-primary">D2</a>
+            <a href="#d3" class="btn btn-sm btn-outline-primary">D3</a>
+            <a href="#d4" class="btn btn-sm btn-outline-primary">D4</a>
+            <a href="#d5" class="btn btn-sm btn-outline-primary">D5</a>
+            <a href="#d6" class="btn btn-sm btn-outline-primary">D6</a>
+            <a href="#d7" class="btn btn-sm btn-outline-primary">D7</a>
+            <a href="#d8" class="btn btn-sm btn-outline-primary">D8</a>
+        </nav>
+
+        <section class="eightd-timeline-visual mb-4 p-3 bg-light rounded small" aria-hidden="true" data-aos="fade-up" data-aos-delay="74">
+            <div class="d-flex flex-wrap align-items-center gap-1 gap-md-2">
+                <span class="fw-bold">D0</span><span class="text-muted">Préparer</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D1</span><span class="text-muted">Équipe</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D2</span><span class="text-muted">Problème</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D3</span><span class="text-muted">Contenir</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D4</span><span class="text-muted">Causes</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D5</span><span class="text-muted">Actions</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D6</span><span class="text-muted">Valider</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D7</span><span class="text-muted">Prévenir</span>
+                <span aria-hidden="true">→</span>
+                <span class="fw-bold">D8</span><span class="text-muted">Capitaliser</span>
+            </div>
         </section>
 
         <section class="eightd-controls tool-actions-bar d-flex flex-wrap align-items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
@@ -142,6 +207,23 @@
                 <h3 id="eightdSummaryTitle">Résumé de la démarche</h3>
                 <ul id="eightdSummaryList"></ul>
             </div>
+        </section>
+
+        {% include 'components/tool_lead_cta.html.twig' %}
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que la méthode 8D ?</h2>
+            <p>Méthode structurée de résolution de problèmes en 8 disciplines, développée par Ford Motor Company. Approche collaborative qui couvre toute la chaîne de traitement d'un problème, du containment immédiat jusqu'à la capitalisation.</p>
+
+            <h2>Comment utiliser la méthode 8D ?</h2>
+            <p>Les 8 disciplines : D1 Constitution de l'équipe, D2 Description du problème, D3 Actions de containment, D4 Analyse des causes racines, D5 Actions correctives permanentes, D6 Implémentation et validation, D7 Actions préventives, D8 Félicitations de l'équipe.</p>
+
+            <h2>Quand utiliser la méthode 8D ?</h2>
+            <p>Réclamation client grave, non-conformité récurrente, incident sécurité, retour fournisseur.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Gratuit, sans installation, export PDF et JSON, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
 </main>

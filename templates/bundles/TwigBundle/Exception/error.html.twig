@@ -2,9 +2,20 @@
 
 {% block title %}Une erreur est survenue - OUTILS-QUALITÉ{% endblock %}
 {% block meta_description %}Une erreur inattendue est survenue. Notre équipe en a été informée et nous vous invitons à réessayer ou à retourner à la page d’accueil.{% endblock %}
-{% block og_title %}Erreur {{ status_code }} | OUTILS-QUALITÉ{% endblock %}
+{% block og_title %}Erreur {{ status_code|default(500) }} | OUTILS-QUALITÉ{% endblock %}
 {% block og_description %}Une erreur inattendue est survenue sur OUTILS-QUALITÉ.{% endblock %}
 {% block seo_robots %}noindex, nofollow{% endblock %}
+
+{% block head %}
+    <meta name="turbo-cache-control" content="no-cache">
+    <script>
+        (function() {
+            if (window.Turbo && window.frameElement) {
+                Turbo.visit(window.location.href, { action: 'replace' });
+            }
+        })();
+    </script>
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}

@@ -10,8 +10,20 @@ export default class extends Controller {
     };
 
     connect() {
-        // Charger Toastify si disponible
         this.loadToastify();
+        this.boundOnNotification = this.onNotificationEvent.bind(this);
+        document.addEventListener('app:notification', this.boundOnNotification);
+    }
+
+    disconnect() {
+        document.removeEventListener('app:notification', this.boundOnNotification);
+    }
+
+    onNotificationEvent(event) {
+        const { message, type = 'info' } = event.detail || {};
+        if (message) {
+            this.show(message, type);
+        }
     }
     
     show(event) {

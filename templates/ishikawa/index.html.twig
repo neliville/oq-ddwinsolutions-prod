@@ -1,10 +1,18 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Diagramme d'Ishikawa | Analyse des causes{% endblock %}
+{% block title %}Diagramme d'Ishikawa en Ligne Gratuit — Créez et Exportez en PDF | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Créez votre diagramme d'Ishikawa interactif gratuitement. Diagramme de causes et effets 100% personnalisable. Outil professionnel avec export PDF, JPEG, JSON.{% endblock %}
+{% block meta_description %}Créez votre diagramme d'Ishikawa (arête de poisson) en ligne gratuitement. Catégories 5M/6M personnalisables, export PDF professionnel pour vos audits ISO 9001.{% endblock %}
 
 {% block meta_keywords %}diagramme Ishikawa, fishbone diagram, diagramme de causes et effets, analyse des causes, root cause analysis, Kaoru Ishikawa, outil qualité gratuit, amélioration continue{% endblock %}
+
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Diagramme d'Ishikawa en ligne","url":{{ absolute_url(path('app_ishikawa_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Créez votre diagramme d'Ishikawa (arête de poisson) en ligne. Catégories 5M/6M personnalisables, export PDF professionnel.","featureList":["Catégories 5M/6M personnalisables","Export PDF haute qualité","Sauvegarde automatique","Conforme ISO 9001"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Diagramme d'Ishikawa","item":{{ absolute_url(path('app_ishikawa_index'))|json_encode|raw }}}]}
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -13,9 +21,21 @@
 
 {% block content %}
 <div class="ishikawa-page">
+    <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Diagramme d'Ishikawa" } %}
+    </div>
     <!-- Page Header -->
     <div class="page-header">
-        <h1 class="page-title">Diagramme d'Ishikawa</h1>
+        <h1 class="page-title">Visualisez toutes les causes possibles d'un problème — méthode Ishikawa (5M)</h1>
+        {% set meta = tool_meta('ishikawa') %}
+        {% if meta %}
+        <div class="d-flex flex-wrap gap-2 mb-3" role="list">
+            <span class="badge bg-secondary" role="listitem">Niveau : {{ meta.level }}</span>
+            {% for tag in meta.tags %}
+            <span class="badge bg-light text-dark" role="listitem">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="info-banner">
             <p class="info-text">
                 Certaines catégories et causes sont déjà pré-chargées pour vous aider à démarrer. Vous pouvez déplacer librement chaque catégorie pour ajuster sa position. Pour une expérience complète, utilisez un grand écran!
@@ -26,8 +46,53 @@
         </div>
     </div>
 
+    <div class="container">
+        <section class="mb-4" aria-labelledby="ishikawa-when-heading">
+            <h2 id="ishikawa-when-heading" class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
+            <ul class="mb-0">
+                <li>Analyse de <strong>non-conformité</strong> ou de réclamation client</li>
+                <li>Recherche des <strong>causes racines</strong> avant mise en place d'actions correctives</li>
+                <li>Revue de processus, <strong>audit interne</strong> ou préparation certification</li>
+                <li>Niveau recommandé : <strong>Débutant</strong> à Intermédiaire</li>
+            </ul>
+        </section>
+        <section class="mb-4 p-3 bg-light rounded" aria-labelledby="ishikawa-example-heading">
+            <h2 id="ishikawa-example-heading" class="h6 fw-bold mb-2">Exemple d'application</h2>
+            <p class="mb-1"><strong>Problème :</strong> Erreur de production augmentée de 12 % sur la ligne 3.</p>
+            <p class="mb-0"><strong>Causes possibles (5M) :</strong> Main-d'œuvre (formation), Machine (réglage), Milieu (température), Matière (fournisseur), Méthode (instruction). Le diagramme permet de visualiser et prioriser les pistes.</p>
+        </section>
+        <section class="mb-4" aria-labelledby="ishikawa-guide-heading">
+            <h2 id="ishikawa-guide-heading" class="h5 fw-bold mb-2">Mini-guide</h2>
+            <p class="mb-1"><strong>Comment remplir un diagramme :</strong> Inscrivez le problème dans l'encadré à droite, puis répartissez les causes par catégorie (5M ou 6M). Une cause peut apparaître dans plusieurs branches.</p>
+            <p class="mb-1"><strong>Erreurs fréquentes :</strong> Trop de causes vagues, mélanger causes et solutions, s'arrêter aux causes immédiates.</p>
+            <p class="mb-0"><strong>Conseil d'expert :</strong> Validez les causes avec des données (mesures, retours terrain) avant de lancer les actions.</p>
+        </section>
+        <p class="mb-0">
+            <a href="{{ path('app_home_index') }}#newsletter" class="btn btn-sm btn-outline-primary">Téléchargez un modèle prêt à l'emploi (.xlsx / PDF) + astuces d'analyse 5M</a>
+        </p>
+    </div>
+
     <div class="ishikawa-content">
         {{ include('components/ishikawa_canvas.html.twig', { diagramId: diagramId }) }}
+    </div>
+
+    <div class="container">
+        {% include 'components/tool_lead_cta.html.twig' %}
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que le diagramme d'Ishikawa ?</h2>
+            <p>Outil d'analyse des causes développé par Kaoru Ishikawa dans les années 1960, aussi appelé diagramme en arête de poisson ou diagramme causes-effets. Utilisé dans les démarches ISO 9001 et Lean Manufacturing pour identifier systématiquement les causes d'un problème.</p>
+
+            <h2>Comment utiliser le diagramme d'Ishikawa ?</h2>
+            <p>(1) Définir le problème (l'effet). (2) Identifier les catégories principales (5M ou 6M : Main-d'œuvre, Matières, Méthodes, Machines, Milieu, Management). (3) Lister les causes possibles dans chaque catégorie. (4) Analyser et prioriser les causes racines. (5) Définir un plan d'action.</p>
+
+            <h2>Quand utiliser le diagramme d'Ishikawa ?</h2>
+            <p>Analyse de non-conformité en production, investigation d'un défaut qualité client, revue de processus, préparation d'un audit ISO 9001.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Création visuelle interactive, catégories personnalisables, drag & drop, export PDF prêt pour audit, sauvegarde automatique.</p>
+        </section>
     </div>
 
     {# Modal pour afficher les analyses Ishikawa sauvegardées #}
@@ -37,7 +102,7 @@
     } %}
     {% endcomponent %}
     {% else %}
-    {% include 'components/save_guest_modal.html.twig' %}
+    {% include 'components/save_guest_modal.html.twig' with { tool: 'ishikawa' } %}
     {% endif %}
 </div>
 {% endblock %}

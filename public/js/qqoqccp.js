@@ -170,6 +170,31 @@
         }
     }
 
+    function getSuggestionsFromSubject(subject, fullState) {
+        const text = (subject || '').toLowerCase() + ' ' + Object.values(fullState || state).join(' ').toLowerCase();
+        const suggestions = [];
+        if (/\blivraison\b|\bretard\b|\bretards\b|\bexpédition\b|\bexpedition\b/.test(text)) {
+            suggestions.push('Procédure gestion des retards et réclamations livraison');
+        }
+        if (/\baudit\b|\baudits\b/.test(text)) {
+            suggestions.push('Checklist d\'audit et grille de préparation');
+        }
+        if (/\bnon-conformité\b|non conformité|\bnc\b|réclamation\b/.test(text)) {
+            suggestions.push('Fiche d\'analyse de non-conformité et plan d\'action correctif');
+        }
+        if (/\bprocessus\b|\bprocédure\b|procédure\b/.test(text)) {
+            suggestions.push('Modèle de procédure (objectif, périmètre, étapes, responsabilités)');
+        }
+        if (/\brisque\b|\brisques\b/.test(text)) {
+            suggestions.push('Fiche de risque et plan de maîtrise');
+        }
+        if (suggestions.length === 0) {
+            suggestions.push('Checklist exportable depuis l\'onglet Exporter');
+            suggestions.push('Modèle de compte-rendu de réunion (Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi)');
+        }
+        return suggestions;
+    }
+
     function injectReportContent() {
         elements.reportTitle().textContent = `Rapport QQOQCCP : ${state.subject}`;
         elements.reportDate().textContent = `Généré le ${formatDateLabel()}`;
@@ -181,6 +206,19 @@
         elements.reportComment().textContent = state.comment;
         elements.reportCombien().textContent = state.combien;
         elements.reportPourquoi().textContent = state.pourquoi;
+
+        const suggestionsContainer = document.getElementById('qqoqccpSuggestions');
+        const suggestionsList = document.getElementById('qqoqccpSuggestionsList');
+        if (suggestionsContainer && suggestionsList) {
+            const suggestions = getSuggestionsFromSubject(state.subject, state);
+            suggestionsList.innerHTML = '';
+            suggestions.forEach(function (s) {
+                const li = document.createElement('li');
+                li.textContent = s;
+                suggestionsList.appendChild(li);
+            });
+            suggestionsContainer.style.display = suggestions.length ? 'block' : 'none';
+        }
 
         const summaryNode = elements.reportSummary();
         if (summaryNode) {

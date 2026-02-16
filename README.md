@@ -71,6 +71,15 @@ php bin/console sass:build --watch
 
 (Si vous utilisez `symfony server:start`, vous pouvez ajouter un worker SASS dans `.symfony.local.yaml` pour lancer le watcher automatiquement.)
 
+**Après toute modification des assets (SCSS dans `assets/styles/`, JS dans `assets/`)**, recompiler pour appliquer les changements (AssetMapper + SASS) :
+
+```bash
+php bin/console sass:build
+php bin/console asset-map:compile
+```
+
+En dev avec rechargement automatique des styles : `php bin/console sass:build --watch` (dans un terminal dédié).
+
 7. **Lancer le serveur de développement**
 ```bash
 symfony server:start

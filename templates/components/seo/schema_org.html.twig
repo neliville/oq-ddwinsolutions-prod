@@ -6,43 +6,42 @@
     - schema_data : Données spécifiques au type de schema
 #}
 
-{# Paramètres par défaut #}
+{# Paramètres par défaut - Organization = DDWin Solutions (spec SEO) #}
+{% set org_name = 'DDWin Solutions' %}
 {% set app_name = 'OUTILS-QUALITÉ' %}
 {% set app_url = app.request.schemeAndHttpHost %}
 {% set app_logo = app_url ~ asset('img/logo.webp') %}
 {% set app_email = 'contact@outils-qualite.com' %}
+{% set org_description = 'Outils qualité gratuits en ligne pour les professionnels QSE. Digitalisation des processus qualité, sécurité et environnement.' %}
 
 {# Utiliser les variables passées depuis base.html.twig #}
-{# Ces variables contiennent le contenu des blocks SEO capturés depuis les templates enfants #}
 {% set schema_type_raw = schema_type_raw|default('')|trim %}
 {% set schema_data_raw = schema_data_raw|default(null) %}
+{% set schema_webapp_raw = schema_webapp_raw|default('')|trim %}
+{% set schema_breadcrumb_raw = schema_breadcrumb_raw|default('')|trim %}
 {% set schema_social_links_raw = schema_social_links_raw|default([]) %}
 
 {# Utiliser les valeurs capturées ou les valeurs par défaut #}
 {% set schema_type_value = schema_type_raw|default('Organization') %}
 {% set schema_type_array = schema_type_value is iterable ? schema_type_value : [schema_type_value] %}
 
-{# Schema Organization (toutes les pages) #}
+{# Schema Organization (toutes les pages) - DDWin Solutions #}
 {% if 'Organization' in schema_type_array %}
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "{{ app_name }}",
+    "name": "{{ org_name }}",
     "url": "{{ app_url }}",
     "logo": "{{ app_logo }}",
+    "description": {{ org_description|json_encode|raw }},
     "contactPoint": {
         "@type": "ContactPoint",
+        "email": "{{ app_email }}",
         "contactType": "customer service",
-        "email": "{{ app_email }}"
+        "availableLanguage": "French"
     },
-    "sameAs": [
-        {% if schema_social_links_raw is defined and schema_social_links_raw is iterable %}
-        {% for link in schema_social_links_raw %}
-        "{{ link }}"{% if not loop.last %},{% endif %}
-        {% endfor %}
-        {% endif %}
-    ]
+    "sameAs": []
 }
 </script>
 {% endif %}
@@ -137,7 +136,7 @@
     {% endif %}
 {% endif %}
 
-{# Schema BreadcrumbList (pages avec hiérarchie) #}
+{# Schema BreadcrumbList (pages avec hiérarchie) - via schema_data_raw.items ou block schema_breadcrumb_json #}
 {% if 'BreadcrumbList' in schema_type_array %}
     {% set schema_data_value = schema_data_raw|default(null) %}
     {% if schema_data_value is not null and schema_data_value.items is defined %}
@@ -158,5 +157,19 @@
 }
 </script>
     {% endif %}
+{% endif %}
+
+{# WebApplication (pages outils) - JSON-LD complet depuis block schema_webapp_json #}
+{% if schema_webapp_raw is not empty %}
+<script type="application/ld+json">
+{{ schema_webapp_raw|raw }}
+</script>
+{% endif %}
+
+{# BreadcrumbList (pages outils / blog) - JSON-LD complet depuis block schema_breadcrumb_json #}
+{% if schema_breadcrumb_raw is not empty %}
+<script type="application/ld+json">
+{{ schema_breadcrumb_raw|raw }}
+</script>
 {% endif %}
 

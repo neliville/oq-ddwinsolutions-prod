@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur serveur - OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}Un problème technique temporaire empêche l'affichage de cette page. Nous mettons tout en œuvre pour rétablir le service. Réessayez dans quelques instants.{% endblock %}
+{% block og_title %}Erreur 500 | OUTILS-QUALITÉ{% endblock %}
+{% block og_description %}Erreur serveur temporaire. Notre équipe intervient. Réessayez ou revenez à l'accueil.{% endblock %}
+{% block seo_robots %}noindex, nofollow{% endblock %}
+
+{% block head %}
+    <meta name="turbo-cache-control" content="no-cache">
+    <script>
+        (function() {
+            if (window.Turbo && window.frameElement) {
+                Turbo.visit(window.location.href, { action: 'replace' });
+            }
+        })();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include 'bundles/TwigBundle/Exception/_error_styles.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <main class="error-page" role="main" aria-labelledby="error-title">
+        <section class="error-page__card" aria-live="polite">
+            <span class="error-page__code">500</span>
+            <h1 class="error-page__title" id="error-title">Erreur technique</h1>
+            <p class="error-page__message">
+                Un problème temporaire empêche l'affichage de cette page. Notre équipe en a été informée.
+                Vous pouvez réessayer dans quelques instants ou revenir à la page d'accueil.
+            </p>
+            <div class="error-page__actions">
+                <a href="{{ path('app_home_index') }}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>Retour à l'accueil
+                </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location.reload();">
+                    <i class="fas fa-sync-alt me-2"></i>Réessayer
+                </button>
+            </div>
+        </section>
+    </main>
+{% endblock %}

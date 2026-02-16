@@ -148,13 +148,18 @@ src/
 
 ## 🚀 Prochaines étapes (P1)
 
-### À implémenter
-1. **Pages SEO dédiées** : `/outil/ishikawa`, `/outil/5-pourquoi`, etc.
-2. **Hero amélioré** : Problème → Solution avec CTA visibles
-3. **Dashboard admin** : Visualisation des leads et analytics
-4. **Capture email après valeur** : Modal après utilisation d'outil
-5. **FAQ dynamique** : SEO + Schema.org
-6. **Preuve sociale** : Témoignages, statistiques
+### Réalisé
+1. **Pages SEO dédiées** : `/outil/ishikawa`, `/outil/5-pourquoi`, etc. ✅
+2. **Hero amélioré** : Problème → Solution avec CTA visibles (accueil) ✅
+3. **Dashboard admin** : Visualisation des leads et analytics (carte + liste + lien) ✅
+4. **Capture email après valeur** : Modal invité avec option « laisser son email » (Ishikawa, 5 Pourquoi) ✅
+5. **FAQ** : Déjà en place avec Schema.org FAQPage ✅
+6. **Preuve sociale** : Section statistiques + témoignages sur l’accueil ✅
+
+### À faire (suite P1 / P2)
+- FAQ dynamique depuis config/DB si besoin
+- Rate limiting sur API lead
+- Autres améliorations conversion (A/B, etc.)
 
 ---
 

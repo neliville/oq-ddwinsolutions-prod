@@ -1,0 +1,99 @@
+# Déploiement de la branche feat/symfony-app (ou autre) vers staging.outils-qualite.com sur o2switch
+name: Déploiement Staging o2switch (staging.outils-qualite.com)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branche à déployer'
+        required: false
+        default: 'feat/symfony-app'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: prod
+      O2SWITCH_HOST: ${{ secrets.O2SWITCH_HOST }}
+      O2SWITCH_PORT: ${{ secrets.O2SWITCH_PORT }}
+      O2SWITCH_USER: ${{ secrets.O2SWITCH_USER }}
+      O2SWITCH_SSH_KEY: ${{ secrets.O2SWITCH_SSH_KEY }}
+      O2SWITCH_SSH_KEY_PASSPHRASE: ${{ secrets.O2SWITCH_SSH_KEY_PASSPHRASE }}
+      O2SWITCH_DEPLOY_PATH: ${{ secrets.O2SWITCH_DEPLOY_PATH }}
+      # Racine du site staging sur o2switch (ex. /home/xxx/staging.outils-qualite.com ou /home/xxx/www/staging)
+      O2SWITCH_STAGING_WEBROOT: ${{ secrets.O2SWITCH_STAGING_WEBROOT }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || 'feat/symfony-app' }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql, opcache, zip
+          tools: composer
+
+      - name: Install dependencies (prod)
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction
+          php bin/console sass:build --env=prod
+          php bin/console asset-map:compile --env=prod
+          php bin/console cache:clear --env=prod
+
+      - name: Run PHPUnit if exists
+        if: hashFiles('phpunit.xml*') != ''
+        run: |
+          if [ -x "vendor/bin/phpunit" ]; then
+            vendor/bin/phpunit --testdox
+          elif [ -x "bin/phpunit" ]; then
+            if [ -x "vendor/symfony/phpunit-bridge/bin/simple-phpunit" ]; then
+              php bin/phpunit --testdox
+            else
+              echo "PHPUnit Bridge absent. Étape ignorée."
+            fi
+          else
+            echo "PHPUnit non disponible, étape ignorée."
+          fi
+
+      - name: Prepare release archive
+        run: |
+          zip -r release.zip . \
+            -x "tests/*" ".git/*" ".github/*" "var/cache/*" "var/log/*" ".env*"
+
+      - name: Upload release to o2switch
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.O2SWITCH_HOST }}
+          port: ${{ env.O2SWITCH_PORT }}
+          username: ${{ env.O2SWITCH_USER }}
+          key: ${{ env.O2SWITCH_SSH_KEY }}
+          passphrase: ${{ env.O2SWITCH_SSH_KEY_PASSPHRASE }}
+          source: release.zip
+          target: ${{ env.O2SWITCH_DEPLOY_PATH }}
+
+      - name: Unzip & deploy on o2switch (staging)
+        uses: appleboy/ssh-action@v1.0.2
+        with:
+          host: ${{ env.O2SWITCH_HOST }}
+          port: ${{ env.O2SWITCH_PORT }}
+          username: ${{ env.O2SWITCH_USER }}
+          key: ${{ env.O2SWITCH_SSH_KEY }}
+          passphrase: ${{ env.O2SWITCH_SSH_KEY_PASSPHRASE }}
+          script: |
+            set -euo pipefail
+            cd "${{ env.O2SWITCH_DEPLOY_PATH }}"
+            rm -rf release_tmp
+            unzip -oq release.zip -d release_tmp
+            rsync -a --delete --exclude='.env*' release_tmp/ "${{ env.O2SWITCH_STAGING_WEBROOT }}/"
+            rm -rf release_tmp release.zip
+            cd "${{ env.O2SWITCH_STAGING_WEBROOT }}"
+            php bin/console cache:clear --env=prod
+
+      - name: Résumé
+        run: |
+          echo "✅ Staging déployé : ${{ github.event.inputs.branch || 'feat/symfony-app' }}"
+          echo "🔗 Vérifier : https://staging.outils-qualite.com"

@@ -1,26 +1,28 @@
-/* Styles pour améliorer la lisibilité du contenu Markdown des articles */
+/* Styles pour améliorer la lisibilité du contenu Markdown des articles (UX friendly) */
 
 .article-content.prose {
     color: #374151;
     font-size: 1.125rem;
-    line-height: 1.75;
-    max-width: 100%;
+    line-height: 1.7;
+    max-width: 65ch; /* ~50–75 caractères par ligne pour une lecture confortable */
 }
 
 .article-content.prose h1,
 .article-content.prose h2,
 .article-content.prose h3,
-.article-content.prose h4 {
+.article-content.prose h4,
+.article-content.prose h5,
+.article-content.prose h6 {
     font-weight: 600;
     line-height: 1.3;
     margin-top: 2em;
-    margin-bottom: 1em;
+    margin-bottom: 0.75em;
     color: #111827;
     position: relative;
-    scroll-margin-top: 80px; // Pour compenser la hauteur du header fixe
+    scroll-margin-top: 80px; /* compensation header fixe */
 }
 
-/* Styles pour les liens d'ancrage des titres */
+/* Lien d’ancrage (#) : jamais affiché comme un lien bleu/souligné */
 .article-content.prose h1 .heading-permalink,
 .article-content.prose h2 .heading-permalink,
 .article-content.prose h3 .heading-permalink,
@@ -31,8 +33,8 @@
     position: absolute;
     left: -1.5em;
     padding-right: 0.5em;
-    text-decoration: none;
-    color: #9ca3af;
+    text-decoration: none !important;
+    color: #9ca3af !important;
     font-weight: 400;
     transition: opacity 0.2s ease, color 0.2s ease;
 }
@@ -47,7 +49,8 @@
 }
 
 .article-content.prose .heading-permalink:hover {
-    color: #0d6efd;
+    color: #6b7280 !important;
+    text-decoration: none !important;
 }
 
 /* Souligner le titre quand on arrive via une ancre */
@@ -73,28 +76,40 @@
     }
 }
 
+/* H1 dans le corps = même niveau visuel que H2 (le vrai titre est dans le hero) */
 .article-content.prose h1 {
-    font-size: 2.25em;
-    margin-top: 0;
-}
-
-.article-content.prose h2 {
     font-size: 1.875em;
+    margin-top: 0;
     border-bottom: 1px solid #e5e7eb;
     padding-bottom: 0.5em;
 }
 
+.article-content.prose h2 {
+    font-size: 1.625em;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.4em;
+}
+
 .article-content.prose h3 {
-    font-size: 1.5em;
+    font-size: 1.35em;
 }
 
 .article-content.prose h4 {
-    font-size: 1.25em;
+    font-size: 1.15em;
+}
+
+.article-content.prose h5 {
+    font-size: 1.05em;
+}
+
+.article-content.prose h6 {
+    font-size: 1em;
+    color: #6b7280;
 }
 
 .article-content.prose p {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
+    margin-top: 1.35em;
+    margin-bottom: 1.35em;
 }
 
 .article-content.prose a {
@@ -109,28 +124,29 @@
 
 .article-content.prose ul,
 .article-content.prose ol {
-    margin-top: 1.25em;
-    margin-bottom: 1.25em;
-    padding-left: 1.625em;
+    margin-top: 1.35em;
+    margin-bottom: 1.35em;
+    padding-left: 1.75em;
 }
 
 .article-content.prose li {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    line-height: 1.65;
 }
 
 .article-content.prose ul > li {
     position: relative;
-    padding-left: 0.375em;
+    padding-left: 0.25em;
 }
 
 .article-content.prose ul > li::marker {
-    color: #6b7280;
+    color: #4b5563;
 }
 
 .article-content.prose ol > li::marker {
-    color: #6b7280;
-    font-weight: 500;
+    color: #4b5563;
+    font-weight: 600;
 }
 
 .article-content.prose blockquote {
@@ -140,6 +156,29 @@
     margin-bottom: 1.5em;
     font-style: italic;
     color: #6b7280;
+}
+
+/* Callouts : Point d’attention (💡) et Recommandation stratégique (⚡) */
+.article-content.prose blockquote.callout-tip {
+    border-left-color: #eab308;
+    background: #fefce8;
+    padding: 1rem 1rem 1rem 1.25rem;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-style: normal;
+    color: #374151;
+}
+
+.article-content.prose blockquote.callout-warning {
+    border-left-color: #ea580c;
+    background: #fff7ed;
+    padding: 1rem 1rem 1rem 1.25rem;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-style: normal;
+    color: #374151;
 }
 
 .article-content.prose code {
@@ -177,32 +216,46 @@
 
 .article-content.prose hr {
     border: none;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 3em;
-    margin-bottom: 3em;
+    border-top: 2px solid #e5e7eb;
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
 }
 
+/* Tableaux : bordures visibles, lignes alternées */
 .article-content.prose table {
     width: 100%;
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
+    margin-top: 1.75em;
+    margin-bottom: 1.75em;
     border-collapse: collapse;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .article-content.prose table thead {
-    background-color: #f3f4f6;
+    background-color: #f1f5f9;
 }
 
 .article-content.prose table th,
 .article-content.prose table td {
-    padding: 0.75em;
-    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
     text-align: left;
 }
 
 .article-content.prose table th {
     font-weight: 600;
-    color: #111827;
+    color: #0f172a;
+    font-size: 0.95em;
+}
+
+.article-content.prose table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.article-content.prose table tbody tr:hover {
+    background-color: #f1f5f9;
 }
 
 .article-content.prose img {
@@ -226,28 +279,39 @@
 @media (max-width: 768px) {
     .article-content.prose {
         font-size: 1rem;
+        max-width: 100%;
     }
     
     .article-content.prose h1 {
-        font-size: 1.875em;
-    }
-    
-    .article-content.prose h2 {
         font-size: 1.5em;
     }
     
+    .article-content.prose h2 {
+        font-size: 1.35em;
+    }
+    
     .article-content.prose h3 {
-        font-size: 1.25em;
+        font-size: 1.2em;
     }
     
     .article-content.prose h4 {
-        font-size: 1.125em;
+        font-size: 1.1em;
     }
     
     .article-content.prose table {
         font-size: 0.875em;
         display: block;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .article-content.prose h1 .heading-permalink,
+    .article-content.prose h2 .heading-permalink,
+    .article-content.prose h3 .heading-permalink,
+    .article-content.prose h4 .heading-permalink,
+    .article-content.prose h5 .heading-permalink,
+    .article-content.prose h6 .heading-permalink {
+        left: -1.25em;
     }
 }
 

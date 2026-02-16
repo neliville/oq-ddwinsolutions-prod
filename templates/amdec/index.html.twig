@@ -1,8 +1,8 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Analyse AMDEC | Modes de défaillance{% endblock %}
+{% block title %}Analyse AMDEC en Ligne — Calcul NPR et Priorisation Gratuit | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Construisez votre analyse AMDEC (FMECA) en identifiant les modes de défaillance, leurs effets et priorisez vos actions grâce à l'indice NPR.{% endblock %}
+{% block meta_description %}Réalisez votre analyse AMDEC en ligne : identification des modes de défaillance, calcul automatique de l'indice NPR, recommandations de priorisation. Gratuit.{% endblock %}
 
 {% block meta_keywords %}amdec, fmeca, analyse de risques, npr, criticité, modes de défaillance, outil qualité{% endblock %}
 
@@ -19,6 +19,14 @@
     "url": "{{ absolute_url(path('app_amdec_index')) }}",
     "screenshot": "{{ app.request.schemeAndHttpHost ~ asset('img/og-default.jpg') }}"
 }
+{% endblock %}
+
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Analyse AMDEC en ligne","url":{{ absolute_url(path('app_amdec_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Réalisez votre analyse AMDEC en ligne : identification des modes de défaillance, calcul automatique de l'indice NPR, recommandations de priorisation. Gratuit.","featureList":["Modes de défaillance","Calcul NPR automatique","Priorisation des actions","Gratuit"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Analyse AMDEC","item":{{ absolute_url(path('app_amdec_index'))|json_encode|raw }}}]}
 {% endblock %}
 
 {% block content %}
@@ -176,6 +184,23 @@
             </div>
 
             <div class="amdec-insights" id="amdecInsights"></div>
+        </section>
+
+        {% include 'components/tool_lead_cta.html.twig' %}
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que l'analyse AMDEC ?</h2>
+            <p>Analyse des Modes de Défaillance, de leurs Effets et de leur Criticité (FMEA en anglais). Méthode préventive d'analyse des risques qui permet d'identifier les défaillances potentielles d'un produit, processus ou système, d'évaluer leur criticité (indice NPR = Gravité × Occurrence × Détection) et de prioriser les actions correctives.</p>
+
+            <h2>Comment utiliser l'analyse AMDEC ?</h2>
+            <p>(1) Identifier les modes de défaillance. (2) Évaluer la gravité, l'occurrence et la détectabilité (échelles 1-10). (3) Calculer le NPR (Note de Priorité du Risque). (4) Prioriser les actions pour les NPR les plus élevés.</p>
+
+            <h2>Quand utiliser l'analyse AMDEC ?</h2>
+            <p>Conception de nouveau produit, optimisation de processus existant, plan de maintenance préventive, certification ISO 9001.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Gratuit, sans installation, export PDF, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
 </main>

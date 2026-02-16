@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['source'], name: 'idx_lead_source')]
 #[ORM\Index(columns: ['tool'], name: 'idx_lead_tool')]
 #[ORM\Index(columns: ['type'], name: 'idx_lead_type')]
-#[ORM\Table(name: 'lead')]
+#[ORM\Table(name: '`lead`')]
 class Lead
 {
     #[ORM\Id]

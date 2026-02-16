@@ -106,6 +106,9 @@ class MarkdownExtension extends AbstractExtension
             $html
         );
 
+        // Callouts : ajouter des classes aux blockquotes "Point d'attention" (💡) et "Recommandation" (⚡)
+        $html = $this->addCalloutClasses($html);
+
         return $html;
     }
 
@@ -153,6 +156,27 @@ class MarkdownExtension extends AbstractExtension
         }
         
         return "## 📑 Sommaire\n\n" . implode("\n", $toc) . "\n\n---\n";
+    }
+
+    /**
+     * Ajoute les classes callout-tip / callout-warning aux blockquotes contenant 💡 ou ⚡
+     */
+    private function addCalloutClasses(string $html): string
+    {
+        return preg_replace_callback(
+            '/<blockquote>([\s\S]*?)<\/blockquote>/',
+            function (array $matches) {
+                $content = $matches[1];
+                if (str_contains($content, '💡') || stripos($content, 'Point d\'attention') !== false) {
+                    return '<blockquote class="callout-tip">' . $content . '</blockquote>';
+                }
+                if (str_contains($content, '⚡') || stripos($content, 'Recommandation stratégique') !== false) {
+                    return '<blockquote class="callout-warning">' . $content . '</blockquote>';
+                }
+                return $matches[0];
+            },
+            $html
+        );
     }
 
     /**

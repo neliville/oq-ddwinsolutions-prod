@@ -27,7 +27,17 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-secondary);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-problem {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    font-weight: 500;
+    padding-left: var(--space-4);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 4px 4px 0;
   }
 
   .badge-dot {
@@ -59,12 +69,24 @@
 
   .hero-cta {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-4);
     margin-bottom: var(--space-12);
 
     .btn {
-      min-width: 210px;
+      min-width: 200px;
       justify-content: center;
+      padding: var(--space-3) var(--space-6);
+      font-weight: 600;
+    }
+
+    .btn-hero-primary {
+      font-size: 1.0625rem;
+      box-shadow: 0 4px 14px rgba(var(--primary-rgb, 13, 110, 253), 0.35);
+    }
+
+    .btn-hero-secondary {
+      border-width: 2px;
     }
   }
 
@@ -389,9 +411,155 @@
   }
 }
 
-.faq-section {
+/* Spécificité renforcée (ID) pour éviter d'être écrasé par Bootstrap/reset sur cette section */
+#preuve-sociale.social-proof-section {
   padding: var(--space-20) 0;
-  background: var(--bg-secondary);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--gray-50) 100%);
+
+  .section-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto var(--space-12);
+
+    .section-badge {
+      display: inline-block;
+      padding: var(--space-2) var(--space-4);
+      background: var(--primary);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    h2 {
+      font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+      margin-bottom: var(--space-2);
+    }
+
+    p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+  }
+
+  .social-proof-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-8);
+    margin-bottom: var(--space-16);
+    padding: var(--space-8) var(--space-6);
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-xl);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .social-stat {
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+
+    &__value {
+      display: block;
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    &__label {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-top: var(--space-1);
+    }
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .testimonial-card {
+    margin: 0;
+    background: var(--bg-primary);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
+
+    &:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--gray-300);
+    }
+
+    &__body {
+      padding: var(--space-5) var(--space-5) var(--space-4);
+      max-height: 200px;
+      overflow: hidden;
+      transition: max-height var(--transition-slow), padding var(--transition-base);
+    }
+
+    &:not(.is-open) .testimonial-card__body {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .testimonial-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin: 0;
+      font-style: italic;
+    }
+
+    &__trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5);
+      background: var(--gray-800);
+      color: #fff;
+      border: none;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition-base);
+
+      &:hover {
+        background: var(--gray-700);
+      }
+
+      .testimonial-chevron {
+        flex-shrink: 0;
+        display: inline-flex;
+        transition: transform var(--transition-base);
+      }
+    }
+
+    &.is-open .testimonial-card__trigger .testimonial-chevron {
+      transform: rotate(180deg);
+    }
+
+    .testimonial-author {
+      text-align: left;
+    }
+  }
+}
+
+/* Spécificité renforcée pour la FAQ (évite conflits avec règles génériques) */
+#faq.faq-section {
+  padding: var(--space-20) 0;
+  background: linear-gradient(180deg, var(--gray-50) 0%, var(--bg-primary) 100%);
 
   .section-header {
     text-align: center;
@@ -401,7 +569,7 @@
     .section-badge {
       display: inline-block;
       padding: var(--space-2) var(--space-4);
-      background: var(--primary-light);
+      background: var(--primary);
       color: #fff;
       border-radius: 999px;
       font-size: 0.875rem;
@@ -433,11 +601,11 @@
     margin-bottom: var(--space-4);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
 
     &:hover {
       box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
+      border-color: var(--gray-300);
     }
   }
 
@@ -445,45 +613,66 @@
     width: 100%;
     font-size: 1.0625rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #fff;
     padding: var(--space-4) var(--space-5);
     margin: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: transparent;
+    gap: var(--space-3);
+    background: var(--gray-800);
     border: none;
     text-align: left;
-    transition: background 0.2s ease;
+    transition: background var(--transition-base);
 
     &:hover {
-      background: var(--gray-50);
+      background: var(--gray-700);
     }
 
-    i {
+    span {
+      flex: 1;
+    }
+
+    .faq-chevron {
       flex-shrink: 0;
-      margin-left: var(--space-3);
-      transition: transform 0.25s ease;
+      display: inline-flex;
+      transition: transform var(--transition-base);
     }
   }
 
-  .faq-item.is-open .faq-question i {
+  .faq-item.is-open .faq-question {
+    background: var(--gray-800);
+  }
+
+  .faq-item.is-open .faq-question .faq-chevron {
     transform: rotate(180deg);
   }
 
   .faq-answer {
-    padding: 0 var(--space-5) var(--space-5);
+    max-height: 300px;
+    overflow: hidden;
+    transition: max-height var(--transition-slow);
     color: var(--text-secondary);
     line-height: 1.7;
+    padding: 0 var(--space-5) var(--space-5);
+    box-sizing: border-box;
+    width: 100%;
 
     p {
-      margin: 0 0 var(--space-3);
+      margin: 0;
+      padding: 0;
 
       &:last-child {
         margin-bottom: 0;
       }
     }
+  }
+
+  .faq-item:not(.is-open) .faq-answer {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 

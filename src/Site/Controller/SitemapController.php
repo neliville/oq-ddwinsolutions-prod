@@ -25,24 +25,18 @@ final class SitemapController extends AbstractController
         $staticRoutes = [];
         $today = date('Y-m-d');
         
-        // Routes principales
+        // Routes principales (priorités alignées spec SEO)
         $routesToAdd = [
             ['route' => 'app_home_index', 'priority' => '1.0', 'changefreq' => 'weekly'],
-            ['route' => 'app_ishikawa_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_fivewhy_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_qqoqccp_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_amdec_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_pareto_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_eightd_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
-            ['route' => 'app_outils_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_ishikawa', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_5pourquoi', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_qqoqccp', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_amdec', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_pareto', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_tool_seo_8d', 'priority' => '0.85', 'changefreq' => 'monthly'],
-            ['route' => 'app_blog_index', 'priority' => '0.8', 'changefreq' => 'weekly'],
-            ['route' => 'app_contact_index', 'priority' => '0.7', 'changefreq' => 'monthly'],
+            ['route' => 'app_outils_index', 'priority' => '0.9', 'changefreq' => 'monthly'],
+            ['route' => 'app_ishikawa_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_fivewhy_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_qqoqccp_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_amdec_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_eightd_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_pareto_index', 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['route' => 'app_blog_index', 'priority' => '0.7', 'changefreq' => 'weekly'],
+            ['route' => 'app_contact_index', 'priority' => '0.3', 'changefreq' => 'monthly'],
             ['route' => 'app_legal_politique_confidentialite', 'priority' => '0.5', 'changefreq' => 'yearly'],
             ['route' => 'app_legal_mentions_legales', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ];
@@ -75,7 +69,7 @@ final class SitemapController extends AbstractController
                     
                     $blogRoutes[] = [
                         'url' => $url,
-                        'priority' => '0.7',
+                        'priority' => '0.6',
                         'changefreq' => 'monthly',
                         'lastmod' => $post->getUpdatedAt() ? $post->getUpdatedAt()->format('Y-m-d') : $post->getPublishedAt()->format('Y-m-d'),
                     ];

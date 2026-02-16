@@ -43,6 +43,10 @@
     {% set schema_type_raw = schema_type_raw|trim %}
 
     {% set schema_data_raw %}{% block schema_data %}{% endblock %}{% endset %}
+    {% set schema_webapp_raw %}{% block schema_webapp_json %}{% endblock %}{% endset %}
+    {% set schema_webapp_raw = schema_webapp_raw|trim %}
+    {% set schema_breadcrumb_raw %}{% block schema_breadcrumb_json %}{% endblock %}{% endset %}
+    {% set schema_breadcrumb_raw = schema_breadcrumb_raw|trim %}
     {% set schema_social_links_raw %}{% block schema_social_links %}{% endblock %}{% endset %}
     
     {# Passer les valeurs capturées aux composants SEO comme variables #}
@@ -59,11 +63,15 @@
         og_image_raw: og_image_raw,
         og_url_raw: og_url_raw,
         og_type_raw: og_type_raw,
-        twitter_card_raw: twitter_card_raw
+        twitter_card_raw: twitter_card_raw,
+        seo_title_raw: seo_title_raw,
+        seo_description_raw: seo_description_raw
     } %}
     {% include 'components/seo/schema_org.html.twig' with {
         schema_type_raw: schema_type_raw,
         schema_data_raw: schema_data_raw,
+        schema_webapp_raw: schema_webapp_raw,
+        schema_breadcrumb_raw: schema_breadcrumb_raw,
         schema_social_links_raw: schema_social_links_raw
     } %}
 

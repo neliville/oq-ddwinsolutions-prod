@@ -4,6 +4,7 @@ const fiveWhyData = {
   whySteps: [],
   rootCause: "",
   rootCauseReady: false,
+  planAction: "",
 }
 
 window.fiveWhyData = fiveWhyData
@@ -93,6 +94,7 @@ function renderWhyChain() {
 
   const limitReached = fiveWhyData.whySteps.length >= MAX_WHY_STEPS
 
+  updateClarityScoreDisplay()
   fiveWhyData.whySteps.forEach((step, index) => {
     const stepDiv = document.createElement("div")
     stepDiv.className = "why-step"
@@ -350,6 +352,23 @@ function renderRootCauseTrigger() {
     : `Complétez au moins ${MIN_ROOT_CAUSE_STEPS} réponses pour activer le bouton.`
 
   trigger.appendChild(helper)
+  updateClarityScoreDisplay()
+}
+
+function updateClarityScoreDisplay() {
+  const el = document.getElementById("fiveWhyClarityScore")
+  if (!el) return
+  const hasProblem = Boolean((fiveWhyData.problemStatement || "").trim())
+  const answeredSteps = fiveWhyData.whySteps.filter((step) => (step.answer || "").trim())
+  const completedCount = answeredSteps.length
+  if (!hasProblem && completedCount === 0) {
+    el.style.display = "none"
+    el.textContent = ""
+    return
+  }
+  const score = hasProblem ? Math.min(5, Math.max(0, completedCount)) : 0
+  el.style.display = "block"
+  el.textContent = "Score de clarté : " + score + "/5" + (score >= 4 ? " — Pistes principales identifiables." : score >= 2 ? " — Complétez encore quelques étapes pour affiner." : " — Définissez le problème et au moins une réponse.")
 }
 
 function generateRootCause() {
@@ -366,6 +385,7 @@ function generateRootCause() {
   fiveWhyData.rootCauseReady = true
   updateRootCauseDisplay({ force: true, answerOverride: latestAnswer })
   renderRootCauseTrigger()
+  updateClarityScoreDisplay()
 
   const rootCauseDiv = document.getElementById("rootCause")
   if (rootCauseDiv) {
@@ -378,10 +398,16 @@ function generateRootCause() {
 function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
   const rootCauseDiv = document.getElementById("rootCause")
   const rootCauseText = document.getElementById("rootCauseText")
+  const planActionBlock = document.getElementById("planActionBlock")
+  const planActionStatement = document.getElementById("planActionStatement")
 
   if (!rootCauseDiv || !rootCauseText) return
 
   const answeredSteps = fiveWhyData.whySteps.filter((step) => step.answer.trim())
+
+  function showPlanActionBlock(show) {
+    if (planActionBlock) planActionBlock.style.display = show ? "block" : "none"
+  }
 
   if (force) {
     if (answeredSteps.length < MIN_ROOT_CAUSE_STEPS) {
@@ -389,6 +415,7 @@ function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
       fiveWhyData.rootCause = ""
       rootCauseDiv.style.display = "none"
       rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+      showPlanActionBlock(false)
       return
     }
 
@@ -397,12 +424,15 @@ function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
     fiveWhyData.rootCause = latestAnswer
     rootCauseText.textContent = `La cause racine identifiée est : "${latestAnswer}"`
     rootCauseDiv.style.display = "block"
+    showPlanActionBlock(true)
+    if (planActionStatement && fiveWhyData.planAction) planActionStatement.value = fiveWhyData.planAction
     return
   }
 
   if (!fiveWhyData.rootCauseReady) {
     rootCauseDiv.style.display = "none"
     rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+    showPlanActionBlock(false)
     return
   }
 
@@ -411,6 +441,7 @@ function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
     fiveWhyData.rootCause = ""
     rootCauseDiv.style.display = "none"
     rootCauseText.textContent = "La cause racine sera affichée ici une fois l'analyse terminée."
+    showPlanActionBlock(false)
     return
   }
 
@@ -418,6 +449,8 @@ function updateRootCauseDisplay({ force = false, answerOverride = null } = {}) {
   fiveWhyData.rootCause = lastAnswer
   rootCauseText.textContent = `La cause racine identifiée est : "${lastAnswer}"`
   rootCauseDiv.style.display = "block"
+  showPlanActionBlock(true)
+  if (planActionStatement && fiveWhyData.planAction) planActionStatement.value = fiveWhyData.planAction
 }
 
 async function resetAnalysis() {
@@ -433,10 +466,16 @@ async function resetAnalysis() {
     fiveWhyData.whySteps = [{ question: "", answer: "" }]
     fiveWhyData.rootCause = ""
     fiveWhyData.rootCauseReady = false
+    fiveWhyData.planAction = ""
 
     document.getElementById("problemStatement").value = ""
+    const planActionStatement = document.getElementById("planActionStatement")
+    if (planActionStatement) planActionStatement.value = ""
+    const planActionBlock = document.getElementById("planActionBlock")
+    if (planActionBlock) planActionBlock.style.display = "none"
     renderWhyChain()
     updateRootCauseDisplay()
+    updateClarityScoreDisplay()
     showNotification("Analyse réinitialisée")
   }
 }
@@ -541,6 +580,9 @@ function buildFiveWhyExportData() {
 
   const completedSteps = sanitizedSteps.filter((step) => step.answer.length).length
   const rootCause = (fiveWhyData.rootCause || "").toString().trim()
+  const planActionEl = document.getElementById("planActionStatement")
+  const planAction = (planActionEl ? planActionEl.value : fiveWhyData.planAction || "").toString().trim()
+  if (planAction) fiveWhyData.planAction = planAction
   const exportDate = new Date()
 
   return {
@@ -551,6 +593,7 @@ function buildFiveWhyExportData() {
     totalSteps: sanitizedSteps.length,
     rootCause,
     hasRootCause: Boolean(rootCause),
+    planAction,
     exportDate,
     exportLocale: exportDate.toLocaleString("fr-FR"),
     titleText: problem.length ? `Analyse 5 Pourquoi – ${problem.slice(0, 60)}` : "Analyse 5 Pourquoi",
@@ -610,6 +653,12 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
     ? `Cause racine : ${context.rootCause.slice(0, 80)}${context.rootCause.length > 80 ? "…" : ""}`
     : "Cause racine non identifiée"
   ctx.fillText(rootCauseLabel, finalCanvas.width / 2, summaryStart + 24)
+  if (context.planAction) {
+    ctx.font = "12px Arial, sans-serif"
+    ctx.fillStyle = "#475569"
+    const planLabel = `Plan d'action : ${context.planAction.slice(0, 100)}${context.planAction.length > 100 ? "…" : ""}`
+    ctx.fillText(planLabel, finalCanvas.width / 2, summaryStart + 44)
+  }
 
   ctx.fillStyle = "#94a3b8"
   ctx.font = "12px Arial, sans-serif"
@@ -648,6 +697,7 @@ function exportFiveWhy(format) {
         totalSteps: context.totalSteps,
         completedSteps: context.completedSteps,
         rootCause: context.hasRootCause ? context.rootCause : null,
+        planAction: context.planAction || null,
         steps: context.sanitizedSteps,
       },
       rawData: {
@@ -655,6 +705,7 @@ function exportFiveWhy(format) {
         whySteps: context.sanitizedSteps,
         rootCause: context.rootCause,
         rootCauseReady: fiveWhyData.rootCauseReady || context.hasRootCause,
+        planAction: context.planAction || "",
       },
     }
 

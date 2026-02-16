@@ -10,30 +10,25 @@
     - twitter_card (optionnel) : Type de Twitter Card (summary, summary_large_image)
 #}
 
-{# Paramètres par défaut #}
-{% set app_name = 'OUTILS-QUALITÉ' %}
+{# Paramètres par défaut - alignés sur title/meta description (Tâche 1) #}
+{% set og_site_name = 'Outils-Qualité' %}
 {% set app_url = app.request.schemeAndHttpHost %}
+{# Image OG par défaut : 1200×630px recommandé (og-default.png) #}
 {% set app_default_image = app_url ~ asset('img/og-default.jpg') %}
 
-{# Utiliser les variables passées depuis base.html.twig #}
-{# Ces variables contiennent le contenu des blocks SEO capturés depuis les templates enfants #}
+{# Variables passées depuis base.html.twig #}
 {% set og_title_raw = og_title_raw|default('')|trim %}
 {% set og_description_raw = og_description_raw|default('')|trim %}
 {% set og_image_raw = og_image_raw|default('')|trim %}
 {% set og_url_raw = og_url_raw|default('')|trim %}
 {% set og_type_raw = og_type_raw|default('')|trim %}
 {% set twitter_card_raw = twitter_card_raw|default('')|trim %}
+{% set seo_title_raw = seo_title_raw|default('')|trim %}
+{% set seo_description_raw = seo_description_raw|default('')|trim %}
 
-{# Valeurs par défaut depuis les meta tags si non spécifiées #}
-{% set og_title_value = og_title_raw|default('') %}
-{% if not og_title_value %}
-    {% set og_title_value = 'Outils Qualité Gratuits | ' ~ app_name %}
-{% endif %}
-
-{% set og_description_value = og_description_raw|default('') %}
-{% if not og_description_value %}
-    {% set og_description_value = 'Outils qualité gratuits en ligne : diagramme Ishikawa interactif, méthode 5 Pourquoi, export PDF.' %}
-{% endif %}
+{# OG/Twitter : même titre et description que la page (meta) si non surchargés #}
+{% set og_title_value = og_title_raw ?: seo_title_raw ?: 'Outils Qualité Gratuits en Ligne — Ishikawa, 5 Pourquoi, AMDEC, Pareto | Outils-Qualité' %}
+{% set og_description_value = og_description_raw ?: seo_description_raw ?: 'Créez gratuitement vos diagrammes Ishikawa, analyses 5 Pourquoi, AMDEC et Pareto en ligne. Export PDF, conforme ISO 9001. Sans inscription.' %}
 
 {% set og_image_value = og_image_raw|default(app_default_image) %}
 {% set og_url_value = og_url_raw|default(app.request.uri) %}
@@ -46,7 +41,7 @@
 <meta property="og:image" content="{{ og_image_value }}">
 <meta property="og:url" content="{{ og_url_value }}">
 <meta property="og:type" content="{{ og_type_value }}">
-<meta property="og:site_name" content="{{ app_name }}">
+<meta property="og:site_name" content="{{ og_site_name }}">
 <meta property="og:locale" content="fr_FR">
 
 <!-- Twitter Card Tags -->

@@ -3,7 +3,7 @@
     <footer class="bg-dark text-white-50 border-top border-secondary">
         <div class="container-lg">
             <div class="text-center py-3 small">
-                © 2024 <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer" class="link-light text-decoration-none">DDWin Solutions</a>. Tous droits réservés.
+                © {{ 'now'|date('Y') }} <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer" class="link-light text-decoration-none">DDWin Solutions</a>. Tous droits réservés.
                 <span class="d-block d-md-inline">| Outils d'analyse gratuits et conseils informatiques</span> | 
                 <a href="{{ path('app_legal_politique_confidentialite') }}" class="link-light text-decoration-none">Politique de confidentialité</a> | 
                 <a href="{{ path('app_legal_conditions_utilisation') }}" class="link-light text-decoration-none">Conditions d'utilisation</a> | 
@@ -104,7 +104,7 @@
         </div>
 
         <div class="border-top border-secondary text-center py-3 mt-4 small">
-            © 2024 <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer" class="link-light text-decoration-none">DDWin Solutions</a>. Tous droits réservés.
+            © {{ 'now'|date('Y') }} <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer" class="link-light text-decoration-none">DDWin Solutions</a>. Tous droits réservés.
             <span class="d-block d-md-inline">| Outils d'analyse gratuits et conseils informatiques</span> | 
             <a href="{{ path('app_legal_politique_confidentialite') }}" class="link-light text-decoration-none">Politique de confidentialité</a> | 
             <a href="{{ path('app_legal_conditions_utilisation') }}" class="link-light text-decoration-none">Conditions d'utilisation</a> | 

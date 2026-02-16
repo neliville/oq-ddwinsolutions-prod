@@ -16,9 +16,13 @@
 @use "components/sidebar";
 @use "components/confirmation_modal";
 @use "components/tool_buttons";
+@use "components/tool_lead_cta";
+@use "components/cta_ddwin";
+@use "components/seo_content";
 @use "site/home";
 @use "site/outils";
 @use "site/article-prose";
+@use "site/legal-prose";
 @use "site/dashboard";
 @use "site/auth";
 @use "tools/ishikawa";

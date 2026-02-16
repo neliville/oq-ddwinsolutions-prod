@@ -38,6 +38,12 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'diagramme ishikawa, causes à effets, arête de poisson, analyse qualité, ISO 9001, résolution problème, lean manufacturing',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Analyse de non-conformité ou de réclamation client',
+                    'Recherche des causes racines avant actions correctives',
+                    'Revue de processus, audit interne ou préparation certification',
+                    'Niveau recommandé : Débutant à Intermédiaire',
+                ],
             ],
         ]);
     }
@@ -67,6 +73,11 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'méthode 5 pourquoi, 5 why, cause racine, résolution problème, analyse qualité, lean, six sigma',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Incident, non-conformité, panne, dérive processus',
+                    'Pour aller au-delà de la cause immédiate et éviter les récidives',
+                    'Niveau requis : Débutant',
+                ],
             ],
         ]);
     }
@@ -96,6 +107,10 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'qqoqccp, 5w2h, méthode questionnement, audit qualité, investigation, ISO 9001',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Audit, investigation, collecte d\'informations, préparation de réunion ou de procédure',
+                    'Niveau requis : Débutant',
+                ],
             ],
         ]);
     }
@@ -125,6 +140,10 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'amdec, fmea, analyse risques, modes de défaillance, criticité, prévention, qualité',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Analyse de risques processus, conception, maintenance préventive',
+                    'Niveau recommandé : Intermédiaire',
+                ],
             ],
         ]);
     }
@@ -154,6 +173,10 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'diagramme pareto, principe pareto, 80/20, priorisation, analyse qualité, lean',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Priorisation des actions, analyse de non-conformités',
+                    'Niveau recommandé : Débutant',
+                ],
             ],
         ]);
     }
@@ -183,6 +206,11 @@ final class ToolSeoController extends AbstractController
                 ],
                 'keywords' => 'méthode 8d, 8 disciplines, résolution problème, action corrective, qualité, ISO 9001',
                 'schema_type' => 'SoftwareApplication',
+                'when_use' => [
+                    'Réclamation client, non-conformité récurrente, incident majeur',
+                    'Demande de résolution structurée (IATF, aéronautique)',
+                    'Niveau requis : Intermédiaire',
+                ],
             ],
         ]);
     }

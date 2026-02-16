@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tous nos outils qualité{% endblock %}
+{% block title %}Tous les Outils Qualité Gratuits — Suite QSE Complète | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Une collection complète d'outils professionnels pour l'amélioration continue : diagramme Ishikawa, méthode 5 Pourquoi et bien plus. Tous les outils sont 100% gratuits.{% endblock %}
+{% block meta_description %}Découvrez notre suite complète d'outils qualité gratuits : Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, 8D, Pareto. Conformes ISO 9001, export PDF.{% endblock %}
 
 {% block meta_keywords %}outils qualité, suite d'outils qualité, amélioration continue, diagramme Ishikawa, 5 pourquoi, outils gratuits, méthodes qualité{% endblock %}
 
@@ -39,8 +39,14 @@
 
     <section class="tools-section" id="catalogue">
         <div class="container">
+            <nav class="tools-category-nav d-flex flex-wrap gap-2 mb-4" aria-label="Filtrer les outils par catégorie">
+                <button type="button" class="btn btn-outline-primary btn-sm tools-filter-btn active" data-tools-filter="all">Tous</button>
+                {% for slug, label in tools_meta_by_category() %}
+                <button type="button" class="btn btn-outline-secondary btn-sm tools-filter-btn" data-tools-filter="{{ slug }}">{{ label }}</button>
+                {% endfor %}
+            </nav>
             <div class="tools-showcase">
-                <div class="tool-feature featured">
+                <div class="tool-feature featured" data-tools-category="analyse_causes">
                     <div class="tool-feature-content">
                         <div class="tool-badge best">Le plus utilisé</div>
                         <h3>Diagramme d'Ishikawa</h3>
@@ -116,7 +122,7 @@
                 </div>
 
                 <div class="tools-grid">
-                    <div class="tool-card">
+                    <div class="tool-card" data-tools-category="resolution_problemes">
                         <div class="tool-card-icon cyan">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <text x="20" y="28" text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">5?</text>
@@ -134,7 +140,7 @@
                         </a>
                     </div>
 
-                    <div class="tool-card">
+                    <div class="tool-card" data-tools-category="reporting">
                         <div class="tool-card-icon neutral">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <rect x="10" y="10" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2"></rect>
@@ -155,7 +161,7 @@
                         </a>
                     </div>
 
-                    <div class="tool-card">
+                    <div class="tool-card" data-tools-category="autres">
                         <div class="tool-card-icon danger">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <path d="M20 6L4 34H36L20 6Z" stroke="currentColor" stroke-width="2" fill="none"/>
@@ -175,7 +181,7 @@
                         </a>
                     </div>
 
-                    <div class="tool-card">
+                    <div class="tool-card" data-tools-category="resolution_problemes">
                         <div class="tool-card-icon purple">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <rect x="6" y="6" width="28" height="28" rx="8" stroke="currentColor" stroke-width="2"></rect>
@@ -196,7 +202,7 @@
                         </a>
                     </div>
 
-                    <div class="tool-card">
+                    <div class="tool-card" data-tools-category="autres">
                         <div class="tool-card-icon cyan">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <rect x="6" y="24" width="6" height="10" fill="currentColor" />
@@ -217,7 +223,7 @@
                         </a>
                     </div>
 
-                    <div class="tool-card coming-soon">
+                    <div class="tool-card coming-soon" data-tools-category="autres">
                         <div class="tool-card-icon gray">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <line x1="5" y1="20" x2="35" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" />
@@ -234,7 +240,7 @@
                         <button class="btn btn-secondary" disabled>À venir</button>
                     </div>
 
-                    <div class="tool-card coming-soon">
+                    <div class="tool-card coming-soon" data-tools-category="autres">
                         <div class="tool-card-icon gray">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <line x1="8" y1="32" x2="32" y2="32" stroke="currentColor" stroke-width="2" />
@@ -250,7 +256,7 @@
                         <button class="btn btn-secondary" disabled>À venir</button>
                     </div>
 
-                    <div class="tool-card coming-soon">
+                    <div class="tool-card coming-soon" data-tools-category="autres">
                         <div class="tool-card-icon gray">
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                                 <rect x="8" y="10" width="24" height="20" stroke="currentColor" stroke-width="2" fill="none" />
@@ -311,4 +317,23 @@
         </div>
     </section>
 </div>
+
+<script>
+(function () {
+    var nav = document.querySelector('.tools-category-nav');
+    if (!nav) return;
+    var btns = nav.querySelectorAll('.tools-filter-btn');
+    var items = document.querySelectorAll('[data-tools-category]');
+    btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var filter = this.getAttribute('data-tools-filter');
+            btns.forEach(function (b) { b.classList.remove('active'); b.classList.add('btn-outline-secondary'); });
+            this.classList.add('active'); this.classList.remove('btn-outline-secondary'); this.classList.add('btn-outline-primary');
+            items.forEach(function (el) {
+                el.style.display = (filter === 'all' || el.getAttribute('data-tools-category') === filter) ? '' : 'none';
+            });
+        });
+    });
+})();
+</script>
 {% endblock %}

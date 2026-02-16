@@ -1,8 +1,8 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Méthode des 5 Pourquoi | Analyse des causes racines{% endblock %}
+{% block title %}Méthode 5 Pourquoi en Ligne — Analyse de Cause Racine Gratuite | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Utilisez la méthode des 5 Pourquoi pour identifier les causes racines. Outil gratuit et professionnel avec export PDF. Analyse des causes profondes.{% endblock %}
+{% block meta_description %}Utilisez la méthode des 5 Pourquoi en ligne pour identifier les causes racines de vos problèmes. Outil gratuit avec export PDF conforme ISO 9001.{% endblock %}
 
 {% block meta_keywords %}5 pourquoi, méthode des 5 pourquoi, 5 whys, analyse des causes racines, root cause analysis, Sakichi Toyoda, outil qualité gratuit, amélioration continue, résolution de problèmes{% endblock %}
 
@@ -21,15 +21,33 @@
 }
 {% endblock %}
 
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Méthode 5 Pourquoi en ligne","url":{{ absolute_url(path('app_fivewhy_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Utilisez la méthode des 5 Pourquoi en ligne pour identifier les causes racines de vos problèmes. Outil gratuit avec export PDF conforme ISO 9001.","featureList":["Analyse guidée pas à pas","Export PDF structuré","Visualisation chaîne causale","Conforme ISO 9001"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Méthode des 5 Pourquoi","item":{{ absolute_url(path('app_fivewhy_index'))|json_encode|raw }}}]}
+{% endblock %}
+
 {% block content %}
 <!-- Main Content -->
 <main class="five-why-main{% if not app.user %} five-why-main--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Méthode des 5 Pourquoi" } %}
         <input type="hidden" id="fiveWhyAnalysisId" value="{{ analysisId ?? '' }}">
         <!-- Header compact -->
         <div class="five-why-header" data-aos="fade-up">
-            <h1>Méthode des 5 Pourquoi</h1>
-            <p class="lead">Identifiez la cause racine en posant successivement "Pourquoi ?" jusqu'à trouver l'origine du problème.</p>
+            <h1>Analyse des causes racines (méthode 5 Pourquoi)</h1>
+            <p class="lead">Résolvez les problèmes rapidement et efficacement en remontant jusqu'à la cause racine grâce aux « Pourquoi » successifs.</p>
+            {% set meta = tool_meta('fivewhy') %}
+            {% if meta %}
+            <div class="d-flex flex-wrap gap-2 mb-2" role="list">
+                <span class="badge bg-secondary" role="listitem">Niveau : {{ meta.level }}</span>
+                {% for tag in meta.tags %}
+                <span class="badge bg-light text-dark" role="listitem">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Message pour utilisateurs non connectés -->
@@ -40,6 +58,19 @@
             <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos créations et accéder à votre espace personnel.
         </div>
         {% endif %}
+
+        <section class="mb-4" aria-labelledby="fivewhy-when-heading" data-aos="fade-up" data-aos-delay="70">
+            <h2 id="fivewhy-when-heading" class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
+            <ul class="mb-0">
+                <li><strong>Pour quel type de problème :</strong> incident, non-conformité, panne, dérive processus</li>
+                <li>Idéal pour aller au-delà de la cause immédiate et éviter les récidives</li>
+                <li>Niveau requis : <strong>Débutant</strong></li>
+            </ul>
+        </section>
+        <section class="mb-4 p-3 bg-light rounded" aria-labelledby="fivewhy-example-heading" data-aos="fade-up" data-aos-delay="80">
+            <h2 id="fivewhy-example-heading" class="h6 fw-bold mb-2">Exemple concret</h2>
+            <p class="mb-0">Résolution d'une non-conformité client en 5 étapes : Problème → Pourquoi #1 (retard livraison) → #2 (commande non préparée) → #3 (stock non mis à jour) → #4 (procédure non suivie) → #5 (formation insuffisante). Cause racine : plan de formation à revoir.</p>
+        </section>
 
         <!-- Instructions compactes -->
         <div class="guide-card mb-3" role="region" aria-label="Instructions" data-aos="fade-up" data-aos-delay="90">
@@ -106,6 +137,7 @@
                 <!-- Les étapes "Pourquoi" seront générées dynamiquement -->
             </div>
 
+            <div id="fiveWhyClarityScore" class="small text-muted mb-2" aria-live="polite" style="display:none;"></div>
             <div id="rootCauseTrigger" class="root-cause-trigger" aria-live="polite"></div>
 
             <!-- Root Cause -->
@@ -113,7 +145,38 @@
                 <h3>Cause racine identifiée</h3>
                 <p id="rootCauseText">La cause racine sera affichée ici une fois l'analyse terminée.</p>
             </div>
+            <div class="root-cause mt-3" id="planActionBlock" style="display: none;" role="region" aria-labelledby="plan-action-title">
+                <h3 id="plan-action-title">Conclusion et plan d'action proposé</h3>
+                <textarea id="planActionStatement" class="form-control" rows="3" placeholder="Décrivez les actions correctives ou préventives à mettre en place..." aria-label="Plan d'action"></textarea>
+            </div>
         </div>
+
+        <section class="alert alert-info mt-4" role="region" aria-labelledby="fivewhy-pitfalls-heading">
+            <h2 id="fivewhy-pitfalls-heading" class="h6 fw-bold mb-2">Pièges à éviter</h2>
+            <ul class="mb-0 small">
+                <li>S'arrêter trop tôt (avant d'atteindre une cause actionnable)</li>
+                <li>Formuler des causes trop vagues ou des jugements</li>
+                <li>Mélanger plusieurs causes dans un même « Pourquoi »</li>
+                <li>Négliger de valider la cause racine avec des données ou le terrain</li>
+            </ul>
+        </section>
+
+        {% include 'components/tool_lead_cta.html.twig' %}
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que la méthode des 5 Pourquoi ?</h2>
+            <p>Technique d'analyse itérative développée par Sakichi Toyoda chez Toyota. Consiste à poser successivement la question « Pourquoi ? » (généralement 5 fois) pour remonter d'un symptôme visible à sa cause racine profonde.</p>
+
+            <h2>Comment utiliser la méthode des 5 Pourquoi ?</h2>
+            <p>(1) Énoncer clairement le problème observé. (2) Poser la première question « Pourquoi ce problème se produit-il ? ». (3) Poser « Pourquoi ? » sur la réponse obtenue. (4) Répéter jusqu'à atteindre la cause racine (souvent 5 itérations). (5) Définir une action corrective sur la cause racine identifiée.</p>
+
+            <h2>Quand utiliser la méthode des 5 Pourquoi ?</h2>
+            <p>Analyse rapide d'un incident, investigation de réclamation client, résolution de panne récurrente, analyse de retard de livraison.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Outil guidé pas à pas, visualisation de la chaîne causale, export PDF structuré.</p>
+        </section>
     </div>
 
     {# Modal pour afficher les analyses 5 Pourquoi sauvegardées #}
@@ -123,7 +186,7 @@
     } %}
     {% endcomponent %}
     {% else %}
-    {% include 'components/save_guest_modal.html.twig' %}
+    {% include 'components/save_guest_modal.html.twig' with { tool: 'fivewhy' } %}
     {% endif %}
 </main>
 {% endblock %}
@@ -214,6 +277,7 @@
             const rootCauseValue = normalizeRootCause(rawContent.rootCause ?? rawContent.rootCauseText ?? '');
             fiveWhyData.rootCause = rootCauseValue;
             fiveWhyData.rootCauseReady = Boolean(rawContent.rootCauseReady || rootCauseValue.length);
+            fiveWhyData.planAction = (rawContent.planAction ?? '').toString();
 
             // Attendre que le DOM soit prêt avant de rendre
             const renderData = () => {
@@ -237,9 +301,11 @@
 
                 if (fiveWhyData.rootCauseReady) {
                     const rootCauseDiv = document.getElementById('rootCause');
-                    if (rootCauseDiv) {
-                        rootCauseDiv.style.display = 'block';
-                    }
+                    if (rootCauseDiv) rootCauseDiv.style.display = 'block';
+                    const planActionBlock = document.getElementById('planActionBlock');
+                    if (planActionBlock) planActionBlock.style.display = 'block';
+                    const planActionStatement = document.getElementById('planActionStatement');
+                    if (planActionStatement && fiveWhyData.planAction) planActionStatement.value = fiveWhyData.planAction;
                 }
             };
 
@@ -282,6 +348,8 @@
             ? analysisData.whySteps
             : [{ question: '', answer: '' }];
 
+        const planActionEl = document.getElementById('planActionStatement');
+        const planActionValue = (planActionEl ? planActionEl.value : analysisData.planAction || '').toString().trim();
         const payloadContent = {
             problemStatement,
             whySteps: sanitizedSteps.map((step) => ({
@@ -290,6 +358,7 @@
             })),
             rootCause: (analysisData.rootCause ?? '').toString(),
             rootCauseReady: Boolean(analysisData.rootCauseReady || (analysisData.rootCause && analysisData.rootCause.toString().trim())),
+            planAction: planActionValue,
         };
 
         const payload = {
@@ -334,10 +403,15 @@
             fiveWhyData.problemStatement = problemStatement;
             fiveWhyData.rootCause = payloadContent.rootCause;
             fiveWhyData.rootCauseReady = payloadContent.rootCauseReady;
+            fiveWhyData.planAction = payloadContent.planAction || '';
             fiveWhyData.whySteps = payloadContent.whySteps.map((step) => ({
                 question: step.question,
                 answer: step.answer,
             }));
+            const planActionStatement = document.getElementById('planActionStatement');
+            if (planActionStatement) planActionStatement.value = fiveWhyData.planAction;
+            const planActionBlock = document.getElementById('planActionBlock');
+            if (planActionBlock && fiveWhyData.rootCauseReady) planActionBlock.style.display = 'block';
             renderRootCauseTrigger();
             updateRootCauseDisplay({
                 force: fiveWhyData.rootCauseReady,

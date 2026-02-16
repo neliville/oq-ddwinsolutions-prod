@@ -11,11 +11,11 @@
 {% block og_description %}{{ meta.description }}{% endblock %}
 
 {% block body %}
-<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="legal-page-title">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8" data-aos="fade-right">
-                <h1 class="display-4 fw-bold mb-4">{{ page.title }}</h1>
+                <h1 id="legal-page-title" class="display-4 fw-bold mb-4">{{ page.title }}</h1>
                 <p class="lead mb-4">{{ meta.description }}</p>
             </div>
             <div class="col-lg-4" data-aos="fade-left">
@@ -33,40 +33,9 @@
     </div>
 </section>
 
-<main class="container py-5">
-    <article class="legal-content markdown-body">
+<main id="main-content" class="container py-5" role="main" aria-label="Contenu de la page">
+    <article class="legal-content prose" aria-labelledby="legal-page-title">
         {{ page.content|markdown_to_html|raw }}
     </article>
 </main>
-
-<style>
-.legal-content h1,
-.legal-content h2,
-.legal-content h3 {
-    font-weight: 700;
-    margin-top: 2rem;
-}
-
-.legal-content p {
-    margin-bottom: 1rem;
-}
-
-.legal-content ul,
-.legal-content ol {
-    padding-left: 1.2rem;
-    margin-bottom: 1rem;
-}
-
-.legal-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1.5rem;
-}
-
-.legal-content table th,
-.legal-content table td {
-    border: 1px solid #e2e8f0;
-    padding: 0.75rem;
-}
-</style>
 {% endblock %}

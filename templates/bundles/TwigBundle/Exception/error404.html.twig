@@ -6,6 +6,17 @@
 {% block og_description %}La page recherchée n’est plus disponible. Retournez à l’accueil ou explorez nos outils qualité professionnels.{% endblock %}
 {% block seo_robots %}noindex, nofollow{% endblock %}
 
+{% block head %}
+    <meta name="turbo-cache-control" content="no-cache">
+    <script>
+        (function() {
+            if (window.Turbo && window.frameElement) {
+                Turbo.visit(window.location.href, { action: 'replace' });
+            }
+        })();
+    </script>
+{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     {% include 'bundles/TwigBundle/Exception/_error_styles.html.twig' %}

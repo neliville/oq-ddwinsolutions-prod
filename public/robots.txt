@@ -4,14 +4,14 @@ Allow: /
 # Sitemap (URL canonique sans www)
 Sitemap: https://outils-qualite.com/sitemap.xml
 
-# Disallow admin areas
+# Disallow admin and auth areas
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
 
 # Bloquer les anciennes URLs obsolètes
 Disallow: /article-template.html
 Disallow: /*.html$
-
-# Crawl delay
-Crawl-delay: 1

@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Outils qualité gratuits pour vos analyses professionnelles{% endblock %}
+{% block title %}Outils Qualité Gratuits en Ligne — Ishikawa, 5 Pourquoi, AMDEC, Pareto | Outils-Qualité{% endblock %}
 
-{% block meta_description %}
-Outils qualité gratuits : diagrammes Ishikawa, analyses 5 Pourquoi, rapports ISO 9001. Suite QSE complète sans installation.
-{% endblock %}
+{% block meta_description %}Créez gratuitement vos diagrammes Ishikawa, analyses 5 Pourquoi, AMDEC et Pareto en ligne. Export PDF, conforme ISO 9001. Sans inscription.{% endblock %}
 
 {% block meta_keywords %}
 outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration continue, lean, QSE, audit ISO,
@@ -12,12 +10,12 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/site/home.scss') }}" data-turbo-track="reload">
+    {# Les styles home (Preuve sociale, FAQ, etc.) sont déjà inclus dans app.scss via @use "site/home" #}
 {% endblock %}
 
 {% block body %}
     <div class="home-page">
-        <!-- Hero -->
+        <!-- Hero : Problème → Solution avec CTA visibles -->
         <section id="hero" class="hero">
             <div class="container">
                 <div class="hero-grid">
@@ -26,19 +24,20 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                             <span class="badge-dot"></span>
                             Gratuit • Sans installation • RGPD
                         </div>
+                        <p class="hero-problem">Analyses qualité chronophages, diagrammes dispersés, peu de structure pour vos audits&nbsp;?</p>
                         <h1 class="hero-title">Outils QSE simples et gratuits pour structurer votre entreprise</h1>
                         <p class="hero-subtitle">
-                            Modèles pratiques, checklists et documents qualité, sécurité et environnement utilisés sur le terrain par des PME françaises.
+                            Diagrammes Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, Pareto et Méthode 8D : des modèles pratiques utilisés sur le terrain par des PME françaises. Créez, exportez et sauvegardez en quelques clics.
                         </p>
 
                         <div class="hero-cta">
-                            <a href="#outils" class="btn btn-primary">
+                            <a href="{{ path('app_outils_index') }}" class="btn btn-primary btn-hero-primary">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                                     <path d="M10 3V17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                Accéder aux outils
+                                Accéder aux outils gratuitement
                             </a>
-                            <a href="#outils" class="btn btn-secondary">Télécharger un outil gratuit</a>
+                            <a href="{{ path('app_register') }}" class="btn btn-secondary btn-hero-secondary">Créer un compte gratuit</a>
                         </div>
 
                         <div class="hero-stats">
@@ -395,6 +394,55 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                         <h3>Méthodes reconnues</h3>
                         <p>Outils basés sur les méthodes qualité et amélioration continue utilisées en entreprise.</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preuve sociale -->
+        <section id="preuve-sociale" class="social-proof-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-badge">Preuve sociale</span>
+                    <h2>Ils nous font confiance</h2>
+                    <p>Professionnels QSE, responsables qualité et PME qui utilisent nos outils au quotidien.</p>
+                </div>
+                <div class="social-proof-stats">
+                    <div class="social-stat">
+                        <span class="social-stat__value">{{ leadsCount|default(0) }}+</span>
+                        <span class="social-stat__label">Utilisations d'outils</span>
+                    </div>
+                    <div class="social-stat">
+                        <span class="social-stat__value">{{ subscribersCount|default(0) }}+</span>
+                        <span class="social-stat__label">Inscrits à la newsletter</span>
+                    </div>
+                    <div class="social-stat">
+                        <span class="social-stat__value">6</span>
+                        <span class="social-stat__label">Outils qualité gratuits</span>
+                    </div>
+                </div>
+                <div class="testimonials-grid">
+                    <article class="testimonial-card is-open">
+                        <div class="testimonial-card__body">
+                            <p class="testimonial-text">«&nbsp;Gain de temps énorme pour nos analyses causes racines. Les exports PDF vont directement dans nos dossiers d'audit.&nbsp;»</p>
+                        </div>
+                        <button class="testimonial-card__trigger" type="button" aria-expanded="true">
+                            <span class="testimonial-author">Responsable QSE, industrie</span>
+                            <span class="testimonial-chevron" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </button>
+                    </article>
+                    <article class="testimonial-card">
+                        <div class="testimonial-card__body">
+                            <p class="testimonial-text">«&nbsp;Simple, clair, sans fioritures. Exactement ce qu'il nous fallait pour structurer nos réunions d'amélioration continue.&nbsp;»</p>
+                        </div>
+                        <button class="testimonial-card__trigger" type="button" aria-expanded="false">
+                            <span class="testimonial-author">Chef de projet, PME services</span>
+                            <span class="testimonial-chevron" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </button>
+                    </article>
                 </div>
             </div>
         </section>

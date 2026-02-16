@@ -1,8 +1,8 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Méthode QQOQCCP | Analyse 5W2H{% endblock %}
+{% block title %}Analyse QQOQCCP en Ligne Gratuite — Outil 5W2H Complet | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Structurer votre analyse avec la méthode QQOQCCP (5W2H). Outil interactif pour explorer le Qui, Quoi, Où, Quand, Comment, Combien et Pourquoi d'une situation.{% endblock %}
+{% block meta_description %}Structurez votre diagnostic avec l'analyse QQOQCCP (5W2H) en ligne. 7 questions fondamentales, rapport PDF généré automatiquement. Gratuit.{% endblock %}
 
 {% block meta_keywords %}qqoqccp, 5w2h, outil qualité, méthode qqoqccp, analyse complète, résolution de problème{% endblock %}
 
@@ -21,14 +21,32 @@
 }
 {% endblock %}
 
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Analyse QQOQCCP en ligne","url":{{ absolute_url(path('app_qqoqccp_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Structurez votre diagnostic avec l'analyse QQOQCCP (5W2H) en ligne. 7 questions fondamentales, rapport PDF généré automatiquement. Gratuit.","featureList":["7 questions QQOQCCP","Rapport PDF automatique","Gratuit","Conforme ISO 9001"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Analyse QQOQCCP","item":{{ absolute_url(path('app_qqoqccp_index'))|json_encode|raw }}}]}
+{% endblock %}
+
 {% block content %}
 <main class="qqoqccp-page{% if not app.user %} qqoqccp-page--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Analyse QQOQCCP (5W2H)" } %}
         <input type="hidden" id="qqoqccpAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="qqoqccp-header" data-aos="fade-up">
             <h1>Analyse QQOQCCP (5W2H)</h1>
-            <p class="lead">Explorez méthodiquement une situation à l'aide des 7 questions fondamentales : Qui ? Quoi ? Où ? Quand ? Comment ? Combien ? Pourquoi ?</p>
+            <p class="lead">Checklist complète pour cadrer tout projet ou problème : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi — avec suggestions selon votre contexte.</p>
+            {% set meta = tool_meta('qqoqccp') %}
+            {% if meta %}
+            <div class="d-flex flex-wrap gap-2 mb-2" role="list">
+                <span class="badge bg-secondary" role="listitem">Niveau : {{ meta.level }}</span>
+                {% for tag in meta.tags %}
+                <span class="badge bg-light text-dark" role="listitem">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </header>
 
         {% if not app.user %}
@@ -38,6 +56,19 @@
             <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos analyses et les retrouver facilement.
         </div>
         {% endif %}
+
+        <section class="mb-4" aria-labelledby="qqoqccp-when-heading" data-aos="fade-up" data-aos-delay="70">
+            <h2 id="qqoqccp-when-heading" class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
+            <ul class="mb-0">
+                <li><strong>Pour quel type de problème :</strong> audit, investigation, collecte d'informations, préparation de réunion ou de procédure</li>
+                <li>Niveau requis : <strong>Débutant</strong></li>
+            </ul>
+        </section>
+        <section class="mb-4 p-3 bg-light rounded" aria-labelledby="qqoqccp-example-heading" data-aos="fade-up" data-aos-delay="75">
+            <h2 id="qqoqccp-example-heading" class="h6 fw-bold mb-2">Exemple concret</h2>
+            <p class="mb-0">Retards de livraison : <strong>Qui</strong> — logistique, clients ; <strong>Quoi</strong> — retards répétés ; <strong>Où</strong> — entrepôt Nord ; <strong>Quand</strong> — depuis 2 mois ; <strong>Comment</strong> — process de picking ; <strong>Combien</strong> — 15 % des commandes ; <strong>Pourquoi</strong> — effectifs, formation. → Actions recommandées et checklist exportable.</p>
+        </section>
+        <p class="mb-3"><a href="#qqoqccp-examples-sector" class="small">Voir les exemples d'applications par secteurs</a></p>
 
         <section class="qqoqccp-guide-card" data-aos="fade-up" data-aos-delay="80">
             <h2 class="qqoqccp-guide-card__title">🧭 Guide rapide</h2>
@@ -105,6 +136,16 @@
             {% include 'components/tool_actions_login.html.twig' %}
             {% endif %}
         </section>
+
+        <section id="qqoqccp-examples-sector" class="mb-4 p-3 bg-light rounded" aria-labelledby="qqoqccp-sector-heading" data-aos="fade-up" data-aos-delay="140">
+            <h2 id="qqoqccp-sector-heading" class="h6 fw-bold mb-2">Exemples d'applications par secteurs</h2>
+            <ul class="mb-0 small">
+                <li><strong>Industrie / Production :</strong> analyse de panne, non-conformité produit, retard de livraison fournisseur</li>
+                <li><strong>Services / Logistique :</strong> retards clients, erreurs de facturation, litiges</li>
+                <li><strong>Qualité / Audit :</strong> préparation d'audit, rapport d'écart, revue de processus</li>
+            </ul>
+        </section>
+        <p class="mb-3"><a href="{{ path('app_home_index') }}#newsletter" class="btn btn-sm btn-outline-secondary">Téléchargez notre template QQOQCCP (PDF / Excel)</a></p>
 
         <section class="qqoqccp-intro-card" data-aos="fade-up" data-aos-delay="150">
             <h2>Pourquoi utiliser la méthode QQOQCCP ?</h2>
@@ -268,7 +309,28 @@
                     <h3>💡 Synthèse</h3>
                     <div id="qqoqccpReportSummary"></div>
                 </div>
+                <div id="qqoqccpSuggestions" class="qqoqccp-report__section mt-4 p-3 bg-light rounded" style="display:none;">
+                    <h3>📌 Actions recommandées / Modèles utiles</h3>
+                    <ul id="qqoqccpSuggestionsList" class="mb-0"></ul>
+                </div>
             </div>
+        </section>
+
+        {% include 'components/tool_lead_cta.html.twig' %}
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que l'analyse QQOQCCP ?</h2>
+            <p>Méthode de questionnement systématique (Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi), aussi connue sous le nom 5W2H. Permet de caractériser complètement une situation ou un problème avant de passer à l'analyse des causes.</p>
+
+            <h2>Comment utiliser l'analyse QQOQCCP ?</h2>
+            <p>Répondre méthodiquement à chacune des 7 questions pour cadrer le problème de manière exhaustive.</p>
+
+            <h2>Quand utiliser l'analyse QQOQCCP ?</h2>
+            <p>Cadrage initial d'une non-conformité, rédaction d'une fiche d'action, briefing d'équipe projet, préparation d'une analyse de risques.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Gratuit, sans installation, export PDF, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
 </main>

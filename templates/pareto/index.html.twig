@@ -1,8 +1,8 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
-{% block title %}Diagramme de Pareto | Analyse 80/20{% endblock %}
+{% block title %}Diagramme de Pareto en Ligne — Analyse 80/20 Gratuite | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Construisez vos diagrammes de Pareto en quelques clics, identifiez les causes majeures et priorisez vos actions d'amélioration continue.{% endblock %}
+{% block meta_description %}Créez votre diagramme de Pareto en ligne gratuitement. Visualisez la loi 80/20, graphique interactif, export PDF pour vos revues qualité.{% endblock %}
 
 {% block meta_keywords %}pareto, diagramme pareto, 80 20, amélioration continue, analyse des causes, outil qualité{% endblock %}
 
@@ -21,9 +21,18 @@
 }
 {% endblock %}
 
+{% block schema_webapp_json %}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Diagramme de Pareto en ligne","url":{{ absolute_url(path('app_pareto_index'))|json_encode|raw }},"applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Créez votre diagramme de Pareto en ligne gratuitement. Visualisez la loi 80/20, graphique interactif, export PDF pour vos revues qualité.","featureList":["Loi 80/20","Graphique interactif","Export PDF","Revues qualité"]}
+{% endblock %}
+
+{% block schema_breadcrumb_json %}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":{{ absolute_url(path('app_home_index'))|json_encode|raw }}},{"@type":"ListItem","position":2,"name":"Outils","item":{{ absolute_url(path('app_outils_index'))|json_encode|raw }}},{"@type":"ListItem","position":3,"name":"Diagramme de Pareto","item":{{ absolute_url(path('app_pareto_index'))|json_encode|raw }}}]}
+{% endblock %}
+
 {% block content %}
 <main class="pareto-page{% if not app.user %} pareto-page--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Diagramme de Pareto" } %}
         <input type="hidden" id="paretoAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="pareto-header" data-aos="fade-up">
@@ -123,6 +132,22 @@
             </div>
 
             <div class="pareto-insights" id="paretoInsights"></div>
+        </section>
+
+        {% include 'components/cta_ddwin.html.twig' %}
+
+        <section class="seo-content">
+            <h2>Qu'est-ce que le diagramme de Pareto ?</h2>
+            <p>Outil de visualisation basé sur le principe de Pareto (loi des 80/20), attribué à Vilfredo Pareto et popularisé par Joseph Juran. Permet de hiérarchiser les causes d'un problème en montrant que ~20 % des causes génèrent ~80 % des effets.</p>
+
+            <h2>Comment utiliser le diagramme de Pareto ?</h2>
+            <p>(1) Collecter les données par catégorie. (2) Classer par ordre décroissant. (3) Calculer les pourcentages cumulés. (4) Tracer le diagramme (barres + courbe cumulative). (5) Identifier la zone des 80 % pour prioriser les actions.</p>
+
+            <h2>Quand utiliser le diagramme de Pareto ?</h2>
+            <p>Analyse des types de défauts les plus fréquents, priorisation des réclamations, ciblage des causes principales d'arrêt machine.</p>
+
+            <h2>Pourquoi utiliser notre outil en ligne ?</h2>
+            <p>Gratuit, sans installation, graphique interactif, export PDF pour vos revues qualité.</p>
         </section>
     </div>
 

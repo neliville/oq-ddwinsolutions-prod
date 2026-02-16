@@ -52,6 +52,7 @@
         <!-- Hero Section -->
         <section class="tool-seo-hero">
             <div class="container">
+                {% include 'components/tool_breadcrumb.html.twig' with { tool_name: tool.name } %}
                 <div class="tool-seo-hero__content">
                     <div class="tool-seo-hero__badge">
                         <span class="badge-dot"></span>
@@ -59,6 +60,15 @@
                     </div>
                     <h1 class="tool-seo-hero__title">{{ tool.name }}</h1>
                     <p class="tool-seo-hero__description">{{ tool.description }}</p>
+                    {% set meta = tool_meta(tool.slug) %}
+                    {% if meta %}
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-secondary">Niveau : {{ meta.level }}</span>
+                        {% for tag in meta.tags %}
+                        <span class="badge bg-light text-dark">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <div class="tool-seo-hero__cta">
                         {% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
                         <a href="{{ path(tool_route) }}" class="btn btn-primary btn-lg">
@@ -82,6 +92,18 @@
                             <h2>Qu'est-ce que {{ tool.name }} ?</h2>
                             <p class="lead">{{ tool.long_description }}</p>
                         </div>
+                        {% if tool.when_use is defined and tool.when_use|length > 0 %}
+                        <div class="row mt-4">
+                            <div class="col-lg-8 mx-auto">
+                                <h3 class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h3>
+                                <ul class="mb-0">
+                                    {% for item in tool.when_use %}
+                                    <li>{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

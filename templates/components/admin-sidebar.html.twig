@@ -556,11 +556,11 @@ function initSidebar() {
 
         if (!sidebar.dataset.linksListenerAttached) {
             sidebar.dataset.linksListenerAttached = 'true';
-            const sidebarLinks = sidebar.querySelectorAll('a');
+            const sidebarLinks = sidebar.querySelectorAll('a[href]:not([href^="#"]):not(.sidebar-collapse-trigger)');
             sidebarLinks.forEach(function (link) {
                 link.addEventListener('click', function () {
                     if (!isDesktop()) {
-                        setTimeout(() => closeSidebar(), 100);
+                        closeSidebar();
                     }
                 });
             });

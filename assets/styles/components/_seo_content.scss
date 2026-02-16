@@ -1,0 +1,24 @@
+// Section contenu SEO indexable (pages outils)
+.seo-content {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    line-height: 1.7;
+    color: #333;
+
+    h2 {
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        color: #1a1a2e;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    p {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+}

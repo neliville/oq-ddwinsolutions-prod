@@ -1,5 +1,6 @@
-{# Modal pour invités après sauvegarde / utilisation d'un outil : inciter à créer un compte ou se connecter #}
-<div class="modal fade" id="saveGuestModal" tabindex="-1" aria-labelledby="saveGuestModalTitle" aria-hidden="true">
+{# Modal pour invités après sauvegarde / utilisation d'un outil : inciter à créer un compte ou capturer l'email #}
+{# Inclure avec : {% include 'components/save_guest_modal.html.twig' with { tool: 'ishikawa' } %} (ou 'fivewhy', etc.) #}
+<div class="modal fade" id="saveGuestModal" tabindex="-1" aria-labelledby="saveGuestModalTitle" aria-hidden="true" data-save-guest-tool="{{ tool|default('') }}">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
@@ -8,6 +9,15 @@
             </div>
             <div class="modal-body pt-2">
                 <p class="mb-0">Votre travail est enregistré localement sur cet appareil. Pour le retrouver sur tous vos appareils et ne rien perdre, créez un compte gratuit ou connectez-vous.</p>
+                <div class="save-guest-email-block mt-4 pt-4 border-top">
+                    <p class="small text-muted mb-2">Ou laissez votre email pour recevoir un rappel et nos astuces QSE (sans engagement).</p>
+                    <form id="saveGuestEmailForm" class="d-flex gap-2 flex-wrap" data-save-guest-form>
+                        <input type="email" name="email" class="form-control form-control-sm" placeholder="votre@email.fr" required maxlength="255" aria-label="Votre email">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Envoyer</button>
+                    </form>
+                    <p id="saveGuestEmailSuccess" class="small text-success mt-2 mb-0 d-none">Merci, nous vous recontacterons.</p>
+                    <p id="saveGuestEmailError" class="small text-danger mt-2 mb-0 d-none"></p>
+                </div>
             </div>
             <div class="modal-footer border-0 flex-wrap gap-2">
                 <a href="{{ path('app_register') }}" class="btn btn-primary">Créer un compte gratuit</a>
@@ -17,3 +27,36 @@
         </div>
     </div>
 </div>
+<script>
+(function() {
+    var form = document.getElementById('saveGuestEmailForm');
+    if (!form) return;
+    var modal = document.getElementById('saveGuestModal');
+    var tool = modal && modal.getAttribute('data-save-guest-tool') ? modal.getAttribute('data-save-guest-tool') : '';
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = form.querySelector('input[name="email"]');
+        var email = emailInput && emailInput.value ? emailInput.value.trim() : '';
+        if (!email) return;
+        var successEl = document.getElementById('saveGuestEmailSuccess');
+        var errorEl = document.getElementById('saveGuestEmailError');
+        if (successEl) successEl.classList.add('d-none');
+        if (errorEl) { errorEl.classList.add('d-none'); errorEl.textContent = ''; }
+        fetch('{{ path('app_public_lead_create') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ email: email, source: 'tool', tool: tool || 'outil' })
+        }).then(function(r) {
+            if (r.ok) {
+                if (successEl) successEl.classList.remove('d-none');
+                if (emailInput) emailInput.value = '';
+                form.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+            } else {
+                if (errorEl) { errorEl.textContent = 'Une erreur est survenue.'; errorEl.classList.remove('d-none'); }
+            }
+        }).catch(function() {
+            if (errorEl) { errorEl.textContent = 'Une erreur est survenue.'; errorEl.classList.remove('d-none'); }
+        });
+    });
+})();
+</script>
