@@ -54,6 +54,10 @@
                         {% endfor %}
 
                         {{ form_start(form, {'attr': {'class': 'contact-form', 'id': 'contactForm', 'data-turbo': 'false'}}) }}
+                            {# Honeypot anti-spam : champ invisible (ne pas remplir) #}
+                            <div class="contact-honeypot-wrapper" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;">
+                                {{ form_row(form.website) }}
+                            </div>
                             <div class="row g-3">
                                 <div class="col-12">
                                     {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}

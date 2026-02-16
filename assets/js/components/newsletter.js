@@ -8,7 +8,6 @@ const handleNewsletterSubmit = async (event) => {
   const submitButton = form.querySelector('button[type="submit"]');
   const originalText = submitButton.innerHTML;
 
-  // Récupérer uniquement le champ email pour éviter les champs supplémentaires
   const emailInput = form.querySelector('input[type="email"]');
   if (!emailInput || !emailInput.value.trim()) {
     if (messageTarget) {
@@ -19,11 +18,8 @@ const handleNewsletterSubmit = async (event) => {
     return;
   }
 
-  // Créer un FormData propre avec uniquement l'email
-  // Utiliser le nom exact du champ depuis l'input (plus robuste)
-  const formData = new FormData();
-  const fieldName = emailInput.name || 'newsletter_form[email]';
-  formData.append(fieldName, emailInput.value.trim());
+  // Envoyer tout le formulaire (noms de champs Symfony corrects) + Accept JSON
+  const formData = new FormData(form);
 
   submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Envoi...';
   submitButton.disabled = true;
@@ -33,10 +29,12 @@ const handleNewsletterSubmit = async (event) => {
   }
 
   try {
-    const response = await fetch(form.action, {
+    const url = form.action || '/api/newsletter/subscribe';
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
       },
       body: formData,
     });

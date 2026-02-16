@@ -18,6 +18,17 @@ class ContactFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('website', TextType::class, [
+                'label' => 'Site web',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control contact-honeypot',
+                    'autocomplete' => 'off',
+                    'tabindex' => '-1',
+                    'aria-hidden' => 'true',
+                ],
+            ])
             ->add('name', TextType::class, [
                 'label' => 'Prénom *',
                 'attr' => [

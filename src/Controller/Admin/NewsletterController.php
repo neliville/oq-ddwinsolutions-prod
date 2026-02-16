@@ -86,16 +86,17 @@ final class NewsletterController extends AbstractController
     #[Route('/{id}/unsubscribe', name: 'unsubscribe', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function unsubscribe(NewsletterSubscriber $subscriber, Request $request): Response
     {
-        if ($this->isCsrfTokenValid('unsubscribe_' . $subscriber->getId(), $request->request->get('_token'))) {
-            $email = $subscriber->getEmail();
-            $subscriber->unsubscribe();
-            $this->entityManager->flush();
-
-            // Logger l'action
-            $this->logAction('UPDATE', NewsletterSubscriber::class, $subscriber->getId(), "Désabonnement de {$email}");
-
-            $this->addFlash('success', 'Abonné désabonné avec succès.');
+        if (!$this->isCsrfTokenValid('unsubscribe_' . $subscriber->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide. Veuillez réessayer.');
+            return $this->redirectToRoute('app_admin_newsletter_index');
         }
+
+        $email = $subscriber->getEmail();
+        $subscriber->unsubscribe();
+        $this->entityManager->flush();
+
+        $this->logAction('UPDATE', NewsletterSubscriber::class, $subscriber->getId(), "Désabonnement de {$email}");
+        $this->addFlash('success', 'Abonné désabonné avec succès.');
 
         return $this->redirectToRoute('app_admin_newsletter_index');
     }
@@ -103,18 +104,19 @@ final class NewsletterController extends AbstractController
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(NewsletterSubscriber $subscriber, Request $request): Response
     {
-        if ($this->isCsrfTokenValid('delete_' . $subscriber->getId(), $request->request->get('_token'))) {
-            $email = $subscriber->getEmail();
-            $subscriberId = $subscriber->getId();
-
-            $this->entityManager->remove($subscriber);
-            $this->entityManager->flush();
-
-            // Logger l'action
-            $this->logAction('DELETE', NewsletterSubscriber::class, $subscriberId, "Abonné supprimé : {$email}");
-
-            $this->addFlash('success', 'Abonné supprimé avec succès.');
+        if (!$this->isCsrfTokenValid('delete_' . $subscriber->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token de sécurité invalide. Veuillez réessayer.');
+            return $this->redirectToRoute('app_admin_newsletter_index');
         }
+
+        $email = $subscriber->getEmail();
+        $subscriberId = $subscriber->getId();
+
+        $this->entityManager->remove($subscriber);
+        $this->entityManager->flush();
+
+        $this->logAction('DELETE', NewsletterSubscriber::class, $subscriberId, "Abonné supprimé : {$email}");
+        $this->addFlash('success', 'Abonné supprimé avec succès.');
 
         return $this->redirectToRoute('app_admin_newsletter_index');
     }

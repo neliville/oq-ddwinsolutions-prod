@@ -4,6 +4,18 @@
 
 {% block content %}
 <div class="container-fluid p-4">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -142,7 +154,7 @@
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     {% if subscriber.active %}
-                                    <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="d-inline">
+                                    <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="d-inline" data-turbo="false">
                                         <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
                                         <button type="submit" class="btn btn-outline-warning" title="Désabonner">
                                             <i data-lucide="user-x" width="14" height="14"></i>
@@ -151,6 +163,7 @@
                                     {% endif %}
                                     <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" 
                                           class="d-inline" 
+                                          data-turbo="false"
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet abonné ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
                                         <button type="submit" class="btn btn-outline-danger" title="Supprimer">

@@ -33,6 +33,13 @@ final class ContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Honeypot anti-spam : si le champ "website" est rempli, considérer comme bot
+            $honeypot = $form->get('website')->getData();
+            if ($honeypot !== null && trim((string) $honeypot) !== '') {
+                $this->addFlash('contact_success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
+                return $this->redirectToRoute('app_contact_index');
+            }
+
             // Sauvegarder le message en base de données
             $entityManager->persist($contactMessage);
             $entityManager->flush();

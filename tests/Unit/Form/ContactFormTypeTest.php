@@ -24,6 +24,7 @@ class ContactFormTypeTest extends TypeTestCase
             'email' => 'john@example.com',
             'subject' => 'support',
             'message' => 'Ceci est un message de test.',
+            'website' => '', // Honeypot : doit rester vide
         ];
 
         $model = new ContactMessage();
@@ -52,6 +53,7 @@ class ContactFormTypeTest extends TypeTestCase
         $this->assertTrue($form->has('email'));
         $this->assertTrue($form->has('subject'));
         $this->assertTrue($form->has('message'));
+        $this->assertTrue($form->has('website')); // Honeypot anti-spam
     }
 
     public function testValidationConstraints(): void
@@ -64,6 +66,7 @@ class ContactFormTypeTest extends TypeTestCase
             'email' => 'invalid-email',
             'subject' => '',
             'message' => '',
+            'website' => '',
         ]);
 
         $this->assertFalse($form->isValid());
