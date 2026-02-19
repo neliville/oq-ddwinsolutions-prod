@@ -18,11 +18,11 @@ class ApiIshikawaControllerTest extends WebTestCaseWithDatabase
             'content' => [],
         ]));
 
-        // Devrait rediriger vers /login (302) ou retourner 401
-        $this->assertTrue(
-            in_array($client->getResponse()->getStatusCode(), [302, 401], true),
-            'Devrait rediriger vers login (302) ou retourner 401'
-        );
+        // Sans auth : accepté en mode invité (200) avec guest: true
+        $this->assertResponseStatusCodeSame(200);
+        $response = json_decode($client->getResponse()->getContent(), true);
+        $this->assertTrue($response['success'] ?? false);
+        $this->assertTrue($response['guest'] ?? false);
     }
 
     public function testApiIshikawaSaveWithAuthentication(): void

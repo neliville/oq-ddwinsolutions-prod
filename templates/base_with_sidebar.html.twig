@@ -5,7 +5,9 @@
 
 {% block body %}
 {% if app.user %}
-    {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+    <header>
+        {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+    </header>
 {% endif %}
 <div class="d-flex">
     <!-- Overlay pour mobile quand sidebar ouverte -->
@@ -15,11 +17,13 @@
 
     <!-- Sidebar Dashboard pour utilisateurs connectés -->
     {% if app.user %}
-        {% include 'components/admin-sidebar.html.twig' %}
+        <aside aria-label="Menu d'administration">
+            {% include 'components/admin-sidebar.html.twig' %}
+        </aside>
     {% endif %}
 
     <!-- Contenu principal -->
-    <main class="main-content flex-grow-1{% if app.user %} dashboard-layout{% endif %}" {% if app.user %}style="transition: margin-left 0.3s; padding-top: 110px; padding-bottom: 64px;"{% else %}style="padding-top: 76px;"{% endif %}>
+    <main id="main-content" class="main-content flex-grow-1{% if app.user %} dashboard-layout{% endif %}" tabindex="-1" {% if app.user %}style="transition: margin-left 0.3s; padding-top: 110px; padding-bottom: 64px;"{% else %}style="padding-top: 76px;"{% endif %}>
         {% block content %}{% endblock %}
     </main>
 </div>

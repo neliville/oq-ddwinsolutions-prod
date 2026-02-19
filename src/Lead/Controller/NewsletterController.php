@@ -9,6 +9,7 @@ use App\Form\UnsubscribeReasonType;
 use App\Repository\NewsletterSubscriberRepository;
 use App\Service\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ final class NewsletterController extends AbstractController
 {
     public function __construct(
         private readonly NewsletterService $newsletterService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -62,7 +64,7 @@ final class NewsletterController extends AbstractController
                     try {
                         $this->newsletterService->sendWelcomeEmail($existingSubscriber);
                     } catch (\Exception $e) {
-                        error_log('Erreur lors de l\'envoi de l\'email de réactivation : ' . $e->getMessage());
+                        $this->logger->error('Erreur lors de l\'envoi de l\'email de réactivation', ['exception' => $e]);
                     }
 
                     return new JsonResponse([
@@ -88,9 +90,7 @@ final class NewsletterController extends AbstractController
             try {
                 $this->newsletterService->sendWelcomeEmail($subscriber);
             } catch (\Exception $e) {
-                // Log l'erreur mais ne bloque pas l'inscription
-                // TODO: Logger l'erreur dans un fichier log ou service de logging
-                error_log('Erreur lors de l\'envoi de l\'email de bienvenue : ' . $e->getMessage());
+                $this->logger->error('Erreur lors de l\'envoi de l\'email de bienvenue', ['exception' => $e]);
             }
 
             return new JsonResponse([

@@ -6,6 +6,7 @@ use App\Entity\ContactMessage;
 use App\Form\ContactFormType;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ final class ContactController extends AbstractController
 {
     public function __construct(
         private readonly MailerService $mailerService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -53,7 +55,7 @@ final class ContactController extends AbstractController
                     }
                 }
 
-                error_log('Erreur lors de l\'envoi de l\'accusé de réception : ' . $exception->getMessage());
+                $this->logger->error('Erreur lors de l\'envoi de l\'accusé de réception', ['exception' => $exception]);
             }
 
             $this->addFlash('contact_success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');

@@ -80,7 +80,7 @@
                     {% if post.image %}
                     <div class="mb-4">
                         <h6 class="text-muted text-uppercase small mb-2">Image à la une</h6>
-                        <img src="{{ asset(post.image) }}" alt="{{ post.title }}" class="img-fluid rounded shadow-sm">
+                        <img src="{{ (post.image starts with 'http') ? post.image : asset(post.image) }}" alt="{{ post.title }}" class="img-fluid rounded shadow-sm" loading="lazy" width="800" height="450">
                     </div>
                     {% endif %}
 

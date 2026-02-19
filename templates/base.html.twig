@@ -80,24 +80,34 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
 
-    <!-- Google Fonts (optimisé avec font-display: swap) -->
+    <!-- Preconnect et DNS-prefetch pour performances optimales -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Optimisation font-display pour les polices */
-        @font-face {
-            font-family: 'Inter';
-            font-display: swap;
-        }
-    </style>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+
+    <!-- Google Fonts : optimisé - preload des poids critiques uniquement (400, 600) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+    <!-- Poids secondaires (300, 500, 700) chargés en non-bloquant -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet"></noscript>
 
     <!-- Custom CSS (critique, chargé immédiatement) -->
     <link href="{{ asset('styles/app.scss') }}" rel="stylesheet">
 
-    <!-- Bibliothèques tierces -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <!-- Preload scripts critiques pour mobile -->
+    <link rel="modulepreload" href="{{ asset('app.js') }}">
+    <link rel="preload" as="script" href="https://unpkg.com/lucide@latest/dist/umd/lucide.js">
+
+    <!-- Bibliothèques tierces : non bloquantes pour réduire le temps de blocage -->
+    <!-- Font Awesome chargé en différé (priorité basse avec migration vers Lucide) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"></noscript>
+    <!-- AOS (animations) chargé en différé pour ne pas bloquer le rendu initial -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
+    <!-- Scripts avec defer pour chargement non-bloquant -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
 
@@ -170,6 +180,11 @@
 </head>
 
 <body>
+    {# Skip link pour accessibilité - visible uniquement au focus clavier #}
+    <a href="#main-content" class="visually-hidden-focusable btn btn-primary position-absolute top-0 start-0 m-2" style="z-index: 9999;">
+        Aller au contenu principal
+    </a>
+
     <!-- Google Tag Manager (noscript) -->
     <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNCNWR54"
@@ -201,16 +216,22 @@
 
     <!-- Navigation -->
     {% if show_public_navbar %}
-        {% include 'components/navbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+        <nav aria-label="Navigation principale">
+            {% include 'components/navbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
+        </nav>
     {% endif %}
 
     <!-- Main Content -->
-    {% block body %}
-        {% block content %}{% endblock %}
-    {% endblock %}
+    <main id="main-content" tabindex="-1">
+        {% block body %}
+            {% block content %}{% endblock %}
+        {% endblock %}
+    </main>
 
     <!-- Footer -->
-    {% include 'components/footer.html.twig' %}
+    <footer>
+        {% include 'components/footer.html.twig' %}
+    </footer>
 
     {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
     <div data-controller="notifications" class="d-none" aria-hidden="true"></div>
@@ -232,24 +253,31 @@
     {% block javascripts %}
     {% endblock %}
 
-    <link rel="stylesheet" href="{{ asset('cookie-banner/silktide-consent-manager.css') }}">
+    <link rel="stylesheet" href="{{ asset('cookie-banner/silktide-consent-manager.css') }}" media="print" onload="this.media='all'">
     <script src="{{ asset('cookie-banner/silktide-consent-manager.js') }}" defer></script>
 
     <script>
         function finalizeNonCriticalAssets() {
             document.documentElement.classList.remove('is-loading');
 
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
+            function runIconsAndAos() {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+                if (typeof AOS !== 'undefined') {
+                    AOS.init({
+                        duration: 800,
+                        easing: 'ease-in-out',
+                        once: true,
+                        offset: 100,
+                    });
+                }
             }
 
-            if (typeof AOS !== 'undefined') {
-                AOS.init({
-                    duration: 800,
-                    easing: 'ease-in-out',
-                    once: true,
-                    offset: 100,
-                });
+            if (typeof requestIdleCallback !== 'undefined') {
+                requestIdleCallback(runIconsAndAos, { timeout: 500 });
+            } else {
+                runIconsAndAos();
             }
         }
 

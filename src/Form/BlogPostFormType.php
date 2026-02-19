@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\Url;
 
 class BlogPostFormType extends AbstractType
 {
@@ -48,8 +49,20 @@ class BlogPostFormType extends AbstractType
                     'placeholder' => 'Court résumé de l\'article...',
                 ],
             ])
+            ->add('featuredImageUrl', TextType::class, [
+                'label' => 'Image à la une par URL',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'https://exemple.com/image.jpg',
+                ],
+                'constraints' => [
+                    new Url(message: 'Veuillez indiquer une URL valide.'),
+                ],
+            ])
             ->add('featuredImage', FileType::class, [
-                'label' => 'Image à la une (JPG ou WEBP)',
+                'label' => 'Image à la une par fichier (JPG ou WEBP)',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [

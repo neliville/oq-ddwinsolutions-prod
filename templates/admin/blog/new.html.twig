@@ -140,6 +140,12 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
 
 {% block content %}
 <div class="container-fluid p-4">
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -178,13 +184,18 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                         {{ form_errors(form.excerpt) }}
                     </div>
 
-                    <div class="mb-3" data-controller="image-upload" data-image-upload-upload-url-value="{{ path('app_admin_blog_upload_image_preview') }}">
-                        {{ form_label(form.featuredImage, null, {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.featuredImage, {'attr': {'class': 'form-control', 'data-image-upload-target': 'input'}}) }}
-                        <div class="form-text">Formats acceptés : JPG ou WEBP (4&nbsp;Mo maximum). Dimensions recommandées : min 400x300px, max 4000x3000px.</div>
+                    <div class="mb-3">
+                        <label class="form-label">Image à la une</label>
+                        <p class="form-text text-muted small mb-2">Indiquez une URL ou téléversez un fichier (le fichier est prioritaire si les deux sont renseignés).</p>
+                        <div class="mb-2">
+                            {{ form_row(form.featuredImageUrl, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'https://exemple.com/image.jpg'}}) }}
+                        </div>
+                        <div data-controller="image-upload" data-image-upload-upload-url-value="{{ path('app_admin_blog_upload_image_preview') }}">
+                            {{ form_row(form.featuredImage, {'label': 'Ou téléverser un fichier (JPG ou WEBP)', 'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-control', 'data-image-upload-target': 'input'}}) }}
+                        </div>
+                        <div class="form-text">Fichier : 4&nbsp;Mo max. Dimensions recommandées : min 400×300px, max 4000×3000px.</div>
                         {{ form_errors(form.featuredImage) }}
                         
-                        <!-- Loader -->
                         <div class="mt-2 d-none" data-image-upload-target="loading">
                             <div class="spinner-border spinner-border-sm text-primary" role="status">
                                 <span class="visually-hidden">Chargement...</span>
@@ -192,7 +203,6 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                             <span class="ms-2 text-muted">Génération des variantes optimisées...</span>
                         </div>
                         
-                        <!-- Erreur -->
                         <div class="mt-2 alert alert-danger d-none" data-image-upload-target="error" role="alert"></div>
                         
                         <!-- Prévisualisation -->

@@ -24,3 +24,160 @@
 .shadow-md {
   box-shadow: var(--shadow-md) !important;
 }
+
+// ===================================================================
+// UTILITIES ADDITIONNELLES - Pour remplacer les styles inline
+// ===================================================================
+
+// === Spacing Utilities ===
+.mt-navbar {
+  margin-top: 76px; // Espacement après navbar fixe
+}
+
+// === Visibilité ===
+.visually-hidden-honeypot {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+// Alias Bootstrap - Skip link visible au focus
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// === Icônes et Images ===
+.icon-sm {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-md {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-lg {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-xl {
+  width: 40px;
+  height: 40px;
+}
+
+// === Animations ===
+.chevron-rotate {
+  transition: transform var(--transition-base);
+
+  &.is-open {
+    transform: rotate(180deg);
+  }
+}
+
+// === Truncate ===
+.text-truncate-200 {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-truncate-300 {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-truncate-400 {
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ===================================================================
+// MOBILE OPTIMIZATIONS - Touch-friendly et performances
+// ===================================================================
+
+// === Touch Targets (minimum 44x44px pour accessibilité mobile) ===
+.btn,
+button,
+a[role="button"] {
+  min-height: 44px;
+
+  @media (max-width: 576px) {
+    &.btn-sm {
+      min-height: 40px;
+    }
+  }
+}
+
+// === Tap Highlight optimisé ===
+* {
+  -webkit-tap-highlight-color: rgba(79, 70, 229, 0.15);
+}
+
+// === Scroll Performance ===
+.modal,
+.dropdown-menu {
+  -webkit-overflow-scrolling: touch;
+}
+
+// === Font Size Responsive ===
+@media (max-width: 576px) {
+  h1,
+  .h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  body {
+    font-size: 16px; // Jamais moins de 16px pour éviter le zoom iOS
+  }
+}
+
+// === Prevent Text Selection on Interactive Elements ===
+.btn,
+.badge {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+// === Loading Performance - Réduire animations sur mobile ===
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// === Image Performance ===
+img,
+picture {
+  max-width: 100%;
+  height: auto;
+}
+
+// === Focus Visible ===
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}

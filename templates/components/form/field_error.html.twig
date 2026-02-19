@@ -1,0 +1,13 @@
+{# Composant pour afficher les erreurs de formulaire de manière accessible #}
+{# Usage:
+    {% include 'components/form/field_error.html.twig' with {
+        errors: form.email.vars.errors
+    } %}
+#}
+{% if errors|length > 0 %}
+    <div class="invalid-feedback d-block" role="alert" aria-live="polite">
+        {% for error in errors %}
+            {{ error.message }}{% if not loop.last %}<br>{% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

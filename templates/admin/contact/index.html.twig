@@ -54,17 +54,18 @@
             {% if messages|length > 0 %}
             <div class="table-responsive d-none d-lg-block">
                 <table class="table table-hover mb-0">
+                    <caption class="visually-hidden">Liste des messages de contact</caption>
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 50px;">
-                                <input type="checkbox" class="form-check-input" id="selectAll">
+                            <th scope="col" style="width: 50px;">
+                                <input type="checkbox" class="form-check-input" id="selectAll" aria-label="Sélectionner tous les messages">
                             </th>
-                            <th>De</th>
-                            <th>Sujet</th>
-                            <th>Message</th>
-                            <th>Date</th>
-                            <th>Statut</th>
-                            <th style="width: 120px;">Actions</th>
+                            <th scope="col">De</th>
+                            <th scope="col">Sujet</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col" style="width: 120px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

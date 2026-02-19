@@ -1,0 +1,53 @@
+// ===================================================================
+// BADGES - Système de badges standardisé pour statuts et catégories
+// ===================================================================
+
+// === Base Badge Styles ===
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+  border-radius: var(--border-radius-sm);
+}
+
+// === Status Badges (couleurs prédéfinies) ===
+.badge-status {
+  &.is-published {
+    background-color: var(--success);
+    color: white;
+  }
+
+  &.is-draft {
+    background-color: var(--warning);
+    color: white;
+  }
+
+  &.is-archived {
+    background-color: var(--gray-500);
+    color: white;
+  }
+
+  &.is-featured {
+    background-color: var(--primary);
+    color: white;
+  }
+
+  &.is-pending {
+    background-color: var(--info);
+    color: white;
+  }
+}
+
+// === Category Badges (couleur dynamique depuis DB) ===
+// Note: La couleur de fond est définie en inline style car elle vient de la base de données
+.badge-category {
+  color: white;
+  // background-color sera défini via style inline : style="background-color: {{ category.color }}"
+}
+
+// === Tag Badges ===
+.badge-tag {
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  font-weight: 500;
+}

@@ -1,8 +1,28 @@
 # Configuration Apache pour optimiser les performances et le SEO
 
-# Activer la compression GZIP
+# Activer la compression GZIP/Brotli pour réduire la taille des fichiers (économie ~70%)
 <IfModule mod_deflate.c>
+    # Compresser HTML, CSS, JavaScript, JSON, XML
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+    # Compresser également SVG et autres formats texte
+    AddOutputFilterByType DEFLATE image/svg+xml application/xhtml+xml application/rss+xml
+    # Compresser les polices
+    AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-otf font/opentype font/ttf font/eot font/otf
+
+    # Ne pas compresser les images déjà compressées
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|ico)$ no-gzip dont-vary
+
+    # Assurer un en-tête Vary correct pour le caching
+    <IfModule mod_headers.c>
+        Header append Vary Accept-Encoding
+    </IfModule>
+</IfModule>
+
+# Brotli compression (si disponible, meilleure que GZIP)
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json application/xml
+    AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
 </IfModule>
 
 # Configuration des durées de cache pour améliorer les performances
@@ -98,5 +118,28 @@
 <IfModule mod_headers.c>
     Header unset Server
     Header unset X-Powered-By
+
+    # Performance et sécurité headers
+    # Preload (permet au navigateur de précharger des ressources avant d'analyser le HTML)
+    Header add Link "</styles/app.css>; rel=preload; as=style"
+    Header add Link "</app.js>; rel=modulepreload"
+
+    # Optimisations pour mobile - permettre au navigateur de gérer les ressources efficacement
+    # Early Hints (103) pour les ressources critiques - améliore le chargement mobile
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Référer Policy - équilibre entre privacy et analytics
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Optimisation des performances pour mobile - éviter les requêtes inutiles
+<IfModule mod_headers.c>
+    # ETags pour la validation de cache
+    FileETag MTime Size
+
+    # Ajouter les en-têtes de timing pour mesurer les performances
+    Header set Timing-Allow-Origin "*"
 </IfModule>
 

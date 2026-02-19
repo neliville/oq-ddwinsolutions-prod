@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -37,6 +38,7 @@ final class BlogController extends AbstractController
         private readonly SluggerInterface $slugger,
         private readonly ImageOptimizerService $imageOptimizer,
         #[Autowire(param: 'blog_images_directory')] private readonly string $blogImagesDirectory,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -55,7 +57,7 @@ final class BlogController extends AbstractController
         $draftCount = $this->blogPostRepository->countByFilter('draft');
         $featuredCount = $this->blogPostRepository->countByFilter('featured');
 
-        return $this->render('admin/blog/index.html.twig', [
+        $response = $this->render('admin/blog/index.html.twig', [
             'posts' => $posts,
             'currentFilter' => $filter,
             'currentPage' => $page,
@@ -65,6 +67,9 @@ final class BlogController extends AbstractController
             'draftCount' => $draftCount,
             'featuredCount' => $featuredCount,
         ]);
+        $response->headers->addCacheControlDirective('no-cache');
+        $response->headers->addCacheControlDirective('no-store');
+        return $response;
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
@@ -76,11 +81,17 @@ final class BlogController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('featuredImage')->getData();
-            if (!$this->handleFeaturedImage($post, $imageFile)) {
-                return $this->render('admin/blog/new.html.twig', [
-                    'form' => $form,
-                    'post' => $post,
-                ]);
+            $imageUrl = trim((string) $form->get('featuredImageUrl')->getData());
+
+            if ($imageFile) {
+                if (!$this->handleFeaturedImage($post, $imageFile)) {
+                    return $this->render('admin/blog/new.html.twig', [
+                        'form' => $form,
+                        'post' => $post,
+                    ]);
+                }
+            } elseif ($imageUrl !== '') {
+                $post->setImage($imageUrl);
             }
 
             // Générer le slug automatiquement s'il est vide
@@ -104,8 +115,17 @@ final class BlogController extends AbstractController
                 $post->setPublishedAt(new \DateTimeImmutable());
             }
 
-            $this->entityManager->persist($post);
-            $this->entityManager->flush();
+            try {
+                $this->entityManager->persist($post);
+                $this->entityManager->flush();
+            } catch (\Throwable $e) {
+                $this->logger->error('Erreur lors de la création de l\'article', ['exception' => $e]);
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'enregistrement. Vérifiez les champs (catégorie, temps de lecture) et réessayez.');
+                return $this->render('admin/blog/new.html.twig', [
+                    'form' => $form,
+                    'post' => $post,
+                ]);
+            }
 
             // Logger l'action
             $this->logAction('CREATE', BlogPost::class, $post->getId(), "Article créé : {$post->getTitle()}");
@@ -125,15 +145,25 @@ final class BlogController extends AbstractController
     public function edit(BlogPost $post, Request $request): Response
     {
         $form = $this->createForm(BlogPostFormType::class, $post);
+        $currentImage = $post->getImage();
+        if ($currentImage && (str_starts_with($currentImage, 'http://') || str_starts_with($currentImage, 'https://'))) {
+            $form->get('featuredImageUrl')->setData($currentImage);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('featuredImage')->getData();
-            if (!$this->handleFeaturedImage($post, $imageFile)) {
-                return $this->render('admin/blog/edit.html.twig', [
-                    'form' => $form,
-                    'post' => $post,
-                ]);
+            $imageUrl = trim((string) $form->get('featuredImageUrl')->getData());
+
+            if ($imageFile) {
+                if (!$this->handleFeaturedImage($post, $imageFile)) {
+                    return $this->render('admin/blog/edit.html.twig', [
+                        'form' => $form,
+                        'post' => $post,
+                    ]);
+                }
+            } elseif ($imageUrl !== '') {
+                $post->setImage($imageUrl);
             }
 
             // Vérifier l'unicité du slug (sauf pour l'article actuel)
@@ -150,7 +180,16 @@ final class BlogController extends AbstractController
                 $post->setPublishedAt(new \DateTimeImmutable());
             }
 
-            $this->entityManager->flush();
+            try {
+                $this->entityManager->flush();
+            } catch (\Throwable $e) {
+                $this->logger->error('Erreur lors de la mise à jour de l\'article', ['exception' => $e]);
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'enregistrement. Vérifiez les champs et réessayez.');
+                return $this->render('admin/blog/edit.html.twig', [
+                    'form' => $form,
+                    'post' => $post,
+                ]);
+            }
 
             // Logger l'action
             $this->logAction('UPDATE', BlogPost::class, $post->getId(), "Article modifié : {$post->getTitle()}");

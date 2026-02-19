@@ -7,6 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ class RegistrationController extends AbstractController
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly EntityManagerInterface $entityManager,
         private readonly MailerService $mailerService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -48,8 +50,7 @@ class RegistrationController extends AbstractController
             try {
                 $this->mailerService->sendWelcomeEmail($user);
             } catch (\Exception $e) {
-                // Log l'erreur mais ne bloque pas l'inscription
-                error_log('Erreur lors de l\'envoi de l\'email de bienvenue : ' . $e->getMessage());
+                $this->logger->error('Erreur lors de l\'envoi de l\'email de bienvenue', ['exception' => $e]);
             }
 
             // Afficher un message de succès

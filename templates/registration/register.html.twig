@@ -18,7 +18,7 @@
         <div class="auth-page__brand">
             <div class="auth-brand">
                 <span class="auth-brand__icon">
-                    <i class="fas fa-user-plus"></i>
+                    <i data-lucide="user-plus" width="24" height="24" aria-hidden="true"></i>
                 </span>
                 <span class="auth-brand__name">OUTILS-QUALITÉ</span>
             </div>
@@ -39,17 +39,17 @@
 
                     {% for flash_error in app.flashes('error') %}
                         <div class="alert auth-alert alert-danger alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
-                            <i class="fas fa-exclamation-circle mt-1"></i>
+                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1" aria-hidden="true"></i>
                             <div>{{ flash_error }}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
                         </div>
                     {% endfor %}
 
                     {% for flash_success in app.flashes('success') %}
                         <div class="alert auth-alert alert-success alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
-                            <i class="fas fa-check-circle mt-1"></i>
+                            <i data-lucide="check-circle" width="20" height="20" class="mt-1" aria-hidden="true"></i>
                             <div>{{ flash_success }}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
                         </div>
                     {% endfor %}
 
@@ -108,7 +108,7 @@
                         </div>
 
                         <button class="auth-form__submit" type="submit">
-                            <i class="fas fa-user-plus"></i>
+                            <i data-lucide="user-plus" width="20" height="20" aria-hidden="true"></i>
                             Créer mon compte
                         </button>
                     {{ form_end(registrationForm) }}
@@ -175,7 +175,7 @@
                         </div>
 
                         <p class="auth-meta mt-4">
-                            <i class="fas fa-envelope-open-text me-2"></i>Besoin d’aide ? Écrivez-nous à support@outils-qualite.com.
+                            <i data-lucide="mail-open" width="16" height="16" class="me-2" aria-hidden="true"></i>Besoin d'aide ? Écrivez-nous à support@outils-qualite.com.
                         </p>
                     </div>
                 </section>
@@ -183,9 +183,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block stylesheets %}
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 {% endblock %}

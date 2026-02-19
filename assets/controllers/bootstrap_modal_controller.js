@@ -348,13 +348,20 @@ export default class extends Controller {
         if (!this.element || !document.contains(this.element)) {
             return;
         }
-        
+
+        // Sauvegarder l'élément qui avait le focus avant l'ouverture du modal
+        this.previouslyFocusedElement = document.activeElement;
+
         // Utiliser l'approche simple du code initial
         this.element.style.display = 'block';
-        
+
         // Ajouter la classe Bootstrap 'show' pour l'animation
         requestAnimationFrame(() => {
             this.element.classList.add('show');
+
+            // Gérer aria-hidden dynamiquement
+            this.element.setAttribute('aria-hidden', 'false');
+
             // Ajouter le backdrop Bootstrap
             if (!document.body.querySelector('.modal-backdrop')) {
                 const backdrop = document.createElement('div');
@@ -364,6 +371,14 @@ export default class extends Controller {
             // Empêcher le scroll du body
             document.body.style.overflow = 'hidden';
             document.body.style.paddingRight = '0px';
+
+            // Focus sur le premier élément focusable du modal pour l'accessibilité
+            const focusableElements = this.element.querySelectorAll(
+                'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            if (focusableElements.length > 0) {
+                focusableElements[0].focus();
+            }
         });
     }
 
@@ -374,22 +389,30 @@ export default class extends Controller {
         if (!this.element || !document.contains(this.element)) {
             return;
         }
-        
+
         // Retirer la classe Bootstrap 'show'
         this.element.classList.remove('show');
-        
+
+        // Gérer aria-hidden dynamiquement
+        this.element.setAttribute('aria-hidden', 'true');
+
         // Retirer le backdrop Bootstrap
         const backdrop = document.body.querySelector('.modal-backdrop');
         if (backdrop) {
             backdrop.remove();
         }
-        
+
         // Utiliser l'approche simple du code initial
         this.element.style.display = 'none';
-        
+
         // Restaurer le scroll du body
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
+
+        // Restaurer le focus sur l'élément qui était actif avant l'ouverture du modal
+        if (this.previouslyFocusedElement && document.contains(this.previouslyFocusedElement)) {
+            this.previouslyFocusedElement.focus();
+        }
     }
 
     /**

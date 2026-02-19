@@ -1,0 +1,44 @@
+{# Composant breadcrumb réutilisable avec Schema.org #}
+{# Usage:
+    {% include 'components/breadcrumb.html.twig' with {
+        items: [
+            { label: 'Tableau de bord', url: path('app_dashboard') },
+            { label: 'Articles', url: path('app_admin_blog_index') },
+            { label: 'Modifier : ' ~ post.title }
+        ]
+    } %}
+#}
+{% if items is defined and items|length > 0 %}
+<nav aria-label="Fil d'Ariane">
+    <ol class="breadcrumb">
+        {% for item in items %}
+            <li class="breadcrumb-item {{ loop.last ? 'active' : '' }}"
+                {% if loop.last %}aria-current="page"{% endif %}>
+                {% if not loop.last and item.url is defined %}
+                    <a href="{{ item.url }}">{{ item.label }}</a>
+                {% else %}
+                    {{ item.label }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</nav>
+
+{# Schema.org BreadcrumbList pour SEO #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {% for item in items %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "name": "{{ item.label|escape('js') }}"{% if item.url is defined %},
+      "item": "{{ item.url }}"{% endif %}
+    }{{ not loop.last ? ',' : '' }}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}

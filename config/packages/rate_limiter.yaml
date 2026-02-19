@@ -1,0 +1,7 @@
+framework:
+    rate_limiter:
+        # Limite pour les endpoints d'outils utilisés en anonyme (save sans compte)
+        anonymous_tool:
+            policy: 'sliding_window'
+            limit: 10
+            interval: '1 hour'

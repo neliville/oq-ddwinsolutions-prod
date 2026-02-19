@@ -240,7 +240,7 @@
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
                 <div class="card border-0 shadow-sm">
                     {% if post.image %}
-                    <img src="{{ asset(post.image) }}" class="card-img-top" alt="{{ post.title }}" loading="lazy">
+                    <img src="{{ (post.image starts with 'http') ? post.image : asset(post.image) }}" class="card-img-top" alt="{{ post.title }}" loading="lazy" width="400" height="225">
                     {% endif %}
                     <div class="card-body p-4">
                         <div class="d-flex align-items-start mb-3">

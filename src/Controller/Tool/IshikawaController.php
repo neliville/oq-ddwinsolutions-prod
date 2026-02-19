@@ -2,36 +2,38 @@
 
 namespace App\Controller\Tool;
 
-use App\Application\Analytics\TrackingService;
-use App\Application\Lead\CreateLead;
-use App\Application\Lead\CreateLeadRequest;
-use App\Application\Notification\NotificationService;
-use App\Domain\Analytics\ToolUsedEvent;
 use App\Entity\IshikawaAnalysis;
 use App\Entity\User;
 use App\Repository\IshikawaAnalysisRepository;
-use App\Repository\LeadRepository;
+use App\Validator\Constraints\ValidToolData;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * Contrôleur pour l'outil Ishikawa (accessible sans compte)
- */
 #[Route('/api/ishikawa')]
-final class IshikawaController extends AbstractController
+final class IshikawaController extends AbstractToolController
 {
     public function __construct(
         private readonly IshikawaAnalysisRepository $repository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly CreateLead $createLead,
-        private readonly TrackingService $trackingService,
-        private readonly NotificationService $notificationService,
-        private readonly LeadRepository $leadRepository,
+        \App\Application\Lead\CreateLead $createLead,
+        \App\Application\Analytics\TrackingService $trackingService,
+        \App\Application\Notification\NotificationService $notificationService,
+        \App\Repository\LeadRepository $leadRepository,
+        \Psr\Log\LoggerInterface $logger,
     ) {
+        parent::__construct($createLead, $trackingService, $notificationService, $leadRepository, $logger);
+    }
+
+    protected function getToolName(): string
+    {
+        return 'ishikawa';
     }
 
     /**
@@ -40,24 +42,28 @@ final class IshikawaController extends AbstractController
      * Si utilisateur connecté : sauvegarde en DB
      */
     #[Route('/save', name: 'app_tool_ishikawa_save', methods: ['POST'])]
-    public function save(Request $request): JsonResponse
+    public function save(Request $request, ValidatorInterface $validator, RateLimiterFactory $anonymousToolLimiter): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        try {
+            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new BadRequestHttpException('Invalid JSON');
+        }
 
-        if (!isset($data['title']) || !isset($data['content'])) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Les champs title et content sont requis.',
-            ], Response::HTTP_BAD_REQUEST);
+        $violations = $validator->validate($data, [new ValidToolData(tool: $this->getToolName())]);
+        if ($violations->count() > 0) {
+            throw new BadRequestHttpException('Validation failed');
         }
 
         $user = $this->getUser();
         $isGuest = !$user;
 
-        // Si invité : retourner les données pour localStorage
         if ($isGuest) {
-            // Créer un lead automatiquement
-            $this->createLeadFromToolUsage($request, 'ishikawa');
+            $limiter = $anonymousToolLimiter->create($request->getClientIp());
+            if (!$limiter->consume(1)->isAccepted()) {
+                throw new TooManyRequestsHttpException();
+            }
+            $this->createLeadFromToolUsage($request, $this->getToolName());
 
             return new JsonResponse([
                 'success' => true,
@@ -99,8 +105,7 @@ final class IshikawaController extends AbstractController
         $this->entityManager->persist($analysis);
         $this->entityManager->flush();
 
-        // Créer un lead si première utilisation
-        $this->createLeadFromToolUsage($request, 'ishikawa', $user);
+        $this->createLeadFromToolUsage($request, $this->getToolName(), $user);
 
         return new JsonResponse([
             'success' => true,
@@ -211,65 +216,6 @@ final class IshikawaController extends AbstractController
             'success' => true,
             'message' => 'Diagramme Ishikawa supprimé avec succès.',
         ], Response::HTTP_OK);
-    }
-
-    /**
-     * Crée un lead automatiquement lors de l'utilisation d'un outil
-     */
-    private function createLeadFromToolUsage(Request $request, string $tool, ?User $user = null): void
-    {
-        // Vérifier si un lead existe déjà pour cette session/email
-        $sessionId = $request->getSession()->getId();
-        $email = $user?->getEmail();
-
-        if ($email) {
-            $existingLead = $this->leadRepository->findByEmail($email);
-            if ($existingLead && $existingLead->getTool() === $tool) {
-                // Lead déjà créé pour cet outil
-                return;
-            }
-        }
-
-        // Créer le lead
-        $utmSource = $request->query->get('utm_source') ?? $request->request->get('utm_source');
-        $utmMedium = $request->query->get('utm_medium') ?? $request->request->get('utm_medium');
-        $utmCampaign = $request->query->get('utm_campaign') ?? $request->request->get('utm_campaign');
-
-        $leadRequest = new CreateLeadRequest(
-            email: $email,
-            name: null,
-            source: 'tool',
-            tool: $tool,
-            utmSource: $utmSource,
-            utmMedium: $utmMedium,
-            utmCampaign: $utmCampaign,
-            ipAddress: $request->getClientIp(),
-            userAgent: $request->headers->get('User-Agent'),
-            sessionId: $sessionId,
-            gdprConsent: false, // Consentement implicite via utilisation de l'outil
-        );
-
-        try {
-            $leadResponse = $this->createLead->execute($leadRequest);
-            
-            // Notifier la création du lead
-            $lead = $this->leadRepository->find($leadResponse->id);
-            if ($lead) {
-                $this->notificationService->notifyLeadCreated($lead);
-            }
-
-            // Tracker l'utilisation de l'outil
-            $this->trackingService->trackToolUsed(new ToolUsedEvent(
-                tool: $tool,
-                sessionId: $sessionId,
-                ipAddress: $request->getClientIp(),
-                userAgent: $request->headers->get('User-Agent'),
-                userId: $user?->getId(),
-            ));
-        } catch (\Exception $e) {
-            // Log l'erreur mais ne bloque pas l'utilisation de l'outil
-            error_log('Erreur lors de la création du lead : ' . $e->getMessage());
-        }
     }
 }
 

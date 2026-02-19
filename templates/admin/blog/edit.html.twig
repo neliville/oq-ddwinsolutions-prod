@@ -140,6 +140,12 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
 
 {% block content %}
 <div class="container-fluid p-4">
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -185,13 +191,17 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                         {{ form_errors(form.excerpt) }}
                     </div>
 
-                    <div class="mb-3" data-controller="image-upload" data-image-upload-upload-url-value="{{ path('app_admin_blog_upload_image_preview') }}">
-                        {{ form_label(form.featuredImage, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="mb-3">
+                        <label class="form-label">Image à la une</label>
+                        <p class="form-text text-muted small mb-2">Indiquez une URL ou téléversez un fichier (le fichier est prioritaire si les deux sont renseignés).</p>
+                        <div class="mb-2">
+                            {{ form_row(form.featuredImageUrl, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'https://exemple.com/image.jpg'}}) }}
+                        </div>
                         {% if post.image %}
                         <div class="mb-2" id="blog-image-preview-edit-wrapper">
                             <p class="small text-muted mb-2">Image actuelle</p>
-                            <img id="blog-image-preview-edit" src="{{ asset(post.image) }}" alt="Image actuelle de l'article" class="img-fluid rounded shadow-sm mb-2">
-                            {% if post.image %}
+                            <img id="blog-image-preview-edit" src="{{ (post.image starts with 'http') ? post.image : asset(post.image) }}" alt="Image actuelle de l'article" class="img-fluid rounded shadow-sm mb-2">
+                            {% if post.image and not (post.image starts with 'http') %}
                             <div class="small text-muted mb-2">
                                 <strong>Variantes disponibles :</strong>
                                 <div class="mt-1">
@@ -208,8 +218,10 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                             {% endif %}
                         </div>
                         {% endif %}
-                        {{ form_widget(form.featuredImage, {'attr': {'class': 'form-control', 'data-image-upload-target': 'input'}}) }}
-                        <div class="form-text">Formats acceptés : JPG ou WEBP (4&nbsp;Mo maximum). Dimensions recommandées : min 400x300px, max 4000x3000px.</div>
+                        <div data-controller="image-upload" data-image-upload-upload-url-value="{{ path('app_admin_blog_upload_image_preview') }}">
+                            {{ form_row(form.featuredImage, {'label': 'Ou téléverser un fichier (JPG ou WEBP)', 'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-control', 'data-image-upload-target': 'input'}}) }}
+                        </div>
+                        <div class="form-text">Fichier : 4&nbsp;Mo max. Dimensions recommandées : min 400×300px, max 4000×3000px.</div>
                         {{ form_errors(form.featuredImage) }}
                         
                         <!-- Loader -->

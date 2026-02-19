@@ -13,6 +13,9 @@
     class: 'modal fade',
     tabindex: '-1',
     'aria-hidden': 'true',
+    'aria-modal': 'true',
+    'role': 'dialog',
+    'aria-labelledby': id ? (id ~ '-title') : 'confirmationModalTitle',
     id: id ? id : false,
     style: 'display: none;'
 }) }}
@@ -23,14 +26,14 @@
     }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title d-flex align-items-center">
-                    <i data-lucide="alert-circle" width="24" height="24" class="text-info me-2"></i>
+                <h5 class="modal-title d-flex align-items-center" id="{{ id ? (id ~ '-title') : 'confirmationModalTitle' }}">
+                    <i data-lucide="alert-circle" width="24" height="24" class="text-info me-2" aria-hidden="true"></i>
                     {{ title }}
                 </h5>
-                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer"></button>
+                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue"></button>
             </div>
             <div class="modal-body">
                 <p data-confirmation-modal-target="message">

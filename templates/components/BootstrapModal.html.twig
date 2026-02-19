@@ -17,13 +17,16 @@
     class: 'modal fade',
     tabindex: '-1',
     'aria-hidden': 'true',
+    'aria-modal': 'true',
+    'role': 'dialog',
+    'aria-labelledby': id ? (id ~ '-title') : 'bootstrapModalTitle',
     id: id ? id : false,
     style: 'display: none;'
 }) }}
     {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             {% if block('modal_header') is defined %}
                 <div class="modal-header">

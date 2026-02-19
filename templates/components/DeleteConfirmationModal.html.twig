@@ -14,24 +14,27 @@
     class: 'modal fade',
     tabindex: '-1',
     'aria-hidden': 'true',
+    'aria-modal': 'true',
+    'role': 'dialog',
+    'aria-labelledby': id ? (id ~ '-title') : 'deleteConfirmationModalTitle',
     id: id ? id : false,
     style: 'display: none;'
 }) }}
     {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" {{ stimulus_controller('delete-confirmation', {
             url: deleteUrl,
             method: deleteMethod ?? 'DELETE',
             redirect: redirectUrl
         }) }}>
             <div class="modal-header">
-                <h5 class="modal-title d-flex align-items-center">
-                    <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2"></i>
+                <h5 class="modal-title d-flex align-items-center" id="{{ (id ~ '-title') if id else 'deleteConfirmationModalTitle' }}">
+                    <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2" aria-hidden="true"></i>
                     {{ title ?? 'Confirmation de suppression' }}
                 </h5>
-                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer"></button>
+                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue"></button>
             </div>
             <div class="modal-body">
                 <p data-delete-confirmation-target="message">

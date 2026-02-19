@@ -1,0 +1,31 @@
+{# Composant pour afficher les messages flash de manière accessible #}
+{# Usage:
+    {% include 'components/flash_messages.html.twig' %}
+
+    Ou avec types spécifiques:
+    {% include 'components/flash_messages.html.twig' with { types: ['success', 'error'] } %}
+#}
+{% set flashTypes = types|default(['success', 'error', 'warning', 'info', 'danger']) %}
+
+{% for label in flashTypes %}
+    {% for message in app.flashes(label) %}
+        {% set alertClass = label == 'error' ? 'danger' : label %}
+        {% set iconName = label == 'success' ? 'check-circle' : (label == 'error' or label == 'danger' ? 'alert-circle' : (label == 'warning' ? 'alert-triangle' : 'info')) %}
+
+        <div class="alert alert-{{ alertClass }} alert-dismissible fade show"
+             role="alert"
+             aria-live="polite"
+             aria-atomic="true">
+            <i data-lucide="{{ iconName }}"
+               width="20"
+               height="20"
+               class="me-2"
+               aria-hidden="true"></i>
+            {{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fermer le message"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
