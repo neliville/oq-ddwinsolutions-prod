@@ -86,30 +86,27 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
 
-    <!-- Google Fonts : optimisé - preload des poids critiques uniquement (400, 600) -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
-    <!-- Poids secondaires (300, 500, 700) chargés en non-bloquant -->
+    <!-- Fallback immédiat pour le texte (évite FOIT) + Inter chargé en non-bloquant -->
+    <style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}</style>
+    <!-- Google Fonts : entièrement non-bloquant pour réduire le TBT et les requêtes bloquantes -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet"></noscript>
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    </noscript>
 
-    <!-- Custom CSS (critique, chargé immédiatement) -->
+    <!-- Custom CSS (critique pour le premier rendu, un seul fichier bloquant) -->
     <link href="{{ asset('styles/app.scss') }}" rel="stylesheet">
 
-    <!-- Preload scripts critiques pour mobile -->
+    <!-- Module JS principal (critique) -->
     <link rel="modulepreload" href="{{ asset('app.js') }}">
-    <link rel="preload" as="script" href="https://unpkg.com/lucide@latest/dist/umd/lucide.js">
 
-    <!-- Bibliothèques tierces : non bloquantes pour réduire le temps de blocage -->
-    <!-- Font Awesome chargé en différé (priorité basse avec migration vers Lucide) -->
+    <!-- Font Awesome et AOS : différés, non bloquants -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"></noscript>
-    <!-- AOS (animations) chargé en différé pour ne pas bloquer le rendu initial -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
-    <!-- Scripts avec defer pour chargement non-bloquant -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
 
     {% block head %}{% endblock %}
 
@@ -261,23 +258,34 @@
             document.documentElement.classList.remove('is-loading');
 
             function runIconsAndAos() {
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 if (typeof AOS !== 'undefined') {
-                    AOS.init({
-                        duration: 800,
-                        easing: 'ease-in-out',
-                        once: true,
-                        offset: 100,
-                    });
+                    AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 100 });
                 }
             }
 
+            function loadNonCriticalScripts() {
+                var run = runIconsAndAos;
+                var loaded = { lucide: false, aos: false };
+                function maybeRun() {
+                    if (loaded.lucide && loaded.aos) run();
+                }
+                var s1 = document.createElement('script');
+                s1.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
+                s1.defer = true;
+                s1.onload = function() { loaded.lucide = true; maybeRun(); };
+                document.body.appendChild(s1);
+                var s2 = document.createElement('script');
+                s2.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
+                s2.defer = true;
+                s2.onload = function() { loaded.aos = true; maybeRun(); };
+                document.body.appendChild(s2);
+            }
+
             if (typeof requestIdleCallback !== 'undefined') {
-                requestIdleCallback(runIconsAndAos, { timeout: 500 });
+                requestIdleCallback(loadNonCriticalScripts, { timeout: 800 });
             } else {
-                runIconsAndAos();
+                setTimeout(loadNonCriticalScripts, 100);
             }
         }
 
@@ -286,8 +294,17 @@
         } else {
             finalizeNonCriticalAssets();
         }
-
         document.addEventListener('turbo:load', finalizeNonCriticalAssets);
+    </script>
+
+    <!-- Mautic tracking (recommandé avant </body>) -->
+    <script>
+        (function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n;
+            w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)},a=d.createElement(t),
+            m=d.getElementsByTagName(t)[0];a.async=1;a.src=u;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://mautic.outils-qualite.com/mtc.js','mt');
+
+        mt('send', 'pageview');
     </script>
 </body>
 
