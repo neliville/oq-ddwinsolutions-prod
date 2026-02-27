@@ -36,22 +36,23 @@ const handleNewsletterSubmit = async (event) => {
         'X-Requested-With': 'XMLHttpRequest',
         'Accept': 'application/json',
       },
+      credentials: 'same-origin',
       body: formData,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      data = { success: false, message: 'Réponse invalide du serveur.' };
     }
-
-    const data = await response.json();
 
     if (messageTarget) {
       messageTarget.classList.remove('d-none');
       messageTarget.classList.add('alert', data.success ? 'alert-success' : 'alert-danger');
-      
+
       let errorMessage = data.message || 'Erreur lors de l\'inscription.';
-      
-      // Afficher les erreurs détaillées si disponibles
+
       if (!data.success && data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
         errorMessage += '<ul class="mb-0 mt-2">';
         data.errors.forEach(error => {
@@ -59,7 +60,7 @@ const handleNewsletterSubmit = async (event) => {
         });
         errorMessage += '</ul>';
       }
-      
+
       messageTarget.innerHTML = data.success
         ? '<i class="fas fa-check-circle me-2"></i>' + data.message
         : '<i class="fas fa-exclamation-triangle me-2"></i>' + errorMessage;
@@ -72,7 +73,8 @@ const handleNewsletterSubmit = async (event) => {
     if (messageTarget) {
       messageTarget.classList.remove('d-none');
       messageTarget.classList.add('alert', 'alert-danger');
-      messageTarget.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Une erreur est survenue. Veuillez réessayer.';
+      const networkMsg = error.message && error.message.includes('fetch') ? 'Vérifiez votre connexion internet.' : '';
+      messageTarget.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Une erreur est survenue. Veuillez réessayer.' + (networkMsg ? ' ' + networkMsg : '');
     }
   } finally {
     submitButton.innerHTML = originalText;

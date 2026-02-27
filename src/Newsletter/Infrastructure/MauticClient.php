@@ -52,6 +52,7 @@ final class MauticClient
                     'Content-Type' => 'application/json',
                 ],
                 'json' => $payload,
+                'timeout' => 15,
             ]);
 
             $statusCode = $response->getStatusCode();

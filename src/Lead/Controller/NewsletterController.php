@@ -29,67 +29,75 @@ final class NewsletterController extends AbstractController
     #[Route('/api/newsletter/subscribe', name: 'app_newsletter_subscribe', methods: ['POST'])]
     public function subscribe(Request $request): JsonResponse
     {
-        $form = $this->createForm(NewsletterSubscriptionFormType::class, null, [
-            'csrf_protection' => false,
-            'allow_extra_fields' => true,
-        ]);
-        $form->handleRequest($request);
+        try {
+            $form = $this->createForm(NewsletterSubscriptionFormType::class, null, [
+                'csrf_protection' => false,
+                'allow_extra_fields' => true,
+            ]);
+            $form->handleRequest($request);
 
-        if (!$form->isSubmitted()) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Le formulaire n\'a pas été soumis correctement.',
-                'errors' => ['Veuillez réessayer.'],
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (!$form->isValid()) {
-            $errors = [];
-            foreach ($form->getErrors(true) as $error) {
-                $errors[] = $error->getMessage();
+            if (!$form->isSubmitted()) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Le formulaire n\'a pas été soumis correctement.',
+                    'errors' => ['Veuillez réessayer.'],
+                ], Response::HTTP_BAD_REQUEST);
             }
-            foreach ($form->all() as $child) {
-                foreach ($child->getErrors() as $error) {
+
+            if (!$form->isValid()) {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
                     $errors[] = $error->getMessage();
                 }
+                foreach ($form->all() as $child) {
+                    foreach ($child->getErrors() as $error) {
+                        $errors[] = $error->getMessage();
+                    }
+                }
+                $errorMessage = !empty($errors)
+                    ? implode(' ', array_unique($errors))
+                    : 'Erreur lors de l\'inscription. Veuillez vérifier votre adresse email.';
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'errors' => $errors,
+                ], Response::HTTP_BAD_REQUEST);
             }
-            $errorMessage = !empty($errors)
-                ? implode(' ', array_unique($errors))
-                : 'Erreur lors de l\'inscription. Veuillez vérifier votre adresse email.';
+
+            /** @var array{email: string, firstname?: string|null} $data */
+            $data = $form->getData();
+            $dto = new NewsletterSubscriptionDTO(
+                $data['email'],
+                $data['firstname'] ?? null,
+            );
+
+            try {
+                $this->newsletterSubscriberService->subscribe($dto);
+            } catch (NewsletterException $e) {
+                $statusCode = Response::HTTP_BAD_REQUEST;
+                $message = $e->getMessage();
+                if ($e->getPrevious() instanceof \App\Newsletter\Exception\MauticApiException) {
+                    $statusCode = Response::HTTP_SERVICE_UNAVAILABLE;
+                    $message = 'Impossible de finaliser l\'inscription à la newsletter. Veuillez réessayer plus tard.';
+                }
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $message,
+                    'errors' => [$message],
+                ], $statusCode);
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Vous êtes maintenant abonné à notre newsletter !',
+            ], Response::HTTP_CREATED);
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => $errorMessage,
-                'errors' => $errors,
-            ], Response::HTTP_BAD_REQUEST);
+                'message' => 'Impossible de finaliser l\'inscription à la newsletter. Veuillez réessayer plus tard.',
+                'errors' => ['Une erreur technique est survenue.'],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        /** @var array{email: string, firstname?: string|null} $data */
-        $data = $form->getData();
-        $dto = new NewsletterSubscriptionDTO(
-            $data['email'],
-            $data['firstname'] ?? null,
-        );
-
-        try {
-            $this->newsletterSubscriberService->subscribe($dto);
-        } catch (NewsletterException $e) {
-            $statusCode = Response::HTTP_BAD_REQUEST;
-            $message = $e->getMessage();
-            if ($e->getPrevious() instanceof \App\Newsletter\Exception\MauticApiException) {
-                $statusCode = Response::HTTP_SERVICE_UNAVAILABLE;
-                $message = 'Impossible de finaliser l\'inscription à la newsletter. Veuillez réessayer plus tard.';
-            }
-            return new JsonResponse([
-                'success' => false,
-                'message' => $message,
-                'errors' => [$message],
-            ], $statusCode);
-        }
-
-        return new JsonResponse([
-            'success' => true,
-            'message' => 'Vous êtes maintenant abonné à notre newsletter !',
-        ], Response::HTTP_CREATED);
     }
 
     #[Route('/newsletter/unsubscribe/{token}', name: 'app_newsletter_unsubscribe', methods: ['GET', 'POST'])]
