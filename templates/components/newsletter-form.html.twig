@@ -17,6 +17,15 @@
             'data-feedback-target': '#newsletterMessage'
         }
     }) }}
+        {% if form.firstname is defined %}
+        <div class="col-12 col-lg-12">
+            {{ form_widget(form.firstname, {'attr': {
+                'class': 'form-control form-control-lg',
+                'placeholder': 'Prénom (optionnel)'
+            }}) }}
+            {{ form_errors(form.firstname) }}
+        </div>
+        {% endif %}
         <div class="col-12 col-lg-7">
             {{ form_widget(form.email, {'attr': {
                 'class': 'form-control form-control-lg newsletter-email-field',

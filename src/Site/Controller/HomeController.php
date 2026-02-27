@@ -2,8 +2,7 @@
 
 namespace App\Site\Controller;
 
-use App\Entity\NewsletterSubscriber;
-use App\Form\NewsletterFormType;
+use App\Newsletter\Form\NewsletterSubscriptionFormType;
 use App\Repository\LeadRepository;
 use App\Repository\NewsletterSubscriberRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +21,7 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home_index')]
     public function index(Request $request): Response
     {
-        $subscriber = new NewsletterSubscriber();
-        $newsletterForm = $this->createForm(NewsletterFormType::class, $subscriber);
+        $newsletterForm = $this->createForm(NewsletterSubscriptionFormType::class);
 
         $leadsCount = $this->leadRepository->count([]);
         $subscribersCount = $this->newsletterSubscriberRepository->countActive();

@@ -53,5 +53,16 @@ services:
         arguments:
             $brevoApiKey: '%env(default::BREVO_API_KEY)%'
 
+    # Newsletter - Mautic (évite confusion avec App\Service\NewsletterService)
+    App\Lead\Controller\NewsletterController:
+        arguments:
+            $newsletterSubscriberService: '@App\Newsletter\Service\NewsletterSubscriber'
+
+    App\Newsletter\Infrastructure\MauticClient:
+        arguments:
+            $mauticUrl: '%env(MAUTIC_URL)%'
+            $mauticUser: '%env(MAUTIC_USER)%'
+            $mauticPassword: '%env(MAUTIC_PASSWORD)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

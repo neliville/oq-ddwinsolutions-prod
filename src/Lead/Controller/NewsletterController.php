@@ -4,12 +4,13 @@ namespace App\Lead\Controller;
 
 use App\Dto\UnsubscribeReasonDto;
 use App\Entity\NewsletterSubscriber;
-use App\Form\NewsletterFormType;
 use App\Form\UnsubscribeReasonType;
+use App\Newsletter\DTO\NewsletterSubscriptionDTO;
+use App\Newsletter\Form\NewsletterSubscriptionFormType;
+use App\Newsletter\Exception\NewsletterException;
+use App\Newsletter\Service\NewsletterSubscriber as NewsletterSubscriberService;
 use App\Repository\NewsletterSubscriberRepository;
-use App\Service\NewsletterService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,27 +20,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class NewsletterController extends AbstractController
 {
     public function __construct(
-        private readonly NewsletterService $newsletterService,
-        private readonly LoggerInterface $logger,
+        private readonly NewsletterSubscriberService $newsletterSubscriberService,
+        private readonly NewsletterSubscriberRepository $newsletterSubscriberRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
     #[Route('/api/newsletter/subscribe', name: 'app_newsletter_subscribe', methods: ['POST'])]
-    public function subscribe(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        NewsletterSubscriberRepository $newsletterSubscriberRepository
-    ): JsonResponse {
-        $subscriber = new NewsletterSubscriber();
-        // Désactiver CSRF pour l'API (plus pratique pour les tests et appels AJAX)
-        // Accepter les champs supplémentaires pour éviter l'erreur "extra fields"
-        $form = $this->createForm(NewsletterFormType::class, $subscriber, [
+    public function subscribe(Request $request): JsonResponse
+    {
+        $form = $this->createForm(NewsletterSubscriptionFormType::class, null, [
             'csrf_protection' => false,
             'allow_extra_fields' => true,
         ]);
         $form->handleRequest($request);
 
-        // Si le formulaire n'est pas soumis, retourner une erreur
         if (!$form->isSubmitted()) {
             return new JsonResponse([
                 'success' => false,
@@ -48,140 +43,103 @@ final class NewsletterController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($form->isValid()) {
-            // Vérifier si l'email existe déjà
-            $existingSubscriber = $newsletterSubscriberRepository->findOneBy(['email' => $subscriber->getEmail()]);
-
-            if ($existingSubscriber) {
-                // Si l'utilisateur s'était désabonné, réactiver l'abonnement
-                if (!$existingSubscriber->isActive()) {
-                    $existingSubscriber->setActive(true);
-                    $existingSubscriber->setSubscribedAt(new \DateTimeImmutable());
-                    $existingSubscriber->setUnsubscribedAt(null);
-                    $entityManager->flush();
-
-                    // Envoyer l'email de bienvenue pour réactivation
-                    try {
-                        $this->newsletterService->sendWelcomeEmail($existingSubscriber);
-                    } catch (\Exception $e) {
-                        $this->logger->error('Erreur lors de l\'envoi de l\'email de réactivation', ['exception' => $e]);
-                    }
-
-                    return new JsonResponse([
-                        'success' => true,
-                        'message' => 'Votre abonnement à la newsletter a été réactivé !',
-                    ], Response::HTTP_OK);
-                }
-
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Cet email est déjà abonné à la newsletter.',
-                ], Response::HTTP_BAD_REQUEST);
-            }
-
-            // Définir la source (d'où vient l'inscription)
-            $subscriber->setSource($request->get('source', 'website'));
-
-            // Sauvegarder en base de données
-            $entityManager->persist($subscriber);
-            $entityManager->flush();
-
-            // Envoyer l'email de bienvenue
-            try {
-                $this->newsletterService->sendWelcomeEmail($subscriber);
-            } catch (\Exception $e) {
-                $this->logger->error('Erreur lors de l\'envoi de l\'email de bienvenue', ['exception' => $e]);
-            }
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'Vous êtes maintenant abonné à notre newsletter !',
-            ], Response::HTTP_CREATED);
-        }
-
-        // Si le formulaire n'est pas valide, retourner les erreurs
-        $errors = [];
-        foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
-        }
-        
-        // Récupérer les erreurs de validation des champs
-        foreach ($form->all() as $child) {
-            foreach ($child->getErrors() as $error) {
+        if (!$form->isValid()) {
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
                 $errors[] = $error->getMessage();
             }
+            foreach ($form->all() as $child) {
+                foreach ($child->getErrors() as $error) {
+                    $errors[] = $error->getMessage();
+                }
+            }
+            $errorMessage = !empty($errors)
+                ? implode(' ', array_unique($errors))
+                : 'Erreur lors de l\'inscription. Veuillez vérifier votre adresse email.';
+            return new JsonResponse([
+                'success' => false,
+                'message' => $errorMessage,
+                'errors' => $errors,
+            ], Response::HTTP_BAD_REQUEST);
         }
 
-        $errorMessage = !empty($errors) 
-            ? implode(' ', array_unique($errors))
-            : 'Erreur lors de l\'inscription. Veuillez vérifier votre adresse email.';
+        /** @var array{email: string, firstname?: string|null} $data */
+        $data = $form->getData();
+        $dto = new NewsletterSubscriptionDTO(
+            $data['email'],
+            $data['firstname'] ?? null,
+        );
+
+        try {
+            $this->newsletterSubscriberService->subscribe($dto);
+        } catch (NewsletterException $e) {
+            $statusCode = Response::HTTP_BAD_REQUEST;
+            $message = $e->getMessage();
+            if ($e->getPrevious() instanceof \App\Newsletter\Exception\MauticApiException) {
+                $statusCode = Response::HTTP_SERVICE_UNAVAILABLE;
+                $message = 'Impossible de finaliser l\'inscription à la newsletter. Veuillez réessayer plus tard.';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'message' => $message,
+                'errors' => [$message],
+            ], $statusCode);
+        }
 
         return new JsonResponse([
-            'success' => false,
-            'message' => $errorMessage,
-            'errors' => $errors,
-        ], Response::HTTP_BAD_REQUEST);
+            'success' => true,
+            'message' => 'Vous êtes maintenant abonné à notre newsletter !',
+        ], Response::HTTP_CREATED);
     }
 
     #[Route('/newsletter/unsubscribe/{token}', name: 'app_newsletter_unsubscribe', methods: ['GET', 'POST'])]
     public function unsubscribe(
         string $token,
         Request $request,
-        NewsletterSubscriberRepository $newsletterSubscriberRepository,
-        EntityManagerInterface $entityManager
     ): Response {
-        $subscriber = $newsletterSubscriberRepository->findOneBy(['unsubscribeToken' => $token]);
+        $subscriber = $this->newsletterSubscriberRepository->findOneBy(['unsubscribeToken' => $token]);
 
         if (!$subscriber) {
             $this->addFlash('error', 'Token de désabonnement invalide.');
             return $this->redirectToRoute('app_home_index');
         }
 
-        // Si déjà désabonné, afficher un message
         if (!$subscriber->isActive()) {
             return $this->render('newsletter/unsubscribe_already.html.twig', [
                 'email' => $subscriber->getEmail(),
             ]);
         }
 
-        // Créer le formulaire avec le DTO
         $dto = new UnsubscribeReasonDto();
         $form = $this->createForm(UnsubscribeReasonType::class, $dto);
         $form->handleRequest($request);
 
-        // Vérifier si le bouton "skip" a été cliqué
         $skip = $request->request->get('skip') === '1' || $request->request->has('skip');
 
-        // Si le formulaire est soumis
         if ($form->isSubmitted()) {
-            // Si skip est cliqué, désabonner sans validation
             if ($skip) {
                 $reasons = [];
                 $comment = null;
             } elseif ($form->isValid()) {
-                // Sinon, valider le formulaire et récupérer les données
                 /** @var UnsubscribeReasonDto $dto */
                 $dto = $form->getData();
                 $reasons = $dto->getReasons() ?? [];
                 $comment = $dto->getComment();
             } else {
-                // Formulaire soumis mais invalide (sans skip), réafficher avec erreurs
                 return $this->render('newsletter/unsubscribe.html.twig', [
                     'email' => $subscriber->getEmail(),
                     'form' => $form,
                 ]);
             }
 
-            // Effectuer le désabonnement
             $subscriber->unsubscribe($reasons, $comment);
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             return $this->render('newsletter/unsubscribe_success.html.twig', [
                 'email' => $subscriber->getEmail(),
             ]);
         }
 
-        // Afficher le formulaire de désabonnement
         return $this->render('newsletter/unsubscribe.html.twig', [
             'email' => $subscriber->getEmail(),
             'form' => $form,
