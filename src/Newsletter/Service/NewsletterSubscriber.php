@@ -37,7 +37,11 @@ final class NewsletterSubscriber
 
         $payload = [
             'email' => trim($email),
-            'tags' => [['tag' => self::TAG_NEWSLETTER]],
+            'tags' => [self::TAG_NEWSLETTER],
+            // Champs obligatoires Mautic (alias des options)
+            'interet_principal' => ['outils'],
+            'fonction' => 'consultant',
+            'taille_entreprise1' => '1',
         ];
 
         $firstname = $dto->getFirstname();
@@ -52,6 +56,7 @@ final class NewsletterSubscriber
                 'email' => $email,
                 'statusCode' => $e->getStatusCode(),
                 'message' => $e->getMessage(),
+                'responseBody' => $e->getResponseBody(),
             ]);
 
             throw new NewsletterException(

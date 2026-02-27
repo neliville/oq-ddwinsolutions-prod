@@ -15,6 +15,7 @@ use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 final class MauticClient
 {
     private const ENDPOINT_CONTACTS_NEW = '/api/contacts/new';
+    private const ENDPOINT_FIELDS = '/api/fields/contact';
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -76,6 +77,56 @@ final class MauticClient
             }
 
             return $data;
+        } catch (MauticApiException $e) {
+            throw $e;
+        } catch (ExceptionInterface $e) {
+            throw new MauticApiException(
+                'Mautic API request failed: ' . $e->getMessage(),
+                0,
+                null,
+                $e,
+            );
+        }
+    }
+
+    /**
+     * Récupère la liste des champs de contact Mautic (alias, type, options).
+     *
+     * @return array<string, mixed>
+     */
+    public function getContactFields(): array
+    {
+        if ('' === trim($this->mauticUrl)) {
+            return ['fields' => []];
+        }
+
+        $baseUrl = rtrim($this->mauticUrl, '/');
+        $url = $baseUrl . self::ENDPOINT_FIELDS;
+
+        $auth = base64_encode($this->mauticUser . ':' . $this->mauticPassword);
+
+        try {
+            $response = $this->httpClient->request('GET', $url, [
+                'headers' => [
+                    'Authorization' => 'Basic ' . $auth,
+                    'Accept' => 'application/json',
+                ],
+                'timeout' => 10,
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $responseBody = $response->getContent(false);
+
+            if ($statusCode >= 400) {
+                throw new MauticApiException(
+                    sprintf('Mautic API error: HTTP %d', $statusCode),
+                    $statusCode,
+                    $responseBody,
+                );
+            }
+
+            $data = json_decode($responseBody, true);
+            return \is_array($data) ? $data : ['fields' => []];
         } catch (MauticApiException $e) {
             throw $e;
         } catch (ExceptionInterface $e) {

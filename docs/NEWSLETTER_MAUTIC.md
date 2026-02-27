@@ -3,6 +3,22 @@
 L'inscription à la newsletter envoie les contacts vers Mautic via son API REST (Basic Auth).
 Mautic gère l'automatisation et l'envoi des emails.
 
+## Champs obligatoires Mautic
+
+L'API Mautic rejette la création de contact si des champs personnalisés sont marqués comme **obligatoires**.  
+Le formulaire newsletter n'envoie que `email`, `firstname` et le tag `newsletter`.
+
+**Action requise** : Rendez les champs suivants **optionnels** dans Mautic pour que l'inscription newsletter fonctionne :
+
+- `interet_principal` (Intérêt principal)
+- `fonction` (Fonction)
+- `taille_entreprise1` (Taille de l'entreprise)
+
+Dans Mautic : **Paramètres** → **Champs** → modifier chaque champ → décocher "Requis".
+
+Commande pour lister les champs obligatoires :  
+`php bin/console app:newsletter:list-mautic-fields`
+
 ## Configuration
 
 Variables d'environnement (`.env`) :
