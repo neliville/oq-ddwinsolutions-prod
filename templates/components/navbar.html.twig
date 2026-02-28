@@ -57,14 +57,23 @@
                             </a>
                         {% endif %}
 
-                        <div class="dropdown position-relative ms-lg-2">
-                            <button class="btn btn-link profile-dropdown__button text-decoration-none dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" aria-haspopup="true">
+                        <div class="dropdown position-relative ms-lg-2" data-controller="profile-dropdown">
+                            <button class="btn btn-link profile-dropdown__button text-decoration-none dropdown-toggle d-flex align-items-center"
+                                    type="button"
+                                    id="profileDropdown"
+                                    data-profile-dropdown-target="button"
+                                    data-action="click->profile-dropdown#toggle keydown.enter->profile-dropdown#toggle keydown.space->profile-dropdown#toggle keydown.arrow-down->profile-dropdown#openWithKeyboard keydown.arrow-up->profile-dropdown#openWithKeyboard"
+                                    aria-expanded="false"
+                                    aria-haspopup="true">
                                 <div class="profile-dropdown__avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
                                     {{ app.user.email|slice(0, 1)|upper }}
                                 </div>
                                 <span class="d-none d-md-inline text-dark fw-semibold">{{ app.user.email }}</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu" aria-labelledby="profileDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu"
+                                data-profile-dropdown-target="menu"
+                                aria-labelledby="profileDropdown"
+                                hidden>
                                 <li>
                                     <div class="border-bottom">
                                         <div class="fw-semibold">{{ app.user.email }}</div>

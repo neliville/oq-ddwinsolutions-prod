@@ -28,14 +28,23 @@
                     </a>
                 {% endif %}
 
-                <div class="dropdown position-relative">
-                    <button class="btn btn-link text-decoration-none dropdown-toggle d-flex align-items-center profile-dropdown__button" type="button" id="dashboardProfileDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" aria-haspopup="true">
+                <div class="dropdown position-relative" data-controller="profile-dropdown">
+                    <button class="btn btn-link text-decoration-none dropdown-toggle d-flex align-items-center profile-dropdown__button"
+                            type="button"
+                            id="dashboardProfileDropdown"
+                            data-profile-dropdown-target="button"
+                            data-action="click->profile-dropdown#toggle keydown.enter->profile-dropdown#toggle keydown.space->profile-dropdown#toggle keydown.arrow-down->profile-dropdown#openWithKeyboard keydown.arrow-up->profile-dropdown#openWithKeyboard"
+                            aria-expanded="false"
+                            aria-haspopup="true">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2 profile-dropdown__avatar">
                             {{ app.user.email|slice(0, 1)|upper }}
                         </div>
                         <span class="d-none d-md-inline text-dark fw-semibold">{{ app.user.email }}</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu" aria-labelledby="dashboardProfileDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu"
+                        data-profile-dropdown-target="menu"
+                        aria-labelledby="dashboardProfileDropdown"
+                        hidden>
                         <li>
                             <div class="border-bottom">
                                 <div class="fw-semibold">{{ app.user.email }}</div>
