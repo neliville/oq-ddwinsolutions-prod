@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Download\Infrastructure;
+namespace App\Download\Infrastructure\Mautic;
 
+use App\Download\Application\Port\FormSubmissionPort;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 /**
- * Client pour soumettre des formulaires Mautic.
- * POST vers https://mautic.example.com/form/submit?formId=XXX
- * Format: mauticform[alias]=value
+ * Adapter : soumission de formulaires vers Mautic.
+ * POST vers {baseUrl}/form/submit?formId=XXX
  */
-final class MauticFormClient
+final class MauticFormSubmissionAdapter implements FormSubmissionPort
 {
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -20,14 +20,6 @@ final class MauticFormClient
     ) {
     }
 
-    /**
-     * Soumet les données au formulaire Mautic.
-     *
-     * @param int   $formId ID du formulaire Mautic
-     * @param array $fields Champs [alias => valeur], ex. ['votre_email' => 'x@y.fr', 'ressource' => 'Modèle 5M']
-     *
-     * @throws \RuntimeException En cas d'échec HTTP
-     */
     public function submit(int $formId, array $fields): void
     {
         if ('' === trim($this->mauticFormBaseUrl)) {

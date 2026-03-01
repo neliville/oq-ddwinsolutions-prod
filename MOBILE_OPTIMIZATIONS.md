@@ -358,6 +358,30 @@ apache2ctl -M | grep -E '(deflate|brotli|headers|expires|rewrite)'
 
 ---
 
+## ✅ Optimisations phase 2 (Mobile 67 / Bureau TBT 500ms)
+
+*Suite audit Lighthouse 19 février 2026 : FCP 3.3s, LCP 3.7s, TBT 520ms (mobile), requêtes bloquantes ~310ms, cache 123 Kio, polices ~40ms.*
+
+### 1. Polices entièrement non-bloquantes
+- **Fallback immédiat :** `font-family: system-ui, -apple-system, …` en inline pour éviter le FOIT.
+- **Google Fonts Inter :** les deux feuilles (400;600 et 300;500;700) chargées en `media="print"` + `onload="this.media='all'"` pour ne plus bloquer le rendu.
+- **Gain :** réduction des requêtes bloquantes et de l’impact « Affichage de la police » (~40ms).
+
+### 2. Lucide et AOS chargés dynamiquement
+- **Suppression** des scripts Lucide et AOS du `<head>` (plus de `defer` bloquant le parse).
+- **Chargement** uniquement après `requestIdleCallback` (timeout 800ms) : injection de deux `<script>` dynamiques, puis `lucide.createIcons()` et `AOS.init()` au chargement.
+- **Gain :** réduction du TBT (moins de JS sur le thread principal au chargement) et des « Requêtes de blocage de l’affichage ».
+
+### 3. Cache explicite pour Asset Mapper
+- **.htaccess :** règle dédiée pour les URLs sous `/assets/` : `Cache-Control: public, max-age=31536000, immutable`.
+- **Gain :** meilleur score « Utiliser des durées de mise en cache efficaces » pour les JS/CSS compilés.
+
+### Fichiers modifiés
+- `templates/base.html.twig` : polices async, chargement dynamique Lucide/AOS, fallback font inline.
+- `public/.htaccess` : cache long pour `/assets/`.
+
+---
+
 ## 🚀 Prochaines Étapes (Optionnel)
 
 ### Optimisations Avancées

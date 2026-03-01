@@ -7,7 +7,6 @@ parameters:
     app.name: 'OUTILS-QUALITÉ'
     app.email: 'noreply@outils-qualite.com'
     blog_images_directory: '%kernel.project_dir%/public/uploads/blog'
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -64,13 +63,28 @@ services:
             $mauticUser: '%env(MAUTIC_USER)%'
             $mauticPassword: '%env(MAUTIC_PASSWORD)%'
 
-    App\Download\Infrastructure\MauticFormClient:
+    # Download - Clean Architecture bindings
+    App\Download\Application\Port\FormSubmissionPort: '@App\Download\Infrastructure\Mautic\MauticFormSubmissionAdapter'
+    App\Download\Application\Port\ResourceRegistryPort: '@App\Download\Infrastructure\Resource\ResourceRegistry'
+    App\Download\Domain\Repository\DownloadRequestRepositoryInterface: '@App\Download\Infrastructure\Persistence\DoctrineDownloadRequestRepository'
+
+    App\Download\Infrastructure\Mautic\MauticFormSubmissionAdapter:
         arguments:
             $mauticFormBaseUrl: '%env(MAUTIC_URL)%'
 
-    App\Download\Controller\DownloadRequestController:
+    App\Download\Service\DownloadRequestService:
         arguments:
-            $formIdModele5m: '%env(int:default:MAUTIC_FORM_DOWNLOAD_5M_ID:1)%'
+            $mauticFormId: '%env(int:MAUTIC_FORM_DOWNLOAD_5M_ID)%'
+
+    App\Download\Service\DownloadAccessService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Download\Controller\DownloadRequestController: ~
+
+    App\Download\Controller\DownloadAuthorizeController:
+        arguments:
+            $authorizeApiKey: '%env(default:DOWNLOAD_AUTHORIZE_API_KEY:)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

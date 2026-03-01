@@ -5,9 +5,10 @@ Les téléchargements de ressources (ex. Modèle 5M) nécessitent que l’utilis
 ## Configuration Mautic
 
 1. Créez un formulaire dans Mautic avec les champs :
-   - **Votre email** (alias : `votre_email`, type email)
-   - **Votre prénom** (alias : `votre_prenom`, type texte)
-   - **Ressource** (alias : `ressource`, type texte, généralement prérempli côté serveur)
+   - **Email** (alias : `email`, type email)
+   - **First Name** (alias : `firstname`, type texte)
+   - **Ressource** (alias : `ressource_id`, type texte, généralement prérempli côté serveur)
+   - Champ caché **download_request_id** (pour le webhook n8n)
 
 2. Récupérez l’**ID du formulaire** dans l’URL Mautic :  
    `https://mautic.outils-qualite.com/s/forms/edit/XX` → `XX` est l’ID.
@@ -33,10 +34,11 @@ Les téléchargements de ressources (ex. Modèle 5M) nécessitent que l’utilis
 
 ## Aliases Mautic
 
-Les champs envoyés doivent correspondre aux alias configurés dans Mautic :
+Les champs envoyés correspondent aux alias configurés dans Mautic :
 
-| Alias        | Exemple valeur | Description     |
-|-------------|----------------|-----------------|
-| `votre_email`   | user@example.com | Email (requis)  |
-| `votre_prenom`  | Jean             | Prénom          |
-| `ressource`     | Modèle 5M        | Nom de la ressource |
+| Alias                | Exemple valeur | Description                    |
+|----------------------|----------------|--------------------------------|
+| `email`              | user@example.com | Email (requis)                 |
+| `firstname`          | Jean           | Prénom                         |
+| `ressource_id`       | modele-5m      | Slug de la ressource           |
+| `download_request_id`| uuid           | ID de la demande (pour n8n)    |

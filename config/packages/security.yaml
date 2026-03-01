@@ -55,6 +55,7 @@ security:
         - { path: ^/newsletter/subscribe, roles: PUBLIC_ACCESS }
         - { path: ^/api/newsletter/subscribe, roles: PUBLIC_ACCESS }
         - { path: ^/api/download, roles: PUBLIC_ACCESS }
+        - { path: ^/download/access, roles: PUBLIC_ACCESS }
         - { path: ^/api/lead, roles: PUBLIC_ACCESS }
         - { path: ^/api/ishikawa/save, roles: PUBLIC_ACCESS }
         - { path: ^/api/fivewhy/save, roles: PUBLIC_ACCESS }

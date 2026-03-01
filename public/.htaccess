@@ -60,18 +60,21 @@
 
 # Headers de cache pour les fichiers statiques versionnés
 <IfModule mod_headers.c>
+    # Dossier Asset Mapper : cache long et immutable (fichiers hashés)
+    <If "%{REQUEST_URI} =~ /^\/assets\//">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+
     # Cache 1 an pour les fichiers avec hash dans le nom (versionnés)
     <FilesMatch "\.(js|css|woff|woff2|png|jpg|jpeg|gif|webp|svg|ico)$">
-        # Vérifier si le fichier contient un hash (8+ caractères alphanumériques)
         <If "%{REQUEST_URI} =~ /[a-zA-Z0-9]{8,}/">
             Header set Cache-Control "public, max-age=31536000, immutable"
         </If>
-        # Sinon, cache plus court pour les fichiers non versionnés
         <Else>
             Header set Cache-Control "public, max-age=604800"
         </Else>
     </FilesMatch>
-    
+
     # Pas de cache pour HTML
     <FilesMatch "\.(html|htm)$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"

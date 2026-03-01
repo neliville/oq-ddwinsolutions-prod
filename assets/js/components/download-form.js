@@ -50,10 +50,19 @@ const handleDownloadFormSubmit = async (event) => {
     });
 
     let data;
+    const responseText = await response.text();
     try {
-      data = await response.json();
+      data = responseText ? JSON.parse(responseText) : {};
     } catch {
-      data = { success: false, message: 'Réponse invalide du serveur.' };
+      // Réponse HTML (erreur 500, 404, etc.) → aider au diagnostic
+      const statusMsg = response.status ? ` (HTTP ${response.status})` : '';
+      const isHtml = responseText.trim().startsWith('<');
+      data = {
+        success: false,
+        message: isHtml
+          ? 'Le serveur a renvoyé une erreur. Vérifiez les logs ou le statut HTTP dans l\'onglet Réseau.'
+          : 'Réponse invalide du serveur.' + statusMsg,
+      };
     }
 
     if (!data.success) {

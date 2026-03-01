@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace App\Download\Controller;
 
-use App\Download\Infrastructure\MauticFormClient;
+use App\Download\Service\DownloadRequestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/api/download')]
 final class DownloadRequestController extends AbstractController
 {
     public function __construct(
-        private readonly MauticFormClient $mauticFormClient,
-        private readonly int $formIdModele5m,
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly DownloadRequestService $downloadRequestService,
     ) {
     }
 
@@ -44,11 +41,12 @@ final class DownloadRequestController extends AbstractController
         }
 
         try {
-            $this->mauticFormClient->submit($this->formIdModele5m, [
-                'votre_email' => $email,
-                'votre_prenom' => $firstname !== '' ? $firstname : null,
-                'ressource' => 'Modèle 5M',
-            ]);
+            $this->downloadRequestService->createAndSubmitToMautic($email, $firstname, 'modele-5m');
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Ressource inconnue.',
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
@@ -56,15 +54,9 @@ final class DownloadRequestController extends AbstractController
             ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
-        $downloadUrl = $this->urlGenerator->generate(
-            'app_telechargement_modele_5m_fichier',
-            [],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
         return $this->json([
             'success' => true,
-            'downloadUrl' => $downloadUrl,
+            'message' => 'Consultez votre boîte mail pour accéder au téléchargement.',
         ], Response::HTTP_OK);
     }
 }
