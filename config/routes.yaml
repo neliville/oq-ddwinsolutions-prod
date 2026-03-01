@@ -33,3 +33,9 @@ lead_controllers:
         path: ../src/Lead/Controller/
         namespace: App\Lead\Controller
     type: attribute
+
+download_api:
+    resource:
+        path: ../src/Download/Controller/
+        namespace: App\Download\Controller
+    type: attribute

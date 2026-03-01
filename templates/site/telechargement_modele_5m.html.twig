@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Télécharger le modèle 5M — Diagramme Ishikawa | Outils-Qualité{% endblock %}
+
+{% block meta_description %}Téléchargez gratuitement notre modèle prêt à l'emploi pour l'analyse 5M (Ishikawa) : .xlsx et PDF, avec astuces d'analyse.{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="telechargement-modele-title">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h1 id="telechargement-modele-title" class="display-5 fw-bold mb-4">Téléchargez le modèle 5M</h1>
+                <p class="lead mb-4">
+                    Modèle prêt à l'emploi pour vos analyses Ishikawa (5M) : .xlsx / PDF et astuces d'analyse.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main id="main-content" class="container py-5" role="main">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">
+                        Renseignez vos coordonnées pour accéder au téléchargement. Vos données sont envoyées à notre outil de relation client (Mautic) pour vous proposer des contenus adaptés.
+                    </p>
+
+                    <form id="downloadModele5mForm"
+                          data-download-form="true"
+                          data-request-url="{{ path('app_download_modele_5m_request') }}"
+                          data-merci-url="{{ path('app_merci_modele_5m') }}"
+                          novalidate>
+                        <div class="mb-3">
+                            <label for="download_email" class="form-label">Votre email <span class="text-danger">*</span></label>
+                            <input type="email"
+                                   id="download_email"
+                                   name="email"
+                                   class="form-control form-control-lg"
+                                   placeholder="vous@exemple.com"
+                                   required
+                                   autocomplete="email">
+                        </div>
+                        <div class="mb-4">
+                            <label for="download_firstname" class="form-label">Votre prénom</label>
+                            <input type="text"
+                                   id="download_firstname"
+                                   name="firstname"
+                                   class="form-control form-control-lg"
+                                   placeholder="Votre prénom"
+                                   autocomplete="given-name">
+                        </div>
+
+                        <div id="downloadMessage" class="alert d-none mb-3" role="alert" data-download-feedback></div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-download me-2" aria-hidden="true"></i>
+                            Télécharger le modèle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -64,5 +64,13 @@ services:
             $mauticUser: '%env(MAUTIC_USER)%'
             $mauticPassword: '%env(MAUTIC_PASSWORD)%'
 
+    App\Download\Infrastructure\MauticFormClient:
+        arguments:
+            $mauticFormBaseUrl: '%env(MAUTIC_URL)%'
+
+    App\Download\Controller\DownloadRequestController:
+        arguments:
+            $formIdModele5m: '%env(int:default:MAUTIC_FORM_DOWNLOAD_5M_ID:1)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
