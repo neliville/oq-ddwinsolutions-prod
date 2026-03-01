@@ -9,8 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Secure file download via token.
+ * GET /download/access/{token}
+ */
 #[Route('/download')]
-final class DownloadAccessController extends AbstractController
+final class SecureDownloadController extends AbstractController
 {
     public function __construct(
         private readonly DownloadAccessService $downloadAccessService,

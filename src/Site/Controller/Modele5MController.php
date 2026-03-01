@@ -11,12 +11,22 @@ final class Modele5MController extends AbstractController
 {
     private const FICHIER_MODELE = 'downloads/modele-5m.pdf';
 
+    public function __construct(
+        private readonly string $mauticUrl,
+        private readonly int $mauticFormDownload5mId,
+    ) {
+    }
+
     #[Route('/telechargement-modele-5m', name: 'app_telechargement_modele_5m', methods: ['GET'])]
     public function telechargementModele5m(): Response
     {
+        $mauticBase = rtrim($this->mauticUrl, '/');
+        $formScriptUrl = $mauticBase ? $mauticBase . '/form/generate.js?id=' . $this->mauticFormDownload5mId : null;
+
         return $this->render('site/telechargement_modele_5m.html.twig', [
             'downloadUrl' => $this->generateUrl('app_telechargement_modele_5m_fichier'),
             'merciUrl' => $this->generateUrl('app_merci_modele_5m'),
+            'mauticFormScriptUrl' => $formScriptUrl,
         ]);
     }
 

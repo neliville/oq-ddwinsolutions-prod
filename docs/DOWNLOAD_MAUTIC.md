@@ -26,11 +26,16 @@ Les téléchargements de ressources (ex. Modèle 5M) nécessitent que l’utilis
 4. L’API transmet les données au formulaire Mautic (`POST /form/submit?formId=XX`).
 5. En cas de succès, le téléchargement est lancé et l’utilisateur est redirigé vers la page de remerciement.
 
+## Fichiers
+
+Les fichiers sont dans `var/downloads/` (ex. `modele-5m.pdf`). Créez le dossier et placez le fichier.
+
 ## Endpoints
 
-- `POST /api/download/modele-5m/request` : demande de téléchargement du Modèle 5M.
-  - Body JSON : `{ "email": "...", "firstname": "..." }`
-  - Réponse : `{ "success": true, "downloadUrl": "..." }` ou erreur.
+- `POST /api/download/create-from-mautic` : utilisé par n8n après réception du webhook Mautic.
+  - Header : `X-Api-Key: <DOWNLOAD_AUTHORIZE_API_KEY>`
+  - Body : `{ "email": "...", "ressource_id": "modele-5m" }`
+  - Réponse : `{ "success": true, "download_url": "...", "token": "..." }`
 
 ## Aliases Mautic
 
@@ -41,4 +46,4 @@ Les champs envoyés correspondent aux alias configurés dans Mautic :
 | `email`              | user@example.com | Email (requis)                 |
 | `firstname`          | Jean           | Prénom                         |
 | `ressource_id`       | modele-5m      | Slug de la ressource           |
-| `download_request_id`| uuid           | ID de la demande (pour n8n)    |
+| `ressource_id`       | modele-5m      | Slug (champ caché, valeur par défaut) |

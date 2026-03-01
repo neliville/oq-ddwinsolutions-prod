@@ -13,8 +13,8 @@ final class ResourceRegistry implements ResourceRegistryPort
 {
     private const RESOURCES = [
         'modele-5m' => [
-            'path' => 'downloads/modele-5m.pdf',
-            'filename' => 'modele-5m.pdf',
+            'path' => 'Ishikawa_5M_Template_Outil-Qualite.xlsx',
+            'filename' => 'Ishikawa_5M_Template_Outil-Qualite.xlsx',
             'label' => 'Modèle 5M',
         ],
     ];

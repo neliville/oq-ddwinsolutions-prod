@@ -20,6 +20,18 @@
 - ressource_id (slug de la ressource)
 - download_request_id
 
+## Emplacement des fichiers
+
+Les fichiers sont stockés dans `var/downloads/` (hors du dossier public). Créez ce répertoire si nécessaire et placez `modele-5m.pdf` dedans.
+
 ## Configuration n8n
 
-Appeler POST /api/download/authorize avec download_request_id du webhook Mautic.
+**Flux formulaire Mautic intégré (script generate.js)** :
+1. L'utilisateur remplit le formulaire Mautic (soumission directe vers Mautic)
+2. Webhook Mautic → n8n
+3. n8n appelle `POST /api/download/create-from-mautic` avec `email`, `ressource_id` (X-Api-Key requis)
+4. Symfony crée la demande, génère le token, retourne `download_url`
+5. n8n envoie l'email avec le lien
+
+**Flux API Symfony (formulaire custom)** :
+- n8n appelle `POST /api/download/authorize` avec `download_request_id` du webhook Mautic.

@@ -1,0 +1,107 @@
+/**
+ * Styles du formulaire Mautic intégré (form/generate.js)
+ * Référence : structure DOM inspectée dans DevTools
+ * - Wrapper : #mautic-form-container .mauticform_wrapper
+ * - Rows : .mauticform-row
+ * - Fields : .mauticform-field
+ * - Labels : .mauticform_label_*
+ * - Inputs : .mauticform_input
+ */
+
+#mautic-form-container {
+  .mauticform_wrapper {
+    font-family: inherit;
+  }
+
+  // Labels : style form-label Bootstrap
+  .mauticform_label {
+    display: block;
+    margin-bottom: var(--space-2, 0.5rem);
+    font-weight: 500;
+    color: var(--text-primary, #0f172a);
+    font-size: 1rem;
+  }
+
+  // Inputs texte et email : style form-control form-control-lg
+  .mauticform_input,
+  input[type="text"],
+  input[type="email"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary, #0f172a);
+    background-color: var(--bg-primary, #fff);
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: var(--primary, #4f46e5);
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+
+    &::placeholder {
+      color: var(--gray-400, #9ca3af);
+    }
+  }
+
+  // Chaque ligne de champ
+  .mauticform-row {
+    margin-bottom: var(--space-4, 1rem);
+  }
+
+  // Masquer uniquement les champs techniques (invisibles pour l'utilisateur)
+  // - Download Request
+  // - Ressource / ressource_id (valeur technique ex. modele-5m)
+  // Attention : "ressource" dans "ressources" (nom du formulaire) ne doit pas matcher,
+  // on cible _ressource ou ressource_id pour éviter de cacher email/firstname
+  .mauticform-row:has(label[id*="download_request"]),
+  .mauticform-row:has(input[name*="download_request"]),
+  .mauticform-row:has(label[id*="ressource_id"]),
+  .mauticform-row:has(input[name*="ressource_id"]),
+  .mauticform-row[id$="_ressource"],
+  .mauticform-row[id$="_ressource_id"] {
+    display: none !important;
+  }
+
+  // Bouton Envoyer : style btn btn-primary btn-lg w-100
+  .mauticform-button,
+  input[type="submit"],
+  button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-light, #6366f1), var(--primary, #4f46e5));
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, var(--primary, #4f46e5), var(--primary-dark, #4338ca));
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Messages d'erreur Mautic
+  .mauticform-error {
+    color: var(--red, #ef4444);
+    font-size: 0.875rem;
+    margin-top: var(--space-1, 0.25rem);
+  }
+}

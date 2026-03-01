@@ -12,9 +12,9 @@
             <a href="{{ path('app_home_index') }}#newsletter" class="btn btn-primary">
                 <i class="fas fa-envelope me-2" aria-hidden="true"></i>Recevoir le guide par email
             </a>
-            <a href="{{ path('app_home_index') }}#newsletter" class="btn btn-outline-primary">
-                <i class="fas fa-file-pdf me-2" aria-hidden="true"></i>Bonnes pratiques PDF
-            </a>
+        </div>
+        <div class="mt-3">
+            {% include 'components/coming_soon_download.html.twig' %}
         </div>
     </div>
     {% if newsletterForm|default(null) %}

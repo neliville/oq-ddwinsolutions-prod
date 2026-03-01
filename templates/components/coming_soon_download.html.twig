@@ -1,0 +1,11 @@
+{# Notification pour les téléchargements / templates non encore disponibles #}
+{# Usage : {% include 'components/coming_soon_download.html.twig' %} #}
+<div class="alert alert-info d-flex align-items-start gap-3 mb-0" role="status">
+    <i class="fas fa-info-circle mt-1" aria-hidden="true"></i>
+    <div>
+        <p class="mb-2 mb-md-0"><strong>Cette fonctionnalité arrive bientôt.</strong> Inscrivez-vous à la newsletter pour être tenu informé.</p>
+        <a href="{{ path('app_home_index') }}#newsletter" class="btn btn-sm btn-primary">
+            <i class="fas fa-envelope me-1" aria-hidden="true"></i>M'inscrire à la newsletter
+        </a>
+    </div>
+</div>

@@ -78,13 +78,22 @@ services:
 
     App\Download\Service\DownloadAccessService:
         arguments:
-            $projectDir: '%kernel.project_dir%'
+            $downloadsDir: '%kernel.project_dir%/var/downloads'
 
     App\Download\Controller\DownloadRequestController: ~
 
     App\Download\Controller\DownloadAuthorizeController:
         arguments:
             $authorizeApiKey: '%env(default:DOWNLOAD_AUTHORIZE_API_KEY:)%'
+
+    App\Download\Controller\DownloadCreateFromMauticController:
+        arguments:
+            $authorizeApiKey: '%env(default:DOWNLOAD_AUTHORIZE_API_KEY:)%'
+
+    App\Site\Controller\Modele5MController:
+        arguments:
+            $mauticUrl: '%env(MAUTIC_URL)%'
+            $mauticFormDownload5mId: '%env(int:MAUTIC_FORM_DOWNLOAD_5M_ID)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
