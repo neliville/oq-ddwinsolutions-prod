@@ -28,8 +28,32 @@
                     </p>
 
                     {% if mauticFormScriptUrl %}
-                        <div id="mautic-form-container" aria-label="Formulaire de téléchargement">
+                        <div id="mautic-form-container" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
                             <script type="text/javascript" src="{{ mauticFormScriptUrl }}"></script>
+                            <script type="text/javascript">
+                            (function() {
+                                var container = document.getElementById('mautic-form-container');
+                                if (!container) return;
+                                var ressourceId = container.getAttribute('data-ressource-id');
+                                if (!ressourceId) return;
+                                function injectRessourceId() {
+                                    try {
+                                        if (!container || !container.isConnected) return;
+                                        var form = container.querySelector('form');
+                                        if (!form || !form.isConnected) return;
+                                        if (form.querySelector('input[name="mauticform[ressource_id]"]')) return;
+                                        var input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = 'mauticform[ressource_id]';
+                                        input.value = ressourceId;
+                                        form.appendChild(input);
+                                    } catch (e) { /* ne pas casser le formulaire Mautic */ }
+                                }
+                                [500, 1500, 3000].forEach(function(ms) {
+                                    setTimeout(injectRessourceId, ms);
+                                });
+                            })();
+                            </script>
                         </div>
                     {% else %}
                         <div class="alert alert-warning" role="alert">

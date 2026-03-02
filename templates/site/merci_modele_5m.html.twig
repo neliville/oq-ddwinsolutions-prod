@@ -2,24 +2,33 @@
 
 {% block title %}Merci — Modèle 5M | Outils-Qualité{% endblock %}
 
-{% block meta_description %}Merci d'avoir téléchargé le modèle 5M. Consultez nos outils qualité pour aller plus loin.{% endblock %}
+{% block meta_description %}Merci pour votre intérêt. Un email contenant le lien de téléchargement du modèle 5M vous a été envoyé.{% endblock %}
 
 {% block body %}
 <section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="merci-modele-title">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center" data-aos="fade-up">
-                <h1 id="merci-modele-title" class="display-5 fw-bold mb-4">Merci</h1>
+                <h1 id="merci-modele-title" class="display-5 fw-bold mb-4">Merci pour votre intérêt</h1>
                 <p class="lead mb-4">
-                    Page de remerciement — à configurer (message, CTA, redirections, etc.).
+                    Un email contenant le lien de téléchargement du modèle 5M (Ishikawa) a été envoyé à votre adresse.
                 </p>
-                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">Retour au diagramme Ishikawa</a>
+                <p class="mb-4">
+                    Pensez à vérifier votre boîte de réception et, si besoin, votre dossier <strong>courrier indésirable</strong> ou <strong>spam</strong>. Le message peut parfois y atterrir.
+                </p>
+                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">Découvrir le diagramme Ishikawa</a>
             </div>
         </div>
     </div>
 </section>
 
 <main id="main-content" class="container py-5" role="main">
-    <p class="text-muted text-center">Contenu à configurer ultérieurement.</p>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <p class="text-muted mb-0">
+                Vous n’avez pas reçu l’email ? Vérifiez l’adresse saisie ou réessayez dans quelques minutes.
+            </p>
+        </div>
+    </div>
 </main>
 {% endblock %}

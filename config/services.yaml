@@ -63,18 +63,18 @@ services:
             $mauticUser: '%env(MAUTIC_USER)%'
             $mauticPassword: '%env(MAUTIC_PASSWORD)%'
 
+    # Marketing - Mautic REST API (Symfony is authority; no form submit)
+    App\Marketing\Infrastructure\MauticApiClient:
+        arguments:
+            $baseUrl: '%env(default:MAUTIC_BASE_URL:)%'
+            $username: '%env(default:MAUTIC_USERNAME:)%'
+            $password: '%env(default:MAUTIC_PASSWORD:)%'
+
+    App\Download\Application\Port\MauticContactSyncPort: '@App\Marketing\Infrastructure\DownloadMauticContactAdapter'
+
     # Download - Clean Architecture bindings
-    App\Download\Application\Port\FormSubmissionPort: '@App\Download\Infrastructure\Mautic\MauticFormSubmissionAdapter'
     App\Download\Application\Port\ResourceRegistryPort: '@App\Download\Infrastructure\Resource\ResourceRegistry'
     App\Download\Domain\Repository\DownloadRequestRepositoryInterface: '@App\Download\Infrastructure\Persistence\DoctrineDownloadRequestRepository'
-
-    App\Download\Infrastructure\Mautic\MauticFormSubmissionAdapter:
-        arguments:
-            $mauticFormBaseUrl: '%env(MAUTIC_URL)%'
-
-    App\Download\Service\DownloadRequestService:
-        arguments:
-            $mauticFormId: '%env(int:MAUTIC_FORM_DOWNLOAD_5M_ID)%'
 
     App\Download\Service\DownloadAccessService:
         arguments:
@@ -90,10 +90,18 @@ services:
         arguments:
             $authorizeApiKey: '%env(default:DOWNLOAD_AUTHORIZE_API_KEY:)%'
 
+    App\Download\Service\DownloadRequestService: ~
+
     App\Site\Controller\Modele5MController:
         arguments:
             $mauticUrl: '%env(MAUTIC_URL)%'
             $mauticFormDownload5mId: '%env(int:MAUTIC_FORM_DOWNLOAD_5M_ID)%'
+
+    # Téléchargement sécurisé GET /ressources/download (token HMAC)
+    App\Controller\DownloadController:
+        arguments:
+            $downloadSecret: '%env(DOWNLOAD_SECRET)%'
+            $downloadBasePath: '%env(DOWNLOAD_BASE_PATH)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

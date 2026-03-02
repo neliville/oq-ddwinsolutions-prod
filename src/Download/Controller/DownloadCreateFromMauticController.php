@@ -4,31 +4,26 @@ declare(strict_types=1);
 
 namespace App\Download\Controller;
 
-use App\Download\Application\Port\ResourceRegistryPort;
-use App\Download\Domain\Repository\DownloadRequestRepositoryInterface;
-use App\Download\Service\DownloadAccessService;
-use App\Entity\DownloadRequest;
+use App\Download\Application\ProcessWebhookDownloadRequest;
+use App\Marketing\Exception\MauticApiException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Endpoint appelé par n8n après réception du webhook Mautic.
- * Quand le formulaire Mautic est soumis directement par l'utilisateur,
- * on crée la DownloadRequest et on génère le token côté Symfony.
+ * Endpoint called by n8n after Mautic webhook.
+ * Thin controller: auth, parse, delegate to ProcessWebhookDownloadRequest, return JSON.
  */
 #[Route('/api/download')]
 final class DownloadCreateFromMauticController extends AbstractController
 {
     public function __construct(
-        private readonly DownloadRequestRepositoryInterface $repository,
-        private readonly ResourceRegistryPort $resourceRegistry,
-        private readonly DownloadAccessService $downloadAccessService,
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ProcessWebhookDownloadRequest $processWebhookDownloadRequest,
         private readonly ?string $authorizeApiKey,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -42,51 +37,33 @@ final class DownloadCreateFromMauticController extends AbstractController
             }
         }
 
-        $data = json_decode((string) $request->getContent(), true) ?? $request->request->all();
-        $email = trim((string) ($data['email'] ?? ''));
-        $resourceSlug = trim((string) ($data['ressource_id'] ?? $data['resource_id'] ?? ''));
+        $raw = json_decode((string) $request->getContent(), true) ?? $request->request->all();
+        // n8n peut envoyer [ { body: {...} } ] ou { body: {...} } ou directement le body
+        $data = $raw;
+        if (\is_array($raw) && isset($raw['body']) && \is_array($raw['body'])) {
+            $data = $raw['body'];
+        } elseif (\is_array($raw) && isset($raw[0]['body']) && \is_array($raw[0]['body'])) {
+            $data = $raw[0]['body'];
+        }
 
-        if ('' === $email) {
+        try {
+            $result = $this->processWebhookDownloadRequest->execute($data);
+            return $this->json($result, Response::HTTP_OK);
+        } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'success' => false,
-                'message' => 'Email requis.',
+                'message' => $e->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {
+        } catch (MauticApiException $e) {
+            $this->logger->error('Mautic API failed in create-from-mautic', [
+                'status_code' => $e->getStatusCode(),
+                'message' => $e->getMessage(),
+                'response_body' => $e->getResponseBody(),
+            ]);
             return $this->json([
                 'success' => false,
-                'message' => 'Email invalide.',
-            ], Response::HTTP_BAD_REQUEST);
+                'message' => 'CRM indisponible. Réessayez plus tard.',
+            ], Response::HTTP_BAD_GATEWAY);
         }
-
-        if ('' === $resourceSlug) {
-            $resourceSlug = 'modele-5m';
-        }
-
-        if (!$this->resourceRegistry->has($resourceSlug)) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Ressource inconnue.',
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $downloadRequest = new DownloadRequest($email, $resourceSlug);
-        $this->repository->save($downloadRequest);
-
-        $token = $this->downloadAccessService->authorize($downloadRequest);
-        $accessUrl = $this->urlGenerator->generate(
-            'app_download_access',
-            ['token' => $token],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
-        return $this->json([
-            'success' => true,
-            'download_url' => $accessUrl,
-            'token' => $token,
-            'download_request_id' => $downloadRequest->getId()->toRfc4122(),
-            'expires_in_hours' => 24,
-        ], Response::HTTP_OK);
     }
 }

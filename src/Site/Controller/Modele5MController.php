@@ -27,6 +27,7 @@ final class Modele5MController extends AbstractController
             'downloadUrl' => $this->generateUrl('app_telechargement_modele_5m_fichier'),
             'merciUrl' => $this->generateUrl('app_merci_modele_5m'),
             'mauticFormScriptUrl' => $formScriptUrl,
+            'ressourceId' => 'ishikawa-5m-template',
         ]);
     }
 

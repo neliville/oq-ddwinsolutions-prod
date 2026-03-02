@@ -22,7 +22,7 @@
 
 ## Emplacement des fichiers
 
-Les fichiers sont stockés dans `var/downloads/` (hors du dossier public). Créez ce répertoire si nécessaire et placez `modele-5m.pdf` dedans.
+Les fichiers sont stockés dans `var/downloads/` (hors du dossier public). La ressource de la page 5M est `Ishikawa_5M_Template_Outil-Qualite.xlsx`.
 
 ## Configuration n8n
 

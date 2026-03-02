@@ -56,7 +56,7 @@
 
   // Masquer uniquement les champs techniques (invisibles pour l'utilisateur)
   // - Download Request
-  // - Ressource / ressource_id (valeur technique ex. modele-5m)
+  // - Ressource / ressource_id (ex. ishikawa-5m-template → fichier var/downloads/Ishikawa_5M_Template_Outil-Qualite.xlsx)
   // Attention : "ressource" dans "ressources" (nom du formulaire) ne doit pas matcher,
   // on cible _ressource ou ressource_id pour éviter de cacher email/firstname
   .mauticform-row:has(label[id*="download_request"]),

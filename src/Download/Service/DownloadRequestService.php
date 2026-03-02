@@ -4,29 +4,28 @@ declare(strict_types=1);
 
 namespace App\Download\Service;
 
-use App\Download\Application\Port\FormSubmissionPort;
+use App\Download\Application\Port\MauticContactSyncPort;
 use App\Download\Application\Port\ResourceRegistryPort;
 use App\Download\Domain\Repository\DownloadRequestRepositoryInterface;
 use App\Entity\DownloadRequest;
 
 /**
- * Service applicatif : création de demande de téléchargement et envoi à Mautic.
+ * Application service: create download request and sync contact to Mautic via REST API.
  */
 final class DownloadRequestService
 {
     public function __construct(
         private readonly DownloadRequestRepositoryInterface $repository,
-        private readonly FormSubmissionPort $formSubmission,
+        private readonly MauticContactSyncPort $mauticContactSync,
         private readonly ResourceRegistryPort $resourceRegistry,
-        private readonly int $mauticFormId,
     ) {
     }
 
     /**
-     * Crée une demande, l'envoie à Mautic, retourne l'entité.
+     * Creates the request and syncs contact to Mautic (POST /api/contacts/new).
      *
-     * @throws \InvalidArgumentException Si la ressource n'existe pas
-     * @throws \RuntimeException Si Mautic échoue
+     * @throws \InvalidArgumentException If resource does not exist
+     * @throws \App\Marketing\Exception\MauticApiException If Mautic API fails
      */
     public function createAndSubmitToMautic(string $email, string $firstname, string $resourceSlug): DownloadRequest
     {
@@ -38,12 +37,12 @@ final class DownloadRequestService
         $downloadRequest = new DownloadRequest($email, $resourceSlug);
         $this->repository->save($downloadRequest);
 
-        $this->formSubmission->submit($this->mauticFormId, [
-            'email' => $email,
-            'firstname' => $firstname !== '' ? $firstname : null,
-            'ressource_id' => $resourceSlug,
-            'download_request_id' => $downloadRequest->getId()->toRfc4122(),
-        ]);
+        $this->mauticContactSync->syncContactForDownload(
+            $email,
+            $firstname,
+            $downloadRequest->getId()->toRfc4122(),
+            $resourceSlug,
+        );
 
         return $downloadRequest;
     }

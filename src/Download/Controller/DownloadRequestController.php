@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Download\Controller;
 
 use App\Download\Service\DownloadRequestService;
+use App\Marketing\Exception\MauticApiException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,12 +42,17 @@ final class DownloadRequestController extends AbstractController
         }
 
         try {
-            $this->downloadRequestService->createAndSubmitToMautic($email, $firstname, 'modele-5m');
+            $this->downloadRequestService->createAndSubmitToMautic($email, $firstname, 'ishikawa-5m-template');
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'success' => false,
-                'message' => 'Ressource inconnue.',
+                'message' => $e->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
+        } catch (MauticApiException $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'CRM indisponible. Veuillez réessayer plus tard.',
+            ], Response::HTTP_BAD_GATEWAY);
         } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
