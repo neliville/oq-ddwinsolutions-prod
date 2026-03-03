@@ -90,6 +90,10 @@ services:
         arguments:
             $authorizeApiKey: '%env(default:DOWNLOAD_AUTHORIZE_API_KEY:)%'
 
+    App\Download\Application\ProcessWebhookDownloadRequest:
+        arguments:
+            $downloadSecret: '%env(default:DOWNLOAD_SECRET:)%'
+
     App\Download\Service\DownloadRequestService: ~
 
     App\Site\Controller\Modele5MController:

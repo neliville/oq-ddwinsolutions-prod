@@ -49,12 +49,12 @@ final class DownloadController extends AbstractController
             return $this->errorResponse('Configuration invalide.', Response::HTTP_FORBIDDEN);
         }
 
-        $safeName = basename($file);
-        if ('' === $safeName || $safeName !== $file) {
-            return $this->errorResponse('Nom de fichier invalide.', Response::HTTP_FORBIDDEN);
+        $relativePath = $this->sanitizeRelativePath($file);
+        if ($relativePath === null) {
+            return $this->errorResponse('Chemin de fichier invalide.', Response::HTTP_FORBIDDEN);
         }
 
-        $fullPath = $basePath . \DIRECTORY_SEPARATOR . $safeName;
+        $fullPath = $basePath . \DIRECTORY_SEPARATOR . $relativePath;
         $resolved = realpath($fullPath);
         if (false === $resolved || !is_file($resolved)) {
             return $this->errorResponse('Fichier introuvable.', Response::HTTP_FORBIDDEN);
@@ -68,10 +68,30 @@ final class DownloadController extends AbstractController
         $response = new BinaryFileResponse($resolved);
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $safeName
+            basename($resolved)
         );
 
         return $response;
+    }
+
+    /**
+     * Sanitize le paramètre "file" : chemin relatif sous DOWNLOAD_BASE_PATH, sans ".." ni slash initial.
+     * Ex. templates/fichier.xlsx, autres/doc.pdf.
+     */
+    private function sanitizeRelativePath(string $file): ?string
+    {
+        $file = trim($file, "/\ \t");
+        if ('' === $file) {
+            return null;
+        }
+        if (str_contains($file, '..') || str_contains($file, "\0")) {
+            return null;
+        }
+        $parts = preg_split('#[/\\\\]+#', $file, -1, \PREG_SPLIT_NO_EMPTY);
+        if ($parts === false || $parts === []) {
+            return null;
+        }
+        return implode(\DIRECTORY_SEPARATOR, $parts);
     }
 
     private function errorResponse(string $message, int $status = Response::HTTP_FORBIDDEN): Response

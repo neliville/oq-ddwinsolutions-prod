@@ -14,23 +14,27 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Application service: process webhook payload (n8n → create-from-mautic).
- * Creates DownloadRequest, syncs contact to Mautic via REST API, authorizes, returns download URL.
+ * Creates DownloadRequest, syncs contact to Mautic via REST API, returns download URL.
+ * Si DOWNLOAD_SECRET est défini, retourne l'URL /ressources/download avec token HMAC (pour l'email).
  */
 final class ProcessWebhookDownloadRequest
 {
+    private const EXPIRES_IN_SECONDS = 86400; // 24h
+
     public function __construct(
         private readonly DownloadRequestRepositoryInterface $repository,
         private readonly ResourceRegistryPort $resourceRegistry,
         private readonly DownloadAccessService $downloadAccessService,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly MauticContactSyncPort $mauticContactSync,
+        private readonly string $downloadSecret = '',
     ) {
     }
 
     /**
      * @param array<string, mixed> $data Raw payload (n8n / Mautic webhook format)
      *
-     * @return array{success: true, download_url: string, token: string, download_request_id: string, ressource_id: string, expires_in_hours: int}
+     * @return array{success: true, download_url: string, download_request_id: string, ressource_id: string, expires_in_hours: int}
      *
      * @throws \InvalidArgumentException On validation (missing email, invalid email, unknown resource)
      * @throws MauticApiException On Mautic API failure
@@ -65,16 +69,11 @@ final class ProcessWebhookDownloadRequest
         );
 
         $token = $this->downloadAccessService->authorize($downloadRequest);
-        $accessUrl = $this->urlGenerator->generate(
-            'app_download_access',
-            ['token' => $token],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        $downloadUrl = $this->buildDownloadUrl($resourceSlug, $token);
 
         return [
             'success' => true,
-            'download_url' => $accessUrl,
-            'token' => $token,
+            'download_url' => $downloadUrl,
             'download_request_id' => $downloadRequest->getId()->toRfc4122(),
             'ressource_id' => $resourceSlug,
             'expires_in_hours' => 24,
@@ -121,5 +120,36 @@ final class ProcessWebhookDownloadRequest
             }
         }
         return '';
+    }
+
+    /**
+     * Construit l'URL de téléchargement : /ressources/download avec token HMAC si DOWNLOAD_SECRET est défini,
+     * sinon /download/access/{token} (lien avec token en base).
+     */
+    private function buildDownloadUrl(string $resourceSlug, string $accessToken): string
+    {
+        if ('' !== $this->downloadSecret) {
+            $resource = $this->resourceRegistry->get($resourceSlug);
+            $relativePath = $resource['path'] ?? null;
+            if ($relativePath !== null && $relativePath !== '') {
+                $expires = time() + self::EXPIRES_IN_SECONDS;
+                $hmacToken = hash_hmac('sha256', $relativePath . $expires, $this->downloadSecret);
+                return $this->urlGenerator->generate(
+                    'app_download',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ) . '?' . http_build_query([
+                    'file' => $relativePath,
+                    'expires' => $expires,
+                    'token' => $hmacToken,
+                ]);
+            }
+        }
+
+        return $this->urlGenerator->generate(
+            'app_download_access',
+            ['token' => $accessToken],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
     }
 }

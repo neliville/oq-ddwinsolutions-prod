@@ -59,9 +59,11 @@ Après l’appel à `create-from-mautic`, Symfony met à jour le contact dans Ma
 https://outils-qualite.com/ressources/download?file=...&expires=...&token=...
 ```
 
-- `file` : nom du fichier (ex. `Ishikawa_5M_Template_Outil-Qualite.xlsx`)
+- `file` : chemin relatif sous `DOWNLOAD_BASE_PATH` (ex. `templates/Ishikawa_5M_Template_Outil-Qualite.xlsx`)
 - `expires` : timestamp Unix d’expiration (ex. `time() + 86400` pour 24 h)
 - `token` : `hash_hmac('sha256', file . expires, DOWNLOAD_SECRET)` (même secret que dans `.env`)
+
+L’API retourne directement `download_url` avec un token valide ; n8n doit utiliser cette URL sans la reconstruire.
 
 Ne pas utiliser les champs `contact.fields.core.download_request_id` ou `ressource_id` du webhook pour le flux téléchargement : ils peuvent être null.
 
