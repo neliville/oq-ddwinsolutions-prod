@@ -1,5 +1,10 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Méthode 5 Pourquoi en Ligne — Analyse de Cause Racine Gratuite | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Utilisez la méthode des 5 Pourquoi en ligne pour identifier les causes racines de vos problèmes. Outil gratuit avec export PDF conforme ISO 9001.{% endblock %}

@@ -1,5 +1,10 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Diagramme d'Ishikawa en Ligne Gratuit — Créez et Exportez en PDF | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Créez votre diagramme d'Ishikawa (arête de poisson) en ligne gratuitement. Catégories 5M/6M personnalisables, export PDF professionnel pour vos audits ISO 9001.{% endblock %}

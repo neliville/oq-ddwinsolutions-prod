@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% set rawFeaturedImage = post.image
     ? (post.image starts with 'http' ? post.image : asset(post.image))
     : asset('img/logo.webp') %}
@@ -294,15 +299,13 @@ body {
                     {% endif %}
 
                     <!-- Newsletter -->
-                    {% if newsletterForm %}
                     <aside class="card border-0 shadow-sm" aria-labelledby="newsletter-heading">
                         <div class="card-body p-4">
                             <h2 id="newsletter-heading" class="h5 fw-bold mb-3">Newsletter</h2>
                             <p class="text-muted mb-4">Recevez nos derniers articles directement par email.</p>
-                            {% include 'components/newsletter-form.html.twig' with {'newsletterForm': newsletterForm} %}
+                            {% include 'components/newsletter-form.html.twig' %}
                         </div>
                     </aside>
-                    {% endif %}
                 </div>
             </div>
         </div>

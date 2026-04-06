@@ -1,4 +1,4 @@
-{# Micro-CTA lead pour les pages d'outils. Optionnel : newsletterForm pour afficher le formulaire. #}
+{# Micro-CTA lead pour les pages d'outils + embed newsletter Mautic #}
 <section class="tool-lead-cta rounded-3 p-4 p-md-5 mb-4 mb-md-5" aria-labelledby="tool-lead-cta-heading">
     <div class="tool-lead-cta__row">
         <div class="tool-lead-cta__icon" aria-hidden="true">
@@ -15,10 +15,8 @@
     <div class="tool-lead-cta__coming-soon">
         {% include 'components/coming_soon_download.html.twig' %}
     </div>
-    {% if newsletterForm|default(null) %}
     <div class="tool-lead-cta__newsletter">
         <p class="small mb-2">Ou inscrivez-vous directement :</p>
-        {% include 'components/newsletter-form.html.twig' with {'newsletterForm': newsletterForm} %}
+        {% include 'components/newsletter-form.html.twig' with { compact: true } %}
     </div>
-    {% endif %}
 </section>

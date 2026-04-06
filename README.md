@@ -99,6 +99,8 @@ L’application suit une structure inspirée BMAD (Site, Tools, Lead) avec :
 
 Détails : [bmad/architecture.md](bmad/architecture.md). Migration et déploiement : [bmad/migration-guide.md](bmad/migration-guide.md).
 
+**Téléchargement modèle 5M (Ishikawa)** : flux documenté dans [docs/DOWNLOAD_MAUTIC.md](docs/DOWNLOAD_MAUTIC.md) (formulaire Mautic embarqué ; la ressource est gérée dans Mautic). Intégration Symfony/n8n optionnelle : [docs/DOWNLOAD_ARCHITECTURE.md](docs/DOWNLOAD_ARCHITECTURE.md).
+
 ## 📦 Déploiement
 
 ### Déploiement sur Azure App Service (PHP 8.2)

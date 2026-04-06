@@ -1,79 +1,72 @@
-# Téléchargement de ressources avec Mautic CRM
+# Téléchargement du modèle 5M (Ishikawa) — flux Mautic
 
-Les téléchargements de ressources (ex. Modèle 5M) nécessitent que l’utilisateur remplisse un formulaire. **Symfony est l’autorité backend** : les contacts sont créés/mis à jour dans Mautic via l’**API REST** (`POST /api/contacts/new`), pas via soumission de formulaire Mautic.
+## Principe retenu
 
-## Configuration Mautic (API REST)
+Le **téléchargement de la ressource** (fichier, email de confirmation, page de remerciement éventuelle) est **entièrement géré dans Mautic** : la ressource y est **hébergée et distribuée** (formulaire avec action « télécharger l’asset », campagne, message post-soumission, etc.).
 
-1. Dans Mautic, créez des champs de contact avec les alias suivants (s’ils n’existent pas) :
-   - `email`, `firstname`, `download_request_id`, `ressource_id`
+**Symfony ne sert pas le fichier** pour ce parcours : il fournit uniquement une **page vitrine** avec **embed du formulaire Mautic** (`form/generate.js`).
 
-2. Dans `.env`, configurez l’accès API :
-   ```env
-   MAUTIC_BASE_URL=https://mautic.outils-qualite.com
-   MAUTIC_USERNAME=api_symfony
-   MAUTIC_PASSWORD=votre_mot_de_passe
-   ```
+---
 
-3. (Optionnel) Pour l’embed de formulaire sur la page : `MAUTIC_FORM_DOWNLOAD_5M_ID=XX` et `MAUTIC_URL` pour le script generate.js.
+## Rôle de Symfony
 
-## Flux utilisateur
+| Élément | Rôle |
+|--------|------|
+| Route `GET /telechargement-modele-5m` | Affiche la page et charge le script d’embed Mautic. |
+| `Modele5MController` | Passe l’URL `…/form/generate.js?id=<ID>` et un `ressourceId` optionnel pour le JS. |
+| Template `templates/site/telechargement_modele_5m.html.twig` | Conteneur `#mautic-form-container` + script d’injection optionnelle du champ caché `ressource_id`. |
 
-1. L’utilisateur ouvre la page de téléchargement.
-2. Il remplit le formulaire (email obligatoire, prénom optionnel).
-3. Au clic sur « Télécharger », les données sont envoyées à l’API Symfony.
-4. L’API crée/met à jour le contact dans Mautic via l’API REST (`POST /api/contacts/new`). Aucun formulaire Mautic n’est soumis.
-5. En cas de succès, le téléchargement est lancé et l’utilisateur est redirigé vers la page de remerciement.
+Aucune obligation d’utiliser les API `POST /api/download/*` ni n8n pour ce flux.
 
-## Fichiers
+---
 
-La ressource de la page 5M est le fichier `var/downloads/Ishikawa_5M_Template_Outil-Qualite.xlsx`. Créez le dossier `var/downloads/` et placez le fichier.
+## Configuration côté Symfony (`.env`)
 
-## Endpoints
+```env
+# URL de l’instance Mautic (sans slash final)
+MAUTIC_URL=https://mautic.outils-qualite.com
 
-- `POST /api/download/create-from-mautic` : utilisé par n8n après réception du webhook Mautic.
-  - Header : `X-Api-Key: <DOWNLOAD_AUTHORIZE_API_KEY>`
-  - Body : `{ "email": "...", "ressource_id": "ishikawa-5m-template" }`
-  - Réponse : `{ "success": true, "download_url": "...", "token": "..." }`
-
-## Pourquoi `ressource_id` et `download_request_id` sont null dans le webhook
-
-Le webhook Mautic est déclenché **à la soumission du formulaire**, avant tout appel à Symfony.
-
-- **`download_request_id`** : n’existe pas encore à ce moment (il est créé quand n8n appelle `POST /api/download/create-from-mautic`). Donc il sera **toujours null** dans le body du webhook. **À utiliser côté n8n** : récupérer `download_request_id` (et `download_url`, `ressource_id`) dans la **réponse** de l’appel à `create-from-mautic`, pas dans le webhook.
-- **`ressource_id`** : si le formulaire Mautic est chargé en iframe, le champ caché injecté par notre page n’est pas soumis, donc Mautic reçoit null. **Solution** : dans Mautic, sur le formulaire de téléchargement 5M, ajouter un champ caché « Ressource » (alias `ressource_id`) et définir sa **valeur par défaut** à `ishikawa-5m-template`. Ainsi chaque soumission enverra ce slug et le webhook contiendra `ressource_id`.
-
-Après l’appel à `create-from-mautic`, Symfony met à jour le contact dans Mautic via l’API REST avec `download_request_id` et `ressource_id`, donc le contact Mautic sera à jour pour la suite.
-
-## Workflow n8n recommandé
-
-1. Déclencher sur le webhook Mautic (body avec `mautic.lead_post_save_new` ou `mautic.lead_post_save_update`).
-2. Appeler `POST /api/download/create-from-mautic` avec le **body entier** du webhook (ou `body` si n8n enveloppe dans `{ body: ... }`). Header : `X-Api-Key: <DOWNLOAD_AUTHORIZE_API_KEY>`.
-3. Utiliser la **réponse** de cet appel pour :
-   - `download_url` → lien à envoyer par email ;
-   - `download_request_id` → identifiant de la demande ;
-   - `ressource_id` → déjà connu (par défaut `ishikawa-5m-template` si absent du webhook).
-
-**URL du lien de téléchargement** : utiliser la forme suivante (et non plus `download.php`) :
-
-```
-https://outils-qualite.com/ressources/download?file=...&expires=...&token=...
+# ID du formulaire Mautic dédié au téléchargement modèle 5M (voir Forms dans Mautic)
+MAUTIC_FORM_DOWNLOAD_5M_ID=3
 ```
 
-- `file` : chemin relatif sous `DOWNLOAD_BASE_PATH` (ex. `templates/Ishikawa_5M_Template_Outil-Qualite.xlsx`)
-- `expires` : timestamp Unix d’expiration (ex. `time() + 86400` pour 24 h)
-- `token` : `hash_hmac('sha256', file . expires, DOWNLOAD_SECRET)` (même secret que dans `.env`)
+Le script chargé sur la page est :  
+`{MAUTIC_URL}/form/generate.js?id={MAUTIC_FORM_DOWNLOAD_5M_ID}`.
 
-L’API retourne directement `download_url` avec un token valide ; n8n doit utiliser cette URL sans la reconstruire.
+Les variables **`MAUTIC_USER` / `MAUTIC_PASSWORD`** (API REST) restent utiles pour d’autres fonctionnalités (newsletter, sync contacts, etc.), **pas** pour afficher l’embed du formulaire de téléchargement.
 
-Ne pas utiliser les champs `contact.fields.core.download_request_id` ou `ressource_id` du webhook pour le flux téléchargement : ils peuvent être null.
+---
 
-## Aliases Mautic
+## Configuration côté Mautic (à faire dans l’admin Mautic)
 
-Les champs envoyés par Symfony (API REST) correspondent aux alias configurés dans Mautic :
+1. **Formulaire** : créer ou utiliser le formulaire dont l’ID correspond à `MAUTIC_FORM_DOWNLOAD_5M_ID`.
+2. **Ressource** : attacher le fichier / configurer l’action de téléchargement **dans Mautic** (comportement du formulaire après soumission, asset, email avec lien, etc.).
+3. **Champs** : email (obligatoire), prénom si besoin — selon votre scénario marketing.
+4. **Optionnel — traçabilité** : champ caché avec alias `ressource_id` et valeur par défaut `ishikawa-5m-template` si vous segmentez ou synchronisez encore des contacts sur ce slug. La page Symfony tente d’injecter ce champ caché dans le DOM si le formulaire généré ne l’expose pas (voir template).
 
-| Alias                  | Exemple valeur       | Description                                                                 |
-|------------------------|----------------------|-----------------------------------------------------------------------------|
-| `email`                | user@example.com     | Email (requis)                                                             |
-| `firstname`            | Jean                 | Prénom                                                                     |
-| `ressource_id`         | ishikawa-5m-template | Slug de la ressource (fichier var/downloads/Ishikawa_5M_Template_Outil-Qualite.xlsx) |
-| `download_request_id` | UUID                 | ID de la demande ; renseigné par Symfony après création, pas par le formulaire. |
+---
+
+## Page concernée
+
+- **URL** : `/telechargement-modele-5m`
+- **Lien depuis l’outil** : la page Ishikawa pointe vers cette route (`templates/ishikawa/index.html.twig`).
+
+---
+
+## CORS et environnement local
+
+En **local** (`127.0.0.1`), le navigateur peut bloquer le chargement de `generate.js` depuis un autre domaine (CORS). En **production**, le domaine du site doit être autorisé côté Mautic pour l’embed. Voir la configuration Mautic (domaines autorisés / CORS).
+
+---
+
+## Route legacy : PDF direct (hors Mautic)
+
+La route **`GET /telechargement-modele-5m/fichier`** sert un fichier **`public/downloads/modele-5m.pdf`** s’il est présent. Ce n’est **pas** le flux principal documenté ici ; le parcours de référence est **uniquement** l’embed Mautic ci-dessus.
+
+---
+
+## Annexe — Intégration avancée Symfony / n8n (optionnelle)
+
+Des endpoints (`POST /api/download/create-from-mautic`, `POST /api/download/modele-5m/request`, tokens, fichiers sous `var/downloads/`) existent encore dans le code pour des scénarios où **Symfony** livrerait le fichier ou orchestrerait des liens signés avec **n8n**. Ce n’est **pas** nécessaire si la ressource et le téléchargement sont **100 % dans Mautic**.
+
+Détails techniques de cette intégration avancée : [DOWNLOAD_ARCHITECTURE.md](DOWNLOAD_ARCHITECTURE.md).

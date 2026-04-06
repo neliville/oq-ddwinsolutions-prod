@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Outils Qualité Gratuits en Ligne — Ishikawa, 5 Pourquoi, AMDEC, Pareto | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Créez gratuitement vos diagrammes Ishikawa, analyses 5 Pourquoi, AMDEC et Pareto en ligne. Export PDF, conforme ISO 9001. Sans inscription.{% endblock %}
@@ -460,7 +465,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                         <p>Un condensé d'astuces, d'outils et de bonnes pratiques QSE directement dans votre boîte mail.</p>
                     </div>
                     <div class="newsletter-form-container">
-                        {% include 'components/newsletter-form.html.twig' with {'newsletterForm': newsletterForm} %}
+                        {% include 'components/newsletter-form.html.twig' %}
                     </div>
                 </div>
             </div>

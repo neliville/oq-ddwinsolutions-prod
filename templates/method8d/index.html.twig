@@ -1,5 +1,10 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Méthode 8D en Ligne — Résolution de Problèmes Structurée | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Pilotez vos résolutions de problèmes avec la méthode 8D en ligne. 8 disciplines, suivi de progression, export PDF et JSON. Outil gratuit.{% endblock %}

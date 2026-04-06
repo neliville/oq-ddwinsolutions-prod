@@ -3,7 +3,6 @@
 namespace App\Site\Controller;
 
 use App\Entity\BlogPost;
-use App\Newsletter\Form\NewsletterSubscriptionFormType;
 use App\Repository\BlogPostRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,8 +24,6 @@ final class BlogController extends AbstractController
     #[Route('/blog', name: 'app_blog_index')]
     public function index(Request $request): Response
     {
-        $form = $this->createForm(NewsletterSubscriptionFormType::class);
-
         // Filtres
         $categorySlug = $request->query->get('category');
         $tagSlug = $request->query->get('tag');
@@ -48,7 +45,6 @@ final class BlogController extends AbstractController
         $mostViewedPosts = $this->blogPostRepository->findMostViewed(5);
 
         return $this->render('blog/index.html.twig', [
-            'newsletterForm' => $form,
             'blogPosts' => $blogPosts,
             'featuredPosts' => $featuredPosts,
             'mostViewedPosts' => $mostViewedPosts,
@@ -78,13 +74,9 @@ final class BlogController extends AbstractController
         // Articles liés
         $relatedPosts = $this->blogPostRepository->findRelatedPosts($post, 3);
 
-        // Formulaire newsletter
-        $form = $this->createForm(NewsletterSubscriptionFormType::class);
-
         return $this->render('blog/article.html.twig', [
             'post' => $post,
             'relatedPosts' => $relatedPosts,
-            'newsletterForm' => $form,
             'show_public_navbar' => true,
         ]);
     }

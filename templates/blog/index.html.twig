@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Blog Qualité — Guides, Méthodes et Bonnes Pratiques QSE | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Articles, guides et tutoriels sur les outils qualité, l'amélioration continue et les normes ISO 9001. Ressources gratuites pour professionnels QSE.{% endblock %}
@@ -277,7 +282,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8" data-aos="fade-up">
-                {% include 'components/newsletter-form.html.twig' with {'newsletterForm': newsletterForm} %}
+                {% include 'components/newsletter-form.html.twig' %}
             </div>
         </div>
     </div>

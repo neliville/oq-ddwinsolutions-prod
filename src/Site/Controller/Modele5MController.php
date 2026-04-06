@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Téléchargement modèle 5M (Ishikawa) : page avec embed Mautic uniquement pour le parcours principal.
+ * Ressource et livraison : Mautic (voir docs/DOWNLOAD_MAUTIC.md).
+ * {@see downloadModele5m} : PDF optionnel sous public/downloads/ (route legacy).
+ */
 final class Modele5MController extends AbstractController
 {
     private const FICHIER_MODELE = 'downloads/modele-5m.pdf';

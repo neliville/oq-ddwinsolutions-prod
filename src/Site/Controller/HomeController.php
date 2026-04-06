@@ -2,7 +2,6 @@
 
 namespace App\Site\Controller;
 
-use App\Newsletter\Form\NewsletterSubscriptionFormType;
 use App\Repository\LeadRepository;
 use App\Repository\NewsletterSubscriberRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,13 +20,10 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home_index')]
     public function index(Request $request): Response
     {
-        $newsletterForm = $this->createForm(NewsletterSubscriptionFormType::class);
-
         $leadsCount = $this->leadRepository->count([]);
         $subscribersCount = $this->newsletterSubscriberRepository->countActive();
 
         return $this->render('home/index.html.twig', [
-            'newsletterForm' => $newsletterForm,
             'leadsCount' => $leadsCount,
             'subscribersCount' => $subscribersCount,
         ]);

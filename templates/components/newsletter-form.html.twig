@@ -1,45 +1,8 @@
-{# Le formulaire doit être passé depuis le contrôleur #}
-{% set form = newsletterForm|default(null) %}
+{# Formulaire newsletter Mautic (generate.js) + mentions légales #}
+{% set is_compact = compact|default(false) %}
 
-{% if form is null %}
-    <div class="alert alert-warning">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        Le formulaire newsletter n'est pas disponible.
-    </div>
-{% else %}
-    {{ form_start(form, {
-        'attr': {
-            'class': 'newsletter-signup-form row g-3 justify-content-center justify-content-lg-start align-items-center',
-            'id': 'newsletterForm',
-            'action': '/api/newsletter/subscribe',
-            'data-turbo': 'false',
-            'data-newsletter': 'true',
-            'data-feedback-target': '#newsletterMessage'
-        }
-    }) }}
-        {% if form.firstname is defined %}
-        <div class="col-12 col-lg-12">
-            {{ form_widget(form.firstname, {'attr': {
-                'class': 'form-control form-control-lg',
-                'placeholder': 'Prénom (optionnel)'
-            }}) }}
-            {{ form_errors(form.firstname) }}
-        </div>
-        {% endif %}
-        <div class="col-12 col-lg-7">
-            {{ form_widget(form.email, {'attr': {
-                'class': 'form-control form-control-lg newsletter-email-field',
-                'placeholder': 'email'
-            }}) }}
-            {{ form_errors(form.email) }}
-        </div>
-        <div class="col-12 col-lg-5">
-            <button type="submit" class="btn btn-primary btn-lg w-100 newsletter-submit-btn">
-                <i class="fas fa-envelope me-2"></i>S'abonner
-            </button>
-        </div>
-        {{ form_rest(form) }}
-    {{ form_end(form) }}
+<div class="newsletter-form-root{% if is_compact %} newsletter-form-root--compact{% endif %}">
+    {% include 'components/newsletter-mautic-embed.html.twig' with { compact: is_compact } only %}
 
     <div class="newsletter-legal text-start mt-3">
         <small>
@@ -50,7 +13,4 @@
         </small>
         <small class="d-block mt-1 text-muted">Pas de spam, désinscription en un clic.</small>
     </div>
-
-    <div id="newsletterMessage" class="mt-3 d-none"></div>
-{% endif %}
-
+</div>

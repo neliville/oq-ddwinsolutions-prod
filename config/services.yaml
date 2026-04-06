@@ -101,6 +101,11 @@ services:
             $mauticUrl: '%env(MAUTIC_URL)%'
             $mauticFormDownload5mId: '%env(int:MAUTIC_FORM_DOWNLOAD_5M_ID)%'
 
+    App\Twig\NewsletterMauticExtension:
+        arguments:
+            $mauticUrl: '%env(MAUTIC_URL)%'
+            $mauticFormNewsletterId: '%env(int:MAUTIC_FORM_NEWSLETTER_ID)%'
+
     # Téléchargement sécurisé GET /ressources/download (token HMAC)
     App\Controller\DownloadController:
         arguments:

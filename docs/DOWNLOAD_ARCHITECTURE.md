@@ -1,37 +1,53 @@
-# Architecture event-driven des téléchargements
+# Annexe — Intégration Symfony / n8n pour téléchargements sécurisés
 
-## Vue d'ensemble
+> **Statut** : documentation **historique / optionnelle**. Le parcours **officiel** pour le modèle 5M (Ishikawa) est décrit dans [DOWNLOAD_MAUTIC.md](DOWNLOAD_MAUTIC.md) : **téléchargement entièrement géré dans Mautic** via le formulaire embarqué.
 
-- Symfony = gatekeeper (validation + sécurité)
-- Mautic = source de vérité marketing
-- n8n = moteur d'automatisation
-- Aucun appel direct Symfony vers n8n
+Cette page décrit l’architecture **event-driven** encore présente dans le code pour les cas où Symfony **sert** le fichier (répertoire `var/downloads/`), génère des **tokens** ou est appelé par **n8n** après un webhook Mautic.
 
-## Flux
+---
 
-1. User → POST /api/download/modele-5m/request → Symfony crée DownloadRequest (UUID) → envoie à Mautic
-2. Mautic webhook → n8n
-3. n8n → POST /api/download/authorize (X-Api-Key) → Symfony génère token
-4. n8n envoie email avec lien GET /download/access/{token}
-5. User clique → Symfony valide token → stream fichier
+## Vue d’ensemble (flux optionnel)
 
-## Champs Mautic à ajouter (cachés)
+- **Symfony** : gatekeeper (validation, `DownloadRequest`, génération de liens / tokens, streaming fichier).
+- **Mautic** : capture marketing et webhooks.
+- **n8n** : orchestration (appel des API Symfony après webhook).
+- Aucun appel direct Symfony → n8n.
 
-- ressource_id (slug de la ressource)
-- download_request_id
+---
 
-## Emplacement des fichiers
+## Flux possible (non requis si Mautic livre seul la ressource)
 
-Les fichiers sont stockés dans `var/downloads/` (hors du dossier public). La ressource de la page 5M est `Ishikawa_5M_Template_Outil-Qualite.xlsx`.
+1. Utilisateur → `POST /api/download/modele-5m/request` → Symfony crée un `DownloadRequest` (UUID) → envoi vers Mautic via API REST.
+2. Webhook Mautic → n8n.
+3. n8n → `POST /api/download/authorize` (en-tête `X-Api-Key`) → Symfony génère un token.
+4. n8n envoie un email avec un lien `GET /download/access/{token}`.
+5. Clic utilisateur → Symfony valide le token → envoi du fichier depuis `var/downloads/`.
 
-## Configuration n8n
+**Flux alternatif** : formulaire Mautic embarqué → webhook → n8n → `POST /api/download/create-from-mautic` → réponse avec `download_url` (voir implémentation dans `ProcessWebhookDownloadRequest`).
 
-**Flux formulaire Mautic intégré (script generate.js)** :
-1. L'utilisateur remplit le formulaire Mautic (soumission directe vers Mautic)
-2. Webhook Mautic → n8n
-3. n8n appelle `POST /api/download/create-from-mautic` avec `email`, `ressource_id` (X-Api-Key requis)
-4. Symfony crée la demande, génère le token, retourne `download_url`
-5. n8n envoie l'email avec le lien
+---
 
-**Flux API Symfony (formulaire custom)** :
-- n8n appelle `POST /api/download/authorize` avec `download_request_id` du webhook Mautic.
+## Fichiers côté Symfony (flux optionnel)
+
+Les fichiers servis par Symfony sont référencés dans `ResourceRegistry` (`src/Download/Infrastructure/Resource/ResourceRegistry.php`), typiquement sous **`var/downloads/`** (hors webroot).
+
+---
+
+## Champs Mautic utiles pour l’intégration avancée
+
+- `ressource_id` (slug de la ressource)
+- `download_request_id` (UUID côté Symfony après création de la demande)
+
+---
+
+## Configuration n8n (si utilisé)
+
+1. Déclencher sur le webhook Mautic (`mautic.lead_post_save_new` / `update`).
+2. Appeler `POST /api/download/create-from-mautic` avec le corps du webhook (ou champs extraits), en-tête `X-Api-Key: <DOWNLOAD_AUTHORIZE_API_KEY>`.
+3. Utiliser `download_url` renvoyée pour l’email.
+
+Variables d’environnement associées : `DOWNLOAD_AUTHORIZE_API_KEY`, `DOWNLOAD_SECRET`, chemins `DOWNLOAD_BASE_PATH` selon le déploiement.
+
+---
+
+Pour le **modèle 5M en production** avec ressource **déjà dans Mautic**, se référer à **[DOWNLOAD_MAUTIC.md](DOWNLOAD_MAUTIC.md)**.

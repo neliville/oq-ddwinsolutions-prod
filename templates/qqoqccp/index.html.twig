@@ -1,5 +1,10 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Analyse QQOQCCP en Ligne Gratuite — Outil 5W2H Complet | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Structurez votre diagnostic avec l'analyse QQOQCCP (5W2H) en ligne. 7 questions fondamentales, rapport PDF généré automatiquement. Gratuit.{% endblock %}

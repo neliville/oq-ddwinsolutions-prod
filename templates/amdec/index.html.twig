@@ -1,5 +1,10 @@
 {% extends (app.user ? 'base_with_sidebar.html.twig' : 'base.html.twig') %}
 
+{% block head %}
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+{% endblock %}
+
 {% block title %}Analyse AMDEC en Ligne — Calcul NPR et Priorisation Gratuit | Outils-Qualité{% endblock %}
 
 {% block meta_description %}Réalisez votre analyse AMDEC en ligne : identification des modes de défaillance, calcul automatique de l'indice NPR, recommandations de priorisation. Gratuit.{% endblock %}
