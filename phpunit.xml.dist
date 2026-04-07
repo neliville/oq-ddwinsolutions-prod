@@ -21,6 +21,8 @@
         <server name="SYMFONY_PHPUNIT_VERSION" value="12.4"/>
         <server name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/cache/test/test.db"/>
         <!-- DATABASE_URL défini ici pour utiliser SQLite en environnement de test -->
+        <!-- Pas d'appel Mautic en CI : .env.test laisse MAUTIC_URL vide ; forcer ici pour robustesse -->
+        <server name="MAUTIC_URL" value="" force="true"/>
     </php>
     
     <source>

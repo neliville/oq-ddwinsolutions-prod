@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase;
 
 use App\Entity\User;
+use App\Tests\Fixtures\TestDataSeeder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -89,6 +90,9 @@ abstract class WebTestCaseWithDatabase extends WebTestCase
         $schemaTool->dropDatabase();
         if ($metadata !== []) {
             $schemaTool->createSchema($metadata);
+            // Le bootstrap PHPUnit peuple la base une fois, puis chaque test recrée le schéma vide.
+            // Pages légales + article blog de test : évite les 404 (CMS / routes publiques) et stabilise la CI.
+            TestDataSeeder::seed($this->entityManager);
         }
     }
 }

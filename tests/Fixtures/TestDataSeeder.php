@@ -21,6 +21,7 @@ final class TestDataSeeder
         $pages = [
             'legal-notice' => 'Mentions légales',
             'privacy-policy' => 'Politique de confidentialité',
+            'terms-of-use' => 'Conditions d\'utilisation',
         ];
 
         $created = false;
