@@ -26,6 +26,59 @@ class BlogPostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Articles mis en lumière sur le blog public : publiés, à jour, optionnellement dans une catégorie.
+     *
+     * @return list<BlogPost>
+     */
+    public function findPublishedFeaturedForBlogIndex(?string $categorySlug = null, int $limit = 3): array
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->leftJoin('bp.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('bp.tags', 't')
+            ->addSelect('t')
+            ->where('bp.publishedAt IS NOT NULL')
+            ->andWhere('bp.publishedAt <= :now')
+            ->andWhere('bp.featured = true')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('bp.createdAt', 'DESC')
+            ->setMaxResults($limit);
+
+        if (null !== $categorySlug && '' !== $categorySlug) {
+            $qb->andWhere('c.slug = :categorySlug')
+                ->setParameter('categorySlug', $categorySlug);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Plus lus sur le blog public : publiés visibles, optionnellement filtrés par catégorie.
+     *
+     * @return list<BlogPost>
+     */
+    public function findPublishedMostViewedForBlogIndex(?string $categorySlug = null, int $limit = 5): array
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->leftJoin('bp.category', 'c')
+            ->addSelect('c')
+            ->leftJoin('bp.tags', 't')
+            ->addSelect('t')
+            ->where('bp.publishedAt IS NOT NULL')
+            ->andWhere('bp.publishedAt <= :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('bp.views', 'DESC')
+            ->setMaxResults($limit);
+
+        if (null !== $categorySlug && '' !== $categorySlug) {
+            $qb->andWhere('c.slug = :categorySlug')
+                ->setParameter('categorySlug', $categorySlug);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function findByFilter(string $filter = 'all', int $page = 1, int $limit = 20): array
     {
         $qb = $this->createQueryBuilder('bp')

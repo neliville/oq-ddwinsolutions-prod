@@ -38,11 +38,11 @@ final class BlogController extends AbstractController
         // Récupérer toutes les catégories pour les filtres
         $categories = $this->categoryRepository->findAll();
 
-        // Articles mis en avant
-        $featuredPosts = $this->blogPostRepository->findByFilter('featured', 1, 3);
+        // Articles mis en avant (même filtre catégorie que la liste principale)
+        $featuredPosts = $this->blogPostRepository->findPublishedFeaturedForBlogIndex($categorySlug, 3);
 
-        // Articles les plus vus
-        $mostViewedPosts = $this->blogPostRepository->findMostViewed(5);
+        // Articles les plus lus (idem)
+        $mostViewedPosts = $this->blogPostRepository->findPublishedMostViewedForBlogIndex($categorySlug, 5);
 
         return $this->render('blog/index.html.twig', [
             'blogPosts' => $blogPosts,

@@ -16,6 +16,14 @@
 {% block og_description %}Découvrez nos articles sur l'amélioration continue, les méthodes qualité et les outils d'analyse. Guides pratiques et conseils d'experts.{% endblock %}
 
 {% block body %}
+{% set currentCategoryLabel = null %}
+{% if currentCategory is defined and currentCategory %}
+    {% for cat in categories|default([]) %}
+        {% if cat.slug == currentCategory %}
+            {% set currentCategoryLabel = cat.name %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 <!-- Hero Section -->
 <section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;">
     <div class="container">
@@ -64,7 +72,7 @@
 {% if featuredPosts|length > 0 %}
 <section class="py-5 bg-primary bg-opacity-10">
     <div class="container">
-        <h2 class="h3 fw-bold mb-4">Articles mis en avant</h2>
+        <h2 class="h3 fw-bold mb-4">Articles mis en avant{% if currentCategoryLabel %} <span class="text-muted fs-5 fw-normal">— {{ currentCategoryLabel }}</span>{% endif %}</h2>
         <div class="row g-4">
             {% for featuredPost in featuredPosts %}
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
@@ -239,7 +247,7 @@
 {% if mostViewedPosts|length > 0 %}
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="h3 fw-bold mb-4">Articles les plus lus</h2>
+        <h2 class="h3 fw-bold mb-4">Articles les plus lus{% if currentCategoryLabel %} <span class="text-muted fs-5 fw-normal">— {{ currentCategoryLabel }}</span>{% endif %}</h2>
         <div class="row g-4">
             {% for post in mostViewedPosts %}
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
