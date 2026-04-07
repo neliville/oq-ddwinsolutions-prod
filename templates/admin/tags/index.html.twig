@@ -19,9 +19,9 @@
     </div>
 
     <!-- Liste des tags -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            {% if tags|length > 0 %}
+    {% if tags|length > 0 %}
+    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-tags', list_caption: 'Tags' } %}
+        {% block list_table %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
@@ -62,7 +62,7 @@
                                         </button>
                                     </form>
                                     {% else %}
-                                    <button class="btn btn-outline-secondary" disabled title="Tag utilisé, impossible de supprimer">
+                                    <button type="button" class="btn btn-outline-secondary" disabled title="Tag utilisé, impossible de supprimer">
                                         <i data-lucide="lock" width="14" height="14"></i>
                                     </button>
                                     {% endif %}
@@ -73,18 +73,47 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}
-            <div class="text-center py-5">
-                <i data-lucide="tag" width="48" height="48" class="text-muted mb-3"></i>
-                <p class="text-muted mb-0">Aucun tag</p>
-                <a href="{{ path('app_admin_tags_new') }}" class="btn btn-primary mt-3">
-                    <i data-lucide="plus" width="16" height="16" class="me-1"></i>
-                    Créer le premier tag
-                </a>
+        {% endblock %}
+        {% block list_cards %}
+            <div class="row g-3">
+                {% for tag in tags %}
+                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-secondary fs-6 mb-2 align-self-start">{{ tag.name }}</span>
+                            <code class="small mb-2">{{ tag.slug }}</code>
+                            <span class="badge bg-info mb-3">{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</span>
+                            <div class="d-flex flex-wrap gap-2 mt-auto pt-2 border-top">
+                                <a href="{{ path('app_admin_tags_edit', {id: tag.id}) }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="edit" width="14" height="14" class="me-1"></i>Modifier</a>
+                                {% if tag.blogPosts|length == 0 %}
+                                <form method="post" action="{{ path('app_admin_tags_delete', {id: tag.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce tag ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i data-lucide="trash-2" width="14" height="14" class="me-1"></i>Supprimer</button>
+                                </form>
+                                {% else %}
+                                <button type="button" class="btn btn-outline-secondary btn-sm" disabled><i data-lucide="lock" width="14" height="14" class="me-1"></i>Utilisé</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
             </div>
-            {% endif %}
+        {% endblock %}
+        {% block list_footer %}{% endblock %}
+    {% endembed %}
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i data-lucide="tag" width="48" height="48" class="text-muted mb-3"></i>
+            <p class="text-muted mb-0">Aucun tag</p>
+            <a href="{{ path('app_admin_tags_new') }}" class="btn btn-primary mt-3">
+                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                Créer le premier tag
+            </a>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script>

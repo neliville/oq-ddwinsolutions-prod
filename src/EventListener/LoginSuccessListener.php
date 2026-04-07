@@ -2,6 +2,8 @@
 
 namespace App\EventListener;
 
+use App\Entity\User;
+use App\Service\UserActivityTracker;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -10,7 +12,8 @@ use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 class LoginSuccessListener implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly UserActivityTracker $userActivityTracker,
     ) {
     }
 
@@ -24,7 +27,10 @@ class LoginSuccessListener implements EventSubscriberInterface
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         $user = $event->getUser();
-        
+        if ($user instanceof User) {
+            $this->userActivityTracker->recordSuccessfulLogin($user);
+        }
+
         // Rediriger selon le rôle
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             // Admin → Dashboard admin

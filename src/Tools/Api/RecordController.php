@@ -3,7 +3,9 @@
 namespace App\Tools\Api;
 
 use App\Entity\Record;
+use App\Entity\User;
 use App\Repository\RecordRepository;
+use App\Service\UserActivityTracker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +18,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class RecordController extends AbstractController
 {
+    public function __construct(
+        private readonly UserActivityTracker $userActivityTracker,
+    ) {
+    }
+
     #[Route('', name: 'app_api_records_list', methods: ['GET'])]
     public function list(RecordRepository $recordRepository): JsonResponse
     {
@@ -38,7 +45,7 @@ final class RecordController extends AbstractController
     #[Route('', name: 'app_api_records_create', methods: ['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -56,7 +63,13 @@ final class RecordController extends AbstractController
         $record->setUser($this->getUser());
 
         $entityManager->persist($record);
-        $entityManager->flush();
+
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $this->userActivityTracker->recordProductActivity($user);
+        } else {
+            $entityManager->flush();
+        }
 
         return new JsonResponse([
             'success' => true,
@@ -100,7 +113,7 @@ final class RecordController extends AbstractController
         int $id,
         Request $request,
         RecordRepository $recordRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
         $user = $this->getUser();
         $record = $recordRepository->findOneBy(['id' => $id, 'user' => $user]);
@@ -121,7 +134,11 @@ final class RecordController extends AbstractController
             $record->setContent(json_encode($data['content']));
         }
 
-        $entityManager->flush();
+        if ($user instanceof User) {
+            $this->userActivityTracker->recordProductActivity($user);
+        } else {
+            $entityManager->flush();
+        }
 
         return new JsonResponse([
             'success' => true,

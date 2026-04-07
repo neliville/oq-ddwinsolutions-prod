@@ -56,6 +56,21 @@ class RecordRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult() ?? 0;
     }
 
+    /**
+     * @return list<array{type: string|null, total: string|int}>
+     */
+    public function countGroupedByTypeForUser(int $userId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.type AS type', 'COUNT(r.id) AS total')
+            ->where('r.user = :user')
+            ->setParameter('user', $userId)
+            ->groupBy('r.type')
+            ->orderBy('total', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
 //    /**
 //     * @return Record[] Returns an array of Record objects
 //     */

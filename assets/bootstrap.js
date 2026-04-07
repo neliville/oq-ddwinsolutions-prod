@@ -10,6 +10,7 @@ import ConfirmationModalController from './controllers/confirmation_modal_contro
 import DropdownBasicController from './controllers/dropdown_basic_controller.js';
 import ProfileDropdownController from './controllers/profile_dropdown_controller.js';
 import NotificationsController from './controllers/notifications_controller.js';
+import AdminListViewController from './controllers/admin_list_view_controller.js';
 
 const app = Application.start();
 
@@ -24,6 +25,7 @@ app.register('confirmation-modal', ConfirmationModalController);
 app.register('dropdown-basic', DropdownBasicController);
 app.register('profile-dropdown', ProfileDropdownController);
 app.register('notifications', NotificationsController);
+app.register('admin-list-view', AdminListViewController);
 
 window.Stimulus = app;
 

@@ -27,6 +27,7 @@ final class NewsletterMauticExtension extends AbstractExtension implements Globa
 
         return [
             'mautic_newsletter_script_url' => $scriptUrl,
+            'mautic_mtc_js_url' => '' !== $base ? $base.'/mtc.js' : null,
         ];
     }
 }

@@ -39,6 +39,11 @@ class ExportLogger
             }
 
             $this->entityManager->persist($log);
+
+            if ($user instanceof User) {
+                $user->setLastActivityAt(new \DateTimeImmutable());
+            }
+
             $this->entityManager->flush();
         } catch (\Throwable $exception) {
             if ($this->logger) {

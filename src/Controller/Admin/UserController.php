@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\AdminLog;
 use App\Entity\User;
 use App\Repository\AdminLogRepository;
+use App\Repository\ExportLogRepository;
+use App\Repository\RecordRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +24,8 @@ final class UserController extends AbstractController
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly AdminLogRepository $adminLogRepository,
+        private readonly RecordRepository $recordRepository,
+        private readonly ExportLogRepository $exportLogRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly RequestStack $requestStack,
@@ -58,20 +62,32 @@ final class UserController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(User $user): Response
     {
-        // Récupérer les logs de l'utilisateur
-        $userLogs = $this->adminLogRepository->findByFilters(
+        $userId = (int) $user->getId();
+
+        $adminAuditLogs = $this->adminLogRepository->findByFilters(
             null,
             null,
-            $user->getId(),
+            $userId,
             null,
             null,
             1,
-            10
+            15
         );
+
+        $recentRecords = $this->recordRepository->findByUserAndType($userId, null, 15);
+        $recentExports = $this->exportLogRepository->findRecentByUser($user, 15);
+        $recordStatsByType = $this->recordRepository->countGroupedByTypeForUser($userId);
+        $exportStatsByTool = $this->exportLogRepository->countByToolForUser($user);
 
         return $this->render('admin/users/show.html.twig', [
             'user' => $user,
-            'userLogs' => $userLogs,
+            'adminAuditLogs' => $adminAuditLogs,
+            'recentRecords' => $recentRecords,
+            'recentExports' => $recentExports,
+            'recordStatsByType' => $recordStatsByType,
+            'exportStatsByTool' => $exportStatsByTool,
+            'recordTotalCount' => $this->recordRepository->countByUserAndType($userId),
+            'exportTotalCount' => $this->exportLogRepository->countForUser($user),
         ]);
     }
 

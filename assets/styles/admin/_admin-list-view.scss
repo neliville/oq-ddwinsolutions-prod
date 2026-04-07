@@ -1,0 +1,28 @@
+.admin-list-view-shell {
+  .admin-list-view-cards .row {
+    --bs-gutter-y: 1rem;
+  }
+
+  .admin-list-item-card {
+    border-radius: var(--radius-lg, 1rem);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .admin-list-item-card:hover {
+    box-shadow: 0 12px 28px -18px rgba(15, 23, 42, 0.25);
+  }
+
+  @media (max-width: 575.98px) {
+    .admin-list-view-cards {
+      padding-inline: 0.75rem !important;
+    }
+
+    .admin-list-item-card .card-body {
+      padding: 1rem 1.1rem;
+    }
+  }
+
+  .contact-message-list .admin-list-item-card {
+    border-radius: 18px;
+  }
+}

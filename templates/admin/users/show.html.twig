@@ -12,13 +12,62 @@
                 Retour à la liste
             </a>
             <h1 class="h3 fw-bold mb-1">Utilisateur : {{ user.email }}</h1>
-            <p class="text-muted mb-0">Détails de l'utilisateur</p>
+            <p class="text-muted mb-0">Détails, activité produit et audit d’administration</p>
         </div>
         <div>
             <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" class="btn btn-primary">
                 <i data-lucide="edit" width="16" height="16" class="me-1"></i>
                 Modifier
             </a>
+        </div>
+    </div>
+
+    <!-- Synthèse activité -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted text-uppercase">Dernière connexion</small>
+                    <div class="fw-bold mt-1">
+                        {% if user.lastLoginAt %}
+                            {{ user.lastLoginAt|date('d/m/Y H:i') }}
+                        {% else %}
+                            <span class="text-muted">Jamais</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted text-uppercase">Dernière activité</small>
+                    <div class="fw-bold mt-1">
+                        {% if user.lastActivityAt %}
+                            {{ user.lastActivityAt|date('d/m/Y H:i') }}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted">Connexion, sauvegarde ou export</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted text-uppercase">Analyses enregistrées</small>
+                    <div class="fw-bold mt-1">{{ recordTotalCount }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <small class="text-muted text-uppercase">Exports tracés</small>
+                    <div class="fw-bold mt-1">{{ exportTotalCount }}</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -55,18 +104,58 @@
                         <small class="text-muted d-block">Date de création</small>
                         <strong>{{ user.createdAt|date('d/m/Y à H:i') }}</strong>
                     </div>
+                    <div class="mb-0">
+                        <small class="text-muted d-block">Formule / quota export (mois)</small>
+                        <strong>{{ user.plan }}</strong>
+                        <span class="text-muted">—</span>
+                        <strong>{{ user.exportCountThisMonth }}</strong>
+                        <span class="text-muted small">export(s) ce mois</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Actions récentes -->
-        <div class="col-lg-6">
+            {% if recordStatsByType|length > 0 or exportStatsByTool|length > 0 %}
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Actions récentes</h5>
+                    <h5 class="mb-0">Répartition par outil</h5>
+                </div>
+                <div class="card-body">
+                    {% if recordStatsByType|length > 0 %}
+                    <p class="small text-muted mb-2">Sauvegardes (type d’analyse)</p>
+                    <ul class="list-unstyled mb-3">
+                        {% for row in recordStatsByType %}
+                        <li class="d-flex justify-content-between border-bottom py-1 small">
+                            <span class="font-monospace">{{ row.type|default('(non défini)') }}</span>
+                            <span class="badge bg-light text-dark">{{ row.total }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if exportStatsByTool|length > 0 %}
+                    <p class="small text-muted mb-2">Exports (outil)</p>
+                    <ul class="list-unstyled mb-0">
+                        {% for row in exportStatsByTool %}
+                        <li class="d-flex justify-content-between border-bottom py-1 small">
+                            <span class="font-monospace">{{ row.tool }}</span>
+                            <span class="badge bg-light text-dark">{{ row.total }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Audit admin -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Audit administration</h5>
+                    <small class="text-muted">Actions effectuées par ce compte en tant qu’admin</small>
                 </div>
                 <div class="card-body p-0">
-                    {% if userLogs|length > 0 %}
+                    {% if adminAuditLogs|length > 0 %}
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
@@ -77,7 +166,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for log in userLogs %}
+                                {% for log in adminAuditLogs %}
                                 <tr>
                                     <td>
                                         <small>{{ log.createdAt|date('d/m/Y H:i') }}</small>
@@ -94,7 +183,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <small>{{ log.description|default('-')|slice(0, 50) }}{% if log.description|length > 50 %}...{% endif %}</small>
+                                        <small>{{ log.description|default('-')|slice(0, 80) }}{% if log.description|length > 80 %}…{% endif %}</small>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -102,9 +191,76 @@
                         </table>
                     </div>
                     {% else %}
-                    <div class="text-center py-5">
-                        <i data-lucide="file-text" width="48" height="48" class="text-muted mb-3"></i>
-                        <p class="text-muted mb-0">Aucune action récente</p>
+                    <div class="text-center py-4 px-3">
+                        <p class="text-muted small mb-0">Aucune entrée d’audit (normal si l’utilisateur n’est pas admin ou n’a pas effectué d’actions dans le back-office).</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Analyses récentes</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recentRecords|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Titre</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rec in recentRecords %}
+                                <tr>
+                                    <td><small>{{ rec.createdAt|date('d/m/Y H:i') }}</small></td>
+                                    <td><small>{{ rec.title|slice(0, 40) }}{% if rec.title|length > 40 %}…{% endif %}</small></td>
+                                    <td><span class="badge bg-secondary">{{ rec.type|default('—') }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted small mb-0">Aucune analyse enregistrée.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Exports récents</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recentExports|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Outil</th>
+                                    <th>Format</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ex in recentExports %}
+                                <tr>
+                                    <td><small>{{ ex.createdAt|date('d/m/Y H:i') }}</small></td>
+                                    <td><span class="badge bg-info text-dark">{{ ex.tool }}</span></td>
+                                    <td><small>{{ ex.format }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted small mb-0">Aucun export associé à ce compte.</p>
                     </div>
                     {% endif %}
                 </div>
@@ -138,4 +294,3 @@ if (typeof lucide !== 'undefined') {
 }
 </script>
 {% endblock %}
-

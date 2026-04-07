@@ -40,9 +40,9 @@
     </div>
 
     <!-- Liste -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            {% if leads|length > 0 %}
+    {% if leads|length > 0 %}
+    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-leads', list_caption: 'Leads' } %}
+        {% block list_table %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
@@ -69,13 +69,47 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}
-            <div class="text-center py-5 text-muted">
-                <i data-lucide="users" width="48" height="48" class="mb-2"></i>
-                <p class="mb-0">Aucun lead enregistré</p>
+        {% endblock %}
+        {% block list_cards %}
+            <div class="row g-3">
+                {% for lead in leads %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 fw-semibold mb-2 text-break">{{ lead.email ?? '—' }}</h2>
+                            <dl class="row small g-1 mb-0">
+                                <dt class="col-5 text-muted">Source</dt>
+                                <dd class="col-7 mb-0"><span class="badge bg-secondary">{{ lead.source ?? '—' }}</span></dd>
+                                <dt class="col-5 text-muted">Outil</dt>
+                                <dd class="col-7 mb-0">{{ lead.tool ?? '—' }}</dd>
+                                <dt class="col-5 text-muted">Type</dt>
+                                <dd class="col-7 mb-0">{{ lead.type ?? '—' }}</dd>
+                                <dt class="col-5 text-muted">Score</dt>
+                                <dd class="col-7 mb-0">{{ lead.score ?? '—' }}</dd>
+                                <dt class="col-5 text-muted">Date</dt>
+                                <dd class="col-7 mb-0">{{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}</dd>
+                            </dl>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
             </div>
-            {% endif %}
+        {% endblock %}
+        {% block list_footer %}{% endblock %}
+    {% endembed %}
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5 text-muted">
+            <i data-lucide="users" width="48" height="48" class="mb-2"></i>
+            <p class="mb-0">Aucun lead enregistré</p>
         </div>
     </div>
+    {% endif %}
 </div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
 {% endblock %}

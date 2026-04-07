@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ExportLog;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -58,5 +59,44 @@ class ExportLogRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return ExportLog[]
+     */
+    public function findRecentByUser(User $user, int $limit = 15): array
+    {
+        return $this->createQueryBuilder('el')
+            ->where('el.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('el.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<array{tool: string, total: string|int}>
+     */
+    public function countByToolForUser(User $user): array
+    {
+        return $this->createQueryBuilder('el')
+            ->select('el.tool AS tool', 'COUNT(el.id) AS total')
+            ->where('el.user = :user')
+            ->setParameter('user', $user)
+            ->groupBy('el.tool')
+            ->orderBy('total', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    public function countForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('el')
+            ->select('COUNT(el.id)')
+            ->where('el.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

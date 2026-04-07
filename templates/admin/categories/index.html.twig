@@ -19,9 +19,9 @@
     </div>
 
     <!-- Liste des catégories -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            {% if categories|length > 0 %}
+    {% if categories|length > 0 %}
+    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-categories', list_caption: 'Catégories' } %}
+        {% block list_table %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
@@ -83,7 +83,7 @@
                                         </button>
                                     </form>
                                     {% else %}
-                                    <button class="btn btn-outline-secondary" disabled title="Catégorie utilisée, impossible de supprimer">
+                                    <button type="button" class="btn btn-outline-secondary" disabled title="Catégorie utilisée, impossible de supprimer">
                                         <i data-lucide="lock" width="14" height="14"></i>
                                     </button>
                                     {% endif %}
@@ -94,18 +94,57 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}
-            <div class="text-center py-5">
-                <i data-lucide="folder" width="48" height="48" class="text-muted mb-3"></i>
-                <p class="text-muted mb-0">Aucune catégorie</p>
-                <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary mt-3">
-                    <i data-lucide="plus" width="16" height="16" class="me-1"></i>
-                    Créer la première catégorie
-                </a>
+        {% endblock %}
+        {% block list_cards %}
+            <div class="row g-3">
+                {% for category in categories %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge fs-6" style="background-color: {{ category.color }}; color: white;">
+                                    <i data-lucide="{{ category.icon }}" width="16" height="16" class="me-1"></i>{{ category.name }}
+                                </span>
+                                <span class="badge bg-secondary ms-auto">#{{ category.order }}</span>
+                            </div>
+                            <code class="small d-block mb-2">{{ category.slug }}</code>
+                            <p class="small text-muted flex-grow-1 mb-2">{{ category.description|default('—')|slice(0, 120) }}{% if category.description|length > 120 %}…{% endif %}</p>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="rounded border" style="width: 28px; height: 28px; background-color: {{ category.color }};"></div>
+                                <small class="text-muted">{{ category.color }}</small>
+                                <span class="badge bg-light text-dark ms-auto">{{ category.blogPosts|length }} art.</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top mt-auto">
+                                <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="edit" width="14" height="14" class="me-1"></i>Modifier</a>
+                                {% if category.blogPosts|length == 0 %}
+                                <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i data-lucide="trash-2" width="14" height="14" class="me-1"></i>Supprimer</button>
+                                </form>
+                                {% else %}
+                                <button type="button" class="btn btn-outline-secondary btn-sm" disabled><i data-lucide="lock" width="14" height="14" class="me-1"></i>Utilisée</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
             </div>
-            {% endif %}
+        {% endblock %}
+        {% block list_footer %}{% endblock %}
+    {% endembed %}
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i data-lucide="folder" width="48" height="48" class="text-muted mb-3"></i>
+            <p class="text-muted mb-0">Aucune catégorie</p>
+            <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary mt-3">
+                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+                Créer la première catégorie
+            </a>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script>

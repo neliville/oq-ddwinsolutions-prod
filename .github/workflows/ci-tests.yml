@@ -50,12 +50,9 @@ jobs:
           ###< symfony/framework-bundle ###
           EOF
 
-      - name: Install dependencies
+      - name: Install dependencies (inclut Sass + Asset Mapper via composer compile-assets)
         run: |
           composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
-
-      - name: Build Sass assets (test env)
-        run: php bin/console sass:build --env=test --no-interaction || true
 
       - name: Prepare test database (SQLite)
         run: |
@@ -108,7 +105,7 @@ jobs:
           ###< symfony/framework-bundle ###
           EOF
 
-      - name: Install dependencies
+      - name: Install dependencies (inclut Sass + Asset Mapper via composer compile-assets)
         run: |
           composer install --prefer-dist --no-progress --no-interaction
 
@@ -121,7 +118,7 @@ jobs:
       - name: Check deprecated / lint
         run: |
           php bin/console lint:container || true
-          php bin/console lint:twig templates/ || true
+          php bin/console lint:twig templates/
 
   summary:
     name: Résumé des tests

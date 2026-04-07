@@ -1,10 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block head %}
-    {{ parent() }}
-    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
-{% endblock %}
-
 {% set rawFeaturedImage = post.image
     ? (post.image starts with 'http' ? post.image : asset(post.image))
     : asset('img/logo.webp') %}
@@ -12,28 +7,10 @@
     ? rawFeaturedImage
     : app.request.schemeAndHttpHost ~ rawFeaturedImage %}
 
-{% block title %}{{ post.title }}{% endblock %}
-
-{% block meta_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
-
-{% block meta_keywords %}
-{% if post.tags|length > 0 %}
-{% for tag in post.tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}, {{ post.category.name }}, amélioration continue, outils qualité
-{% endblock %}
-
-{% block og_title %}{{ post.title }} | OUTILS-QUALITÉ{% endblock %}
-
-{% block og_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
-
-{% block og_image %}{{ featuredImageUrl }}{% endblock %}
-
-{% block og_type %}article{% endblock %}
-
-{% block schema_type %}Organization,Article{% endblock %}
-
 {% block head %}
-{{ parent() }}
-<script type="application/ld+json">
+    {{ parent() }}
+    {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
+    <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -61,6 +38,25 @@
 }
 </script>
 {% endblock %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block meta_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
+
+{% block meta_keywords %}
+{% if post.tags|length > 0 %}
+{% for tag in post.tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}, {{ post.category.name }}, amélioration continue, outils qualité
+{% endblock %}
+
+{% block og_title %}{{ post.title }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}{{ post.excerpt|striptags|trim }}{% endblock %}
+
+{% block og_image %}{{ featuredImageUrl }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block schema_type %}Organization,Article{% endblock %}
 
 {% block canonical_url %}{{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug})) }}{% endblock %}
 
