@@ -1,3 +1,6 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        # Envoi synchrone direct vers le transport (SMTP/API), sans Messenger.
+        # Évite qu’un message reste en file si SendEmailMessage était routé vers async.
+        message_bus: false

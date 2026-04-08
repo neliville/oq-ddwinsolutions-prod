@@ -192,7 +192,7 @@
     <!-- End Matomo Code -->
 </head>
 
-<body>
+<body{% block body_attributes %}{% endblock %}>
     {# Skip link pour accessibilité - visible uniquement au focus clavier #}
     <a href="#main-content" class="visually-hidden-focusable btn btn-primary position-absolute top-0 start-0 m-2" style="z-index: 9999;">
         Aller au contenu principal

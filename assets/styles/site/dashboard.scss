@@ -1,5 +1,23 @@
 @use '../core/variables';
 
+// Footer global : aligné sur la colonne principale (sidebar fixe 280px), pas en dessous.
+// Même logique que .main-content dans base_with_sidebar (desktop / sidebar repliée / mobile).
+@media (min-width: 1201px) {
+  body.layout-dashboard > footer {
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
+  }
+
+  body.layout-dashboard.sidebar-collapsed > footer {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  body.layout-dashboard > footer {
+    margin-left: 0;
+  }
+}
 
 .dashboard-page {
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 1) 100%);

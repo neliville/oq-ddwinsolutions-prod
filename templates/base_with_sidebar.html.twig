@@ -3,6 +3,8 @@
 {% set show_sidebar_toggle = app.user is not null %}
 {% set show_public_navbar = false %}
 
+{% block body_attributes %}{% if app.user %} class="layout-dashboard"{% endif %}{% endblock %}
+
 {% block body %}
 {% if app.user %}
     <header>
