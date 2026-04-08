@@ -90,6 +90,24 @@ class ExportLogRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
+    /**
+     * Détail des exports par outil et format pour un utilisateur.
+     *
+     * @return list<array{tool: string, format: string, total: string|int}>
+     */
+    public function countByToolAndFormatForUser(User $user): array
+    {
+        return $this->createQueryBuilder('el')
+            ->select('el.tool AS tool', 'el.format AS format', 'COUNT(el.id) AS total')
+            ->where('el.user = :user')
+            ->setParameter('user', $user)
+            ->groupBy('el.tool')
+            ->addGroupBy('el.format')
+            ->orderBy('total', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     public function countForUser(User $user): int
     {
         return (int) $this->createQueryBuilder('el')

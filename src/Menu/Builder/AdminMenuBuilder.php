@@ -91,6 +91,12 @@ class AdminMenuBuilder
             'linkAttributes' => ['class' => 'nav-link'],
         ]);
 
+        $menu->addChild('Outils (créations)', [
+            'route' => 'app_admin_tool_usage_index',
+            'attributes' => ['class' => 'nav-item'],
+            'linkAttributes' => ['class' => 'nav-link'],
+        ]);
+
         $menu->addChild('Logs', [
             'route' => 'app_admin_logs_index',
             'attributes' => ['class' => 'nav-item'],
@@ -98,7 +104,7 @@ class AdminMenuBuilder
         ]);
 
         $menu->addChild('Utilisateurs', [
-            'route' => 'app_admin_user_index',
+            'route' => 'app_admin_users_index',
             'attributes' => ['class' => 'nav-item'],
             'linkAttributes' => ['class' => 'nav-link'],
         ]);

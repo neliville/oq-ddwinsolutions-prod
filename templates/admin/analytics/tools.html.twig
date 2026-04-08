@@ -1,0 +1,122 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Créations par outil | Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Utilisation des outils</h1>
+            <p class="text-muted mb-0">Nombre d’analyses enregistrées par outil (tous utilisateurs) et comparaison avec les exports tracés.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ path('app_admin_export_analytics_index') }}" class="btn btn-outline-primary btn-sm">
+                <i data-lucide="download" class="me-1" width="16" height="16"></i> Exports
+            </a>
+            <a href="{{ path('app_admin_analytics_index') }}" class="btn btn-outline-secondary btn-sm">
+                <i data-lucide="bar-chart-2" class="me-1" width="16" height="16"></i> Analytics
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Analyses enregistrées (total)</h6>
+                    <h3 class="fw-bold mb-0">{{ totalCreations|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">Toutes sauvegardes confondues sur les 6 outils</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small mb-2">Exports tracés (total)</h6>
+                    <h3 class="fw-bold mb-0">{{ totalExports|number_format(0, ',', ' ') }}</h3>
+                    <small class="text-muted">PDF, PNG, JSON… (voir aussi la page Exports)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Outils les plus utilisés (créations)</h5>
+                    <small class="text-muted">Classement par nombre d’analyses sauvegardées</small>
+                </div>
+                <div class="card-body p-0">
+                    {% if creationByTool|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Rang</th>
+                                    <th scope="col">Outil</th>
+                                    <th class="text-end" scope="col">Créations</th>
+                                    <th class="text-end" scope="col">Part</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in creationByTool %}
+                                <tr>
+                                    <td class="text-muted small">{{ loop.index }}</td>
+                                    <td><strong>{{ row.label }}</strong> <span class="text-muted small">({{ row.key }})</span></td>
+                                    <td class="text-end fw-semibold">{{ row.count|number_format(0, ',', ' ') }}</td>
+                                    <td class="text-end text-muted">{{ totalCreations > 0 ? (row.count / totalCreations * 100)|round(1) : 0 }} %</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 text-muted">Aucune analyse enregistrée.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Exports par outil (global)</h5>
+                    <small class="text-muted">Volumes d’exports enregistrés par outil</small>
+                </div>
+                <div class="card-body p-0">
+                    {% if exportsByTool|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Outil</th>
+                                    <th class="text-end" scope="col">Exports</th>
+                                    <th class="text-end" scope="col">Part</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in exportsByTool %}
+                                <tr>
+                                    <td>{{ row.tool }}</td>
+                                    <td class="text-end fw-semibold">{{ row.total|number_format(0, ',', ' ') }}</td>
+                                    <td class="text-end text-muted">{{ totalExports > 0 ? (row.total / totalExports * 100)|round(1) : 0 }} %</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 text-muted">Aucun export tracé.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

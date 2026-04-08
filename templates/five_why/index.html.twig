@@ -789,10 +789,26 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.fiveWhyAppConfig?.isAuthenticated) {
-            autoLoadLatestFiveWhy();
+    let fiveWhyAutoLoadFrame = null;
+    function initFiveWhyAutoLoad() {
+        if (!window.fiveWhyAppConfig?.isAuthenticated) {
+            return;
         }
-    });
+        if (fiveWhyAutoLoadFrame !== null) {
+            cancelAnimationFrame(fiveWhyAutoLoadFrame);
+        }
+        fiveWhyAutoLoadFrame = requestAnimationFrame(() => {
+            fiveWhyAutoLoadFrame = null;
+            autoLoadLatestFiveWhy();
+        });
+    }
+
+    // Turbo Drive : DOMContentLoaded ne se rejoue pas aux navigations — les liens ?load=id (Mes créations, etc.) ne chargeaient rien.
+    document.addEventListener('turbo:load', initFiveWhyAutoLoad);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFiveWhyAutoLoad);
+    } else {
+        initFiveWhyAutoLoad();
+    }
 </script>
 {% endblock %}

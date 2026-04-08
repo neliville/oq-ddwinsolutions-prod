@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\AdminLog;
 use App\Entity\User;
 use App\Repository\AdminLogRepository;
+use App\Repository\AnalyticsRepository;
 use App\Repository\ExportLogRepository;
 use App\Repository\RecordRepository;
 use App\Repository\UserRepository;
@@ -26,6 +27,7 @@ final class UserController extends AbstractController
         private readonly AdminLogRepository $adminLogRepository,
         private readonly RecordRepository $recordRepository,
         private readonly ExportLogRepository $exportLogRepository,
+        private readonly AnalyticsRepository $analyticsRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly RequestStack $requestStack,
@@ -74,18 +76,25 @@ final class UserController extends AbstractController
             15
         );
 
-        $recentRecords = $this->recordRepository->findByUserAndType($userId, null, 15);
-        $recentExports = $this->exportLogRepository->findRecentByUser($user, 15);
+        $toolUsage = $this->analyticsRepository->getUserToolCounts($userId);
+        $toolBreakdown = $this->analyticsRepository->getPerUserToolBreakdown($userId);
+        $recentAnalyses = $this->analyticsRepository->getRecentAnalysesForUser($userId, 40);
+        $recentExports = $this->exportLogRepository->findRecentByUser($user, 50);
         $recordStatsByType = $this->recordRepository->countGroupedByTypeForUser($userId);
         $exportStatsByTool = $this->exportLogRepository->countByToolForUser($user);
+        $exportStatsByToolAndFormat = $this->exportLogRepository->countByToolAndFormatForUser($user);
 
         return $this->render('admin/users/show.html.twig', [
             'user' => $user,
             'adminAuditLogs' => $adminAuditLogs,
-            'recentRecords' => $recentRecords,
+            'toolUsage' => $toolUsage,
+            'toolBreakdown' => $toolBreakdown,
+            'recentAnalyses' => $recentAnalyses,
             'recentExports' => $recentExports,
             'recordStatsByType' => $recordStatsByType,
             'exportStatsByTool' => $exportStatsByTool,
+            'exportStatsByToolAndFormat' => $exportStatsByToolAndFormat,
+            'analysisTotalCount' => $toolUsage['totalRecords'],
             'recordTotalCount' => $this->recordRepository->countByUserAndType($userId),
             'exportTotalCount' => $this->exportLogRepository->countForUser($user),
         ]);
