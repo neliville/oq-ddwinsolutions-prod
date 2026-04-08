@@ -72,12 +72,38 @@
     gap: var(--space-6);
 }
 
+/* Espace entre le bouton « modèle 5M » (container) et la carte contrôles / canvas */
+.ishikawa-template-download-cta {
+    margin-top: 1.75rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+
+    @media (min-width: 768px) {
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        text-align: left;
+    }
+
+    .btn {
+        white-space: normal;
+        max-width: 100%;
+        line-height: 1.4;
+    }
+}
+
 .ishikawa-content {
     width: min(1600px, 100%);
     margin: 0 auto;
+    margin-bottom: clamp(1.25rem, 4vw, 2.5rem);
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
+}
+
+/* Espace net entre la zone diagramme (canvas) et l’encart newsletter / suite de page */
+.ishikawa-page .ishikawa-lower-stack {
+    margin-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-top: clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .controls-card {
@@ -341,35 +367,40 @@
 /* Liste des catégories */
 .categories-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-5);
     margin: 0;
 }
 
 .category-card {
     background: var(--bg-primary);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    border: 2px solid rgba(79, 70, 229, 0.2);
+    border-left: 4px solid rgba(79, 70, 229, 0.55);
     border-radius: var(--radius-xl);
-    padding: var(--space-4);
+    padding: var(--space-4) var(--space-5);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    transition: all var(--transition-base);
-    min-height: 90px;
-    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+    min-height: 104px;
+    box-shadow: 0 2px 12px rgba(79, 70, 229, 0.07);
     position: relative;
+    /* Surcharge components/_cards.scss (border: none, overflow: hidden) */
+    overflow: visible;
 }
 
 .category-card:hover {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    border-color: rgba(79, 70, 229, 0.45);
+    border-left-color: var(--primary);
+    box-shadow: 0 8px 28px rgba(79, 70, 229, 0.14);
+    transform: translateY(-3px);
 }
 
 .category-card.active,
 .category-card.selected {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-lg);
+    border-color: rgba(79, 70, 229, 0.5);
+    border-left-color: var(--primary);
+    box-shadow: 0 8px 28px rgba(79, 70, 229, 0.18);
 }
 
 .category-card::after {
@@ -379,9 +410,9 @@
     right: 0;
     top: 0;
     height: 4px;
-    background: var(--primary);
+    background: linear-gradient(90deg, var(--primary), rgba(6, 182, 212, 0.85));
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    opacity: 0;
+    opacity: 0.4;
     transition: opacity var(--transition-fast);
     pointer-events: none;
 }
@@ -402,8 +433,11 @@
 .category-card__footer {
     display: flex;
     justify-content: flex-end;
-    margin-top: var(--space-2);
-    gap: 8px;
+    align-items: center;
+    margin-top: auto;
+    padding-top: var(--space-3);
+    gap: 10px;
+    border-top: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .category-color {
@@ -484,19 +518,25 @@
 }
 
 .ishikawa-page .ishikawa-category-actions .btn {
-    min-width: 26px;
-    height: 26px;
-    border-radius: var(--radius-sm);
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
     background: var(--bg-secondary);
-    border: none;
+    border: 1px solid rgba(79, 70, 229, 0.15);
     color: var(--text-primary);
-    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.25);
-    transition: all var(--transition-fast);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
     opacity: 1 !important;
     visibility: visible !important;
+}
+
+.ishikawa-page .ishikawa-category-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.18);
 }
 
 .ishikawa-page .ishikawa-category-actions button {
@@ -522,8 +562,8 @@
 }
 
 .ishikawa-page .ishikawa-category-actions .btn svg {
-    width: 12px;
-    height: 12px;
+    width: 18px;
+    height: 18px;
 }
 
 .alert.alert-info {

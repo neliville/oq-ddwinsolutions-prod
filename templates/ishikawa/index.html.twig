@@ -72,16 +72,16 @@
             <p class="mb-1"><strong>Erreurs fréquentes :</strong> Trop de causes vagues, mélanger causes et solutions, s'arrêter aux causes immédiates.</p>
             <p class="mb-0"><strong>Conseil d'expert :</strong> Validez les causes avec des données (mesures, retours terrain) avant de lancer les actions.</p>
         </section>
-        <p class="mb-0">
+        <div class="ishikawa-template-download-cta">
             <a href="{{ path('app_telechargement_modele_5m') }}" class="btn btn-sm btn-outline-primary">Téléchargez un modèle prêt à l'emploi (.xlsx / PDF) + astuces d'analyse 5M</a>
-        </p>
+        </div>
     </div>
 
     <div class="ishikawa-content">
         {{ include('components/ishikawa_canvas.html.twig', { diagramId: diagramId }) }}
     </div>
 
-    <div class="container">
+    <div class="container ishikawa-lower-stack">
         {% include 'components/tool_lead_cta.html.twig' %}
         {% include 'components/cta_ddwin.html.twig' %}
 

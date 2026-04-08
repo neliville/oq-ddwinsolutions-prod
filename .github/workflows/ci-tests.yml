@@ -46,8 +46,14 @@ jobs:
           APP_SECRET=ci-secret-key-for-tests-only
           APP_DEBUG=0
           DATABASE_URL="sqlite:///%kernel.project_dir%/var/cache/test/test.db"
+          APP_URL=https://localhost
+          DEFAULT_URI=https://localhost
+          APP_EMAIL=test@outils-qualite.com
           MAILER_DSN=null://null
           ###< symfony/framework-bundle ###
+          ###> symfony/messenger ###
+          MESSENGER_TRANSPORT_DSN=in-memory://
+          ###< symfony/messenger ###
           EOF
 
       - name: Install dependencies (inclut Sass + Asset Mapper via composer compile-assets)
@@ -101,8 +107,14 @@ jobs:
           APP_SECRET=ci-secret-key-for-tests-only
           APP_DEBUG=0
           DATABASE_URL="sqlite:///%kernel.project_dir%/var/cache/test/test.db"
+          APP_URL=https://localhost
+          DEFAULT_URI=https://localhost
+          APP_EMAIL=test@outils-qualite.com
           MAILER_DSN=null://null
           ###< symfony/framework-bundle ###
+          ###> symfony/messenger ###
+          MESSENGER_TRANSPORT_DSN=in-memory://
+          ###< symfony/messenger ###
           EOF
 
       - name: Install dependencies (inclut Sass + Asset Mapper via composer compile-assets)

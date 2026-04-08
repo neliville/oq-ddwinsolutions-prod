@@ -41,7 +41,7 @@ class ResetPasswordControllerTest extends WebTestCaseWithDatabase
 
         self::assertGreaterThan(0, $this->entityManager->getRepository(ResetPasswordRequest::class)->count([]));
 
-        self::assertEmailAddressContains($email, 'from', 'support@outils-qualite.com');
+        self::assertEmailAddressContains($email, 'from', 'test@outils-qualite.com');
         self::assertEmailAddressContains($email, 'to', 'me@example.com');
         self::assertEmailTextBodyContains($email, 'Ce lien est valide');
 

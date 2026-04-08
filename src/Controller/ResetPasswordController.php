@@ -6,11 +6,13 @@ use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -26,7 +28,10 @@ class ResetPasswordController extends AbstractController
 
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
+        #[Autowire('%app.email%')] private string $appEmail,
+        #[Autowire('%app.name%')] private string $appName,
     ) {
     }
 
@@ -156,16 +161,30 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = (new TemplatedEmail())
-            ->from(new Address('support@outils-qualite.com', 'OUTILS-QUALITE'))
+            ->from(new Address($this->appEmail, $this->appName))
             ->to((string) $user->getEmail())
             ->subject('Réinitialisation de votre mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
+                'appEmail' => $this->appEmail,
             ])
         ;
 
-        $mailer->send($email);
+        try {
+            $mailer->send($email);
+        } catch (\Throwable $e) {
+            $this->logger->error('Échec de l’envoi de l’email de réinitialisation du mot de passe.', [
+                'exception' => $e,
+            ]);
+            $this->resetPasswordHelper->removeResetRequest($resetToken->getToken());
+            $this->addFlash(
+                'reset_password_error',
+                'L’envoi de l’email a échoué. Réessayez dans quelques minutes ou contactez le support à support@outils-qualite.com.'
+            );
+
+            return $this->redirectToRoute('app_forgot_password_request');
+        }
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);

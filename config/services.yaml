@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.name: 'OUTILS-QUALITÉ'
-    app.email: 'noreply@outils-qualite.com'
+    # Aligner avec le compte SMTP (obligatoire sur beaucoup d’hébergeurs, ex. o2switch)
+    app.email: '%env(APP_EMAIL)%'
     blog_images_directory: '%kernel.project_dir%/public/uploads/blog'
 services:
     # default configuration for services in *this* file
