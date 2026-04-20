@@ -304,166 +304,137 @@
             }
         }
 
+        function _showIshikawaToast(text, color) {
+            const Toastify = window.Toastify;
+            if (Toastify) Toastify({ text, duration: 3000, close: true, gravity: 'top', position: 'right', backgroundColor: color }).showToast();
+        }
+
+        async function _openIshikawaModal(modalElement) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+            const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
+            if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+        }
+
+        async function _closeIshikawaModal(modalElement) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+            const bsLib = window.bootstrap;
+            if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+        }
+
+        async function deleteIshikawaAnalysis(id, event) {
+            event.stopPropagation();
+            const confirmed = window.confirm('Supprimer cette analyse ? Cette action est irréversible.');
+            if (!confirmed) return;
+            try {
+                const baseUrl = '{{ path('app_tool_ishikawa_delete', {id: 0}) }}';
+                const url = baseUrl.replace(/\/0$/, '/' + id);
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) throw new Error(data.message || 'Erreur lors de la suppression');
+                _showIshikawaToast('Analyse supprimée.', 'linear-gradient(to right, #00b09b, #96c93d)');
+                const currentDiagramId = document.getElementById('ishikawaDiagramId')?.value;
+                if (currentDiagramId && parseInt(currentDiagramId) === parseInt(id)) {
+                    document.getElementById('ishikawaDiagramId').value = '';
+                }
+                // Rafraîchir la liste dans le modal
+                openIshikawaSaved();
+            } catch (error) {
+                _showIshikawaToast('Erreur : ' + error.message, 'linear-gradient(to right, #ff6b6b, #ee5a6f)');
+            }
+        }
+
+        async function newIshikawaAnalysis() {
+            const confirmed = window.confirm('Créer une nouvelle analyse ? Le diagramme actuel sera réinitialisé (non sauvegardé).');
+            if (!confirmed) return;
+            if (window.ishikawaApp && typeof window.ishikawaApp.createNewDiagram === 'function') {
+                window.ishikawaApp.createNewDiagram();
+            }
+            const modalElement = document.getElementById('ishikawaLoadModal');
+            if (modalElement) await _closeIshikawaModal(modalElement);
+        }
+
         async function openIshikawaSaved() {
             if (!{{ app.user ? 'true' : 'false' }}) {
-                const Toastify = window.Toastify;
-                if (Toastify) {
-                    Toastify({
-                        text: "Connectez-vous pour accéder à vos analyses.",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
-                    }).showToast();
-                }
+                _showIshikawaToast('Connectez-vous pour accéder à vos analyses.', 'linear-gradient(to right, #f97316, #ea580c)');
                 return;
             }
 
             try {
                 const response = await fetch('{{ path('app_tool_ishikawa_list') }}', {
                     method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 });
-
                 const data = await response.json();
                 const analyses = data.data || [];
 
-                if (!analyses.length) {
-                    const Toastify = window.Toastify;
-                    if (Toastify) {
-                        Toastify({
-                            text: "Aucune analyse Ishikawa sauvegardée.",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "linear-gradient(to right, #3b82f6, #2563eb)",
-                        }).showToast();
-                    }
-                    return;
-                }
-
-                // Trouver le modal existant (créé via le composant Twig)
                 const modalElement = document.getElementById('ishikawaLoadModal');
                 if (!modalElement) {
-                    const Toastify = window.Toastify;
-                    if (Toastify) {
-                        Toastify({
-                            text: "Le modal n'est pas disponible.",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                        }).showToast();
-                    }
+                    _showIshikawaToast("Le modal n'est pas disponible.", 'linear-gradient(to right, #ff6b6b, #ee5a6f)');
                     return;
                 }
 
-                // Trouver la liste dans le modal
                 const listContainer = modalElement.querySelector('#ishikawaAnalysesList');
-                if (!listContainer) {
-                    const Toastify = window.Toastify;
-                    if (Toastify) {
-                        Toastify({
-                            text: "Le conteneur de la liste n'est pas disponible.",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                        }).showToast();
-                    }
-                    return;
-                }
+                if (!listContainer) return;
 
-                // Générer le HTML de la liste des analyses
-                const listHtml = analyses
-                    .map(
-                        (analysis) => `
-                        <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                                <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                            </div>
-                            <p class="mb-0 text-muted small">${analysis.problem || 'Diagramme Ishikawa'}</p>
-                        </button>
-                    `
-                    )
-                    .join('');
-
-                listContainer.innerHTML = listHtml;
-
-                // Réinitialiser les icônes Lucide
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-
-                // Ajouter les event listeners pour charger les analyses
-                listContainer.querySelectorAll('[data-analysis-id]').forEach((button) => {
-                    button.addEventListener('click', async (event) => {
-                        const selectedId = event.currentTarget.getAttribute('data-analysis-id');
-                        // Rediriger vers la page avec l'ID
-                        window.location.href = '{{ path('app_ishikawa_index') }}?load=' + selectedId;
-                    });
-                });
-
-                // Ouvrir le modal via le contrôleur bootstrap-modal
-                let modalController = null;
-                
-                if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-                    try {
-                        modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
-                    } catch (e) {
-                        console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
-                    }
-                }
-
-                if (modalController && typeof modalController.show === 'function') {
-                    modalController.show();
+                if (!analyses.length) {
+                    listContainer.innerHTML = `
+                        <div class="text-center py-3 text-muted">
+                            <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                            <p class="mb-2">Aucune analyse sauvegardée.</p>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="newIshikawaAnalysis()">
+                                <i class="fas fa-plus me-1"></i>Créer une nouvelle analyse
+                            </button>
+                        </div>`;
                 } else {
-                    // Fallback vers Bootstrap natif
-                    const bootstrapLib = window.bootstrap || (await new Promise(resolve => {
-                        if (window.bootstrap) resolve(window.bootstrap);
-                        else setTimeout(() => resolve(window.bootstrap), 100);
-                    }));
-                    if (!bootstrapLib?.Modal) {
-                        const Toastify = window.Toastify;
-                        if (Toastify) {
-                            Toastify({
-                                text: "Le module d'interface Bootstrap n'est pas disponible.",
-                                duration: 3000,
-                                close: true,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                            }).showToast();
-                        }
-                        return;
-                    }
-                    const modalInstance = new bootstrapLib.Modal(modalElement);
-                    modalInstance.show();
+                    const deleteBaseUrl = '{{ path('app_tool_ishikawa_delete', {id: 0}) }}';
+                    listContainer.innerHTML = analyses.map((analysis) => `
+                        <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
+                            <div class="flex-grow-1 min-w-0" onclick="window.location.href='{{ path('app_ishikawa_index') }}?load=${analysis.id}'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
+                                    <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                                </div>
+                                <p class="mb-0 text-muted small text-truncate">${analysis.problem || 'Diagramme Ishikawa'}</p>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteIshikawaAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `).join('');
                 }
+
+                // Ajouter un footer "Nouvelle analyse" si pas déjà présent
+                let modalFooter = modalElement.querySelector('.modal-footer');
+                if (!modalFooter) {
+                    modalFooter = document.createElement('div');
+                    modalFooter.className = 'modal-footer';
+                    modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newIshikawaAnalysis()"><i class="fas fa-plus me-2"></i>Nouvelle analyse</button>`;
+                    modalElement.querySelector('.modal-content').appendChild(modalFooter);
+                }
+
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                await _openIshikawaModal(modalElement);
             } catch (error) {
                 console.error(error);
-                const Toastify = window.Toastify;
-                if (Toastify) {
-                    Toastify({
-                        text: error.message || 'Erreur lors du chargement des analyses.',
-                        duration: 5000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                    }).showToast();
-                }
+                _showIshikawaToast(error.message || 'Erreur lors du chargement des analyses.', 'linear-gradient(to right, #ff6b6b, #ee5a6f)');
             }
         }
 
         window.openIshikawaSaved = openIshikawaSaved;
+        window.newIshikawaAnalysis = newIshikawaAnalysis;
+        window.deleteIshikawaAnalysis = deleteIshikawaAnalysis;
     </script>
     {% endif %}
 

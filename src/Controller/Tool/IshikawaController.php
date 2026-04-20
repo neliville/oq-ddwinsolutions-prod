@@ -143,6 +143,7 @@ final class IshikawaController extends AbstractToolController
                 'problem' => $analysis->getProblem(),
                 'content' => json_decode($analysis->getData(), true),
                 'createdAt' => $analysis->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updatedAt' => $analysis->getUpdatedAt()?->format('Y-m-d H:i:s'),
             ];
         }, $analyses);
 

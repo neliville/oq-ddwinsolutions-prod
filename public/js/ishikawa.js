@@ -1954,9 +1954,27 @@
         if (problemInput) {
             problemInput.value = '';
         }
+        const diagramIdInput = document.getElementById('ishikawaDiagramId');
+        if (diagramIdInput) {
+            diagramIdInput.value = '';
+        }
         updateCategoriesList();
         drawDiagram();
         showNotification('Le diagramme a été vidé.', 'success');
+    }
+
+    function createNewDiagram() {
+        categories = cloneDefaultCategories();
+        if (problemInput) {
+            problemInput.value = '';
+        }
+        const diagramIdInput = document.getElementById('ishikawaDiagramId');
+        if (diagramIdInput) {
+            diagramIdInput.value = '';
+        }
+        updateCategoriesList();
+        drawDiagram();
+        showNotification('Nouveau diagramme créé.', 'success');
     }
 
     // Fonction pour récupérer les données du diagramme (pour la sauvegarde)
@@ -1995,6 +2013,7 @@
         resetCauses,
         resetCategories,
         resetEverything,
+        createNewDiagram,
         updateCategoryColor,
         predefinedColors,
         dismissDragHint,

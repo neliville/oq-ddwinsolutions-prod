@@ -468,6 +468,11 @@ async function resetAnalysis() {
     fiveWhyData.rootCauseReady = false
     fiveWhyData.planAction = ""
 
+    // Vider l'ID pour que la prochaine sauvegarde crée une nouvelle analyse
+    if (typeof window.setCurrentFiveWhyAnalysisId === 'function') {
+      window.setCurrentFiveWhyAnalysisId(null)
+    }
+
     document.getElementById("problemStatement").value = ""
     const planActionStatement = document.getElementById("planActionStatement")
     if (planActionStatement) planActionStatement.value = ""
