@@ -192,6 +192,18 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod 2>&1 | g
 set -e
 echo -e "${GREEN}   ✓ Migrations vérifiées${NC}"
 
+# 9.5 Compiler les feuilles Sass (Symfonycasts) — requis pour les outils (ex. ishikawa.scss)
+echo -e "\n${YELLOW}9.5 Compilation Sass (symfonycasts/sass-bundle)...${NC}"
+set +e
+php bin/console sass:build --env=prod --no-debug --no-interaction 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)"
+SASS_EXIT=${PIPESTATUS[0]}
+set -e
+if [ "${SASS_EXIT}" -ne 0 ]; then
+    echo -e "${RED}   ✗ sass:build a échoué (code ${SASS_EXIT}). Corriger puis relancer le déploiement.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}   ✓ Sass compilé${NC}"
+
 # 10. Compiler les assets avec Asset Mapper
 echo -e "\n${YELLOW}10. Compilation des assets (Asset Mapper)...${NC}"
 set +e
@@ -252,6 +264,7 @@ echo -e "${YELLOW}Résumé:${NC}"
 echo "  - Code mis à jour depuis GitHub"
 echo "  - Dépendances installées"
 echo "  - Migrations exécutées"
+echo "  - Sass compilé (outils / pages SCSS)"
 echo "  - Assets compilés"
 echo "  - Cache vidé"
 echo ""
