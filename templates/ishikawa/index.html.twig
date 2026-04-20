@@ -331,7 +331,10 @@
 
         async function deleteIshikawaAnalysis(id, event) {
             event.stopPropagation();
-            const confirmed = window.confirm('Supprimer cette analyse ? Cette action est irréversible.');
+            const confirmed = await window.ishikawaApp.requestConfirmation(
+                { title: 'Supprimer l\'analyse', message: 'Êtes-vous sûr de vouloir supprimer cette analyse ? Cette action est irréversible.', confirmText: 'Supprimer', type: 'danger' },
+                'Supprimer cette analyse ?'
+            );
             if (!confirmed) return;
             try {
                 const baseUrl = '{{ path('app_tool_ishikawa_delete', {id: 0}) }}';
@@ -355,7 +358,10 @@
         }
 
         async function newIshikawaAnalysis() {
-            const confirmed = window.confirm('Créer une nouvelle analyse ? Le diagramme actuel sera réinitialisé (non sauvegardé).');
+            const confirmed = await window.ishikawaApp.requestConfirmation(
+                { title: 'Nouvelle analyse', message: 'Créer une nouvelle analyse ? Le diagramme actuel sera réinitialisé (non sauvegardé).', confirmText: 'Créer', type: 'warning' },
+                'Créer une nouvelle analyse ?'
+            );
             if (!confirmed) return;
             if (window.ishikawaApp && typeof window.ishikawaApp.createNewDiagram === 'function') {
                 window.ishikawaApp.createNewDiagram();

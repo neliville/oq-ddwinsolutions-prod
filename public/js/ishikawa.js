@@ -2014,6 +2014,7 @@
         resetCategories,
         resetEverything,
         createNewDiagram,
+        requestConfirmation,
         updateCategoryColor,
         predefinedColors,
         dismissDragHint,

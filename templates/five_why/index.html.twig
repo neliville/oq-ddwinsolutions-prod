@@ -516,7 +516,13 @@
 
     async function deleteFiveWhyAnalysis(id, event) {
         event.stopPropagation();
-        const confirmed = window.confirm('Supprimer cette analyse ? Cette action est irréversible.');
+        const confirmed = await showConfirmationModalBootstrap(
+            'Supprimer l\'analyse',
+            'Êtes-vous sûr de vouloir supprimer cette analyse ? Cette action est irréversible.',
+            'Supprimer',
+            'Annuler',
+            'btn-danger'
+        );
         if (!confirmed) return;
         try {
             const baseUrl = '{{ path('app_tool_fivewhy_delete', {id: 0}) }}';
@@ -539,7 +545,13 @@
     }
 
     async function newFiveWhyAnalysis() {
-        const confirmed = window.confirm("Créer une nouvelle analyse ? L'analyse actuelle sera réinitialisée (non sauvegardée).");
+        const confirmed = await showConfirmationModalBootstrap(
+            'Nouvelle analyse',
+            "Créer une nouvelle analyse ? L'analyse actuelle sera réinitialisée (non sauvegardée).",
+            'Créer',
+            'Annuler',
+            'btn-warning'
+        );
         if (!confirmed) return;
         window.fiveWhyData.problemStatement = '';
         window.fiveWhyData.whySteps = [{ question: '', answer: '' }];
