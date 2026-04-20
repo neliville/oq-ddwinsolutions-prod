@@ -444,8 +444,81 @@
                 // Stocker la fonction resolve
                 return new Promise((resolve) => {
                     const resolveId = 'confirmResolve_' + Date.now();
-                    window[resolveId] = resolve;
+                    let settled = false;
+
+                    const cleanup = () => {
+                        if (confirmButton) {
+                            confirmButton.removeEventListener('click', onConfirmClick);
+                        }
+                        if (cancelButton) {
+                            cancelButton.removeEventListener('click', onCancelClick);
+                        }
+                        if (closeButton) {
+                            closeButton.removeEventListener('click', onCancelClick);
+                        }
+                        modalElement.removeEventListener('hidden.bs.modal', onHiddenModal);
+                        delete modalElement.dataset.confirmPromiseResolve;
+                        delete window[resolveId];
+                    };
+
+                    const settle = (value) => {
+                        if (settled) {
+                            return;
+                        }
+                        settled = true;
+                        cleanup();
+                        resolve(value);
+                    };
+
+                    const hideModal = () => {
+                        const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                        if (modalController && typeof modalController.hide === 'function') {
+                            modalController.hide();
+                            return;
+                        }
+
+                        const bootstrapLib = window.bootstrap;
+                        if (bootstrapLib?.Modal) {
+                            const modalInstance = bootstrapLib.Modal.getInstance(modalElement) || new bootstrapLib.Modal(modalElement);
+                            modalInstance.hide();
+                            return;
+                        }
+
+                        modalElement.style.display = 'none';
+                    };
+
+                    const onConfirmClick = (event) => {
+                        event.preventDefault();
+                        settle(true);
+                        hideModal();
+                    };
+
+                    const onCancelClick = (event) => {
+                        event.preventDefault();
+                        settle(false);
+                        hideModal();
+                    };
+
+                    const onHiddenModal = () => {
+                        settle(false);
+                    };
+
+                    const closeButton = modalElement.querySelector('.btn-close');
+
+                    // Résolution principale via le contrôleur de modal, et fallback JS si non connecté.
+                    window[resolveId] = settle;
                     modalElement.dataset.confirmPromiseResolve = resolveId;
+
+                    if (confirmButton) {
+                        confirmButton.addEventListener('click', onConfirmClick);
+                    }
+                    if (cancelButton) {
+                        cancelButton.addEventListener('click', onCancelClick);
+                    }
+                    if (closeButton) {
+                        closeButton.addEventListener('click', onCancelClick);
+                    }
+                    modalElement.addEventListener('hidden.bs.modal', onHiddenModal);
 
                     // Réinitialiser les icônes Lucide
                     if (typeof lucide !== 'undefined') {
@@ -462,7 +535,7 @@
                             const modalInstance = new bootstrapLib.Modal(modalElement);
                             modalInstance.show();
                         } else {
-                            resolve(window.confirm(message));
+                            settle(window.confirm(message));
                         }
                     }
                 });
