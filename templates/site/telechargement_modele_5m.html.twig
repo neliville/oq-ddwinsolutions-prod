@@ -10,9 +10,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center" data-aos="fade-up">
-                <h1 id="telechargement-modele-title" class="display-5 fw-bold mb-4">Téléchargez le modèle 5M</h1>
-                <p class="lead mb-4">
-                    Modèle prêt à l'emploi pour vos analyses Ishikawa (5M) : .xlsx / PDF et astuces d'analyse.
+                <h1 id="telechargement-modele-title" class="display-5 fw-bold mb-3">Téléchargez le modèle 5M</h1>
+                <p class="lead mb-0 opacity-75">
+                    Modèle prêt à l’emploi pour vos analyses Ishikawa (5M) : fichiers .xlsx / PDF et astuces d’analyse.
                 </p>
             </div>
         </div>
@@ -20,56 +20,63 @@
 </section>
 
 <main id="main-content" class="container py-5" role="main">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <p class="text-muted mb-3">
-                        Merci de renseigner vos coordonnées pour accéder au téléchargement.
-                    </p>
-
-                    <div class="alert alert-info small mb-4" role="status">
-                        <strong class="d-block mb-1">Après envoi du formulaire</strong>
-                        Vous recevrez un <strong>email contenant le lien pour télécharger le modèle</strong> (.xlsx, PDF) et les astuces d’analyse.
-                        Si rien n’apparaît dans votre boîte de réception sous quelques minutes, <strong>pensez à vérifier vos courriers indésirables (spam)</strong>.
-                    </div>
-
-                    {% if mauticFormScriptUrl %}
-                        <div id="mautic-form-container" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
-                            <script type="text/javascript" src="{{ mauticFormScriptUrl }}"></script>
-                            <script type="text/javascript">
-                            (function() {
-                                var container = document.getElementById('mautic-form-container');
-                                if (!container) return;
-                                var ressourceId = container.getAttribute('data-ressource-id');
-                                if (!ressourceId) return;
-                                function injectRessourceId() {
-                                    try {
-                                        if (!container || !container.isConnected) return;
-                                        var form = container.querySelector('form');
-                                        if (!form || !form.isConnected) return;
-                                        if (form.querySelector('input[name="mauticform[ressource_id]"]')) return;
-                                        var input = document.createElement('input');
-                                        input.type = 'hidden';
-                                        input.name = 'mauticform[ressource_id]';
-                                        input.value = ressourceId;
-                                        form.appendChild(input);
-                                    } catch (e) { /* ne pas casser le formulaire Mautic */ }
-                                }
-                                [500, 1500, 3000].forEach(function(ms) {
-                                    setTimeout(injectRessourceId, ms);
-                                });
-                            })();
-                            </script>
-                        </div>
-                        <p class="small text-muted mt-3 mb-0">
-                            Le lien de téléchargement n’est pas affiché sur cette page : il est envoyé uniquement par email pour des raisons de suivi et de qualité de service.
+    <div class="row justify-content-center px-2">
+        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
+            <div class="download-modele-5m">
+                <div class="card download-modele-5m__card border-0 bg-white">
+                    <div class="card-body p-4 p-md-5">
+                        <span class="download-modele-5m__kicker">Accès au fichier</span>
+                        <h2 class="download-modele-5m__title">Recevoir le modèle par email</h2>
+                        <p class="download-modele-5m__lead">
+                            Indiquez vos coordonnées ci-dessous. Le téléchargement se fait via un lien envoyé dans votre boîte mail (nous n’affichons pas le fichier directement sur cette page).
                         </p>
-                    {% else %}
-                        <div class="alert alert-warning" role="alert">
-                            Le formulaire de téléchargement n'est pas configuré. Contactez l'administrateur.
+
+                        <div class="download-modele-5m__notice" role="status" aria-live="polite">
+                            <p class="download-modele-5m__notice-title mb-0">Comment ça se passe ?</p>
+                            <ol class="download-modele-5m__steps mt-3 mb-0 ps-3">
+                                <li>Remplissez le formulaire puis cliquez sur <strong>Envoyer</strong>.</li>
+                                <li>Vous recevrez un <strong>email contenant le lien pour télécharger le modèle</strong> (.xlsx, PDF) ainsi que les astuces d’analyse.</li>
+                                <li>Si vous ne voyez rien sous quelques minutes, <strong>vérifiez vos courriers indésirables (spam)</strong> et l’onglet « Promotions » le cas échéant.</li>
+                            </ol>
                         </div>
-                    {% endif %}
+
+                        {% if mauticFormScriptUrl %}
+                            <div id="mautic-form-container" class="mt-1" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
+                                <script type="text/javascript" src="{{ mauticFormScriptUrl }}"></script>
+                                <script type="text/javascript">
+                                (function() {
+                                    var container = document.getElementById('mautic-form-container');
+                                    if (!container) return;
+                                    var ressourceId = container.getAttribute('data-ressource-id');
+                                    if (!ressourceId) return;
+                                    function injectRessourceId() {
+                                        try {
+                                            if (!container || !container.isConnected) return;
+                                            var form = container.querySelector('form');
+                                            if (!form || !form.isConnected) return;
+                                            if (form.querySelector('input[name="mauticform[ressource_id]"]')) return;
+                                            var input = document.createElement('input');
+                                            input.type = 'hidden';
+                                            input.name = 'mauticform[ressource_id]';
+                                            input.value = ressourceId;
+                                            form.appendChild(input);
+                                        } catch (e) { /* ne pas casser le formulaire Mautic */ }
+                                    }
+                                    [500, 1500, 3000].forEach(function(ms) {
+                                        setTimeout(injectRessourceId, ms);
+                                    });
+                                })();
+                                </script>
+                            </div>
+                            <p class="download-modele-5m__footnote">
+                                Le lien n’est pas affiché ici après envoi : il est transmis uniquement par email, pour le suivi des demandes et la qualité du service.
+                            </p>
+                        {% else %}
+                            <div class="alert alert-warning mt-3" role="alert">
+                                Le formulaire de téléchargement n’est pas configuré. Contactez l’administrateur.
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

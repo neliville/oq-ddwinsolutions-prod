@@ -566,7 +566,8 @@
     height: 18px;
 }
 
-.alert.alert-info {
+/* Uniquement sur la page outil Ishikawa — ne pas cibler .alert-info globalement (autres pages du site). */
+.ishikawa-page .alert.alert-info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-4);
@@ -616,7 +617,7 @@
     box-shadow: none;
 }
 
-.alert-icon {
+.ishikawa-page .alert-icon {
     font-size: 1.25rem;
 }
 
@@ -1367,12 +1368,12 @@
         min-height: 44px;
     }
 
-    .alert {
+    .ishikawa-page .alert {
         padding: 10px 12px;
         font-size: 0.813rem;
     }
 
-    .alert-icon {
+    .ishikawa-page .alert-icon {
         font-size: 1rem;
     }
 
