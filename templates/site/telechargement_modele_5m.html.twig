@@ -12,7 +12,7 @@
             <div class="col-lg-8 text-center" data-aos="fade-up">
                 <h1 id="telechargement-modele-title" class="display-5 fw-bold mb-3">Téléchargez le modèle 5M</h1>
                 <p class="lead mb-0 opacity-75">
-                    Modèle prêt à l’emploi pour vos analyses Ishikawa (5M) : fichiers .xlsx / PDF et astuces d’analyse.
+                    .xlsx, PDF et astuces — pour vos analyses Ishikawa (5M).
                 </p>
             </div>
         </div>
@@ -25,23 +25,13 @@
             <div class="download-modele-5m">
                 <div class="card download-modele-5m__card border-0 bg-white">
                     <div class="card-body p-4 p-md-5">
-                        <span class="download-modele-5m__kicker">Accès au fichier</span>
-                        <h2 class="download-modele-5m__title">Recevoir le modèle par email</h2>
-                        <p class="download-modele-5m__lead">
-                            Indiquez vos coordonnées ci-dessous. Le téléchargement se fait via un lien envoyé dans votre boîte mail (nous n’affichons pas le fichier directement sur cette page).
+                        <h2 class="download-modele-5m__title h4 mb-3">Vos coordonnées</h2>
+                        <p class="download-modele-5m__lead mb-4">
+                            On vous envoie le <strong>lien de téléchargement par email</strong> dès que vous cliquez sur Envoyer. Si le message met quelques minutes à arriver, un petit tour dans les <strong>indésirables</strong> suffit souvent.
                         </p>
 
-                        <div class="download-modele-5m__notice" role="status" aria-live="polite">
-                            <p class="download-modele-5m__notice-title mb-0">Comment ça se passe ?</p>
-                            <ol class="download-modele-5m__steps mt-3 mb-0 ps-3">
-                                <li>Remplissez le formulaire puis cliquez sur <strong>Envoyer</strong>.</li>
-                                <li>Vous recevrez un <strong>email contenant le lien pour télécharger le modèle</strong> (.xlsx, PDF) ainsi que les astuces d’analyse.</li>
-                                <li>Si vous ne voyez rien sous quelques minutes, <strong>vérifiez vos courriers indésirables (spam)</strong> et l’onglet « Promotions » le cas échéant.</li>
-                            </ol>
-                        </div>
-
                         {% if mauticFormScriptUrl %}
-                            <div id="mautic-form-container" class="mt-1" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
+                            <div id="mautic-form-container" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
                                 <script type="text/javascript" src="{{ mauticFormScriptUrl }}"></script>
                                 <script type="text/javascript">
                                 (function() {
@@ -68,11 +58,8 @@
                                 })();
                                 </script>
                             </div>
-                            <p class="download-modele-5m__footnote">
-                                Le lien n’est pas affiché ici après envoi : il est transmis uniquement par email, pour le suivi des demandes et la qualité du service.
-                            </p>
                         {% else %}
-                            <div class="alert alert-warning mt-3" role="alert">
+                            <div class="alert alert-warning" role="alert">
                                 Le formulaire de téléchargement n’est pas configuré. Contactez l’administrateur.
                             </div>
                         {% endif %}
