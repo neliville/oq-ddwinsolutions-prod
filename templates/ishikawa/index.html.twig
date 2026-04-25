@@ -407,7 +407,7 @@
                     listContainer.innerHTML = analyses.map((analysis) => `
                         <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
                             <div class="flex-grow-1 min-w-0" onclick="window.location.href='{{ path('app_ishikawa_index') }}?load=${analysis.id}'">
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center min-w-0">
                                     <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
                                     <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
                                 </div>

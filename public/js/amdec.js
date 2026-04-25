@@ -5,7 +5,7 @@
         {
             process: 'Assemblage moteur',
             failure: 'Serrage incorrect des boulons',
-            effect: 'Fuite d’huile, panne moteur',
+            effect: 'Fuite d\'huile, panne moteur',
             cause: 'Clé dynamométrique mal calibrée',
             actions: 'Calibration hebdomadaire, procédure de contrôle croisé',
             gravity: 8,
@@ -27,7 +27,7 @@
             failure: 'Emballage endommagé',
             effect: 'Produit abîmé à réception',
             cause: 'Emballage inadapté aux contraintes logistiques',
-            actions: 'Changement d’emballage, tests de chute réguliers',
+            actions: 'Changement d\'emballage, tests de chute réguliers',
             gravity: 5,
             occurrence: 6,
             detection: 2,
@@ -378,7 +378,7 @@
             html += `<li><strong>🔍 ${poorDetection.length} défaillance(s) difficiles à détecter</strong> (D ≥ 7) — renforcez vos contrôles.</li>`;
         }
 
-        html += '<li><strong>📝 Plan d’action :</strong> ciblez d’abord les NPR les plus élevés en réduisant G, O ou en améliorant D.</li>';
+        html += '<li><strong>📝 Plan d\'action :</strong> ciblez d\'abord les NPR les plus élevés en réduisant G, O ou en améliorant D.</li>';
         html += '</ul>';
 
         container.innerHTML = html;
@@ -402,7 +402,7 @@
     const exportAmdec = (format) => {
         const dataset = buildDataset();
         if (!dataset.length) {
-            notify('Ajoutez au moins un mode de défaillance avant d’exporter.', 'warning');
+            notify('Ajoutez au moins un mode de défaillance avant d\'exporter.', 'warning');
             return;
         }
 
@@ -532,7 +532,7 @@
         if (format === 'pdf' || format === 'png' || format === 'jpeg') {
             const { jsPDF } = window.jspdf || {};
             if (format === 'pdf' && !jsPDF) {
-                notify('La bibliothèque jsPDF n’est pas disponible.', 'error');
+                notify('La bibliothèque jsPDF n\'est pas disponible.', 'error');
                 return;
             }
 
@@ -574,7 +574,7 @@
                 })
                 .catch((error) => {
                     console.error(error);
-                    notify('Erreur lors de la génération de l’export.', 'error');
+                    notify('Erreur lors de la génération de l\'export.', 'error');
                 });
         }
     };
@@ -731,6 +731,44 @@
         return window.bootstrap || null;
     };
 
+    const _openAmdecModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
+        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+    };
+
+    const _closeAmdecModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+        const bsLib = window.bootstrap;
+        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+    };
+
+    const deleteAmdecAnalysis = async (id, event) => {
+        event.stopPropagation();
+        const confirmed = await (window.showConfirmationModal
+            ? window.showConfirmationModal({ title: 'Supprimer l\'analyse', message: 'Supprimer cette analyse ? Cette action est irréversible.', confirmText: 'Supprimer', type: 'danger' })
+            : Promise.resolve(window.confirm('Supprimer cette analyse ?')));
+        if (!confirmed) return;
+        try {
+            const url = routes().delete.replace(/\/0$/, '/' + id);
+            const response = await fetch(url, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Erreur lors de la suppression');
+            notify('Analyse supprimée.', 'success');
+            openAmdecSaved();
+        } catch (error) {
+            notify('Erreur : ' + error.message, 'error');
+        }
+    };
+
     const openAmdecSaved = async () => {
         if (!window.amdecAppConfig?.isAuthenticated) {
             notify('Connectez-vous pour accéder à vos analyses.', 'warning');
@@ -741,67 +779,60 @@
             const payload = await fetchJson(routes().list);
             const analyses = payload.data || [];
 
-            if (!analyses.length) {
-                notify('Aucune analyse AMDEC sauvegardée.', 'info');
-                return;
-            }
-
-            const existingModal = document.getElementById('amdecLoadModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            const modalHtml = `
-                <div class="modal fade" id="amdecLoadModal" tabindex="-1" aria-labelledby="amdecLoadModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="amdecLoadModalLabel">Mes analyses AMDEC</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="list-group">
-                                    ${analyses
-                                        .map(
-                                            (analysis) => `
-                                            <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                                                <div class="d-flex justify-content-between">
-                                                    <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                                                    <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                                                </div>
-                                                <p class="mb-0 text-muted small">${analysis.subject || 'Sujet non renseigné'}</p>
-                                            </button>
-                                        `
-                                        )
-                                        .join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-
             const modalElement = document.getElementById('amdecLoadModal');
-            const bootstrapLib = await getBootstrapLib();
-            if (!bootstrapLib?.Modal) {
-                notify('Le module d’interface Bootstrap n’est pas disponible pour afficher vos analyses AMDEC.', 'error');
-                modalElement.remove();
+            if (!modalElement) {
+                notify('Le modal n\'est pas disponible.', 'error');
                 return;
             }
 
-            modalElement.querySelectorAll('[data-analysis-id]').forEach((button) => {
-                button.addEventListener('click', async (event) => {
-                    const selectedId = event.currentTarget.getAttribute('data-analysis-id');
-                    await loadAmdec(selectedId);
-                    const bootstrapModal = bootstrapLib.Modal.getInstance(modalElement);
-                    bootstrapModal?.hide();
-                });
-            });
+            const listContainer = modalElement.querySelector('#amdecAnalysesList');
+            if (!listContainer) return;
 
-            const modalInstance = new bootstrapLib.Modal(modalElement);
-            modalInstance.show();
+            if (!analyses.length) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                        <p class="mb-2">Aucune analyse sauvegardée.</p>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="newAmdecAnalysis()">
+                            <i class="fas fa-plus me-1"></i>Créer une nouvelle analyse
+                        </button>
+                    </div>`;
+            } else {
+                listContainer.innerHTML = analyses.map((analysis) => `
+                    <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex justify-content-between align-items-center min-w-0">
+                                <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                            </div>
+                            <p class="mb-0 text-muted small text-truncate">${analysis.subject || 'Analyse AMDEC'}</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteAmdecAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                listContainer.querySelectorAll('[data-analysis-id]').forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        if (e.target.closest('button')) return;
+                        await loadAmdec(item.dataset.analysisId);
+                        await _closeAmdecModal(modalElement);
+                    });
+                });
+            }
+
+            let modalFooter = modalElement.querySelector('.modal-footer');
+            if (!modalFooter) {
+                modalFooter = document.createElement('div');
+                modalFooter.className = 'modal-footer';
+                modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newAmdecAnalysis()"><i class="fas fa-plus me-2"></i>Nouvelle analyse</button>`;
+                modalElement.querySelector('.modal-content').appendChild(modalFooter);
+            }
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            await _openAmdecModal(modalElement);
         } catch (error) {
             console.error(error);
             notify(error.message || 'Erreur lors du chargement des analyses.', 'error');
@@ -827,7 +858,7 @@
             }
             await loadAmdec(analyses[0].id, { silent: true });
         } catch (error) {
-            console.error('Impossible de charger automatiquement l’analyse AMDEC :', error);
+            console.error('Impossible de charger automatiquement l\'analyse AMDEC :', error);
         }
     };
 
@@ -869,6 +900,7 @@
     window.exportAmdec = exportAmdec;
     window.saveAmdec = saveAmdec;
     window.openAmdecSaved = openAmdecSaved;
+    window.deleteAmdecAnalysis = deleteAmdecAnalysis;
     window.addAmdecEntry = addAmdecEntry;
     window.resetAmdecForm = resetAmdecForm;
     window.newAmdecAnalysis = newAmdecAnalysis;

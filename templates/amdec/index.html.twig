@@ -208,6 +208,14 @@
             <p>Gratuit, sans installation, export PDF, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
+
+    {# Modal pour afficher les analyses AMDEC sauvegardées #}
+    {% if app.user %}
+    {% component AmdecAnalysesModal with {
+        id: 'amdecLoadModal'
+    } %}
+    {% endcomponent %}
+    {% endif %}
 </main>
 {% endblock %}
 

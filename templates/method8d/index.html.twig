@@ -231,6 +231,14 @@
             <p>Gratuit, sans installation, export PDF et JSON, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
+
+    {# Modal pour afficher les analyses 8D sauvegardées #}
+    {% if app.user %}
+    {% component EightDAnalysesModal with {
+        id: 'eightDLoadModal'
+    } %}
+    {% endcomponent %}
+    {% endif %}
 </main>
 {% endblock %}
 

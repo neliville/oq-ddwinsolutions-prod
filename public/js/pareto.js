@@ -179,8 +179,8 @@
             <ul>
                 <li><strong>${in80.length}</strong> cause(s) sur ${rows.length} (${percentageCauses.toFixed(1)}%) représentent 80% des effets.</li>
                 <li>Causes prioritaires : <strong>${in80.map((item) => item.name).join(', ') || '-'}</strong></li>
-                <li>Concentrez vos actions sur ces causes pour maximiser l’impact.</li>
-                <li>Mettez en place un plan d’action progressif en suivant l’ordre de priorité du tableau.</li>
+                <li>Concentrez vos actions sur ces causes pour maximiser l'impact.</li>
+                <li>Mettez en place un plan d'action progressif en suivant l\'ordre de priorité du tableau.</li>
             </ul>
         `;
     };
@@ -192,7 +192,7 @@
         const ChartLib = window.Chart;
         if (!ChartLib) {
             console.error('Chart.js n\'est pas chargé.');
-            notify('Erreur : Chart.js n’est pas disponible pour générer le graphique.', 'error');
+            notify('Erreur : Chart.js n\'est pas disponible pour générer le graphique.', 'error');
             return;
         }
 
@@ -307,7 +307,7 @@
     const exportPareto = (format) => {
         const dataset = buildDataset();
         if (!dataset.length) {
-            notify('Ajoutez au moins une cause avec une fréquence positive avant d’exporter.', 'warning');
+            notify('Ajoutez au moins une cause avec une fréquence positive avant d\'exporter.', 'warning');
             return;
         }
 
@@ -448,7 +448,7 @@
         if (format === 'pdf' || format === 'png' || format === 'jpeg') {
             const { jsPDF } = window.jspdf || {};
             if (format === 'pdf' && !jsPDF) {
-                notify('La bibliothèque jsPDF n’est pas disponible.', 'error');
+                notify('La bibliothèque jsPDF n\'est pas disponible.', 'error');
                 return;
             }
 
@@ -484,7 +484,7 @@
                 })
                 .catch((error) => {
                     console.error(error);
-                    notify('Erreur lors de la génération de l’export.', 'error');
+                    notify('Erreur lors de la génération de l\'export.', 'error');
                 });
         }
     };
@@ -640,6 +640,44 @@
         return window.bootstrap || null;
     };
 
+    const _openParetoModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
+        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+    };
+
+    const _closeParetoModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+        const bsLib = window.bootstrap;
+        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+    };
+
+    const deleteParetoAnalysis = async (id, event) => {
+        event.stopPropagation();
+        const confirmed = await (window.showConfirmationModal
+            ? window.showConfirmationModal({ title: 'Supprimer l\'analyse', message: 'Supprimer cette analyse ? Cette action est irréversible.', confirmText: 'Supprimer', type: 'danger' })
+            : Promise.resolve(window.confirm('Supprimer cette analyse ?')));
+        if (!confirmed) return;
+        try {
+            const url = routes().delete.replace(/\/0$/, '/' + id);
+            const response = await fetch(url, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Erreur lors de la suppression');
+            notify('Analyse supprimée.', 'success');
+            openParetoSaved();
+        } catch (error) {
+            notify('Erreur : ' + error.message, 'error');
+        }
+    };
+
     const openParetoSaved = async () => {
         if (!window.paretoAppConfig?.isAuthenticated) {
             notify('Connectez-vous pour accéder à vos analyses.', 'warning');
@@ -650,94 +688,60 @@
             const payload = await fetchJson(routes().list);
             const analyses = payload.data || [];
 
-            if (!analyses.length) {
-                notify('Aucune analyse Pareto sauvegardée.', 'info');
-                return;
-            }
-
-            // Trouver le modal existant (créé via le composant Twig)
             const modalElement = document.getElementById('paretoLoadModal');
             if (!modalElement) {
                 notify('Le modal n\'est pas disponible.', 'error');
                 return;
             }
 
-            // Trouver la liste dans le modal
             const listContainer = modalElement.querySelector('#paretoAnalysesList');
-            if (!listContainer) {
-                notify('Le conteneur de la liste n\'est pas disponible.', 'error');
-                return;
-            }
+            if (!listContainer) return;
 
-            // Générer le HTML de la liste des analyses
-            const listHtml = analyses
-                .map(
-                    (analysis) => `
-                    <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                            <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                        </div>
-                        <p class="mb-0 text-muted small">${analysis.description || 'Analyse Pareto'}</p>
-                    </button>
-                `
-                )
-                .join('');
-
-            listContainer.innerHTML = listHtml;
-
-            // Ajouter les event listeners pour charger les analyses
-            listContainer.querySelectorAll('[data-analysis-id]').forEach((button) => {
-                button.addEventListener('click', async (event) => {
-                    const selectedId = event.currentTarget.getAttribute('data-analysis-id');
-                    await loadPareto(selectedId);
-                    
-                    // Fermer le modal via le contrôleur bootstrap-modal
-                    let modalController = null;
-                    
-                    if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-                        try {
-                            modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
-                        } catch (e) {
-                            console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
-                        }
-                    }
-
-                    if (modalController && typeof modalController.hide === 'function') {
-                        modalController.hide();
-                    } else {
-                        // Fallback vers Bootstrap natif
-                        const bootstrapLib = await getBootstrapLib();
-                        const bootstrapModal = bootstrapLib?.Modal?.getInstance?.(modalElement);
-                        bootstrapModal?.hide();
-                    }
-                });
-            });
-
-            // Ouvrir le modal via le contrôleur bootstrap-modal
-            // Stimulus est exposé via window.Stimulus (voir assets/bootstrap.js)
-            let modalController = null;
-            
-            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-                try {
-                    modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
-                } catch (e) {
-                    console.warn('Impossible de récupérer le contrôleur Stimulus:', e);
-                }
-            }
-
-            if (modalController && typeof modalController.show === 'function') {
-                modalController.show();
+            if (!analyses.length) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                        <p class="mb-2">Aucune analyse sauvegardée.</p>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="newParetoAnalysis()">
+                            <i class="fas fa-plus me-1"></i>Créer une nouvelle analyse
+                        </button>
+                    </div>`;
             } else {
-                // Fallback vers Bootstrap natif
-                const bootstrapLib = await getBootstrapLib();
-                if (!bootstrapLib?.Modal) {
-                    notify('Le module d\'interface Bootstrap n\'est pas disponible pour afficher vos analyses Pareto.', 'error');
-                    return;
-                }
-                const modalInstance = new bootstrapLib.Modal(modalElement);
-                modalInstance.show();
+                listContainer.innerHTML = analyses.map((analysis) => `
+                    <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex justify-content-between align-items-center min-w-0">
+                                <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                            </div>
+                            <p class="mb-0 text-muted small text-truncate">${analysis.description || 'Analyse Pareto'}</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteParetoAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                listContainer.querySelectorAll('[data-analysis-id]').forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        if (e.target.closest('button')) return;
+                        await loadPareto(item.dataset.analysisId);
+                        await _closeParetoModal(modalElement);
+                    });
+                });
             }
+
+            let modalFooter = modalElement.querySelector('.modal-footer');
+            if (!modalFooter) {
+                modalFooter = document.createElement('div');
+                modalFooter.className = 'modal-footer';
+                modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newParetoAnalysis()"><i class="fas fa-plus me-2"></i>Nouvelle analyse</button>`;
+                modalElement.querySelector('.modal-content').appendChild(modalFooter);
+            }
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            await _openParetoModal(modalElement);
         } catch (error) {
             console.error(error);
             notify(error.message || 'Erreur lors du chargement des analyses.', 'error');
@@ -763,7 +767,7 @@
             }
             await loadPareto(analyses[0].id, { silent: true });
         } catch (error) {
-            console.error('Impossible de charger automatiquement l’analyse Pareto :', error);
+            console.error('Impossible de charger automatiquement l\'analyse Pareto :', error);
         }
     };
 
@@ -825,6 +829,7 @@
     window.exportPareto = exportPareto;
     window.savePareto = savePareto;
     window.openParetoSaved = openParetoSaved;
+    window.deleteParetoAnalysis = deleteParetoAnalysis;
     window.resetParetoForm = resetParetoForm;
     window.newParetoAnalysis = newParetoAnalysis;
     window.addParetoEntry = addParetoEntry;

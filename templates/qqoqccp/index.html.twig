@@ -340,6 +340,14 @@
             <p>Gratuit, sans installation, export PDF, conforme ISO, RGPD, sauvegarde.</p>
         </section>
     </div>
+
+    {# Modal pour afficher les analyses QQOQCCP sauvegardées #}
+    {% if app.user %}
+    {% component QqoqccpAnalysesModal with {
+        id: 'qqoqccpLoadModal'
+    } %}
+    {% endcomponent %}
+    {% endif %}
 </main>
 {% endblock %}
 

@@ -17,7 +17,7 @@
         {
             id: 'd1',
             code: 'D1',
-            title: 'Former l’équipe pluridisciplinaire',
+            title: 'Former l\'équipe pluridisciplinaire',
             subtitle: 'Définir le pilote et les membres impliqués (production, qualité, méthodes, etc.)',
             fields: [
                 {
@@ -89,7 +89,7 @@
                 {
                     key: 'method',
                     type: 'text',
-                    label: 'Méthodes d’analyse utilisées',
+                    label: 'Méthodes d\'analyse utilisées',
                     placeholder: 'Ex : 5 Pourquoi, Ishikawa (5M), étude de capabilité…',
                 },
             ],
@@ -117,8 +117,8 @@
         {
             id: 'd6',
             code: 'D6',
-            title: 'Valider l’efficacité',
-            subtitle: 'Mesurez l’efficience réelle sur le terrain',
+            title: 'Valider l\'efficacité',
+            subtitle: 'Mesurez l\'efficience réelle sur le terrain',
             fields: [
                 {
                     key: 'validation',
@@ -158,7 +158,7 @@
             id: 'd8',
             code: 'D8',
             title: 'Féliciter et capitaliser',
-            subtitle: 'Reconnaître l’équipe et partager les leçons apprises',
+            subtitle: 'Reconnaître l\'équipe et partager les leçons apprises',
             fields: [
                 {
                     key: 'recognition',
@@ -211,7 +211,7 @@
             },
             d2: {
                 description:
-                    'Depuis le 28/01, 6 portes sur 200 présentent un décollement partiel après tests climatiques.\n- Où : Ligne assemblage portes, poste collage n°5.\n- Quand : Série lot 2401 (production du 27/01 au 31/01).\n- Combien : Taux défaut 3% (objectif 0.1%).\n- Conséquence : Risque bruit d’air + insatisfaction client.\n- Détection : Tests climatiques interne, contrôle final.',
+                    'Depuis le 28/01, 6 portes sur 200 présentent un décollement partiel après tests climatiques.\n- Où : Ligne assemblage portes, poste collage n°5.\n- Quand : Série lot 2401 (production du 27/01 au 31/01).\n- Combien : Taux défaut 3% (objectif 0.1%).\n- Conséquence : Risque bruit d\'air + insatisfaction client.\n- Détection : Tests climatiques interne, contrôle final.',
                 evidence: 'Rapport contrôle CF-2025-014, photos défauts, réclamation client #REQ-458, relevé process.',
             },
             d3: {
@@ -222,7 +222,7 @@
             },
             d4: {
                 causes:
-                    'Analyse 5M + 5 Pourquoi :\n- Matière : Colle fournisseur C-894 lot 2401, viscosité limite mais conforme.\n- Méthode : Temps de pression réduit suite à optimisation cadence (3s au lieu de 5s).\n- Main d’oeuvre : Formation opérateur OK.\n- Machine : Presses collage n°5 et n°6 montrent baisse pression hydraulique (-15%).\nCause racine : Temps de pression insuffisant + pression presse instable suite maintenance incomplète.',
+                    'Analyse 5M + 5 Pourquoi :\n- Matière : Colle fournisseur C-894 lot 2401, viscosité limite mais conforme.\n- Méthode : Temps de pression réduit suite à optimisation cadence (3s au lieu de 5s).\n- Main d\'oeuvre : Formation opérateur OK.\n- Machine : Presses collage n°5 et n°6 montrent baisse pression hydraulique (-15%).\nCause racine : Temps de pression insuffisant + pression presse instable suite maintenance incomplète.',
                 method: '5 Pourquoi, Ishikawa, relevé process, audit maintenance, tests laboratoire.',
             },
             d5: {
@@ -376,7 +376,7 @@
                 const teamHtml = discipline.team
                     ? `
                         <div class="eightd-form-group">
-                            <label>Membres de l’équipe</label>
+                            <label>Membres de l'équipe</label>
                             <span class="helper">Précisez nom, fonction et expertise de chaque membre.</span>
                             <div class="eightd-team-list" data-team-list></div>
                             <div class="eightd-add-member-wrapper">
@@ -445,7 +445,7 @@
 
     const removeEightDTeamMember = (index) => {
         if (state.team.length <= 1) {
-            notify('L’équipe doit contenir au moins un membre.', 'warning');
+            notify('L\'équipe doit contenir au moins un membre.', 'warning');
             return;
         }
         state.team.splice(index, 1);
@@ -535,7 +535,7 @@
 
         const listItems = [
             `<strong>Référence :</strong> ${state.title || 'Non renseignée'}`,
-            `<strong>Date d’ouverture :</strong> ${state.openDate ? new Date(state.openDate).toLocaleDateString('fr-FR') : 'Non renseignée'}`,
+            `<strong>Date d'ouverture :</strong> ${state.openDate ? new Date(state.openDate).toLocaleDateString('fr-FR') : 'Non renseignée'}`,
             `<strong>Date de clôture :</strong> ${state.closeDate ? new Date(state.closeDate).toLocaleDateString('fr-FR') : 'En cours'}`,
             `<strong>Pilote :</strong> ${state.disciplines.d1.leader || 'Non désigné'}`,
             `<strong>Équipe :</strong> ${state.team.length} membre(s)`,
@@ -642,7 +642,7 @@
 
     const exportEightD = (format) => {
         if (!state.title.trim()) {
-            notify('Renseignez le titre de l’analyse 8D avant d’exporter.', 'warning');
+            notify('Renseignez le titre de l\'analyse 8D avant d\'exporter.', 'warning');
             return;
         }
 
@@ -762,7 +762,7 @@
         if (format === 'pdf' || format === 'png' || format === 'jpeg') {
             const { jsPDF } = window.jspdf || {};
             if (format === 'pdf' && !jsPDF) {
-                notify('La bibliothèque jsPDF n’est pas disponible.', 'error');
+                notify('La bibliothèque jsPDF n\'est pas disponible.', 'error');
                 return;
             }
 
@@ -803,7 +803,7 @@
                 })
                 .catch((error) => {
                     console.error(error);
-                    notify('Erreur lors de la génération de l’export.', 'error');
+                    notify('Erreur lors de la génération de l\'export.', 'error');
                 });
         }
     };
@@ -853,7 +853,7 @@
         } catch (error) {
             console.error(error);
             if (!silent) {
-                notify(error.message || 'Erreur lors du chargement de l’analyse 8D.', 'error');
+                notify(error.message || 'Erreur lors du chargement de l\'analyse 8D.', 'error');
             }
             return null;
         }
@@ -869,6 +869,44 @@
         return window.bootstrap || null;
     };
 
+    const _openEightDModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
+        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+    };
+
+    const _closeEightDModal = async (modalElement) => {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        }
+        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+        const bsLib = window.bootstrap;
+        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+    };
+
+    const deleteEightDAnalysis = async (id, event) => {
+        event.stopPropagation();
+        const confirmed = await (window.showConfirmationModal
+            ? window.showConfirmationModal({ title: 'Supprimer l\'analyse', message: 'Supprimer cette analyse ? Cette action est irréversible.', confirmText: 'Supprimer', type: 'danger' })
+            : Promise.resolve(window.confirm('Supprimer cette analyse ?')));
+        if (!confirmed) return;
+        try {
+            const url = routes().delete.replace(/\/0$/, '/' + id);
+            const response = await fetch(url, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Erreur lors de la suppression');
+            notify('Analyse supprimée.', 'success');
+            openEightDSaved();
+        } catch (error) {
+            notify('Erreur : ' + error.message, 'error');
+        }
+    };
+
     const openEightDSaved = async () => {
         if (!window.eightDAppConfig?.isAuthenticated) {
             notify('Connectez-vous pour accéder à vos analyses 8D.', 'warning');
@@ -879,67 +917,60 @@
             const payload = await fetchJson(routes().list);
             const analyses = payload.data || [];
 
-            if (!analyses.length) {
-                notify('Aucune analyse 8D sauvegardée.', 'info');
-                return;
-            }
-
-            const existingModal = document.getElementById('eightDLoadModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            const modalHtml = `
-                <div class="modal fade" id="eightDLoadModal" tabindex="-1" aria-labelledby="eightDLoadModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="eightDLoadModalLabel">Mes analyses 8D</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="list-group">
-                                    ${analyses
-                                        .map(
-                                            (analysis) => `
-                                                <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                                                        <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                                                    </div>
-                                                    <p class="mb-0 text-muted small">${analysis.description || 'Analyse 8D'}</p>
-                                                </button>
-                                            `
-                                        )
-                                        .join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-
             const modalElement = document.getElementById('eightDLoadModal');
-            const bootstrapLib = await getBootstrapLib();
-            if (!bootstrapLib?.Modal) {
-                notify('Le module d’interface Bootstrap n’est pas disponible pour afficher vos analyses 8D.', 'error');
-                modalElement.remove();
+            if (!modalElement) {
+                notify('Le modal n\'est pas disponible.', 'error');
                 return;
             }
 
-            modalElement.querySelectorAll('[data-analysis-id]').forEach((button) => {
-                button.addEventListener('click', async (event) => {
-                    const selectedId = event.currentTarget.getAttribute('data-analysis-id');
-                    await loadEightD(selectedId);
-                    const bootstrapModal = bootstrapLib.Modal.getInstance(modalElement);
-                    bootstrapModal?.hide();
-                });
-            });
+            const listContainer = modalElement.querySelector('#eightDAnalysesList');
+            if (!listContainer) return;
 
-            const modalInstance = new bootstrapLib.Modal(modalElement);
-            modalInstance.show();
+            if (!analyses.length) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                        <p class="mb-2">Aucune analyse sauvegardée.</p>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="newEightDAnalysis()">
+                            <i class="fas fa-plus me-1"></i>Créer une nouvelle analyse
+                        </button>
+                    </div>`;
+            } else {
+                listContainer.innerHTML = analyses.map((analysis) => `
+                    <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex justify-content-between align-items-center min-w-0">
+                                <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                            </div>
+                            <p class="mb-0 text-muted small text-truncate">${analysis.description || 'Analyse 8D'}</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteEightDAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                listContainer.querySelectorAll('[data-analysis-id]').forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        if (e.target.closest('button')) return;
+                        await loadEightD(item.dataset.analysisId);
+                        await _closeEightDModal(modalElement);
+                    });
+                });
+            }
+
+            let modalFooter = modalElement.querySelector('.modal-footer');
+            if (!modalFooter) {
+                modalFooter = document.createElement('div');
+                modalFooter.className = 'modal-footer';
+                modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newEightDAnalysis()"><i class="fas fa-plus me-2"></i>Nouvelle analyse</button>`;
+                modalElement.querySelector('.modal-content').appendChild(modalFooter);
+            }
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            await _openEightDModal(modalElement);
         } catch (error) {
             console.error(error);
             notify(error.message || 'Erreur lors du chargement des analyses.', 'error');
@@ -965,7 +996,7 @@
             }
             await loadEightD(analyses[0].id, { silent: true });
         } catch (error) {
-            console.error('Impossible de charger automatiquement l’analyse 8D :', error);
+            console.error('Impossible de charger automatiquement l\'analyse 8D :', error);
         }
     };
 
@@ -1041,6 +1072,7 @@
     window.exportEightD = exportEightD;
     window.saveEightD = saveEightD;
     window.openEightDSaved = openEightDSaved;
+    window.deleteEightDAnalysis = deleteEightDAnalysis;
     window.resetEightDForm = resetEightDForm;
     window.newEightDAnalysis = newEightDAnalysis;
     window.updateEightDField = updateEightDField;

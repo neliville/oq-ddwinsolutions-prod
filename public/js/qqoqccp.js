@@ -461,7 +461,7 @@
                 })
                 .catch((error) => {
                     console.error(error);
-                    notify('Erreur lors de la génération de l’export.', 'error');
+                    notify('Erreur lors de la génération de l\'export.', 'error');
                 });
         }
     }
@@ -569,58 +569,44 @@
         return window.bootstrap || null;
     }
 
-    async function renderSavedAnalysesModal(analyses) {
-        const existing = document.getElementById('qqoqccpLoadModal');
-        if (existing) {
-            existing.remove();
+    async function _openQqoqccpModal(modalElement) {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
         }
+        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
+        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+    }
 
-        const modalHtml = `
-            <div class="modal fade" id="qqoqccpLoadModal" tabindex="-1" aria-labelledby="qqoqccpLoadModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="qqoqccpLoadModalLabel">Mes analyses QQOQCCP</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="list-group">
-                                ${analyses.map((analysis) => `
-                                    <button type="button" class="list-group-item list-group-item-action" data-analysis-id="${analysis.id}">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">${analysis.title || 'Sans titre'}</h6>
-                                            <small>${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                                        </div>
-                                        <p class="mb-1 text-muted small">${analysis.subject || 'Sujet non renseigné'}</p>
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        const modalElement = document.getElementById('qqoqccpLoadModal');
-        const bootstrapLib = await getBootstrapLib();
-        if (!bootstrapLib?.Modal) {
-            notify('Le module d’interface Bootstrap n’est pas disponible pour afficher vos analyses.', 'error');
-            modalElement.remove();
-            return;
+    async function _closeQqoqccpModal(modalElement) {
+        let ctrl = null;
+        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
         }
+        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+        const bsLib = window.bootstrap;
+        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+    }
 
-        modalElement.querySelectorAll('[data-analysis-id]').forEach((button) => {
-            button.addEventListener('click', async (event) => {
-                const selectedId = event.currentTarget.getAttribute('data-analysis-id');
-                await loadQqoqccp(selectedId);
-                const bootstrapModal = bootstrapLib.Modal.getInstance(modalElement);
-                bootstrapModal?.hide();
-            });
-        });
-
-        const modal = new bootstrapLib.Modal(modalElement);
-        modal.show();
+    async function deleteQqoqccpAnalysis(id, event) {
+        event.stopPropagation();
+        const confirmed = await (window.showConfirmationModal
+            ? window.showConfirmationModal({ title: 'Supprimer l\'analyse', message: 'Supprimer cette analyse ? Cette action est irréversible.', confirmText: 'Supprimer', type: 'danger' })
+            : Promise.resolve(window.confirm('Supprimer cette analyse ?')));
+        if (!confirmed) return;
+        const routes = window.qqoqccpRoutes || {};
+        if (!routes.delete) return;
+        try {
+            const url = routes.delete.replace(/\/0$/, '/' + id);
+            const response = await fetch(url, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.message || 'Erreur lors de la suppression');
+            notify('Analyse supprimée.', 'success');
+            openQqoqccpSaved();
+        } catch (error) {
+            notify('Erreur : ' + error.message, 'error');
+        }
     }
 
     async function openQqoqccpSaved() {
@@ -638,20 +624,66 @@
         try {
             const response = await fetch(routes.list, {
                 method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
             });
 
             const payload = await response.json();
             const analyses = payload.data || [];
 
-            if (!analyses.length) {
-                notify('Aucune analyse QQOQCCP sauvegardée.', 'info');
+            const modalElement = document.getElementById('qqoqccpLoadModal');
+            if (!modalElement) {
+                notify('Le modal n\'est pas disponible.', 'error');
                 return;
             }
 
-            await renderSavedAnalysesModal(analyses);
+            const listContainer = modalElement.querySelector('#qqoqccpAnalysesList');
+            if (!listContainer) return;
+
+            if (!analyses.length) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                        <p class="mb-2">Aucune analyse sauvegardée.</p>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="newQqoqccpAnalysis()">
+                            <i class="fas fa-plus me-1"></i>Créer une nouvelle analyse
+                        </button>
+                    </div>`;
+            } else {
+                listContainer.innerHTML = analyses.map((analysis) => `
+                    <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex justify-content-between align-items-center min-w-0">
+                                <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
+                                <small class="text-muted ms-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
+                            </div>
+                            <p class="mb-0 text-muted small text-truncate">${analysis.subject || 'Analyse QQOQCCP'}</p>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteQqoqccpAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                listContainer.querySelectorAll('[data-analysis-id]').forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        if (e.target.closest('button')) return;
+                        await loadQqoqccp(item.dataset.analysisId);
+                        await _closeQqoqccpModal(modalElement);
+                    });
+                });
+            }
+
+            let modalFooter = modalElement.querySelector('.modal-footer');
+            if (!modalFooter) {
+                modalFooter = document.createElement('div');
+                modalFooter.className = 'modal-footer';
+                modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newQqoqccpAnalysis()"><i class="fas fa-plus me-2"></i>Nouvelle analyse</button>`;
+                modalElement.querySelector('.modal-content').appendChild(modalFooter);
+            }
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            await _openQqoqccpModal(modalElement);
         } catch (error) {
             console.error(error);
             notify('Erreur lors du chargement de vos analyses QQOQCCP.', 'error');
@@ -720,6 +752,7 @@
     window.exportQqoqccp = exportQqoqccp;
     window.saveQqoqccp = saveQqoqccp;
     window.openQqoqccpSaved = openQqoqccpSaved;
+    window.deleteQqoqccpAnalysis = deleteQqoqccpAnalysis;
     window.loadQqoqccpAnalysis = loadQqoqccp;
 })();
 
