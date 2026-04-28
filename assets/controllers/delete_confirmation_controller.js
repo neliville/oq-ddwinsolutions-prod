@@ -46,15 +46,11 @@ export default class extends Controller {
     }
 
     async onConfirmed(event) {
-        console.log('onConfirmed appelé', event);
-        
-        // Empêcher la propagation de l'événement pour éviter que le modal se ferme trop tôt
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
 
-        // Récupérer l'URL depuis le bouton cliqué si disponible
         if (!this.url && event?.target) {
             this.url = event.target.dataset.deleteConfirmationUrlValue;
             this.method = event.target.dataset.deleteConfirmationMethodValue || 'DELETE';
@@ -66,17 +62,24 @@ export default class extends Controller {
             return;
         }
 
-        console.log('URL de suppression:', this.url, 'Méthode:', this.method);
-
         const button = event.target;
         const originalText = button.innerHTML;
         button.disabled = true;
         button.innerHTML = '<i data-lucide="loader-2" width="18" height="18" class="me-1"></i>Suppression...';
 
-        // Réinitialiser les icônes Lucide
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+
+        // Identifier la carte et le modal AVANT la requête, pendant que le DOM est intact
+        const modal = this.element.closest('.modal');
+        const modalId = modal ? modal.id : null;
+        const triggerButton = modalId
+            ? document.querySelector(`[data-bs-target="#${modalId}"]`)
+            : null;
+        const cardToRemove = triggerButton
+            ? triggerButton.closest('.creation-card, .card, .list-group-item, article')
+            : null;
 
         try {
             const response = await fetch(this.url, {
@@ -89,85 +92,45 @@ export default class extends Controller {
 
             const data = await response.json();
 
-            console.log('Réponse de suppression:', { ok: response.ok, status: response.status, data });
-
             if (response.ok && data.success) {
-                // Fermer le modal Bootstrap
-                const modal = this.element.closest('.modal');
+                // Fermer le modal immédiatement
                 if (modal) {
                     const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
                     if (modalController && typeof modalController.hide === 'function') {
                         modalController.hide();
+                    } else if (window.bootstrap) {
+                        const bsModal = window.bootstrap.Modal.getInstance(modal);
+                        if (bsModal) bsModal.hide();
                     }
                 }
 
-                // Vérifier si on est sur la page mes-créations - plusieurs méthodes pour être sûr
-                const pathname = window.location.pathname;
-                const hasCreationsPageClass = document.querySelector('.creations-page') !== null || 
-                                             document.querySelector('main.creations-page') !== null;
-                const isCreationsPage = pathname.includes('/mes-creations') || 
-                                       pathname.includes('mes-creations') ||
-                                       hasCreationsPageClass;
+                this.showNotification(data.message || 'Création supprimée avec succès', 'success');
 
-                console.log('Suppression réussie. Détails:', {
-                    isCreationsPage,
-                    pathname,
-                    hasCreationsPageClass,
-                    redirect: this.redirect
-                });
-
-                // Supprimer l'élément du DOM ou rediriger
                 if (this.redirect) {
-                    console.log('Redirection vers:', this.redirect);
                     window.location.href = this.redirect;
-                } else if (isCreationsPage) {
-                    // Sur la page mes-créations, toujours recharger pour mettre à jour les statistiques
-                    console.log('Rechargement de la page mes-créations...');
-
-                    // Afficher une notification cohérente avec Ishikawa / exports PDF
-                    this.showNotification(data.message || 'Création supprimée avec succès', 'success');
-
-                    // Attendre un peu pour que le toast soit visible puis recharger
+                } else if (cardToRemove) {
+                    // Supprimer la carte du DOM avec animation — pas de rechargement
+                    cardToRemove.style.transition = 'opacity 0.3s, transform 0.3s';
+                    cardToRemove.style.opacity = '0';
+                    cardToRemove.style.transform = 'scale(0.95)';
                     setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                } else {
-                    // Sur les autres pages, supprimer l'élément du DOM
-                    const triggerButton = document.querySelector(`[data-dialog-url-value="${this.url}"]`);
-                    if (triggerButton) {
-                        // Chercher l'élément à supprimer en remontant dans le DOM
-                        const elementToRemove = triggerButton.closest('.creation-card, .card, .list-group-item, .col-md-6, [data-delete-target], .mb-1, article');
-                        if (elementToRemove) {
-                            elementToRemove.style.transition = 'opacity 0.3s';
-                            elementToRemove.style.opacity = '0';
-                            setTimeout(() => {
-                                elementToRemove.remove();
-                                // Vérifier s'il reste des éléments dans la section
-                                const section = elementToRemove.closest('.creations-section');
-                                if (section) {
-                                    const remaining = section.querySelectorAll('.creation-card');
-                                    if (remaining.length === 0) {
-                                        // Plus de cartes dans cette section, recharger la page pour mettre à jour les statistiques
-                                        location.reload();
-                                    }
-                                } else {
-                                    // Vérifier s'il reste des éléments (pour compatibilité avec d'autres pages)
-                                    const remaining = document.querySelectorAll('.col-md-6 .card, .list-group-item, .creation-card');
-                                    if (remaining.length === 0) {
-                                        location.reload();
-                                    }
-                                }
-                            }, 300);
-                        } else {
-                            // Si on ne trouve pas l'élément, recharger la page
-                            location.reload();
+                        const section = cardToRemove.closest('.creations-section');
+                        cardToRemove.remove();
+                        // Supprimer aussi le modal pour éviter tout déclenchement orphelin
+                        if (modal) modal.remove();
+                        if (section) {
+                            this._updateSection(section);
                         }
+                        this._updateStatsCounters();
+                    }, 300);
+                } else {
+                    // Fallback : rechargement propre sans cache Turbo
+                    if (window.Turbo) {
+                        window.Turbo.cache.clear();
+                        window.Turbo.visit(window.location.href, { action: 'replace' });
                     } else {
                         location.reload();
                     }
-
-                    // Afficher un message de succès (même style que les autres notifications Toastify)
-                    this.showNotification(data.message || 'Élément supprimé avec succès', 'success');
                 }
             } else {
                 throw new Error(data.message || 'Erreur lors de la suppression');
@@ -175,15 +138,39 @@ export default class extends Controller {
         } catch (error) {
             console.error('Erreur lors de la suppression:', error);
             this.showNotification(error.message || 'Erreur lors de la suppression', 'error');
-        } finally {
             button.disabled = false;
             button.innerHTML = originalText;
-            
-            // Réinitialiser les icônes Lucide
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
         }
+    }
+
+    // Met à jour le badge de section et masque la section si elle est vide
+    _updateSection(section) {
+        const remainingCards = section.querySelectorAll('.creation-card');
+        if (remainingCards.length === 0) {
+            section.remove();
+            return;
+        }
+        const badge = section.querySelector('.creations-section__header .badge');
+        if (badge) {
+            badge.textContent = remainingCards.length;
+        }
+    }
+
+    // Met à jour tous les compteurs de statistiques en relisant le DOM
+    _updateStatsCounters() {
+        const types = ['ishikawa', 'fivewhy', 'qqoqccp', 'amdec', 'pareto', 'eightd'];
+        let total = 0;
+        for (const type of types) {
+            const count = document.querySelectorAll(`.creation-card--${type}`).length;
+            total += count;
+            const statEl = document.querySelector(`.creations-stat-card--${type} .creations-stat-card__value`);
+            if (statEl) statEl.textContent = count;
+        }
+        const totalEl = document.querySelector('.creations-stat-card--total .creations-stat-card__value');
+        if (totalEl) totalEl.textContent = total;
     }
 
     /**
