@@ -28,6 +28,12 @@
 <div class="ishikawa-page">
     <div class="container">
         {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Diagramme d'Ishikawa" } %}
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'git-branch',
+            tool_name: "Diagramme d'Ishikawa",
+            tool_tagline: 'Analysez les causes racines avec la méthode 5M / 6M',
+            tool_color: 'primary'
+        } %}
     </div>
     <!-- Page Header -->
     <div class="page-header">

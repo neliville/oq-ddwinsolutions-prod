@@ -1,0 +1,58 @@
+{#
+  Composant header contextuel pour les pages d'outils.
+  Paramètres :
+    - tool_icon    : string  — nom icône Lucide (ex: "git-branch")
+    - tool_name    : string  — nom affiché de l'outil
+    - tool_tagline : string  — description courte (1 ligne)
+    - tool_color   : string  — couleur Bootstrap (primary, info, danger, warning, secondary)
+    - tool_route   : string  — nom de la route Symfony (pour lien actif dans breadcrumb)
+#}
+{% set _color = tool_color ?? 'primary' %}
+
+<div class="tool-page-header mb-4 px-3 px-md-0">
+    <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+
+        {# Identité de l'outil #}
+        <div class="d-flex align-items-center gap-3">
+            <div class="tool-header-icon bg-{{ _color }} bg-opacity-10 text-{{ _color }} rounded-3 p-3 flex-shrink-0">
+                <i data-lucide="{{ tool_icon ?? 'tool' }}" width="26" height="26"></i>
+            </div>
+            <div>
+                <h1 class="h5 fw-bold mb-0">{{ tool_name ?? 'Outil QSE' }}</h1>
+                {% if tool_tagline is defined and tool_tagline %}
+                <p class="text-muted small mb-0">{{ tool_tagline }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# CTA contextuel selon l'état de connexion #}
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            {% if not app.user %}
+            <a href="{{ path('app_register') }}" class="btn btn-primary btn-sm">
+                <i data-lucide="save" width="14" height="14" class="me-1"></i>
+                Sauvegarder mes analyses
+            </a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-sm">
+                Se connecter
+            </a>
+            {% else %}
+            <a href="{{ path('app_creations_index') }}" class="btn btn-outline-primary btn-sm">
+                <i data-lucide="folder-open" width="14" height="14" class="me-1"></i>
+                Mes créations
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {# Bannière login pour visiteurs — discrète, non intrusive #}
+    {% if not app.user %}
+    <div class="tool-header-guest-banner mt-3 d-flex align-items-center gap-2 px-3 py-2 rounded-3">
+        <i data-lucide="info" width="15" height="15" class="text-primary flex-shrink-0"></i>
+        <span class="small text-muted">
+            Créez un <a href="{{ path('app_register') }}" class="fw-semibold text-primary text-decoration-none">compte gratuit</a>
+            pour sauvegarder, recharger et exporter vos analyses.
+        </span>
+    </div>
+    {% endif %}
+</div>
