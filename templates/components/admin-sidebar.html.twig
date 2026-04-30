@@ -4,8 +4,8 @@
 {% set activeClasses = 'bg-primary text-white shadow-sm' %}
 {% set inactiveClasses = 'text-dark' %}
 
-<aside class="admin-sidebar bg-white border-end position-fixed top-0 start-0 vh-100 d-flex flex-column" style="width: 280px; z-index: 1020; padding-top: 76px; box-shadow: 2px 0 8px rgba(0,0,0,0.1); overflow-y: auto;">
-    <div class="p-3 flex-grow-1 overflow-y-auto">
+<aside class="admin-sidebar bg-white border-end position-fixed top-0 start-0 vh-100 d-flex flex-column" style="width: 280px; z-index: 1020; padding-top: 76px; box-shadow: 2px 0 8px rgba(0,0,0,0.1);">
+    <div class="p-3 flex-grow-1" style="overflow-y: auto; min-height: 0;">
         <!-- Logo et titre -->
         <div class="mb-4 pb-3 border-bottom">
             <div class="d-flex align-items-center mb-3">
@@ -18,7 +18,7 @@
         <nav class="sidebar-nav">
             <ul class="list-unstyled mb-0">
                 <!-- Section : Tableau de bord -->
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_dashboard_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_dashboard' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="layout-dashboard" width="18" height="18" class="me-2"></i>
                         <span>Tableau de bord</span>
@@ -26,46 +26,46 @@
                 </li>
 
                 <!-- Section : Mes outils -->
-                <li class="mb-1 mt-4">
-                    <div class="px-3 py-2 text-muted text-uppercase small fw-bold">Mes Outils</div>
+                <li class="sidebar-section-label">
+                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Mes Outils</div>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_ishikawa_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_ishikawa' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="git-branch" width="18" height="18" class="me-2"></i>
                         <span>Analyse des causes</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_fivewhy_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_fivewhy' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="help-circle" width="18" height="18" class="me-2"></i>
                         <span>Méthode 5 Pourquoi</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_qqoqccp_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_qqoqccp' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="list-checks" width="18" height="18" class="me-2"></i>
                         <span>Analyse QQOQCCP</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_amdec_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_amdec' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="alert-triangle" width="18" height="18" class="me-2"></i>
                         <span>Analyse AMDEC</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_pareto_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_pareto' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="bar-chart-2" width="18" height="18" class="me-2"></i>
                         <span>Diagramme Pareto</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_eightd_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_eightd' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="layers" width="18" height="18" class="me-2"></i>
                         <span>Méthode 8D</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_outils_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_outils' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="tool-case" width="18" height="18" class="me-2"></i>
                         <span>Tous les outils</span>
@@ -73,16 +73,16 @@
                 </li>
 
                 <!-- Section : Mes contenus -->
-                <li class="mb-1 mt-4">
-                    <div class="px-3 py-2 text-muted text-uppercase small fw-bold">Mes Contenus</div>
+                <li class="sidebar-section-label">
+                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Mes Contenus</div>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_creations_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_creations' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="file-text" width="18" height="18" class="me-2"></i>
                         <span>Mes créations</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li>
                     <a href="{{ path('app_blog_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_blog' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="book-open" width="18" height="18" class="me-2"></i>
                         <span>Blog</span>
@@ -91,10 +91,10 @@
 
                 <!-- Section : Administration (uniquement pour admins) -->
                 {% if is_granted('ROLE_ADMIN') %}
-                <li class="mb-1 mt-4">
-                    <div class="px-3 py-2 text-muted text-uppercase small fw-bold">Administration</div>
+                <li class="sidebar-section-label">
+                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Administration</div>
                 </li>
-                <li class="mb-1">
+                <li class="">
                     <a href="{{ path('app_admin_dashboard_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_admin_dashboard' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="shield" width="18" height="18" class="me-2"></i>
                         <span>Tableau de bord</span>
@@ -103,7 +103,7 @@
                 
                 <!-- Sous-menu Utilisateurs -->
                 {% set isAdminUsersRoute = currentRoute starts with 'app_admin_users' %}
-                <li class="mb-1">
+                <li class="">
                     <a class="{{ baseNavItemClass }} {{ isAdminUsersRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminUsersMenu" data-sidebar-target="#adminUsersMenu" role="button" aria-expanded="{{ isAdminUsersRoute ? 'true' : 'false' }}" aria-controls="adminUsersMenu">
                         <i data-lucide="users" width="18" height="18" class="me-2"></i>
                         <span class="flex-grow-1">Utilisateurs</span>
@@ -111,7 +111,7 @@
                     </a>
                     <div class="collapse {{ isAdminUsersRoute ? 'show' : '' }}" id="adminUsersMenu">
                         <ul class="list-unstyled ps-4 mt-1">
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_users_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_users' %}text-primary fw-semibold{% endif %}">
                                     Liste des utilisateurs
                                 </a>
@@ -122,7 +122,7 @@
 
                 <!-- Sous-menu Articles -->
                 {% set isAdminPostsRoute = currentRoute starts with 'app_admin_blog' or currentRoute starts with 'app_admin_categories' or currentRoute starts with 'app_admin_tags' %}
-                <li class="mb-1">
+                <li class="">
                     <a class="{{ baseNavItemClass }} {{ isAdminPostsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminPostsMenu" data-sidebar-target="#adminPostsMenu" role="button" aria-expanded="{{ isAdminPostsRoute ? 'true' : 'false' }}" aria-controls="adminPostsMenu">
                         <i data-lucide="file-text" width="18" height="18" class="me-2"></i>
                         <span class="flex-grow-1">Articles Blog</span>
@@ -130,22 +130,22 @@
                     </a>
                     <div class="collapse {{ isAdminPostsRoute ? 'show' : '' }}" id="adminPostsMenu">
                         <ul class="list-unstyled ps-4 mt-1">
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_blog_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_blog' %}text-primary fw-semibold{% endif %}">
                                     Liste des articles
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_blog_new') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_blog_new' %}text-primary fw-semibold{% endif %}">
                                     Nouvel article
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_categories_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_categories' %}text-primary fw-semibold{% endif %}">
                                     Catégories
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_tags_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_tags' %}text-primary fw-semibold{% endif %}">
                                     Tags
                                 </a>
@@ -156,7 +156,7 @@
 
                 <!-- Sous-menu Messages -->
                 {% set isAdminMessagesRoute = currentRoute starts with 'app_admin_contact' or currentRoute starts with 'app_admin_newsletter' or currentRoute starts with 'app_admin_leads' %}
-                <li class="mb-1">
+                <li class="">
                     <a class="{{ baseNavItemClass }} {{ isAdminMessagesRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminMessagesMenu" data-sidebar-target="#adminMessagesMenu" role="button" aria-expanded="{{ isAdminMessagesRoute ? 'true' : 'false' }}" aria-controls="adminMessagesMenu">
                         <i data-lucide="mail" width="18" height="18" class="me-2"></i>
                         <span class="flex-grow-1">Messages</span>
@@ -164,17 +164,17 @@
                     </a>
                     <div class="collapse {{ isAdminMessagesRoute ? 'show' : '' }}" id="adminMessagesMenu">
                         <ul class="list-unstyled ps-4 mt-1">
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_contact_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_contact' %}text-primary fw-semibold{% endif %}">
                                     Messages de contact
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_newsletter_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_newsletter' %}text-primary fw-semibold{% endif %}">
                                     Newsletter
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_leads_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_leads' %}text-primary fw-semibold{% endif %}">
                                     Leads
                                 </a>
@@ -185,7 +185,7 @@
 
                 {% set isCmsRoute = app.request.get('_route') starts with 'app_admin_cms' %}
                 {% set currentCmsSlug = app.request.attributes.get('slug') %}
-                <li class="mb-1">
+                <li class="">
                     <a class="{{ baseNavItemClass }} {{ isCmsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminCmsMenu" data-sidebar-target="#adminCmsMenu" role="button" aria-expanded="{{ isCmsRoute ? 'true' : 'false' }}" aria-controls="adminCmsMenu">
                         <i data-lucide="file-cog" width="18" height="18" class="me-2"></i>
                         <span class="flex-grow-1">CMS</span>
@@ -193,17 +193,17 @@
                     </a>
                     <div class="collapse {{ isCmsRoute ? 'show' : '' }}" id="adminCmsMenu">
                         <ul class="list-unstyled ps-4 mt-1">
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_cms_edit', { slug: 'privacy-policy' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'privacy-policy' %}text-primary fw-semibold{% endif %}">
                                     Politique de confidentialité
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_cms_edit', { slug: 'terms-of-use' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'terms-of-use' %}text-primary fw-semibold{% endif %}">
                                     Conditions d'utilisation
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_cms_edit', { slug: 'legal-notice' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'legal-notice' %}text-primary fw-semibold{% endif %}">
                                     Mentions légales
                                 </a>
@@ -214,7 +214,7 @@
 
                 <!-- Sous-menu Statistiques -->
                 {% set isStatsRoute = app.request.get('_route') starts with 'app_admin_analytics_' or app.request.get('_route') starts with 'app_admin_export_analytics' or app.request.get('_route') starts with 'app_admin_tool_usage' or app.request.get('_route') == 'app_admin_logs_index' %}
-                <li class="mb-1">
+                <li class="">
                     <a class="{{ baseNavItemClass }} {{ isStatsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminStatsMenu" data-sidebar-target="#adminStatsMenu" role="button" aria-expanded="{{ isStatsRoute ? 'true' : 'false' }}" aria-controls="adminStatsMenu">
                         <i data-lucide="bar-chart" width="18" height="18" class="me-2"></i>
                         <span class="flex-grow-1">Statistiques</span>
@@ -222,32 +222,32 @@
                     </a>
                     <div class="collapse {{ isStatsRoute ? 'show' : '' }}" id="adminStatsMenu">
                         <ul class="list-unstyled ps-4 mt-1">
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_analytics_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_index' %}text-primary fw-semibold{% endif %}">
                                     Synthèse
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_analytics_traffic') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_traffic' %}text-primary fw-semibold{% endif %}">
                                     Trafic & audiences
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_analytics_sharing') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_sharing' %}text-primary fw-semibold{% endif %}">
                                     Partages Ishikawa
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_export_analytics_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_export_analytics' %}text-primary fw-semibold{% endif %}">
                                     Exports (fichiers)
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_tool_usage_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_tool_usage' %}text-primary fw-semibold{% endif %}">
                                     Outils & créations
                                 </a>
                             </li>
-                            <li class="mb-1">
+                            <li class="">
                                 <a href="{{ path('app_admin_logs_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_logs_index' %}text-primary fw-semibold{% endif %}">
                                     Logs d'administration
                                 </a>
@@ -258,16 +258,16 @@
                 {% endif %}
 
                 <!-- Section : Autres -->
-                <li class="mb-1 mt-4">
-                    <div class="px-3 py-2 text-muted text-uppercase small fw-bold">Autres</div>
+                <li class="sidebar-section-label">
+                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Autres</div>
                 </li>
-                <li class="mb-1">
+                <li class="">
                     <a href="{{ path('app_contact_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_contact' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="mail" width="18" height="18" class="me-2"></i>
                         <span>Contact</span>
                     </a>
                 </li>
-                <li class="mb-1">
+                <li class="">
                     <a href="{{ path('app_profile_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_profile' ? activeClasses : inactiveClasses }}">
                         <i data-lucide="user" width="18" height="18" class="me-2"></i>
                         <span>Mon profil</span>
@@ -329,6 +329,16 @@
 <style>
     .admin-sidebar {
         box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    }
+    /* Items de nav : gap entre eux via CSS pour éviter le cumul de marges */
+    .admin-sidebar .sidebar-nav > ul {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    /* Labels de section : léger séparateur visuel sans marge excessive */
+    .admin-sidebar .sidebar-section-label {
+        margin-top: 4px;
     }
     .admin-sidebar a:hover:not(.btn-outline-danger) {
         background-color: #f8f9fa !important;
