@@ -269,47 +269,85 @@
     <script src="{{ asset('cookie-banner/silktide-consent-manager.js') }}" defer></script>
 
     <script>
-        function finalizeNonCriticalAssets() {
-            document.documentElement.classList.remove('is-loading');
+    (function () {
+        function runIcons() {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
 
-            function runIconsAndAos() {
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                if (typeof AOS !== 'undefined') {
-                    AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 100 });
-                }
+        function runAos(firstLoad) {
+            if (typeof AOS === 'undefined') return;
+            if (firstLoad) {
+                AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 100 });
+            } else {
+                // Sur navigation Turbo : refresh immédiat sans réinitialiser (évite le flash opacity:0)
+                AOS.refreshHard();
             }
+        }
 
-            function loadNonCriticalScripts() {
-                var run = runIconsAndAos;
-                var loaded = { lucide: false, aos: false };
-                function maybeRun() {
-                    if (loaded.lucide && loaded.aos) run();
-                }
+        function loadAndRun(callback) {
+            var loaded = {
+                lucide: typeof lucide !== 'undefined',
+                aos: typeof AOS !== 'undefined'
+            };
+            function done() { if (loaded.lucide && loaded.aos) callback(); }
+
+            if (!loaded.lucide) {
                 var s1 = document.createElement('script');
                 s1.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
-                s1.defer = true;
-                s1.onload = function() { loaded.lucide = true; maybeRun(); };
+                s1.onload = function () { loaded.lucide = true; done(); };
                 document.body.appendChild(s1);
+            }
+            if (!loaded.aos) {
                 var s2 = document.createElement('script');
                 s2.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
-                s2.defer = true;
-                s2.onload = function() { loaded.aos = true; maybeRun(); };
+                s2.onload = function () { loaded.aos = true; done(); };
                 document.body.appendChild(s2);
             }
+            done();
+        }
 
-            if (typeof requestIdleCallback !== 'undefined') {
-                requestIdleCallback(loadNonCriticalScripts, { timeout: 800 });
-            } else {
-                setTimeout(loadNonCriticalScripts, 100);
+        // Premier chargement : télécharge les scripts si nécessaire, puis init
+        function onFirstLoad() {
+            document.documentElement.classList.remove('is-loading');
+            if (window._ncReady)   { runIcons(); runAos(false); return; }
+            if (window._ncLoading) { return; }
+            window._ncLoading = true;
+            function go() {
+                loadAndRun(function () {
+                    window._ncReady   = true;
+                    window._ncLoading = false;
+                    runIcons();
+                    runAos(true);
+                });
             }
+            typeof requestIdleCallback !== 'undefined'
+                ? requestIdleCallback(go, { timeout: 800 })
+                : setTimeout(go, 100);
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', finalizeNonCriticalAssets);
-        } else {
-            finalizeNonCriticalAssets();
+        // Navigation Turbo : turbo:render s'exécute AVANT turbo:load, dès que le DOM
+        // est remplacé — c'est le moment le plus tôt pour animer les éléments [data-aos]
+        // et éviter le flash de contenu invisible.
+        function onTurboRender() {
+            if (!window._ncReady) return;
+            runIcons();
+            runAos(false);
         }
-        document.addEventListener('turbo:load', finalizeNonCriticalAssets);
+
+        // Attacher les écouteurs une seule fois (ils persistent via document, pas via body)
+        if (!window._ncListeners) {
+            window._ncListeners = true;
+            document.addEventListener('turbo:render', onTurboRender);
+            document.addEventListener('turbo:load',   onFirstLoad);
+        }
+
+        // Déclenchement au premier chargement de la page (avant tout turbo:load)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', onFirstLoad);
+        } else {
+            onFirstLoad();
+        }
+    })();
     </script>
 
     {# Mautic tracking : URL = MAUTIC_URL/mtc.js — le préflight CORS est géré par l’instance Mautic (domaines autorisés), pas par le .htaccess du site principal #}

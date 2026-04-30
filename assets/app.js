@@ -14,7 +14,6 @@ const initialiseFrontend = () => {
 
 document.addEventListener('DOMContentLoaded', initialiseFrontend);
 document.addEventListener('turbo:load', initialiseFrontend);
-document.addEventListener('turbo:render', initialiseFrontend);
 
 if (typeof Turbo !== 'undefined') {
   Turbo.session.drive = true;
