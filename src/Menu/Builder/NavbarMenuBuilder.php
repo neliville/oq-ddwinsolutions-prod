@@ -39,6 +39,7 @@ final class NavbarMenuBuilder
         $this->addAnchorItem($menu, 'FAQ', 'app_home_index', 'faq', $currentRoute);
         $this->addAnchorItem($menu, 'Expertise', 'app_home_index', 'expertise', $currentRoute);
 
+        $this->addRouteItem($menu, 'Ressources', 'app_ressources_index', $currentRoute, ['app_ressources']);
         $this->addRouteItem($menu, 'Blog', 'app_blog_index', $currentRoute, ['app_blog']);
         $this->addRouteItem($menu, 'Contact', 'app_contact_index', $currentRoute, ['app_contact']);
 

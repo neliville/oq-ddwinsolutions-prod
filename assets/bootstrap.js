@@ -12,6 +12,7 @@ import ProfileDropdownController from './controllers/profile_dropdown_controller
 import NotificationsController from './controllers/notifications_controller.js';
 import AdminListViewController from './controllers/admin_list_view_controller.js';
 import GuestBannerController from './controllers/guest_banner_controller.js';
+import PostSaveCtaController from './controllers/post_save_cta_controller.js';
 
 const app = Application.start();
 
@@ -28,6 +29,7 @@ app.register('profile-dropdown', ProfileDropdownController);
 app.register('notifications', NotificationsController);
 app.register('admin-list-view', AdminListViewController);
 app.register('guest-banner', GuestBannerController);
+app.register('post-save-cta', PostSaveCtaController);
 
 window.Stimulus = app;
 

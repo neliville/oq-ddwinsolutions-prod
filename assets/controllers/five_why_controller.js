@@ -87,7 +87,15 @@ export default class extends Controller {
             });
 
             if (response.ok) {
+                const json = await response.json().catch(() => ({}));
                 this.showNotification('Analyse sauvegardée avec succès !', 'success');
+                if (!this._savedOnce) {
+                    this._savedOnce = true;
+                    document.dispatchEvent(new CustomEvent('app:analysis:saved', {
+                        bubbles: true,
+                        detail: { tool: 'fivewhy', title: json.data?.title ?? '' },
+                    }));
+                }
             } else {
                 throw new Error('Erreur lors de la sauvegarde');
             }

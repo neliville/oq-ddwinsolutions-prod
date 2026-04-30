@@ -1,0 +1,31 @@
+<div data-controller="post-save-cta">
+    <div class="modal fade" id="postSaveCtaModal" tabindex="-1" aria-labelledby="postSaveCtaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body text-center px-4 pb-2">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 p-3 mb-3">
+                        <i data-lucide="check-circle" width="28" height="28"></i>
+                    </div>
+                    <h2 class="h5 fw-bold mb-1">Analyse sauvegardée !</h2>
+                    <p class="text-muted small mb-0" data-post-save-cta-analysis-name></p>
+                </div>
+                <div class="modal-footer border-0 flex-column gap-2 px-4 pb-4">
+                    <a href="{{ path('app_creations_index') }}" class="btn btn-primary w-100">
+                        <i data-lucide="folder-open" width="15" height="15" class="me-1"></i>
+                        Voir toutes mes analyses
+                    </a>
+                    <a href="{{ path('app_ressources_index') }}" class="btn btn-outline-secondary w-100">
+                        <i data-lucide="package-open" width="15" height="15" class="me-1"></i>
+                        Découvrir les ressources QSE
+                    </a>
+                    <button type="button" class="btn btn-link text-muted small p-0 mt-1" data-bs-dismiss="modal">
+                        Continuer à éditer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
