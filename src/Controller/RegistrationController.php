@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Repository\UserRepository;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -53,19 +52,27 @@ class RegistrationController extends AbstractController
                 $this->logger->error('Erreur lors de l\'envoi de l\'email de bienvenue', ['exception' => $e]);
             }
 
-            // Afficher un message de succès
             $this->addFlash(
                 'success',
                 'Votre compte a été créé avec succès ! Un email de bienvenue vous a été envoyé.'
             );
 
-            // Rediriger vers la page de connexion
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_bienvenue');
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
+    }
+
+    #[Route('/bienvenue', name: 'app_bienvenue', methods: ['GET'])]
+    public function bienvenue(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_dashboard_index');
+        }
+
+        return $this->render('registration/bienvenue.html.twig');
     }
 }
 

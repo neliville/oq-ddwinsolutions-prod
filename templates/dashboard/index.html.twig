@@ -474,6 +474,10 @@
     </div>
 
 </div>
+
+{% if showOnboarding %}
+    {% include 'components/onboarding_modal.html.twig' %}
+{% endif %}
 {% endblock %}
 
 {% block stylesheets %}

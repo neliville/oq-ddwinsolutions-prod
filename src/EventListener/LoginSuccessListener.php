@@ -27,8 +27,15 @@ class LoginSuccessListener implements EventSubscriberInterface
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         $user = $event->getUser();
+
+        $isFirstLogin = $user instanceof User && $user->getLastLoginAt() === null;
+
         if ($user instanceof User) {
             $this->userActivityTracker->recordSuccessfulLogin($user);
+        }
+
+        if ($isFirstLogin) {
+            $event->getRequest()->getSession()->set('_onboarding', true);
         }
 
         // Rediriger selon le rôle

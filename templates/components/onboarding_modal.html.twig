@@ -1,0 +1,68 @@
+<div class="modal fade" id="onboardingModal" tabindex="-1" aria-labelledby="onboardingModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-body p-5 text-center">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 p-3 mb-4">
+                    <i data-lucide="rocket" width="30" height="30"></i>
+                </div>
+
+                <h1 class="h4 fw-bold mb-2" id="onboardingModalLabel">
+                    Bienvenue, {{ app.user.firstName ?? app.user.email }} !
+                </h1>
+                <p class="text-muted mb-4">
+                    Votre espace QSE est prêt. En 3 étapes, créez votre première analyse.
+                </p>
+
+                <ol class="list-unstyled text-start mb-4 d-flex flex-column gap-3">
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge bg-primary rounded-circle flex-shrink-0" style="width:28px;height:28px;line-height:20px;font-size:.85rem;">1</span>
+                        <div>
+                            <div class="fw-semibold small">Choisissez un outil</div>
+                            <div class="text-muted small">Ishikawa, 5 Pourquoi, AMDEC, Pareto ou 8D</div>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge bg-primary rounded-circle flex-shrink-0" style="width:28px;height:28px;line-height:20px;font-size:.85rem;">2</span>
+                        <div>
+                            <div class="fw-semibold small">Remplissez votre analyse</div>
+                            <div class="text-muted small">L'outil vous guide pas à pas, tout se sauvegarde automatiquement</div>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge bg-primary rounded-circle flex-shrink-0" style="width:28px;height:28px;line-height:20px;font-size:.85rem;">3</span>
+                        <div>
+                            <div class="fw-semibold small">Exportez en PDF</div>
+                            <div class="text-muted small">Partagez avec votre équipe ou intégrez-le à vos rapports qualité</div>
+                        </div>
+                    </li>
+                </ol>
+
+                <a href="{{ path('app_outils_index') }}" class="btn btn-primary w-100 mb-2" data-bs-dismiss="modal">
+                    <i data-lucide="zap" width="15" height="15" class="me-1"></i>
+                    Créer ma première analyse
+                </a>
+                <button type="button" class="btn btn-link text-muted small p-0" data-bs-dismiss="modal">
+                    Explorer le tableau de bord d'abord
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    function showOnboarding() {
+        var el = document.getElementById('onboardingModal');
+        if (!el || typeof bootstrap === 'undefined') return;
+        bootstrap.Modal.getOrCreateInstance(el).show();
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showOnboarding);
+    } else {
+        showOnboarding();
+    }
+})();
+</script>
