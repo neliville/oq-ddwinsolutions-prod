@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@stimulus-components/checkbox-select-all": "^6.1.0",
     "@stimulus-components/dialog": "^1.0.1",
     "@stimulus-components/sortable": "^5.0.3",
     "sortablejs": "^1.15.6"

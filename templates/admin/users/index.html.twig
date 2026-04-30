@@ -85,10 +85,51 @@
     {% if users|length > 0 %}
     {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-users', list_caption: 'Comptes utilisateurs' } %}
         {% block list_table %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
+            <div data-controller="checkbox-select-all users-bulk-actions"
+                 data-action="change->users-bulk-actions#refresh">
+                <form id="bulk-users-form"
+                      method="post"
+                      action="{{ path('app_admin_users_bulk') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('bulk_users') }}">
+
+                <div class="p-3 border-bottom bg-light-subtle d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="small text-muted">
+                        <strong data-users-bulk-actions-target="count">0</strong> utilisateur(s) sélectionné(s)
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <select class="form-select form-select-sm"
+                                name="action"
+                                style="min-width: 240px;"
+                                data-users-bulk-actions-target="action"
+                                data-action="change->users-bulk-actions#refresh">
+                            <option value="">Action groupée…</option>
+                            <option value="export_csv">Exporter en CSV</option>
+                            <option value="export_json">Exporter en JSON</option>
+                            <option value="export_emails_txt">Exporter les emails (.txt)</option>
+                            <option value="grant_admin">Ajouter le rôle admin</option>
+                            <option value="revoke_admin">Retirer le rôle admin</option>
+                        </select>
+                        <button type="submit"
+                                class="btn btn-sm btn-primary"
+                                data-users-bulk-actions-target="submit"
+                                disabled>
+                            Appliquer
+                        </button>
+                    </div>
+                </div>
+                </form>
+
+                <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 48px;">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       title="Tout sélectionner"
+                                       data-checkbox-select-all-target="checkboxAll"
+                                       data-action="change->users-bulk-actions#refresh">
+                            </th>
                             <th>Email</th>
                             <th>Rôles</th>
                             <th>Création</th>
@@ -100,6 +141,15 @@
                     <tbody>
                         {% for user in users %}
                         <tr>
+                            <td>
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       name="selected_ids[]"
+                                       value="{{ user.id }}"
+                                       form="bulk-users-form"
+                                       data-checkbox-select-all-target="checkbox"
+                                       data-action="change->users-bulk-actions#refresh">
+                            </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
@@ -171,6 +221,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
         {% endblock %}
         {% block list_cards %}

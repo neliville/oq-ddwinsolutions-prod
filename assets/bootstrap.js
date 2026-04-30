@@ -2,6 +2,7 @@ import { Application } from '@hotwired/stimulus';
 import Dialog from '@stimulus-components/dialog';
 import Sortable from '@stimulus-components/sortable';
 import Reveal from '@stimulus-components/reveal';
+import CheckboxSelectAll from '@stimulus-components/checkbox-select-all';
 
 import BootstrapModalController from './controllers/bootstrap_modal_controller.js';
 import CsrfProtectionController from './controllers/csrf_protection_controller.js';
@@ -13,12 +14,14 @@ import NotificationsController from './controllers/notifications_controller.js';
 import AdminListViewController from './controllers/admin_list_view_controller.js';
 import GuestBannerController from './controllers/guest_banner_controller.js';
 import PostSaveCtaController from './controllers/post_save_cta_controller.js';
+import UsersBulkActionsController from './controllers/users_bulk_actions_controller.js';
 
 const app = Application.start();
 
 app.register('dialog', Dialog);
 app.register('sortable', Sortable);
 app.register('reveal', Reveal);
+app.register('checkbox-select-all', CheckboxSelectAll);
 
 app.register('bootstrap-modal', BootstrapModalController);
 app.register('csrf-protection', CsrfProtectionController);
@@ -30,6 +33,7 @@ app.register('notifications', NotificationsController);
 app.register('admin-list-view', AdminListViewController);
 app.register('guest-banner', GuestBannerController);
 app.register('post-save-cta', PostSaveCtaController);
+app.register('users-bulk-actions', UsersBulkActionsController);
 
 window.Stimulus = app;
 
