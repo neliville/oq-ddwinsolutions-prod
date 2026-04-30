@@ -33,14 +33,24 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "EUR"
-    },
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "150"
     }
 }
 {% endblock %}
+
+{% block schema_faq_json %}{% if tool.faq is defined and tool.faq|length > 0 %}{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for item in tool.faq %}{
+            "@type": "Question",
+            "name": {{ item.q|json_encode|raw }},
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ item.a|json_encode|raw }}
+            }
+        }{% if not loop.last %},{% endif %}{% endfor %}
+    ]
+}{% endif %}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -163,13 +173,48 @@
         </section>
 
         <!-- FAQ Section -->
+        {% if tool.faq is defined and tool.faq|length > 0 %}
         <section class="tool-seo-faq">
             <div class="container">
                 <h2 class="section-title">Questions fréquentes</h2>
                 <div class="faq-list">
-                    {% block faq %}{% endblock %}
+                    {% for item in tool.faq %}
+                    <div class="faq-item">
+                        <h3 class="faq-question">{{ item.q }}</h3>
+                        <div class="faq-answer"><p>{{ item.a }}</p></div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
+        {% endif %}
+
+        <!-- Maillage : outils complémentaires -->
+        {% if tool.related_tools is defined and tool.related_tools|length > 0 %}
+        <section class="tool-seo-related py-5 bg-light">
+            <div class="container">
+                <h2 class="section-title mb-4">Outils complémentaires</h2>
+                <div class="row g-3 justify-content-center">
+                    {% for related in tool.related_tools %}
+                    {% set related_route = related.slug == '5-pourquoi' ? 'app_tool_seo_5pourquoi' : (related.slug == '8d' ? 'app_tool_seo_8d' : 'app_tool_seo_' ~ related.slug) %}
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <a href="{{ path(related_route) }}" class="card border text-decoration-none h-100 tool-seo-related-card">
+                            <div class="card-body d-flex align-items-center gap-3 p-3">
+                                <div class="bg-{{ related.color }} bg-opacity-10 text-{{ related.color }} rounded-2 p-2 flex-shrink-0">
+                                    <i data-lucide="{{ related.icon }}" width="20" height="20"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-semibold small text-dark">{{ related.name }}</div>
+                                    <div class="text-muted small">En savoir plus →</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
     </div>
 {% endblock %}

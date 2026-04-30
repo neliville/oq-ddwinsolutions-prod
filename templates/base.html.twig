@@ -47,6 +47,8 @@
     {% set schema_webapp_raw = schema_webapp_raw|trim %}
     {% set schema_breadcrumb_raw %}{% block schema_breadcrumb_json %}{% endblock %}{% endset %}
     {% set schema_breadcrumb_raw = schema_breadcrumb_raw|trim %}
+    {% set schema_faq_raw %}{% block schema_faq_json %}{% endblock %}{% endset %}
+    {% set schema_faq_raw = schema_faq_raw|trim %}
     {% set schema_social_links_raw %}{% block schema_social_links %}{% endblock %}{% endset %}
     
     {# Passer les valeurs capturées aux composants SEO comme variables #}
@@ -72,6 +74,7 @@
         schema_data_raw: schema_data_raw,
         schema_webapp_raw: schema_webapp_raw,
         schema_breadcrumb_raw: schema_breadcrumb_raw,
+        schema_faq_raw: schema_faq_raw,
         schema_social_links_raw: schema_social_links_raw
     } %}
 

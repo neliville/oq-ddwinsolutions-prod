@@ -173,3 +173,11 @@
 </script>
 {% endif %}
 
+{# FAQPage - JSON-LD depuis block schema_faq_json (pages SEO outils) #}
+{% set schema_faq_raw = schema_faq_raw|default('')|trim %}
+{% if schema_faq_raw is not empty %}
+<script type="application/ld+json">
+{{ schema_faq_raw|raw }}
+</script>
+{% endif %}
+
