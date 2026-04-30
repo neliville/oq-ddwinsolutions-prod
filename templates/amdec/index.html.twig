@@ -37,6 +37,12 @@
 {% block content %}
 <main class="amdec-page{% if not app.user %} amdec-page--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'alert-triangle',
+            tool_name: 'Analyse AMDEC',
+            tool_tagline: 'Identifiez les modes de défaillance et calculez l\'indice NPR',
+            tool_color: 'danger'
+        } %}
         <input type="hidden" id="amdecAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="amdec-header" data-aos="fade-up">

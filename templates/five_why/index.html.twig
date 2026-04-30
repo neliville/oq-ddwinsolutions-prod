@@ -39,6 +39,12 @@
 <main class="five-why-main{% if not app.user %} five-why-main--guest{% endif %}">
     <div class="container">
         {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Méthode des 5 Pourquoi" } %}
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'help-circle',
+            tool_name: 'Méthode des 5 Pourquoi',
+            tool_tagline: 'Remontez jusqu\'à la cause racine par questionnement successif',
+            tool_color: 'info'
+        } %}
         <input type="hidden" id="fiveWhyAnalysisId" value="{{ analysisId ?? '' }}">
         <!-- Header compact -->
         <div class="five-why-header" data-aos="fade-up">

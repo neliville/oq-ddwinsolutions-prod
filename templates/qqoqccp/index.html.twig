@@ -38,6 +38,12 @@
 <main class="qqoqccp-page{% if not app.user %} qqoqccp-page--guest{% endif %}">
     <div class="container">
         {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Analyse QQOQCCP (5W2H)" } %}
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'list-checks',
+            tool_name: 'Analyse QQOQCCP (5W2H)',
+            tool_tagline: 'Cadrez tout projet ou problème avec les 7 questions fondamentales',
+            tool_color: 'secondary'
+        } %}
         <input type="hidden" id="qqoqccpAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="qqoqccp-header" data-aos="fade-up">

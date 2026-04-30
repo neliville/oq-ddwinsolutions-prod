@@ -1,0 +1,30 @@
+{% if not app.user %}
+<div
+    data-controller="guest-banner"
+    data-guest-banner-delay-value="4000"
+    class="guest-sticky-banner"
+    role="complementary"
+    aria-label="Invitation à créer un compte"
+>
+    <div class="container">
+        <div class="guest-banner-inner d-flex align-items-center justify-content-between gap-3 flex-wrap py-2">
+            <div class="d-flex align-items-center gap-2">
+                <i data-lucide="sparkles" width="16" height="16" class="text-primary flex-shrink-0"></i>
+                <span class="small fw-medium">
+                    Sauvegardez vos analyses &amp; exportez en PDF —
+                    <a href="{{ path('app_register') }}" class="fw-semibold text-primary text-decoration-none">Créer un compte gratuit</a>
+                    <span class="text-muted mx-1">·</span>
+                    <a href="{{ path('app_login') }}" class="text-muted text-decoration-none">Se connecter</a>
+                </span>
+            </div>
+            <button
+                type="button"
+                class="btn-close"
+                style="font-size: 0.65rem;"
+                data-action="guest-banner#dismiss"
+                aria-label="Fermer cette bannière"
+            ></button>
+        </div>
+    </div>
+</div>
+{% endif %}

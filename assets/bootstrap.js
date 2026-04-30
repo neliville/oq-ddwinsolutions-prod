@@ -11,6 +11,7 @@ import DropdownBasicController from './controllers/dropdown_basic_controller.js'
 import ProfileDropdownController from './controllers/profile_dropdown_controller.js';
 import NotificationsController from './controllers/notifications_controller.js';
 import AdminListViewController from './controllers/admin_list_view_controller.js';
+import GuestBannerController from './controllers/guest_banner_controller.js';
 
 const app = Application.start();
 
@@ -26,6 +27,7 @@ app.register('dropdown-basic', DropdownBasicController);
 app.register('profile-dropdown', ProfileDropdownController);
 app.register('notifications', NotificationsController);
 app.register('admin-list-view', AdminListViewController);
+app.register('guest-banner', GuestBannerController);
 
 window.Stimulus = app;
 

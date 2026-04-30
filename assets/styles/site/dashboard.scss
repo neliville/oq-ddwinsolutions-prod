@@ -106,6 +106,32 @@
   }
 }
 
+// ── Guest sticky banner (component guest_sticky_banner.html.twig) ────────────
+.guest-sticky-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1040;
+  background: #fff;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 -4px 24px -8px rgba(15, 23, 42, 0.12);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+
+  &.guest-banner--visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &.guest-banner--hiding {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
 // ── Tool page header (component tool_page_header.html.twig) ─────────────────
 .tool-page-header {
   .tool-header-icon {

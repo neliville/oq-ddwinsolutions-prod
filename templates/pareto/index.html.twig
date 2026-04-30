@@ -33,6 +33,12 @@
 <main class="pareto-page{% if not app.user %} pareto-page--guest{% endif %}">
     <div class="container">
         {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Diagramme de Pareto" } %}
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'bar-chart-2',
+            tool_name: 'Diagramme de Pareto',
+            tool_tagline: 'Identifiez les 20 % de causes responsables de 80 % des effets',
+            tool_color: 'info'
+        } %}
         <input type="hidden" id="paretoAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="pareto-header" data-aos="fade-up">

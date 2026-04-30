@@ -38,6 +38,12 @@
 <main class="eightd-page{% if not app.user %} eightd-page--guest{% endif %}">
     <div class="container">
         {% include 'components/tool_breadcrumb.html.twig' with { tool_name: "Méthode 8D" } %}
+        {% include 'components/tool_page_header.html.twig' with {
+            tool_icon: 'layers',
+            tool_name: 'Méthode 8D',
+            tool_tagline: 'Résolvez durablement vos problèmes en 8 disciplines structurées',
+            tool_color: 'warning'
+        } %}
         <input type="hidden" id="eightdAnalysisId" value="{{ analysisId ?? '' }}">
 
         <header class="eightd-header" data-aos="fade-up">

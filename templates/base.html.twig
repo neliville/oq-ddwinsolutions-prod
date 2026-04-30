@@ -248,6 +248,9 @@
         {% include 'components/footer.html.twig' %}
     </footer>
 
+    {# Bannière sticky pour visiteurs non connectés #}
+    {% include 'components/guest_sticky_banner.html.twig' %}
+
     {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
     <div data-controller="notifications" class="d-none" aria-hidden="true"></div>
 
