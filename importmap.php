@@ -78,4 +78,7 @@ return [
         'version' => '4.6.13',
         'type' => 'css',
     ],
+    '@stimulus-components/checkbox-select-all' => [
+        'version' => '6.1.0',
+    ],
 ];

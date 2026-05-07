@@ -204,6 +204,13 @@ if [ "${SASS_EXIT}" -ne 0 ]; then
 fi
 echo -e "${GREEN}   ✓ Sass compilé${NC}"
 
+# 9.8. Installer les packages importmap (vendor JS)
+echo -e "\n${YELLOW}9.8. Installation des packages importmap...${NC}"
+set +e
+php bin/console importmap:install --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
+set -e
+echo -e "${GREEN}   ✓ Packages importmap installés${NC}"
+
 # 10. Compiler les assets avec Asset Mapper
 echo -e "\n${YELLOW}10. Compilation des assets (Asset Mapper)...${NC}"
 set +e
