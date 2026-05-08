@@ -1,124 +1,175 @@
-<nav class="navbar navbar-expand-lg main-navbar fixed-top shadow-sm" id="mainNav">
+<nav class="navbar navbar-expand-lg main-navbar fixed-top" id="mainNav">
     <div class="container">
-        <a class="navbar-brand main-navbar__brand d-flex align-items-center text-decoration-none flex-shrink-0" href="{{ path('app_home_index') }}">
-            <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="40" height="40" class="me-2 flex-shrink-0" loading="eager" fetchpriority="high">
+
+        {# ── Brand ────────────────────────────────────────────────────────── #}
+        <a class="navbar-brand main-navbar__brand d-flex align-items-center text-decoration-none flex-shrink-0"
+           href="{{ path('app_home_index') }}">
+            <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="40" height="40"
+                 class="me-2 flex-shrink-0" loading="eager" fetchpriority="high">
             <span class="fw-bold main-navbar__brand-text">OUTILS-QUALITÉ</span>
         </a>
 
-        <button class="navbar-toggler" type="button"
+        {# ── Mobile : sidebar toggle entre le brand et le hamburger ──────── #}
+        {% if app.user %}
+        <div class="d-flex d-lg-none align-items-center gap-1 ms-auto me-2">
+            {% if show_sidebar_toggle %}
+                <button class="navbar-icon-btn" type="button" id="sidebarToggleMobile"
+                        aria-label="Afficher la navigation" aria-expanded="true">
+                    <i data-lucide="panel-left" width="20" height="20"></i>
+                </button>
+            {% else %}
+                <a class="navbar-icon-btn" href="{{ path('app_dashboard_index') }}"
+                   aria-label="Accéder au tableau de bord">
+                    <i data-lucide="layout-dashboard" width="20" height="20"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {# ── Hamburger (mobile) ──────────────────────────────────────────── #}
+        <button class="navbar-toggler ms-1" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Afficher le menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        {# ── Collapse : liens de navigation + CTA mobile non connecté ────── #}
         <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-collapse-inner d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 gap-3 gap-lg-4">
-                <div class="navbar-menu flex-grow-1">
-                    {{ knp_menu_render('app.navbar', {
-                        'template': 'menu/navbar.html.twig',
-                        'currentClass': 'active',
-                        'ancestorClass': 'active',
-                        'currentAsLink': true,
-                        'allow_safe_labels': true
-                    }) }}
-                </div>
-
-                <div class="navbar-actions d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-3 ms-lg-4 w-100 w-lg-auto">
-                    {% if app.user %}
-                        <div class="d-lg-none">
-                            {% if show_sidebar_toggle %}
-                                <button class="btn btn-outline-primary w-100 sidebar-toggle-btn" type="button" id="sidebarToggleMobile" aria-label="Afficher la navigation" aria-expanded="true">
-                                    <i data-lucide="panel-left" width="22" height="22"></i>
-                                    <span class="sidebar-toggle-label ms-2">Masquer la navigation</span>
-                                </button>
-                            {% else %}
-                                <a class="btn btn-outline-primary w-100" href="{{ path('app_dashboard_index') }}" aria-label="Accéder au tableau de bord">
-                                    <i data-lucide="layout-dashboard" width="22" height="22"></i>
-                                    <span class="ms-2">Tableau de bord</span>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="d-lg-none">
-                            <a class="btn btn-primary w-100" href="{{ path('app_login') }}">Connexion</a>
-                        </div>
-                    {% endif %}
-
-                    {% if app.user %}
-                        {% if show_sidebar_toggle %}
-                            <button class="btn btn-outline-primary sidebar-toggle-btn d-none d-lg-inline-flex" type="button" id="sidebarToggle" aria-label="Afficher la navigation" aria-expanded="true">
-                                <i data-lucide="panel-left" width="22" height="22"></i>
-                                <span class="sidebar-toggle-label ms-2">Masquer la navigation</span>
-                            </button>
-                        {% else %}
-                            <a class="btn btn-outline-primary sidebar-toggle-btn d-none d-lg-inline-flex" href="{{ path('app_dashboard_index') }}" aria-label="Accéder au tableau de bord">
-                                <i data-lucide="layout-dashboard" width="22" height="22"></i>
-                                <span class="sidebar-toggle-label ms-2">Tableau de bord</span>
-                            </a>
-                        {% endif %}
-
-                        <div class="dropdown position-relative ms-lg-2" data-controller="profile-dropdown">
-                            <button class="btn btn-link profile-dropdown__button text-decoration-none dropdown-toggle d-flex align-items-center"
-                                    type="button"
-                                    id="profileDropdown"
-                                    data-profile-dropdown-target="button"
-                                    data-action="click->profile-dropdown#toggle keydown.enter->profile-dropdown#toggle keydown.space->profile-dropdown#toggle keydown.arrow-down->profile-dropdown#openWithKeyboard keydown.arrow-up->profile-dropdown#openWithKeyboard"
-                                    aria-expanded="false"
-                                    aria-haspopup="true">
-                                <div class="profile-dropdown__avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                    {{ app.user.email|slice(0, 1)|upper }}
-                                </div>
-                                <span class="d-none d-md-inline text-dark fw-semibold">{{ app.user.email }}</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu"
-                                data-profile-dropdown-target="menu"
-                                aria-labelledby="profileDropdown"
-                                hidden>
-                                <li>
-                                    <div class="border-bottom">
-                                        <div class="fw-semibold">{{ app.user.email }}</div>
-                                        <small class="text-muted">Connecté</small>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center" href="{{ path('app_profile_index') }}" role="menuitem">
-                                        <i data-lucide="user" width="18" height="18" class="me-2"></i>
-                                        <span>Mon profil</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center" href="{{ path('app_creations_index') }}" role="menuitem">
-                                        <i data-lucide="file-text" width="18" height="18" class="me-2"></i>
-                                        <span>Mes créations</span>
-                                    </a>
-                                </li>
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item d-flex align-items-center text-primary" href="{{ path('app_admin_dashboard_index') }}" role="menuitem">
-                                            <i data-lucide="shield" width="18" height="18" class="me-2"></i>
-                                            <span>Administration</span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center text-danger" href="{{ path('app_logout') }}" role="menuitem">
-                                        <i data-lucide="log-out" width="18" height="18" class="me-2"></i>
-                                        <span>Déconnexion</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a class="btn btn-primary btn-sm d-none d-lg-inline-flex" href="{{ path('app_login') }}">
-                            Connexion
-                        </a>
-                    {% endif %}
-                </div>
+            <div class="navbar-menu flex-grow-1">
+                {{ knp_menu_render('app.navbar', {
+                    'template': 'menu/navbar.html.twig',
+                    'currentClass': 'active',
+                    'ancestorClass': 'active',
+                    'currentAsLink': true,
+                    'allow_safe_labels': true
+                }) }}
             </div>
+
+            {% if not app.user %}
+            <div class="d-lg-none mt-2">
+                <a class="btn btn-primary w-100" href="{{ path('app_login') }}">Connexion</a>
+            </div>
+            {% endif %}
         </div>
+
+        {# ── Actions droite — desktop (toujours visibles) ─────────────────── #}
+        {% if app.user %}
+        <div class="navbar-right-actions d-none d-lg-flex align-items-center gap-2 ms-lg-4">
+
+            {# Sidebar toggle #}
+            {% if show_sidebar_toggle %}
+                <button class="sidebar-toggle-btn" type="button" id="sidebarToggle"
+                        aria-label="Afficher la navigation" aria-expanded="true">
+                    <i data-lucide="panel-left" width="18" height="18"></i>
+                    <span class="sidebar-toggle-label ms-1">Masquer la navigation</span>
+                </button>
+            {% else %}
+                <a class="sidebar-toggle-btn" href="{{ path('app_dashboard_index') }}"
+                   aria-label="Accéder au tableau de bord">
+                    <i data-lucide="layout-dashboard" width="18" height="18"></i>
+                    <span class="sidebar-toggle-label ms-1">Tableau de bord</span>
+                </a>
+            {% endif %}
+
+            {# Help dropdown #}
+            <div class="dropdown" data-controller="profile-dropdown">
+                <button class="navbar-icon-btn" type="button"
+                        data-profile-dropdown-target="button"
+                        data-action="click->profile-dropdown#toggle"
+                        aria-expanded="false" aria-haspopup="true"
+                        title="Aide" aria-label="Aide">
+                    <i data-lucide="circle-help" width="20" height="20"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end navbar-help-menu shadow-sm border"
+                    data-profile-dropdown-target="menu"
+                    hidden>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                           href="{{ path('app_blog_index') }}">
+                            <span>Blog QSE</span>
+                            <i data-lucide="book-open" width="15" height="15" class="ms-4 text-muted"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                           href="{{ path('app_outils_index') }}">
+                            <span>Tous les outils</span>
+                            <i data-lucide="layers" width="15" height="15" class="ms-4 text-muted"></i>
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                           href="{{ path('app_contact_index') }}">
+                            <span>Nous contacter</span>
+                            <i data-lucide="mail" width="15" height="15" class="ms-4 text-muted"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            {# Profile dropdown — avatar uniquement #}
+            <div class="dropdown position-relative" data-controller="profile-dropdown">
+                <button class="navbar-icon-btn navbar-avatar-btn p-0" type="button"
+                        id="profileDropdown"
+                        data-profile-dropdown-target="button"
+                        data-action="click->profile-dropdown#toggle keydown.enter->profile-dropdown#toggle keydown.space->profile-dropdown#toggle keydown.arrow-down->profile-dropdown#openWithKeyboard keydown.arrow-up->profile-dropdown#openWithKeyboard"
+                        aria-expanded="false" aria-haspopup="true"
+                        aria-label="Menu utilisateur">
+                    <div class="profile-dropdown__avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                        {{ app.user.email|slice(0, 1)|upper }}
+                    </div>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 profile-dropdown__menu"
+                    data-profile-dropdown-target="menu"
+                    aria-labelledby="profileDropdown"
+                    hidden>
+                    <li>
+                        <div class="px-4 py-3 border-bottom">
+                            <div class="fw-semibold text-truncate" style="max-width:220px;">{{ app.user.email }}</div>
+                            <small class="text-muted">Membre connecté</small>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                           href="{{ path('app_profile_index') }}" role="menuitem">
+                            <span>Mon profil</span>
+                            <i data-lucide="user" width="15" height="15" class="ms-4 text-muted"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                           href="{{ path('app_creations_index') }}" role="menuitem">
+                            <span>Mes créations</span>
+                            <i data-lucide="file-text" width="15" height="15" class="ms-4 text-muted"></i>
+                        </a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between text-primary"
+                           href="{{ path('app_admin_dashboard_index') }}" role="menuitem">
+                            <span>Administration</span>
+                            <i data-lucide="shield" width="15" height="15" class="ms-4"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center justify-content-between text-danger"
+                           href="{{ path('app_logout') }}" role="menuitem">
+                            <span>Déconnexion</span>
+                            <i data-lucide="log-out" width="15" height="15" class="ms-4"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        {% else %}
+        <a class="btn btn-primary btn-sm d-none d-lg-inline-flex ms-4"
+           href="{{ path('app_login') }}">Connexion</a>
+        {% endif %}
+
     </div>
 </nav>
-
