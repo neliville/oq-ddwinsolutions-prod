@@ -67,6 +67,24 @@
     border: 1px solid rgba(148, 163, 184, 0.15);
     box-shadow: var(--shadow-xs);
     background: rgba(248, 250, 252, 0.7);
+    overflow: hidden; // évite le débordement des titres longs
+
+    // Contrainte flex : le texte ne pousse pas le bouton hors du conteneur
+    .d-flex > .flex-grow-1 {
+      min-width: 0;
+
+      h6 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    // Bouton "Charger" : taille fixe pour rester aligné
+    .btn.flex-shrink-0 {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
   }
 
   // ── Boutons outils ────────────────────────────────────────────────────────

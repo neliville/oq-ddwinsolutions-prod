@@ -88,6 +88,11 @@
   }
 }
 
+// === Min-width flex fix (Bootstrap n'inclut pas min-w-0) ===
+.min-w-0 {
+  min-width: 0 !important;
+}
+
 // === Truncate ===
 .text-truncate-200 {
   max-width: 200px;
