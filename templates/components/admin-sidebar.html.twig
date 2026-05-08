@@ -3,12 +3,6 @@
 
 <aside class="admin-sidebar" aria-label="Navigation principale">
 
-    {# Brand #}
-    <div class="sidebar-brand">
-        <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="28" height="28">
-        <span class="sidebar-brand-name">Dashboard</span>
-    </div>
-
     {# Navigation #}
     <nav class="sidebar-nav">
 
@@ -235,10 +229,9 @@
 
     </nav>
 
-    {# Footer #}
+    {# Footer — version uniquement pour les admins #}
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="sidebar-footer">
-
-        {% if is_granted('ROLE_ADMIN') %}
         <div class="sidebar-version">
             <div class="sidebar-version-row">
                 <span class="sidebar-version-label">
@@ -257,30 +250,8 @@
             <div class="sidebar-version-msg" title="{{ app_commit_message() }}">{{ app_commit_message() }}</div>
             {% endif %}
         </div>
-        {% endif %}
-
-        <div class="sidebar-user">
-            <div class="sidebar-user-avatar" aria-hidden="true">{{ app.user.email|slice(0, 1)|upper }}</div>
-            <div class="sidebar-user-info">
-                <span class="sidebar-user-email">{{ app.user.email }}</span>
-            </div>
-            <div class="sidebar-user-actions">
-                <a href="{{ path('app_profile_index') }}"
-                   class="sidebar-icon-btn"
-                   title="Mon profil"
-                   aria-label="Mon profil">
-                    <i data-lucide="settings" width="15" height="15"></i>
-                </a>
-                <a href="{{ path('app_logout') }}"
-                   class="sidebar-icon-btn sidebar-icon-btn--danger"
-                   title="Déconnexion"
-                   aria-label="Se déconnecter">
-                    <i data-lucide="log-out" width="15" height="15"></i>
-                </a>
-            </div>
-        </div>
-
     </div>
+    {% endif %}
 </aside>
 
 <script>
