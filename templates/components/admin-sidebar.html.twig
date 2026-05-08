@@ -1,440 +1,312 @@
 {% if app.user %}
 {% set currentRoute = app.request.get('_route') %}
-{% set baseNavItemClass = 'd-flex align-items-center px-3 py-2 text-decoration-none rounded' %}
-{% set activeClasses = 'bg-primary text-white shadow-sm' %}
-{% set inactiveClasses = 'text-dark' %}
 
-<aside class="admin-sidebar bg-white border-end position-fixed top-0 start-0 vh-100 d-flex flex-column" style="width: 280px; z-index: 1020; padding-top: 76px; box-shadow: 2px 0 8px rgba(0,0,0,0.1);">
-    <div class="p-3 flex-grow-1" style="overflow-y: auto; min-height: 0;">
-        <!-- Logo et titre -->
-        <div class="mb-4 pb-3 border-bottom">
-            <div class="d-flex align-items-center mb-3">
-                <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="32" height="32" class="me-2">
-                <span class="fw-bold text-primary">Dashboard</span>
-            </div>
-        </div>
+<aside class="admin-sidebar" aria-label="Navigation principale">
 
-        <!-- Menu de navigation principal -->
-        <nav class="sidebar-nav">
-            <ul class="list-unstyled mb-0">
-                <!-- Section : Tableau de bord -->
-                <li>
-                    <a href="{{ path('app_dashboard_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_dashboard' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="layout-dashboard" width="18" height="18" class="me-2"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                </li>
-
-                <!-- Section : Mes outils -->
-                <li class="sidebar-section-label">
-                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Mes Outils</div>
-                </li>
-                <li>
-                    <a href="{{ path('app_ishikawa_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_ishikawa' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="git-branch" width="18" height="18" class="me-2"></i>
-                        <span>Analyse des causes</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_fivewhy_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_fivewhy' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="help-circle" width="18" height="18" class="me-2"></i>
-                        <span>Méthode 5 Pourquoi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_qqoqccp_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_qqoqccp' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="list-checks" width="18" height="18" class="me-2"></i>
-                        <span>Analyse QQOQCCP</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_amdec_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_amdec' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="alert-triangle" width="18" height="18" class="me-2"></i>
-                        <span>Analyse AMDEC</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_pareto_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_pareto' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="bar-chart-2" width="18" height="18" class="me-2"></i>
-                        <span>Diagramme Pareto</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_eightd_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_eightd' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="layers" width="18" height="18" class="me-2"></i>
-                        <span>Méthode 8D</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_outils_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_outils' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="tool-case" width="18" height="18" class="me-2"></i>
-                        <span>Tous les outils</span>
-                    </a>
-                </li>
-
-                <!-- Section : Mes contenus -->
-                <li class="sidebar-section-label">
-                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Mes Contenus</div>
-                </li>
-                <li>
-                    <a href="{{ path('app_creations_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_creations' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="file-text" width="18" height="18" class="me-2"></i>
-                        <span>Mes créations</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ path('app_blog_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_blog' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="book-open" width="18" height="18" class="me-2"></i>
-                        <span>Blog</span>
-                    </a>
-                </li>
-
-                <!-- Section : Administration (uniquement pour admins) -->
-                {% if is_granted('ROLE_ADMIN') %}
-                <li class="sidebar-section-label">
-                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Administration</div>
-                </li>
-                <li class="">
-                    <a href="{{ path('app_admin_dashboard_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_admin_dashboard' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="shield" width="18" height="18" class="me-2"></i>
-                        <span>Tableau de bord</span>
-                    </a>
-                </li>
-                
-                <!-- Sous-menu Utilisateurs -->
-                {% set isAdminUsersRoute = currentRoute starts with 'app_admin_users' %}
-                <li class="">
-                    <a class="{{ baseNavItemClass }} {{ isAdminUsersRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminUsersMenu" data-sidebar-target="#adminUsersMenu" role="button" aria-expanded="{{ isAdminUsersRoute ? 'true' : 'false' }}" aria-controls="adminUsersMenu">
-                        <i data-lucide="users" width="18" height="18" class="me-2"></i>
-                        <span class="flex-grow-1">Utilisateurs</span>
-                        <i data-lucide="chevron-down" width="14" height="14" class="chevron-icon"></i>
-                    </a>
-                    <div class="collapse {{ isAdminUsersRoute ? 'show' : '' }}" id="adminUsersMenu">
-                        <ul class="list-unstyled ps-4 mt-1">
-                            <li class="">
-                                <a href="{{ path('app_admin_users_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_users' %}text-primary fw-semibold{% endif %}">
-                                    Liste des utilisateurs
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <!-- Sous-menu Articles -->
-                {% set isAdminPostsRoute = currentRoute starts with 'app_admin_blog' or currentRoute starts with 'app_admin_categories' or currentRoute starts with 'app_admin_tags' %}
-                <li class="">
-                    <a class="{{ baseNavItemClass }} {{ isAdminPostsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminPostsMenu" data-sidebar-target="#adminPostsMenu" role="button" aria-expanded="{{ isAdminPostsRoute ? 'true' : 'false' }}" aria-controls="adminPostsMenu">
-                        <i data-lucide="file-text" width="18" height="18" class="me-2"></i>
-                        <span class="flex-grow-1">Articles Blog</span>
-                        <i data-lucide="chevron-down" width="14" height="14" class="chevron-icon"></i>
-                    </a>
-                    <div class="collapse {{ isAdminPostsRoute ? 'show' : '' }}" id="adminPostsMenu">
-                        <ul class="list-unstyled ps-4 mt-1">
-                            <li class="">
-                                <a href="{{ path('app_admin_blog_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_blog' %}text-primary fw-semibold{% endif %}">
-                                    Liste des articles
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_blog_new') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_blog_new' %}text-primary fw-semibold{% endif %}">
-                                    Nouvel article
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_categories_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_categories' %}text-primary fw-semibold{% endif %}">
-                                    Catégories
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_tags_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_tags' %}text-primary fw-semibold{% endif %}">
-                                    Tags
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <!-- Sous-menu Messages -->
-                {% set isAdminMessagesRoute = currentRoute starts with 'app_admin_contact' or currentRoute starts with 'app_admin_newsletter' or currentRoute starts with 'app_admin_leads' %}
-                <li class="">
-                    <a class="{{ baseNavItemClass }} {{ isAdminMessagesRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminMessagesMenu" data-sidebar-target="#adminMessagesMenu" role="button" aria-expanded="{{ isAdminMessagesRoute ? 'true' : 'false' }}" aria-controls="adminMessagesMenu">
-                        <i data-lucide="mail" width="18" height="18" class="me-2"></i>
-                        <span class="flex-grow-1">Messages</span>
-                        <i data-lucide="chevron-down" width="14" height="14" class="chevron-icon"></i>
-                    </a>
-                    <div class="collapse {{ isAdminMessagesRoute ? 'show' : '' }}" id="adminMessagesMenu">
-                        <ul class="list-unstyled ps-4 mt-1">
-                            <li class="">
-                                <a href="{{ path('app_admin_contact_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_contact' %}text-primary fw-semibold{% endif %}">
-                                    Messages de contact
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_newsletter_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_newsletter' %}text-primary fw-semibold{% endif %}">
-                                    Newsletter
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_leads_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_leads' %}text-primary fw-semibold{% endif %}">
-                                    Leads
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                {% set isCmsRoute = app.request.get('_route') starts with 'app_admin_cms' %}
-                {% set currentCmsSlug = app.request.attributes.get('slug') %}
-                <li class="">
-                    <a class="{{ baseNavItemClass }} {{ isCmsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminCmsMenu" data-sidebar-target="#adminCmsMenu" role="button" aria-expanded="{{ isCmsRoute ? 'true' : 'false' }}" aria-controls="adminCmsMenu">
-                        <i data-lucide="file-cog" width="18" height="18" class="me-2"></i>
-                        <span class="flex-grow-1">CMS</span>
-                        <i data-lucide="chevron-down" width="14" height="14" class="chevron-icon" style="transform: {{ isCmsRoute ? 'rotate(180deg)' : 'rotate(0deg)' }};"></i>
-                    </a>
-                    <div class="collapse {{ isCmsRoute ? 'show' : '' }}" id="adminCmsMenu">
-                        <ul class="list-unstyled ps-4 mt-1">
-                            <li class="">
-                                <a href="{{ path('app_admin_cms_edit', { slug: 'privacy-policy' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'privacy-policy' %}text-primary fw-semibold{% endif %}">
-                                    Politique de confidentialité
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_cms_edit', { slug: 'terms-of-use' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'terms-of-use' %}text-primary fw-semibold{% endif %}">
-                                    Conditions d'utilisation
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_cms_edit', { slug: 'legal-notice' }) }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if isCmsRoute and currentCmsSlug == 'legal-notice' %}text-primary fw-semibold{% endif %}">
-                                    Mentions légales
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <!-- Sous-menu Statistiques -->
-                {% set isStatsRoute = app.request.get('_route') starts with 'app_admin_analytics_' or app.request.get('_route') starts with 'app_admin_export_analytics' or app.request.get('_route') starts with 'app_admin_tool_usage' or app.request.get('_route') == 'app_admin_logs_index' %}
-                <li class="">
-                    <a class="{{ baseNavItemClass }} {{ isStatsRoute ? activeClasses : 'text-dark' }} sidebar-collapse-trigger" href="#adminStatsMenu" data-sidebar-target="#adminStatsMenu" role="button" aria-expanded="{{ isStatsRoute ? 'true' : 'false' }}" aria-controls="adminStatsMenu">
-                        <i data-lucide="bar-chart" width="18" height="18" class="me-2"></i>
-                        <span class="flex-grow-1">Statistiques</span>
-                        <i data-lucide="chevron-down" width="14" height="14" class="chevron-icon" style="transform: {{ isStatsRoute ? 'rotate(180deg)' : 'rotate(0deg)' }};"></i>
-                    </a>
-                    <div class="collapse {{ isStatsRoute ? 'show' : '' }}" id="adminStatsMenu">
-                        <ul class="list-unstyled ps-4 mt-1">
-                            <li class="">
-                                <a href="{{ path('app_admin_analytics_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_index' %}text-primary fw-semibold{% endif %}">
-                                    Synthèse
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_analytics_traffic') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_traffic' %}text-primary fw-semibold{% endif %}">
-                                    Trafic & audiences
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_analytics_sharing') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_analytics_sharing' %}text-primary fw-semibold{% endif %}">
-                                    Partages Ishikawa
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_export_analytics_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_export_analytics' %}text-primary fw-semibold{% endif %}">
-                                    Exports (fichiers)
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_tool_usage_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') starts with 'app_admin_tool_usage' %}text-primary fw-semibold{% endif %}">
-                                    Outils & créations
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ path('app_admin_logs_index') }}" class="d-flex align-items-center px-3 py-2 text-decoration-none rounded text-muted small {% if app.request.get('_route') == 'app_admin_logs_index' %}text-primary fw-semibold{% endif %}">
-                                    Logs d'administration
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                {% endif %}
-
-                <!-- Section : Autres -->
-                <li class="sidebar-section-label">
-                    <div class="px-3 pt-3 pb-1 text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.08em;">Autres</div>
-                </li>
-                <li class="">
-                    <a href="{{ path('app_contact_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_contact' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="mail" width="18" height="18" class="me-2"></i>
-                        <span>Contact</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ path('app_profile_index') }}" class="{{ baseNavItemClass }} {{ currentRoute starts with 'app_profile' ? activeClasses : inactiveClasses }}">
-                        <i data-lucide="user" width="18" height="18" class="me-2"></i>
-                        <span>Mon profil</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    {# Brand #}
+    <div class="sidebar-brand">
+        <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="28" height="28">
+        <span class="sidebar-brand-name">Dashboard</span>
     </div>
 
-    <!-- Footer sidebar -->
-    <div class="border-top bg-white p-3" style="flex-shrink: 0;">
-        <!-- Version indicator -->
+    {# Navigation #}
+    <nav class="sidebar-nav">
+
+        {# Tableau de bord #}
+        <div class="sidebar-section">
+            <a href="{{ path('app_dashboard_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_dashboard' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_dashboard' %}aria-current="page"{% endif %}>
+                <i data-lucide="layout-dashboard" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Tableau de bord</span>
+            </a>
+        </div>
+
+        {# Mes Outils #}
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Mes Outils</div>
+            <a href="{{ path('app_ishikawa_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_ishikawa' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_ishikawa' %}aria-current="page"{% endif %}>
+                <i data-lucide="git-branch" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Analyse des causes</span>
+            </a>
+            <a href="{{ path('app_fivewhy_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_fivewhy' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_fivewhy' %}aria-current="page"{% endif %}>
+                <i data-lucide="help-circle" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Méthode 5 Pourquoi</span>
+            </a>
+            <a href="{{ path('app_qqoqccp_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_qqoqccp' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_qqoqccp' %}aria-current="page"{% endif %}>
+                <i data-lucide="list-checks" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Analyse QQOQCCP</span>
+            </a>
+            <a href="{{ path('app_amdec_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_amdec' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_amdec' %}aria-current="page"{% endif %}>
+                <i data-lucide="alert-triangle" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Analyse AMDEC</span>
+            </a>
+            <a href="{{ path('app_pareto_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_pareto' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_pareto' %}aria-current="page"{% endif %}>
+                <i data-lucide="bar-chart-2" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Diagramme Pareto</span>
+            </a>
+            <a href="{{ path('app_eightd_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_eightd' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_eightd' %}aria-current="page"{% endif %}>
+                <i data-lucide="layers" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Méthode 8D</span>
+            </a>
+        </div>
+
+        {# Mes Contenus #}
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Mes Contenus</div>
+            <a href="{{ path('app_creations_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_creations' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_creations' %}aria-current="page"{% endif %}>
+                <i data-lucide="file-text" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Mes créations</span>
+            </a>
+            <a href="{{ path('app_blog_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_blog' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_blog' %}aria-current="page"{% endif %}>
+                <i data-lucide="book-open" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Blog</span>
+            </a>
+        </div>
+
+        {# Administration (admins seulement) #}
         {% if is_granted('ROLE_ADMIN') %}
-        <div class="mb-3 pb-3 border-bottom">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-                <span class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">
-                    <i data-lucide="git-branch" width="12" height="12" class="me-1"></i>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Administration</div>
+
+            <a href="{{ path('app_admin_dashboard_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_dashboard' ? 'active' : '' }}"
+               {% if currentRoute starts with 'app_admin_dashboard' %}aria-current="page"{% endif %}>
+                <i data-lucide="shield" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Tableau de bord</span>
+            </a>
+
+            {# Utilisateurs #}
+            {% set isAdminUsersRoute = currentRoute starts with 'app_admin_users' %}
+            <button type="button"
+                    class="sidebar-item sidebar-collapse-trigger {{ isAdminUsersRoute ? 'active' : '' }}"
+                    data-sidebar-target="#adminUsersMenu"
+                    aria-expanded="{{ isAdminUsersRoute ? 'true' : 'false' }}"
+                    aria-controls="adminUsersMenu">
+                <i data-lucide="users" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Utilisateurs</span>
+                <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+            </button>
+            <div class="collapse sidebar-submenu {{ isAdminUsersRoute ? 'show' : '' }}" id="adminUsersMenu">
+                <a href="{{ path('app_admin_users_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_users' ? 'active' : '' }}">
+                    Liste des utilisateurs
+                </a>
+            </div>
+
+            {# Articles Blog #}
+            {% set isAdminPostsRoute = currentRoute starts with 'app_admin_blog' or currentRoute starts with 'app_admin_categories' or currentRoute starts with 'app_admin_tags' %}
+            <button type="button"
+                    class="sidebar-item sidebar-collapse-trigger {{ isAdminPostsRoute ? 'active' : '' }}"
+                    data-sidebar-target="#adminPostsMenu"
+                    aria-expanded="{{ isAdminPostsRoute ? 'true' : 'false' }}"
+                    aria-controls="adminPostsMenu">
+                <i data-lucide="file-text" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Articles Blog</span>
+                <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+            </button>
+            <div class="collapse sidebar-submenu {{ isAdminPostsRoute ? 'show' : '' }}" id="adminPostsMenu">
+                <a href="{{ path('app_admin_blog_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_blog' ? 'active' : '' }}">
+                    Liste des articles
+                </a>
+                <a href="{{ path('app_admin_blog_new') }}"
+                   class="sidebar-subitem {{ currentRoute == 'app_admin_blog_new' ? 'active' : '' }}">
+                    Nouvel article
+                </a>
+                <a href="{{ path('app_admin_categories_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_categories' ? 'active' : '' }}">
+                    Catégories
+                </a>
+                <a href="{{ path('app_admin_tags_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_tags' ? 'active' : '' }}">
+                    Tags
+                </a>
+            </div>
+
+            {# Messages #}
+            {% set isAdminMessagesRoute = currentRoute starts with 'app_admin_contact' or currentRoute starts with 'app_admin_newsletter' or currentRoute starts with 'app_admin_leads' %}
+            <button type="button"
+                    class="sidebar-item sidebar-collapse-trigger {{ isAdminMessagesRoute ? 'active' : '' }}"
+                    data-sidebar-target="#adminMessagesMenu"
+                    aria-expanded="{{ isAdminMessagesRoute ? 'true' : 'false' }}"
+                    aria-controls="adminMessagesMenu">
+                <i data-lucide="mail" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Messages</span>
+                <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+            </button>
+            <div class="collapse sidebar-submenu {{ isAdminMessagesRoute ? 'show' : '' }}" id="adminMessagesMenu">
+                <a href="{{ path('app_admin_contact_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_contact' ? 'active' : '' }}">
+                    Messages de contact
+                </a>
+                <a href="{{ path('app_admin_newsletter_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_newsletter' ? 'active' : '' }}">
+                    Newsletter
+                </a>
+                <a href="{{ path('app_admin_leads_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_leads' ? 'active' : '' }}">
+                    Leads
+                </a>
+            </div>
+
+            {# CMS #}
+            {% set isCmsRoute = currentRoute starts with 'app_admin_cms' %}
+            {% set currentCmsSlug = app.request.attributes.get('slug') %}
+            <button type="button"
+                    class="sidebar-item sidebar-collapse-trigger {{ isCmsRoute ? 'active' : '' }}"
+                    data-sidebar-target="#adminCmsMenu"
+                    aria-expanded="{{ isCmsRoute ? 'true' : 'false' }}"
+                    aria-controls="adminCmsMenu">
+                <i data-lucide="file-cog" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>CMS</span>
+                <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+            </button>
+            <div class="collapse sidebar-submenu {{ isCmsRoute ? 'show' : '' }}" id="adminCmsMenu">
+                <a href="{{ path('app_admin_cms_edit', { slug: 'privacy-policy' }) }}"
+                   class="sidebar-subitem {{ isCmsRoute and currentCmsSlug == 'privacy-policy' ? 'active' : '' }}">
+                    Politique de confidentialité
+                </a>
+                <a href="{{ path('app_admin_cms_edit', { slug: 'terms-of-use' }) }}"
+                   class="sidebar-subitem {{ isCmsRoute and currentCmsSlug == 'terms-of-use' ? 'active' : '' }}">
+                    Conditions d'utilisation
+                </a>
+                <a href="{{ path('app_admin_cms_edit', { slug: 'legal-notice' }) }}"
+                   class="sidebar-subitem {{ isCmsRoute and currentCmsSlug == 'legal-notice' ? 'active' : '' }}">
+                    Mentions légales
+                </a>
+            </div>
+
+            {# Statistiques #}
+            {% set isStatsRoute = currentRoute starts with 'app_admin_analytics_' or currentRoute starts with 'app_admin_export_analytics' or currentRoute starts with 'app_admin_tool_usage' or currentRoute == 'app_admin_logs_index' %}
+            <button type="button"
+                    class="sidebar-item sidebar-collapse-trigger {{ isStatsRoute ? 'active' : '' }}"
+                    data-sidebar-target="#adminStatsMenu"
+                    aria-expanded="{{ isStatsRoute ? 'true' : 'false' }}"
+                    aria-controls="adminStatsMenu">
+                <i data-lucide="bar-chart" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Statistiques</span>
+                <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+            </button>
+            <div class="collapse sidebar-submenu {{ isStatsRoute ? 'show' : '' }}" id="adminStatsMenu">
+                <a href="{{ path('app_admin_analytics_index') }}"
+                   class="sidebar-subitem {{ currentRoute == 'app_admin_analytics_index' ? 'active' : '' }}">
+                    Synthèse
+                </a>
+                <a href="{{ path('app_admin_analytics_traffic') }}"
+                   class="sidebar-subitem {{ currentRoute == 'app_admin_analytics_traffic' ? 'active' : '' }}">
+                    Trafic &amp; audiences
+                </a>
+                <a href="{{ path('app_admin_analytics_sharing') }}"
+                   class="sidebar-subitem {{ currentRoute == 'app_admin_analytics_sharing' ? 'active' : '' }}">
+                    Partages Ishikawa
+                </a>
+                <a href="{{ path('app_admin_export_analytics_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_export_analytics' ? 'active' : '' }}">
+                    Exports (fichiers)
+                </a>
+                <a href="{{ path('app_admin_tool_usage_index') }}"
+                   class="sidebar-subitem {{ currentRoute starts with 'app_admin_tool_usage' ? 'active' : '' }}">
+                    Outils &amp; créations
+                </a>
+                <a href="{{ path('app_admin_logs_index') }}"
+                   class="sidebar-subitem {{ currentRoute == 'app_admin_logs_index' ? 'active' : '' }}">
+                    Logs d'administration
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+    </nav>
+
+    {# Footer #}
+    <div class="sidebar-footer">
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="sidebar-version">
+            <div class="sidebar-version-row">
+                <span class="sidebar-version-label">
+                    <i data-lucide="git-branch" width="10" height="10"></i>
                     Version
                 </span>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.7rem; font-weight: 600; font-family: 'Courier New', monospace;">
-                    {{ app_short_hash() ?: 'dev' }}
-                </span>
+                <span class="sidebar-version-badge">{{ app_short_hash() ?: 'dev' }}</span>
             </div>
             {% if app_commit_date() %}
-            <div class="d-flex align-items-center justify-content-between mt-1">
-                <span class="text-muted" style="font-size: 0.7rem;">
-                    <i data-lucide="clock" width="10" height="10" class="me-1"></i>
-                    {{ app_commit_date()|date('d/m/Y à H:i') }}
-                </span>
+            <div class="sidebar-version-date">
+                <i data-lucide="clock" width="10" height="10"></i>
+                {{ app_commit_date()|date('d/m/Y à H:i') }}
             </div>
             {% endif %}
             {% if app_commit_message() %}
-            <div class="mt-2">
-                <p class="text-muted mb-0" style="font-size: 0.65rem; line-height: 1.3; max-height: 2.6em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" title="{{ app_commit_message() }}">
-                    {{ app_commit_message() }}
-                </p>
-            </div>
+            <div class="sidebar-version-msg" title="{{ app_commit_message() }}">{{ app_commit_message() }}</div>
             {% endif %}
         </div>
         {% endif %}
-        
-        <div class="d-flex align-items-center mb-2">
-            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-weight: 600; font-size: 0.875rem;">
-                {{ app.user.email|slice(0, 1)|upper }}
-                </div>
-                <div class="flex-grow-1">
-                    <div class="fw-semibold text-truncate small">{{ app.user.email }}</div>
-                    <small class="text-muted">Connecté</small>
-                </div>
+
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar" aria-hidden="true">{{ app.user.email|slice(0, 1)|upper }}</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-email">{{ app.user.email }}</span>
             </div>
-            <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger w-100 mt-2">
-                <i data-lucide="log-out" width="14" height="14" class="me-1"></i>
-                Déconnexion
-            </a>
+            <div class="sidebar-user-actions">
+                <a href="{{ path('app_profile_index') }}"
+                   class="sidebar-icon-btn"
+                   title="Mon profil"
+                   aria-label="Mon profil">
+                    <i data-lucide="settings" width="15" height="15"></i>
+                </a>
+                <a href="{{ path('app_logout') }}"
+                   class="sidebar-icon-btn sidebar-icon-btn--danger"
+                   title="Déconnexion"
+                   aria-label="Se déconnecter">
+                    <i data-lucide="log-out" width="15" height="15"></i>
+                </a>
+            </div>
         </div>
+
     </div>
 </aside>
 
-<style>
-    .admin-sidebar {
-        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-    }
-    /* Items de nav : gap entre eux via CSS pour éviter le cumul de marges */
-    .admin-sidebar .sidebar-nav > ul {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-    /* Labels de section : léger séparateur visuel sans marge excessive */
-    .admin-sidebar .sidebar-section-label {
-        margin-top: 4px;
-    }
-    .admin-sidebar a:hover:not(.btn-outline-danger) {
-        background-color: #f8f9fa !important;
-    }
-    .admin-sidebar a.bg-primary:hover {
-        background-color: #0d6efd !important;
-    }
-    /* Style spécifique pour le bouton de déconnexion - Surcharge Bootstrap */
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2,
-    .admin-sidebar .btn-outline-danger {
-        border: 2px solid #ef4444 !important;
-        color: #ef4444 !important;
-        background: #fff !important;
-        background-color: #fff !important;
-        font-weight: 600 !important;
-    }
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2 *,
-    .admin-sidebar .btn-outline-danger * {
-        color: #ef4444 !important;
-    }
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover,
-    .admin-sidebar .btn-outline-danger:hover {
-        background: #ef4444 !important;
-        background-color: #ef4444 !important;
-        border-color: #dc2626 !important;
-        border: 2px solid #dc2626 !important;
-        color: #ffffff !important;
-    }
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover *,
-    .admin-sidebar .btn-outline-danger:hover *,
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover i,
-    .admin-sidebar .btn-outline-danger:hover i,
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover [data-lucide],
-    .admin-sidebar .btn-outline-danger:hover [data-lucide],
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover svg,
-    .admin-sidebar .btn-outline-danger:hover svg,
-    .admin-sidebar a.btn.btn-sm.btn-outline-danger.w-100.mt-2:hover svg *,
-    .admin-sidebar .btn-outline-danger:hover svg * {
-        color: #ffffff !important;
-        fill: #ffffff !important;
-        stroke: #ffffff !important;
-    }
-    .admin-sidebar .collapse {
-        transition: height 0.3s ease;
-    }
-    .admin-sidebar .chevron-icon {
-        transition: transform 0.3s ease;
-    }
-    .admin-sidebar [aria-expanded="true"] .chevron-icon {
-        transform: rotate(180deg);
-    }
-    @media (max-width: 1200px) {
-        .admin-sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: 1020 !important;
-        }
-        .admin-sidebar.show {
-            transform: translateX(0);
-        }
-    }
-</style>
-
 <script>
-// Fonction pour initialiser la sidebar
 function initSidebar() {
-    // Initialiser Lucide Icons
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
-    
+
     const collapseTriggers = document.querySelectorAll('.sidebar-collapse-trigger');
     collapseTriggers.forEach((trigger) => {
-        if (trigger.dataset.sidebarListenerAttached === 'true') {
-            return;
-        }
-
+        if (trigger.dataset.sidebarListenerAttached === 'true') return;
         trigger.dataset.sidebarListenerAttached = 'true';
 
-        trigger.addEventListener('click', function(event) {
+        trigger.addEventListener('click', function (event) {
             event.preventDefault();
 
             const targetSelector = this.dataset.sidebarTarget;
-            if (!targetSelector) {
-                return;
-            }
+            if (!targetSelector) return;
 
             const target = document.querySelector(targetSelector);
-            if (!target) {
-                return;
-            }
+            if (!target) return;
 
             const isShown = target.classList.contains('show');
             target.classList.toggle('show');
 
-            const chevron = this.querySelector('.chevron-icon');
+            const chevron = this.querySelector('.sidebar-chevron');
             if (chevron) {
                 chevron.style.transform = isShown ? 'rotate(0deg)' : 'rotate(180deg)';
             }
@@ -470,7 +342,6 @@ function initSidebar() {
             const collapsed = document.body.classList.contains('sidebar-collapsed');
             const open = sidebar.classList.contains('show') && !collapsed;
             const desktop = isDesktop();
-
             return { collapsed, open, desktop };
         };
 
@@ -487,22 +358,17 @@ function initSidebar() {
                 button.setAttribute('aria-expanded', open ? 'true' : 'false');
                 button.setAttribute('aria-label', labelText);
 
-                if (labelElement) {
-                    labelElement.textContent = labelText;
-                }
+                if (labelElement) labelElement.textContent = labelText;
 
                 if (iconElement && typeof lucide !== 'undefined') {
                     const iconName = desktop
                         ? (collapsed ? 'panel-right-open' : 'panel-left')
                         : (open ? 'x' : 'menu');
-
                     iconElement.setAttribute('data-lucide', iconName);
                 }
             });
 
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 
         const collapseSidebar = () => {
@@ -522,11 +388,7 @@ function initSidebar() {
         const openSidebar = () => {
             document.body.classList.remove('sidebar-collapsed');
             sidebar.classList.add('show');
-            if (isDesktop()) {
-                hideOverlay();
-            } else {
-                showOverlay();
-            }
+            if (isDesktop()) hideOverlay(); else showOverlay();
             updateToggleVisual();
         };
 
@@ -537,10 +399,7 @@ function initSidebar() {
         };
 
         const bindToggleButton = (button) => {
-            if (!button || button.dataset.listenerAttached === 'true') {
-                return;
-            }
-
+            if (!button || button.dataset.listenerAttached === 'true') return;
             button.dataset.listenerAttached = 'true';
 
             button.addEventListener('click', function (event) {
@@ -550,17 +409,9 @@ function initSidebar() {
                 const { desktop, collapsed, open } = getState();
 
                 if (desktop) {
-                    if (collapsed) {
-                        expandSidebar();
-                    } else {
-                        collapseSidebar();
-                    }
+                    if (collapsed) expandSidebar(); else collapseSidebar();
                 } else {
-                    if (open) {
-                        closeSidebar();
-                    } else {
-                        openSidebar();
-                    }
+                    if (open) closeSidebar(); else openSidebar();
                 }
             });
         };
@@ -569,27 +420,23 @@ function initSidebar() {
 
         if (sidebarOverlay && sidebarOverlay.dataset.listenerAttached !== 'true') {
             sidebarOverlay.dataset.listenerAttached = 'true';
-            sidebarOverlay.addEventListener('click', function () {
-                closeSidebar();
-            });
+            sidebarOverlay.addEventListener('click', () => closeSidebar());
         }
 
         if (!sidebar.dataset.linksListenerAttached) {
             sidebar.dataset.linksListenerAttached = 'true';
             const sidebarLinks = sidebar.querySelectorAll('a[href]:not([href^="#"]):not(.sidebar-collapse-trigger)');
-            sidebarLinks.forEach(function (link) {
-                link.addEventListener('click', function () {
-                    if (!isDesktop()) {
-                        closeSidebar();
-                    }
+            sidebarLinks.forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (!isDesktop()) closeSidebar();
                 });
             });
         }
 
         let resizeTimer;
-        const handleResize = function () {
+        const handleResize = () => {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
+            resizeTimer = setTimeout(() => {
                 if (isDesktop()) {
                     if (document.body.classList.contains('sidebar-collapsed')) {
                         sidebar.classList.remove('show');
@@ -598,9 +445,7 @@ function initSidebar() {
                     }
                     hideOverlay();
                 } else {
-                    if (!sidebar.classList.contains('show')) {
-                        hideOverlay();
-                    }
+                    if (!sidebar.classList.contains('show')) hideOverlay();
                 }
                 updateToggleVisual();
             }, 200);
@@ -628,18 +473,15 @@ function initSidebar() {
     }
 }
 
-// Initialiser au chargement du DOM
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSidebar);
 } else {
     initSidebar();
 }
 
-// Réinitialiser après chaque navigation Turbo
 if (typeof window.Turbo !== 'undefined') {
     document.addEventListener('turbo:load', initSidebar);
     document.addEventListener('turbo:frame-load', initSidebar);
 }
 </script>
 {% endif %}
-
