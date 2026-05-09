@@ -3,6 +3,7 @@
 namespace App\Controller\Tool;
 
 use App\Entity\IshikawaAnalysis;
+use App\Entity\IshikawaShare;
 use App\Entity\User;
 use App\Repository\IshikawaAnalysisRepository;
 use App\Validator\Constraints\ValidToolData;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/ishikawa')]
@@ -117,6 +120,54 @@ final class IshikawaController extends AbstractToolController
                 'updatedAt' => $analysis->getUpdatedAt()?->format('Y-m-d H:i:s'),
             ],
         ], $status);
+    }
+
+    #[Route('/share', name: 'app_api_ishikawa_share', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function share(Request $request, UrlGeneratorInterface $urlGenerator): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['id'])) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Le diagramme à partager est requis.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $analysis = $this->repository->find($data['id']);
+
+        if (!$analysis || $analysis->getUser() !== $user) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Diagramme introuvable ou accès refusé.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $share = new IshikawaShare();
+        $share->setToken(bin2hex(random_bytes(24)));
+        $share->setAnalysis($analysis);
+        $share->setExpiresAt(new \DateTimeImmutable('+1 month'));
+
+        $this->entityManager->persist($share);
+        $this->entityManager->flush();
+
+        $shareUrl = $urlGenerator->generate(
+            'app_ishikawa_share_view',
+            ['token' => $share->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Lien de partage généré.',
+            'data' => [
+                'url' => $shareUrl,
+                'expiresAt' => $share->getExpiresAt()->format('Y-m-d H:i:s'),
+            ],
+        ], Response::HTTP_CREATED);
     }
 
     /**

@@ -1,0 +1,21 @@
+{
+  "name": "outils-qualite-react-build",
+  "private": true,
+  "scripts": {
+    "build": "babel ../IshikawaEditor --out-dir ../../react/controllers --extensions .jsx,.js --copy-files",
+    "watch": "babel ../IshikawaEditor --out-dir ../../react/controllers --extensions .jsx,.js --copy-files --watch"
+  },
+  "dependencies": {
+    "@xyflow/react": "^12.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "zustand": "^5.0.0",
+    "html-to-image": "^1.11.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.23.0"
+  }
+}

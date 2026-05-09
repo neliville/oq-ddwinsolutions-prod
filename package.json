@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build:react": "cd assets/react-src/build && npm install && npm run build",
+    "watch:react": "cd assets/react-src/build && npm install && npm run watch"
+  },
   "dependencies": {
     "@stimulus-components/checkbox-select-all": "^6.1.0",
     "@stimulus-components/dialog": "^1.0.1",

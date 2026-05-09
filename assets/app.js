@@ -1,3 +1,4 @@
+import { registerReactControllerComponents } from '@symfony/ux-react';
 import './bootstrap.js';
 import '@hotwired/turbo';
 import './js/components/newsletter-mautic.js';
@@ -28,3 +29,5 @@ document.addEventListener('turbo:load', initialiseFrontend);
 if (typeof Turbo !== 'undefined') {
   Turbo.session.drive = true;
 }
+
+registerReactControllerComponents();

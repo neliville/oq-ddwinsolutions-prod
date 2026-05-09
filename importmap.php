@@ -81,4 +81,23 @@ return [
     '@stimulus-components/checkbox-select-all' => [
         'version' => '6.1.0',
     ],
+    'react' => [
+        'version' => '18.3.1',
+    ],
+    'react-dom/client' => [
+        'version' => '18.3.1',
+    ],
+    'react-dom' => [
+        'version' => '18.3.1',
+    ],
+    'scheduler' => [
+        'version' => '0.23.2',
+    ],
+    '@symfony/ux-react' => [
+        'path' => './vendor/symfony/ux-react/assets/dist/loader.js',
+    ],
+    '@xyflow/react/dist/style.css' => [
+        'version' => '12.3.0',
+        'type' => 'css',
+    ],
 ];
