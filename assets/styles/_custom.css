@@ -38,7 +38,6 @@ html, body {
   overflow-x: hidden;
 }
 
-
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
@@ -72,8 +71,6 @@ body {
 .bg-gradient-red:focus {
   background-position: 100% 0;   /* effet shift léger au survol */
 }
-
-
 
 .display-1,
 .display-2,
@@ -368,7 +365,6 @@ footer {
   max-width: 600px;
   margin: 0 auto;
 }
-
 
 /* Retire le fond blanc entre navbar et section */
 .header-hero {

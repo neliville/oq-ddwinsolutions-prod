@@ -1,20 +1,22 @@
-{# Composant Bootstrap Modal réutilisable #}
+{# Composant Modal réutilisable (Tailwind + Stimulus bootstrap-modal) #}
 {# Usage:
     {% component BootstrapModal with {id: 'my-modal'} %}
         {% block modal_header %}
             <h5>Mon titre</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="tw-modal-close" data-action="bootstrap-modal#hide" aria-label="Fermer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
         {% endblock %}
         {% block modal_body %}
             Contenu du modal
         {% endblock %}
         {% block modal_footer %}
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <button type="button" class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" data-action="bootstrap-modal#hide">Fermer</button>
         {% endblock %}
     {% endcomponent %}
 #}
 <div {{ attributes.defaults({
-    class: 'modal fade',
+    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
@@ -26,24 +28,21 @@
     {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            {% if block('modal_header') is defined %}
-                <div class="modal-header">
-                    {% block modal_header %}{% endblock %}
-                </div>
-            {% endif %}
-
-            <div class="modal-body">
-                {% block modal_body %}{% endblock %}
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg" role="document">
+        {% if block('modal_header') is defined %}
+            <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+                {% block modal_header %}{% endblock %}
             </div>
+        {% endif %}
 
-            {% if block('modal_footer') is defined %}
-                <div class="modal-footer">
-                    {% block modal_footer %}{% endblock %}
-                </div>
-            {% endif %}
+        <div class="px-6 py-4">
+            {% block modal_body %}{% endblock %}
         </div>
+
+        {% if block('modal_footer') is defined %}
+            <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
+                {% block modal_footer %}{% endblock %}
+            </div>
+        {% endif %}
     </div>
 </div>
-

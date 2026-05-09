@@ -27,8 +27,8 @@
             </p>
         </div>
 
-        <div class="auth-card row g-0">
-            <div class="col-lg-6 order-lg-1">
+        <div class="auth-card">
+            <div class="lg:col-span-6 lg:order-1">
                 <section class="auth-card__panel auth-card__panel--form">
                     <header>
                         <h1 class="auth-card__title">Créer un compte</h1>
@@ -38,18 +38,18 @@
                     </header>
 
                     {% for flash_error in app.flashes('error') %}
-                        <div class="alert auth-alert alert-danger alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
-                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1" aria-hidden="true"></i>
-                            <div>{{ flash_error }}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
+                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
+                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
+                            <div class="grow">{{ flash_error }}</div>
+                            <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
                         </div>
                     {% endfor %}
 
                     {% for flash_success in app.flashes('success') %}
-                        <div class="alert auth-alert alert-success alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
-                            <i data-lucide="check-circle" width="20" height="20" class="mt-1" aria-hidden="true"></i>
-                            <div>{{ flash_success }}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
+                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
+                            <i data-lucide="check-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
+                            <div class="grow">{{ flash_success }}</div>
+                            <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
                         </div>
                     {% endfor %}
 
@@ -82,7 +82,7 @@
                             {{ form_errors(registrationForm.plainPassword.first) }}
                             <div class="auth-terms mt-2">
                                 <strong>Votre mot de passe doit contenir :</strong>
-                                <ul class="mt-2 mb-0 ps-3">
+                                <ul class="mt-2 mb-0 pl-4">
                                     <li>Au moins 8 caractères</li>
                                     <li>Une lettre majuscule et une minuscule</li>
                                     <li>Un chiffre ou un caractère spécial</li>
@@ -120,9 +120,9 @@
                 </section>
             </div>
 
-            <div class="col-lg-6 order-lg-2">
+            <div class="lg:col-span-6 lg:order-2">
                 <section class="auth-card__panel auth-card__panel--info">
-                    <div class="position-relative">
+                    <div class="relative">
                         <h2 class="auth-info__title">Ce que vous débloquez</h2>
                         <p class="auth-info__subtitle">
                             Des outils professionnels prêts à l’emploi, une interface pensée pour les équipes qualité et un suivi continu de vos analyses.
@@ -159,7 +159,7 @@
                             </li>
                         </ul>
 
-                        <div class="auth-highlights mt-4">
+                        <div class="auth-highlights mt-6">
                             <div class="auth-highlight">
                                 <span class="auth-highlight__value">3&nbsp;min</span>
                                 <span class="auth-highlight__label">pour créer votre premier diagramme</span>
@@ -174,8 +174,8 @@
                             </div>
                         </div>
 
-                        <p class="auth-meta mt-4">
-                            <i data-lucide="mail-open" width="16" height="16" class="me-2" aria-hidden="true"></i>Besoin d'aide ? Écrivez-nous à support@outils-qualite.com.
+                        <p class="auth-meta mt-6">
+                            <i data-lucide="mail-open" width="16" height="16" class="mr-2" aria-hidden="true"></i>Besoin d'aide ? Écrivez-nous à support@outils-qualite.com.
                         </p>
                     </div>
                 </section>

@@ -6,12 +6,12 @@
 {% block meta_description %}Téléchargez gratuitement notre modèle prêt à l'emploi pour l'analyse 5M (Ishikawa) : .xlsx et PDF, avec astuces d'analyse.{% endblock %}
 
 {% block body %}
-<section class="py-5 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="telechargement-modele-title">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center" data-aos="fade-up">
-                <h1 id="telechargement-modele-title" class="display-5 fw-bold mb-3">Téléchargez le modèle 5M</h1>
-                <p class="lead mb-0 opacity-75">
+<section class="py-12 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="telechargement-modele-title">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-2xl text-center" data-aos="fade-up">
+                <h1 id="telechargement-modele-title" class="text-4xl font-bold mb-3">Téléchargez le modèle 5M</h1>
+                <p class="text-lg mb-0 opacity-75">
                     .xlsx, PDF et astuces — pour vos analyses Ishikawa (5M).
                 </p>
             </div>
@@ -19,13 +19,13 @@
     </div>
 </section>
 
-<main id="main-content" class="container py-5" role="main">
-    <div class="row justify-content-center px-2">
-        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
+<main id="main-content" class="max-w-7xl mx-auto px-4 py-12" role="main">
+    <div class="flex justify-center px-2">
+        <div class="w-full max-w-lg">
             <div class="download-modele-5m">
-                <div class="card download-modele-5m__card border-0 bg-white">
-                    <div class="card-body p-4 p-md-5">
-                        <h2 class="download-modele-5m__title h4 mb-3">Vos coordonnées</h2>
+                <div class="rounded-lg bg-white download-modele-5m__card">
+                    <div class="p-6 md:p-10">
+                        <h2 class="download-modele-5m__title text-xl mb-3">Vos coordonnées</h2>
                         <p class="download-modele-5m__lead mb-4">
                             On vous envoie le <strong>lien de téléchargement par email</strong> dès que vous cliquez sur Envoyer. Si le message met quelques minutes à arriver, un petit tour dans les <strong>indésirables</strong> suffit souvent.
                         </p>
@@ -59,8 +59,9 @@
                                 </script>
                             </div>
                         {% else %}
-                            <div class="alert alert-warning" role="alert">
-                                Le formulaire de téléchargement n’est pas configuré. Contactez l’administrateur.
+                            <div class="flex items-start gap-3 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3" role="alert">
+                                <i class="fas fa-exclamation-triangle mr-2 shrink-0 mt-0.5"></i>
+                                <div>Le formulaire de téléchargement n’est pas configuré. Contactez l’administrateur.</div>
                             </div>
                         {% endif %}
                     </div>

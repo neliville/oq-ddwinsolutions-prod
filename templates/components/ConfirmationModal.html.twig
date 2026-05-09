@@ -5,12 +5,13 @@
         title: 'Confirmation',
         message: 'Êtes-vous sûr de vouloir recommencer ?',
         confirmText: 'Oui',
-        cancelText: 'Annuler'
+        cancelText: 'Annuler',
+        confirmVariant: 'primary'
     } %}
     {% endcomponent %}
 #}
 <div {{ attributes.defaults({
-    class: 'modal fade',
+    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
@@ -26,34 +27,37 @@
     }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title d-flex align-items-center" id="{{ id ? (id ~ '-title') : 'confirmationModalTitle' }}">
-                    <i data-lucide="alert-circle" width="24" height="24" class="text-info me-2" aria-hidden="true"></i>
-                    {{ title }}
-                </h5>
-                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue"></button>
-            </div>
-            <div class="modal-body">
-                <p data-confirmation-modal-target="message">
-                    {{ message }}
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-action="click->confirmation-modal#onCancelled bootstrap-modal#hide">
-                    {{ cancelText }}
-                </button>
-                <button 
-                    type="button" 
-                    class="btn {{ confirmClass }}" 
-                    data-action="click->confirmation-modal#onConfirmed"
-                    data-confirmation-modal-confirm-callback-value=""
-                >
-                    {{ confirmText }}
-                </button>
-            </div>
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg" role="document">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h5 class="flex items-center font-semibold text-foreground text-base" id="{{ id ? (id ~ '-title') : 'confirmationModalTitle' }}">
+                <i data-lucide="alert-circle" width="24" height="24" class="text-sky-500 mr-2 shrink-0" aria-hidden="true"></i>
+                {{ title }}
+            </h5>
+            <button type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <p data-confirmation-modal-target="message">
+                {{ message }}
+            </p>
+        </div>
+        <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
+            <button type="button"
+                    class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"
+                    data-action="click->confirmation-modal#onCancelled bootstrap-modal#hide">
+                {{ cancelText }}
+            </button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity"
+                data-action="click->confirmation-modal#onConfirmed"
+                data-confirmation-modal-confirm-callback-value=""
+            >
+                {{ confirmText }}
+            </button>
         </div>
     </div>
 </div>
-

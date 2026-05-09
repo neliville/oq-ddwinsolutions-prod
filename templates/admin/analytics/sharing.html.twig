@@ -3,218 +3,190 @@
 {% block title %}Partages Ishikawa | Analytics{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+<div class="w-full">
+    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
         <div>
-            <h1 class="h3 fw-bold mb-1">Partages et collaboration</h1>
-            <p class="text-muted mb-0">Suivi des liens Ishikawa partagés et visites associées</p>
+            <h1 class="text-2xl font-bold mb-1">Partages et collaboration</h1>
+            <p class="text-muted-foreground mb-0">Suivi des liens Ishikawa partagés et visites associées</p>
         </div>
         <div>
-            <div class="btn-group" role="group" aria-label="Période">
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'today'}) }}" class="btn btn-sm {{ period == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">Aujourd'hui</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'week'}) }}" class="btn btn-sm {{ period == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">7 jours</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'month'}) }}" class="btn btn-sm {{ period == 'month' ? 'btn-primary' : 'btn-outline-primary' }}">30 jours</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'year'}) }}" class="btn btn-sm {{ period == 'year' ? 'btn-primary' : 'btn-outline-primary' }}">1 an</a>
+            <div class="flex flex-wrap gap-1" role="group" aria-label="Période">
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'today'}) }}" class="{{ period == 'today' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">Aujourd'hui</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'week'}) }}" class="{{ period == 'week' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">7 jours</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'month'}) }}" class="{{ period == 'month' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">30 jours</a>
+                <a href="{{ path('app_admin_analytics_sharing', {period: 'year'}) }}" class="{{ period == 'year' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">1 an</a>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Liens partagés (total)</h6>
-                    <h3 class="fw-bold mb-1">{{ shareTotals.totalShares|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">Depuis le lancement</small>
-                </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Liens partagés (total)</h6>
+                <h3 class="font-bold mb-1">{{ shareTotals.totalShares|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">Depuis le lancement</small>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Liens actifs</h6>
-                    <h3 class="fw-bold mb-1">{{ shareTotals.activeShares|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">Liens non expirés</small>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Liens actifs</h6>
+                <h3 class="font-bold mb-1">{{ shareTotals.activeShares|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">Liens non expirés</small>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Partages (période)</h6>
-                    <h3 class="fw-bold mb-1">{{ shareTotals.sharesThisPeriod|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Partages (période)</h6>
+                <h3 class="font-bold mb-1">{{ shareTotals.sharesThisPeriod|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Visites via partage</h6>
-                    <h3 class="fw-bold mb-1">{{ shareTotals.shareVisitsThisPeriod|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">Cumul : {{ shareTotals.totalShareVisits|number_format(0, ',', ' ') }}</small>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Visites via partage</h6>
+                <h3 class="font-bold mb-1">{{ shareTotals.shareVisitsThisPeriod|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">Cumul : {{ shareTotals.totalShareVisits|number_format(0, ',', ' ') }}</small>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Créations de liens</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="shareCreationChart" height="220" aria-label="Évolution des partages"></canvas>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Créations de liens</h5>
+            </div>
+            <div class="p-6">
+                <canvas id="shareCreationChart" height="220" aria-label="Évolution des partages"></canvas>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Visites issues des partages</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="shareVisitChart" height="220" aria-label="Évolution des visites provenant des partages"></canvas>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Visites issues des partages</h5>
+            </div>
+            <div class="p-6">
+                <canvas id="shareVisitChart" height="220" aria-label="Évolution des visites provenant des partages"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-xl-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Top contributeurs</h5>
-                    <small class="text-muted">Top 5</small>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Utilisateur</th>
-                                    <th class="text-end">Partages</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for sharer in topSharers %}
-                                <tr>
-                                    <td>{{ sharer.email }}</td>
-                                    <td class="text-end fw-semibold">{{ sharer.shareCount|number_format(0, ',', ' ') }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="2" class="text-center text-muted py-4">Aucun partage enregistré</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
+                <h5 class="mb-0">Top contributeurs</h5>
+                <small class="text-muted-foreground">Top 5</small>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium">Utilisateur</th>
+                            <th class="px-4 py-3 text-right font-medium">Partages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sharer in topSharers %}
+                        <tr>
+                            <td class="px-4 py-3">{{ sharer.email }}</td>
+                            <td class="px-4 py-3 text-right font-semibold">{{ sharer.shareCount|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucun partage enregistré</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-xl-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Analyses les plus consultées</h5>
-                    <small class="text-muted">Via des liens partagés</small>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Analyse</th>
-                                    <th class="text-end">Visites</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for analysis in topSharedAnalyses %}
-                                <tr>
-                                    <td>{{ analysis.title }}</td>
-                                    <td class="text-end fw-semibold">{{ analysis.visitCount|number_format(0, ',', ' ') }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="2" class="text-center text-muted py-4">Aucune donnée</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
+                <h5 class="mb-0">Analyses les plus consultées</h5>
+                <small class="text-muted-foreground">Via des liens partagés</small>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
+                            <th class="px-4 py-3 text-right font-medium">Visites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for analysis in topSharedAnalyses %}
+                        <tr>
+                            <td class="px-4 py-3">{{ analysis.title }}</td>
+                            <td class="px-4 py-3 text-right font-semibold">{{ analysis.visitCount|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucune donnée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mt-4">
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Partages récents</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Analyse</th>
-                                    <th>Créé par</th>
-                                    <th>Créé le</th>
-                                    <th>Expire le</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for share in recentShares %}
-                                <tr>
-                                    <td>{{ share.title }}</td>
-                                    <td>{{ share.owner }}</td>
-                                    <td>{{ share.createdAt|date('d/m/Y H:i') }}</td>
-                                    <td>{{ share.expiresAt|date('d/m/Y H:i') }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">Aucun partage récent</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Partages récents</h5>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
+                            <th class="px-4 py-3 text-left font-medium">Créé par</th>
+                            <th class="px-4 py-3 text-left font-medium">Créé le</th>
+                            <th class="px-4 py-3 text-left font-medium">Expire le</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for share in recentShares %}
+                        <tr>
+                            <td class="px-4 py-3">{{ share.title }}</td>
+                            <td class="px-4 py-3">{{ share.owner }}</td>
+                            <td class="px-4 py-3">{{ share.createdAt|date('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3">{{ share.expiresAt|date('d/m/Y H:i') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="px-4 py-4 text-center text-muted-foreground">Aucun partage récent</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Visites récentes</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Analyse</th>
-                                    <th>Token</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for visit in recentShareVisits %}
-                                <tr>
-                                    <td>{{ visit.title }}</td>
-                                    <td><code>{{ visit.token }}</code></td>
-                                    <td>{{ visit.visitedAt|date('d/m/Y H:i') }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">Aucune visite récente</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Visites récentes</h5>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
+                            <th class="px-4 py-3 text-left font-medium">Token</th>
+                            <th class="px-4 py-3 text-left font-medium">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visit in recentShareVisits %}
+                        <tr>
+                            <td class="px-4 py-3">{{ visit.title }}</td>
+                            <td class="px-4 py-3"><code>{{ visit.token }}</code></td>
+                            <td class="px-4 py-3">{{ visit.visitedAt|date('d/m/Y H:i') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="px-4 py-4 text-center text-muted-foreground">Aucune visite récente</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

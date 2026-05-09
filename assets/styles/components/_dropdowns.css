@@ -1,12 +1,27 @@
+.dropdown {
+  position: relative;
+}
+
 .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: auto;
+  z-index: 1050;
+  min-width: 10rem;
   border-radius: var(--border-radius);
   border: 1px solid rgba(15, 23, 42, 0.08);
   box-shadow: var(--shadow-md);
+  background: var(--bg-primary, #fff);
 }
 
 .dropdown-item {
   font-weight: 500;
   color: var(--dark);
+  display: block;
+  padding: 0.375rem 1rem;
+  text-decoration: none;
+  white-space: nowrap;
   transition: background var(--transition-fast), color var(--transition-fast);
 
   &:hover,
@@ -14,6 +29,13 @@
     background: rgba(79, 70, 229, 0.1);
     color: var(--primary);
   }
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  margin: 0.25rem 0;
+  height: 0;
 }
 
 .export-dropdown {

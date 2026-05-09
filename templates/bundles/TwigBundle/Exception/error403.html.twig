@@ -33,16 +33,16 @@
             </p>
             <div class="error-page__actions">
                 {% if app.user %}
-                    <a href="{{ path('app_dashboard_index') }}" class="btn btn-primary">
-                        <i class="fas fa-columns me-2"></i> Retourner au tableau de bord
+                    <a href="{{ path('app_dashboard_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                        <i class="fas fa-columns"></i> Retourner au tableau de bord
                     </a>
                 {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-primary">
-                        <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                    <a href="{{ path('app_login') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
                     </a>
                 {% endif %}
-                <a href="{{ path('app_home_index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-home me-2"></i> Accueil
+                <a href="{{ path('app_home_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline">
+                    <i class="fas fa-home"></i> Accueil
                 </a>
             </div>
         </section>

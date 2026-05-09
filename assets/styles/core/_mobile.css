@@ -1,14 +1,11 @@
-// Amélioration de la compatibilité mobile
-// Conformité aux recommandations Google pour mobile-friendly
 
-// Tailles de police minimales pour mobile (minimum 16px pour éviter le zoom automatique)
+
 @media (max-width: 768px) {
   body {
-    font-size: 16px; // Évite le zoom automatique sur iOS
+    font-size: 16px;
     line-height: 1.6;
   }
 
-  // Augmenter la taille des polices pour une meilleure lisibilité
   h1 {
     font-size: clamp(1.75rem, 5vw, 2.5rem);
   }
@@ -29,17 +26,15 @@
     font-size: clamp(1rem, 2.5vw, 1.125rem);
   }
 
-  // Cibles tactiles minimales (44x44px recommandé par Google)
   a, button, input[type="button"], input[type="submit"], 
   .btn, [role="button"] {
     min-height: 44px;
     min-width: 44px;
     padding: 0.75rem 1.25rem;
     font-size: 1rem;
-    touch-action: manipulation; // Améliore la réactivité tactile
+    touch-action: manipulation;
   }
 
-  // Espacement entre les éléments interactifs
   .btn + .btn,
   a + a,
   button + button {
@@ -47,7 +42,6 @@
     margin-left: 0;
   }
 
-  // Améliorer l'espacement des liens dans les listes
   ul li a,
   ol li a {
     padding: 0.5rem 0;
@@ -56,7 +50,6 @@
     line-height: 1.5;
   }
 
-  // Formulaires
   input[type="text"],
   input[type="email"],
   input[type="password"],
@@ -64,18 +57,16 @@
   input[type="number"],
   textarea,
   select {
-    font-size: 16px; // Évite le zoom automatique sur iOS
+    font-size: 16px;
     min-height: 44px;
     padding: 0.75rem;
   }
 
-  // Améliorer l'espacement des cartes et conteneurs
   .card,
   .card-body {
     padding: 1rem;
   }
 
-  // Navigation mobile
   .navbar-nav .nav-link {
     min-height: 44px;
     padding: 0.75rem 1rem;
@@ -83,14 +74,12 @@
     align-items: center;
   }
 
-  // Footer - améliorer l'espacement
   footer a {
     min-height: 44px;
     padding: 0.5rem 0;
     display: inline-block;
   }
 
-  // Icônes sociales - taille minimale
   .btn-sm.rounded-circle {
     min-width: 44px;
     min-height: 44px;
@@ -102,31 +91,26 @@
   }
 }
 
-// Optimisations pour très petits écrans
 @media (max-width: 480px) {
   body {
     font-size: 16px;
   }
 
-  // Augmenter encore plus les cibles tactiles sur très petits écrans
   .btn {
     min-height: 48px;
     padding: 0.875rem 1.5rem;
   }
 
-  // Espacement supplémentaire entre les sections
   section {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
 }
 
-// Amélioration de la performance tactile
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
 }
 
-// Désactiver les animations sur mobile si l'utilisateur préfère réduire les animations
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

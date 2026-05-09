@@ -12,20 +12,30 @@
         {% set alertClass = label == 'error' ? 'danger' : label %}
         {% set iconName = label == 'success' ? 'check-circle' : (label == 'error' or label == 'danger' ? 'alert-circle' : (label == 'warning' ? 'alert-triangle' : 'info')) %}
 
-        <div class="alert alert-{{ alertClass }} alert-dismissible fade show"
+        {% set colorClasses = {
+            'success': 'bg-green-50 border-green-200 text-green-800',
+            'danger':  'bg-red-50 border-red-200 text-red-800',
+            'warning': 'bg-amber-50 border-amber-200 text-amber-800',
+            'info':    'bg-sky-50 border-sky-200 text-sky-800'
+        } %}
+        {% set classes = colorClasses[alertClass] ?? colorClasses['info'] %}
+
+        <div class="flex items-start gap-3 rounded-lg border px-4 py-3 mb-3 {{ classes }}"
              role="alert"
              aria-live="polite"
              aria-atomic="true">
             <i data-lucide="{{ iconName }}"
                width="20"
                height="20"
-               class="me-2"
+               class="shrink-0 mt-0.5"
                aria-hidden="true"></i>
-            {{ message }}
+            <span class="flex-1 text-sm">{{ message }}</span>
             <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Fermer le message"></button>
+                    class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity"
+                    onclick="this.closest('[role=alert]').remove()"
+                    aria-label="Fermer le message">
+                <i data-lucide="x" width="16" height="16"></i>
+            </button>
         </div>
     {% endfor %}
 {% endfor %}

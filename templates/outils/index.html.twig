@@ -39,10 +39,10 @@
 
     <section class="tools-section" id="catalogue">
         <div class="container">
-            <nav class="tools-category-nav d-flex flex-wrap gap-2 mb-4" aria-label="Filtrer les outils par catégorie">
-                <button type="button" class="btn btn-outline-primary btn-sm tools-filter-btn active" data-tools-filter="all">Tous</button>
+            <nav class="tools-category-nav flex flex-wrap gap-2 mb-6" aria-label="Filtrer les outils par catégorie">
+                <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors tools-filter-btn active" data-tools-filter="all">Tous</button>
                 {% for slug, label in tools_meta_by_category() %}
-                <button type="button" class="btn btn-outline-secondary btn-sm tools-filter-btn" data-tools-filter="{{ slug }}">{{ label }}</button>
+                <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors tools-filter-btn" data-tools-filter="{{ slug }}">{{ label }}</button>
                 {% endfor %}
             </nav>
             <div class="tools-showcase">
@@ -74,7 +74,7 @@
                                 <span>Sauvegarde automatique et historique complet de vos analyses.</span>
                             </li>
                         </ul>
-                        <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                        <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Créer un diagramme
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                                 <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -135,7 +135,7 @@
                             <span class="badge">Export PDF</span>
                             <span class="badge">Guide intégré</span>
                         </div>
-                        <a href="{{ path('app_fivewhy_index') }}" class="btn btn-primary">
+                        <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Utiliser l'outil
                         </a>
                     </div>
@@ -156,7 +156,7 @@
                             <span class="badge">Rapport généré</span>
                             <span class="badge">Sauvegarde sécurisée</span>
                         </div>
-                        <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-secondary">
+                        <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Utiliser l'outil
                         </a>
                     </div>
@@ -176,7 +176,7 @@
                             <span class="badge">Rapport intelligent</span>
                             <span class="badge">Sauvegarde sécurisée</span>
                         </div>
-                        <a href="{{ path('app_amdec_index') }}" class="btn btn-danger">
+                        <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Utiliser l'outil
                         </a>
                     </div>
@@ -197,7 +197,7 @@
                             <span class="badge">Suivi progression</span>
                             <span class="badge">Exports PDF & JSON</span>
                         </div>
-                        <a href="{{ path('app_eightd_index') }}" class="btn btn-warning">
+                        <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center justify-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Utiliser l'outil
                         </a>
                     </div>
@@ -218,7 +218,7 @@
                             <span class="badge">Graphique interactif</span>
                             <span class="badge">Export PDF & JSON</span>
                         </div>
-                        <a href="{{ path('app_pareto_index') }}" class="btn btn-info">
+                        <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center justify-center gap-2 bg-sky-500 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                             Utiliser l'outil
                         </a>
                     </div>
@@ -237,7 +237,7 @@
                         <div class="tool-card__tags">
                             <span class="badge">Bientôt disponible</span>
                         </div>
-                        <button class="btn btn-secondary" disabled>À venir</button>
+                        <button class="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium opacity-50 cursor-not-allowed" disabled>À venir</button>
                     </div>
 
                     <div class="tool-card coming-soon" data-tools-category="autres">
@@ -253,7 +253,7 @@
                         <div class="tool-card__tags">
                             <span class="badge">Bientôt disponible</span>
                         </div>
-                        <button class="btn btn-secondary" disabled>À venir</button>
+                        <button class="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium opacity-50 cursor-not-allowed" disabled>À venir</button>
                     </div>
 
                     <div class="tool-card coming-soon" data-tools-category="autres">
@@ -270,7 +270,7 @@
                         <div class="tool-card__tags">
                             <span class="badge">Bientôt disponible</span>
                         </div>
-                        <button class="btn btn-secondary" disabled>À venir</button>
+                        <button class="inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium opacity-50 cursor-not-allowed" disabled>À venir</button>
                     </div>
                 </div>
             </div>

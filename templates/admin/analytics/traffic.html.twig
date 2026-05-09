@@ -3,191 +3,177 @@
 {% block title %}Trafic & audiences | Analytics{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+<div class="w-full">
+    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
         <div>
-            <h1 class="h3 fw-bold mb-1">Trafic et audiences</h1>
-            <p class="text-muted mb-0">Analyse du trafic sur la période sélectionnée</p>
+            <h1 class="text-2xl font-bold mb-1">Trafic et audiences</h1>
+            <p class="text-muted-foreground mb-0">Analyse du trafic sur la période sélectionnée</p>
         </div>
         <div>
-            <div class="btn-group" role="group" aria-label="Période">
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'today'}) }}" class="btn btn-sm {{ period == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">Aujourd'hui</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'week'}) }}" class="btn btn-sm {{ period == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">7 jours</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'month'}) }}" class="btn btn-sm {{ period == 'month' ? 'btn-primary' : 'btn-outline-primary' }}">30 jours</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'year'}) }}" class="btn btn-sm {{ period == 'year' ? 'btn-primary' : 'btn-outline-primary' }}">1 an</a>
+            <div class="flex flex-wrap gap-1" role="group" aria-label="Période">
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'today'}) }}" class="{{ period == 'today' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">Aujourd'hui</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'week'}) }}" class="{{ period == 'week' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">7 jours</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'month'}) }}" class="{{ period == 'month' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">30 jours</a>
+                <a href="{{ path('app_admin_analytics_traffic', {period: 'year'}) }}" class="{{ period == 'year' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">1 an</a>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Visites totales</h6>
-                            <h3 class="fw-bold mb-1">{{ totalVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
-                        </div>
-                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="activity" width="24" height="24" class="text-primary"></i>
-                        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Visites totales</h6>
+                        <h3 class="font-bold mb-1">{{ totalVisits|number_format(0, ',', ' ') }}</h3>
+                        <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+                    </div>
+                    <div class="bg-primary/10 rounded-full p-3">
+                        <i data-lucide="activity" width="24" height="24" class="text-primary"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Aujourd'hui</h6>
-                            <h3 class="fw-bold mb-1">{{ todayVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">Hier : {{ yesterdayVisits|number_format(0, ',', ' ') }}</small>
-                        </div>
-                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="trending-up" width="24" height="24" class="text-success"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Aujourd'hui</h6>
+                        <h3 class="font-bold mb-1">{{ todayVisits|number_format(0, ',', ' ') }}</h3>
+                        <small class="text-muted-foreground">Hier : {{ yesterdayVisits|number_format(0, ',', ' ') }}</small>
+                    </div>
+                    <div class="bg-green-100 rounded-full p-3">
+                        <i data-lucide="trending-up" width="24" height="24" class="text-green-600"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Utilisateurs connectés</h6>
-                            <h3 class="fw-bold mb-1">{{ authenticatedVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">Semaine préc. : {{ authenticatedLastWeek|number_format(0, ',', ' ') }}</small>
-                        </div>
-                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="users" width="24" height="24" class="text-info"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Utilisateurs connectés</h6>
+                        <h3 class="font-bold mb-1">{{ authenticatedVisits|number_format(0, ',', ' ') }}</h3>
+                        <small class="text-muted-foreground">Semaine préc. : {{ authenticatedLastWeek|number_format(0, ',', ' ') }}</small>
+                    </div>
+                    <div class="bg-sky-100 rounded-full p-3">
+                        <i data-lucide="users" width="24" height="24" class="text-sky-600"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Visiteurs anonymes</h6>
-                            <h3 class="fw-bold mb-1">{{ anonymousVisits|number_format(0, ',', ' ') }}</h3>
-                            <small class="text-muted">Mois préc. : {{ anonymousLastMonth|number_format(0, ',', ' ') }}</small>
-                        </div>
-                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="user" width="24" height="24" class="text-warning"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Visiteurs anonymes</h6>
+                        <h3 class="font-bold mb-1">{{ anonymousVisits|number_format(0, ',', ' ') }}</h3>
+                        <small class="text-muted-foreground">Mois préc. : {{ anonymousLastMonth|number_format(0, ',', ' ') }}</small>
+                    </div>
+                    <div class="bg-amber-100 rounded-full p-3">
+                        <i data-lucide="user" width="24" height="24" class="text-amber-600"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+        <div class="lg:col-span-7 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm h-full">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h5 class="mb-0">Visites quotidiennes</h5>
-                    <small class="text-muted">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+                    <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <canvas id="trafficDailyChart" height="220" aria-label="Courbe des visites quotidiennes" role="img"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
+        <div class="lg:col-span-5 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm h-full">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h5 class="mb-0">Visites mensuelles</h5>
-                    <small class="text-muted">12 derniers mois</small>
+                    <small class="text-muted-foreground">12 derniers mois</small>
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <canvas id="trafficMonthlyChart" height="220" aria-label="Histogramme des visites mensuelles" role="img"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Pages les plus visitées</h5>
-                    <small class="text-muted">Top 5</small>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Page</th>
-                                    <th class="text-end">Visites</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for page in mostVisitedPages %}
-                                <tr>
-                                    <td class="text-truncate" style="max-width: 320px;">
-                                        <code>{{ page.url }}</code>
-                                    </td>
-                                    <td class="text-end fw-semibold">{{ page.visitCount|number_format(0, ',', ' ') }}</td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="2" class="text-center text-muted py-4">Aucune donnée disponible</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
+                <h5 class="mb-0">Pages les plus visitées</h5>
+                <small class="text-muted-foreground">Top 5</small>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium">Page</th>
+                            <th class="px-4 py-3 text-right font-medium">Visites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page in mostVisitedPages %}
+                        <tr>
+                            <td class="px-4 py-3 truncate" style="max-width: 320px;">
+                                <code>{{ page.url }}</code>
+                            </td>
+                            <td class="px-4 py-3 text-right font-semibold">{{ page.visitCount|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucune donnée disponible</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Répartition par pays</h5>
-                    <small class="text-muted">Top 5</small>
-                </div>
-                <div class="card-body">
-                    <canvas id="trafficCountryChart" height="220" role="img" aria-label="Répartition par pays"></canvas>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
+                <h5 class="mb-0">Répartition par pays</h5>
+                <small class="text-muted-foreground">Top 5</small>
+            </div>
+            <div class="p-6">
+                <canvas id="trafficCountryChart" height="220" role="img" aria-label="Répartition par pays"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm h-full">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h5 class="mb-0">Type d'appareils</h5>
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <canvas id="trafficDeviceChart" height="220" role="img" aria-label="Répartition des appareils"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
+        <div class="lg:col-span-7 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm h-full">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h5 class="mb-0">Synthèse rapide</h5>
                 </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <span class="text-muted">Période analysée</span>
+                <div class="p-6">
+                    <ul class="list-none mb-0 p-0">
+                        <li class="flex justify-between items-center py-2 border-b border-border">
+                            <span class="text-muted-foreground">Période analysée</span>
                             <strong>{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</strong>
                         </li>
-                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <span class="text-muted">Part des visiteurs connectés</span>
+                        <li class="flex justify-between items-center py-2 border-b border-border">
+                            <span class="text-muted-foreground">Part des visiteurs connectés</span>
                             {% set totalAudience = authenticatedVisits + anonymousVisits %}
                             <strong>{{ totalAudience > 0 ? ((authenticatedVisits / totalAudience) * 100)|round(1) : 0 }}%</strong>
                         </li>
-                        <li class="d-flex justify-content-between align-items-center py-2">
-                            <span class="text-muted">Visites moyennes / jour</span>
+                        <li class="flex justify-between items-center py-2">
+                            <span class="text-muted-foreground">Visites moyennes / jour</span>
                             {% set dayCount = visitsDailyChart.data|length > 0 ? visitsDailyChart.data|length : 1 %}
                             {% set sumVisits = visitsDailyChart.data|reduce((carry, item) => carry + item, 0) %}
                             <strong>{{ (sumVisits / dayCount)|round(1) }}</strong>

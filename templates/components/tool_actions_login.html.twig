@@ -1,7 +1,7 @@
 {# Bloc uniforme "Connectez-vous pour télécharger" sur toutes les pages de création (sans connexion) #}
-<div class="tool-actions-login d-flex flex-wrap align-items-center gap-2">
-    <span class="text-muted small">Connectez-vous pour télécharger vos créations.</span>
-    <a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-primary">
-        <i class="fas fa-sign-in-alt me-1" aria-hidden="true"></i>Se connecter
+<div class="tool-actions-login flex flex-wrap items-center gap-2">
+    <span class="text-muted-foreground text-sm">Connectez-vous pour télécharger vos créations.</span>
+    <a href="{{ path('app_login') }}" class="inline-flex items-center gap-1 border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">
+        <i class="fas fa-sign-in-alt mr-1" aria-hidden="true"></i>Se connecter
     </a>
 </div>

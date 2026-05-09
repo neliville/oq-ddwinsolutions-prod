@@ -1,12 +1,16 @@
 {# Fil d'Ariane pour les pages d'outils. Variables : tool_name (string), optionnel : tool_route #}
-<nav aria-label="Fil d'Ariane" class="mb-3 mb-md-4">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item">
-            <a href="{{ path('app_home_index') }}" class="text-decoration-none">Accueil</a>
+<nav aria-label="Fil d'Ariane" class="mb-3 md:mb-4">
+    <ol class="flex flex-wrap items-center gap-1 text-sm text-muted-foreground list-none p-0 m-0">
+        <li class="flex items-center gap-1">
+            <a href="{{ path('app_home_index') }}" class="hover:text-foreground transition-colors no-underline">Accueil</a>
         </li>
-        <li class="breadcrumb-item">
-            <a href="{{ path('app_outils_index') }}" class="text-decoration-none">Outils</a>
+        <li class="flex items-center gap-1">
+            <i data-lucide="chevron-right" width="14" height="14" class="shrink-0" aria-hidden="true"></i>
+            <a href="{{ path('app_outils_index') }}" class="hover:text-foreground transition-colors no-underline">Outils</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">{{ tool_name|default('Outil') }}</li>
+        <li class="flex items-center gap-1 text-foreground font-medium" aria-current="page">
+            <i data-lucide="chevron-right" width="14" height="14" class="shrink-0" aria-hidden="true"></i>
+            {{ tool_name|default('Outil') }}
+        </li>
     </ol>
 </nav>

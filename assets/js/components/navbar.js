@@ -1,42 +1,19 @@
-import { Collapse, Dropdown } from '../bootstrap.js';
-
 const initNavbar = () => {
-  const toggler = document.querySelector('.navbar-toggler[data-bs-toggle="collapse"]');
-  const targetSelector = toggler ? toggler.getAttribute('data-bs-target') || toggler.dataset.bsTarget : null;
-  const collapseElement = targetSelector ? document.querySelector(targetSelector) : null;
+    const toggler = document.querySelector('[data-navbar-toggler]');
+    const collapse = document.querySelector('[data-navbar-collapse]');
 
-  if (!toggler || !collapseElement) {
-    return;
-  }
+    if (!toggler || !collapse) return;
+    if (toggler.dataset.listenerAttached) return;
 
-  const collapseInstance = Collapse.getOrCreateInstance(collapseElement, { toggle: false });
-  const syncAria = () => {
-    toggler.setAttribute('aria-expanded', collapseElement.classList.contains('show') ? 'true' : 'false');
-  };
-
-  if (!toggler.dataset.listenerAttached) {
     toggler.dataset.listenerAttached = 'true';
 
-    toggler.addEventListener('click', (event) => {
-      event.preventDefault();
-      collapseInstance.toggle();
-    });
+    const open  = () => { collapse.classList.add('show');    toggler.setAttribute('aria-expanded', 'true');  };
+    const close = () => { collapse.classList.remove('show'); toggler.setAttribute('aria-expanded', 'false'); };
+    const toggle = () => collapse.classList.contains('show') ? close() : open();
 
-    collapseElement.addEventListener('shown.bs.collapse', syncAria);
-    collapseElement.addEventListener('hidden.bs.collapse', syncAria);
+    toggler.addEventListener('click', (e) => { e.preventDefault(); toggle(); });
 
-    collapseElement.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => collapseInstance.hide());
-    });
-  }
-
-  document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((toggle) => {
-    Dropdown.getOrCreateInstance(toggle);
-  });
+    collapse.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
 };
 
-export const registerNavbar = () => {
-  initNavbar();
-};
-
-
+export const registerNavbar = () => initNavbar();

@@ -30,16 +30,16 @@
             <p class="error-page__message">
                 Désolé, une erreur inattendue s’est produite ({{ status_text|default('Erreur') }}).
                 {% if exception is defined and exception.message is not empty %}
-                    <br><small class="text-muted">Détail : {{ exception.message }}</small>
+                    <br><small class="text-muted-foreground">Détail : {{ exception.message }}</small>
                 {% endif %}
                 Notre équipe a été notifiée. Vous pouvez réessayer ou revenir à la page d’accueil.
             </p>
             <div class="error-page__actions">
-                <a href="{{ path('app_home_index') }}" class="btn btn-primary">
-                    <i class="fas fa-home me-2"></i>Retour à l’accueil
+                <a href="{{ path(‘app_home_index’) }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                    <i class="fas fa-home"></i>Retour à l’accueil
                 </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="window.history.back();">
-                    <i class="fas fa-arrow-left me-2"></i>Page précédente
+                <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>Page précédente
                 </button>
             </div>
         </section>

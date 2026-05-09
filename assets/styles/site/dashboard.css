@@ -1,7 +1,5 @@
-@use '../core/variables';
 
-// Footer global : aligné sur la colonne principale (sidebar fixe 280px), pas en dessous.
-// Même logique que .main-content dans base_with_sidebar (desktop / sidebar repliée / mobile).
+
 @media (min-width: 1201px) {
   body.layout-dashboard > footer {
     margin-left: 280px;
@@ -20,11 +18,8 @@
 }
 
 .dashboard-page {
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
-
   h1, h5, h6 { color: var(--text-primary); }
 
-  // ── Cards ────────────────────────────────────────────────────────────────
   .card {
     border: 1px solid rgba(15, 23, 42, 0.07) !important;
     border-radius: var(--radius-xl);
@@ -41,7 +36,6 @@
     }
   }
 
-  // Cartes d'outils (hover plus subtil car beaucoup d'éléments)
   .dashboard-tool-card {
     &:hover {
       transform: translateY(-2px);
@@ -51,7 +45,6 @@
 
   .card.border { border-style: solid !important; }
 
-  // ── Stats ─────────────────────────────────────────────────────────────────
   .stat-icon {
     display: inline-flex;
     align-items: center;
@@ -61,15 +54,13 @@
     flex-shrink: 0;
   }
 
-  // ── Listes ────────────────────────────────────────────────────────────────
   .list-group-item {
     border-radius: var(--radius-lg);
     border: 1px solid rgba(148, 163, 184, 0.15);
     box-shadow: var(--shadow-xs);
     background: rgba(248, 250, 252, 0.7);
-    overflow: hidden; // évite le débordement des titres longs
+    overflow: hidden;
 
-    // Contrainte flex : le texte ne pousse pas le bouton hors du conteneur
     .d-flex > .flex-grow-1 {
       min-width: 0;
 
@@ -80,14 +71,12 @@
       }
     }
 
-    // Bouton "Charger" : taille fixe pour rester aligné
     .btn.flex-shrink-0 {
       white-space: nowrap;
       flex-shrink: 0;
     }
   }
 
-  // ── Boutons outils ────────────────────────────────────────────────────────
   .dashboard-tool-link {
     white-space: nowrap;
     border-radius: var(--radius-md);
@@ -102,7 +91,6 @@
     }
   }
 
-  // ── Ressources QSE (colonne droite) ───────────────────────────────────────
   .dashboard-resources-card .card-body { padding-bottom: var(--space-4); }
 
   .dashboard-resource-link {
@@ -117,14 +105,12 @@
     }
   }
 
-  // ── Responsive ────────────────────────────────────────────────────────────
   @media (max-width: 992px) {
     .card { border-radius: var(--radius-lg); }
     .card .card-body { padding: var(--space-4); }
   }
 }
 
-// ── Guest sticky banner (component guest_sticky_banner.html.twig) ────────────
 .guest-sticky-banner {
   position: fixed;
   bottom: 0;
@@ -150,7 +136,6 @@
   }
 }
 
-// ── Tool page header (component tool_page_header.html.twig) ─────────────────
 .tool-page-header {
   .tool-header-icon {
     display: inline-flex;

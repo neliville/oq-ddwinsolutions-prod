@@ -6,7 +6,7 @@
     {% set decoding_attr = decoding|default('async') %}
     {% set width_attr = width|default(null) %}
     {% set height_attr = height|default(null) %}
-    {% set img_class = class|default('img-fluid rounded-3 shadow-lg') %}
+    {% set img_class = class|default('max-w-full h-auto rounded-xl shadow-lg') %}
     {% set alt_attr = alt|default('Illustration') %}
     {% if is_absolute %}
         <img src="{{ normalized_path }}"

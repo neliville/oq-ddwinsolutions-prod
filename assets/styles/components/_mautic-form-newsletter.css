@@ -33,7 +33,6 @@
     position: relative;
   }
 
-  // Placeholder léger avant injection du formulaire par generate.js
   &:not(:has(.mauticform_wrapper)) .newsletter-mautic-embed__viewport::before {
     content: "";
     display: block;
@@ -93,7 +92,6 @@
     transition: opacity 0.25s ease;
   }
 
-  // Bouton d’envoi : Mautic/Bootstrap peuvent imposer une couleur de texte sombre (.btn, thème) → forcer le contraste
   a.mauticform-button,
   .mauticform-button,
   .mauticform-button.btn,
@@ -175,7 +173,6 @@
   }
 }
 
-// Grille type accueil : email + bouton côte à côte si Mautic génère 2 colonnes
 .newsletter-card .newsletter-mautic-embed:not(.newsletter-mautic-embed--compact) {
   .mauticform-innerform {
     display: grid;

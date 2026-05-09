@@ -1,17 +1,17 @@
-<nav class="navbar navbar-expand-lg main-navbar fixed-top" id="mainNav">
+<nav class="main-navbar fixed top-0 left-0 right-0" id="mainNav">
     <div class="container">
 
         {# ── Brand ────────────────────────────────────────────────────────── #}
-        <a class="navbar-brand main-navbar__brand d-flex align-items-center text-decoration-none flex-shrink-0"
+        <a class="main-navbar__brand flex items-center no-underline shrink-0"
            href="{{ path('app_home_index') }}">
             <img src="{{ asset('img/logo.webp') }}" alt="OUTILS-QUALITÉ" width="40" height="40"
-                 class="me-2 flex-shrink-0" loading="eager" fetchpriority="high">
-            <span class="fw-bold main-navbar__brand-text">OUTILS-QUALITÉ</span>
+                 class="mr-2 shrink-0" loading="eager" fetchpriority="high">
+            <span class="font-bold main-navbar__brand-text">OUTILS-QUALITÉ</span>
         </a>
 
         {# ── Mobile : sidebar toggle entre le brand et le hamburger ──────── #}
         {% if app.user %}
-        <div class="d-flex d-lg-none align-items-center gap-1 ms-auto me-2">
+        <div class="flex lg:hidden items-center gap-1 ml-auto mr-2">
             {% if show_sidebar_toggle %}
                 <button class="navbar-icon-btn" type="button" id="sidebarToggleMobile"
                         aria-label="Afficher la navigation" aria-expanded="true">
@@ -27,15 +27,15 @@
         {% endif %}
 
         {# ── Hamburger (mobile) ──────────────────────────────────────────── #}
-        <button class="navbar-toggler ms-1" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Afficher le menu">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler ml-1" type="button"
+                data-navbar-toggler
+                aria-expanded="false" aria-label="Afficher le menu">
+            <i data-lucide="menu" width="20" height="20"></i>
         </button>
 
         {# ── Collapse : liens de navigation + CTA mobile non connecté ────── #}
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-menu flex-grow-1">
+        <div class="navbar-collapse" id="navbarNav" data-navbar-collapse>
+            <div class="navbar-menu flex-1">
                 {{ knp_menu_render('app.navbar', {
                     'template': 'menu/navbar.html.twig',
                     'currentClass': 'active',
@@ -46,33 +46,33 @@
             </div>
 
             {% if not app.user %}
-            <div class="d-lg-none mt-2">
-                <a class="btn btn-primary w-100" href="{{ path('app_login') }}">Connexion</a>
+            <div class="lg:hidden mt-2">
+                <a class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full" href="{{ path('app_login') }}">Connexion</a>
             </div>
             {% endif %}
         </div>
 
         {# ── Actions droite — desktop (toujours visibles) ─────────────────── #}
         {% if app.user %}
-        <div class="navbar-right-actions d-none d-lg-flex align-items-center gap-2 ms-lg-4">
+        <div class="navbar-right-actions hidden lg:flex items-center gap-2 ml-auto">
 
             {# Sidebar toggle #}
             {% if show_sidebar_toggle %}
                 <button class="sidebar-toggle-btn" type="button" id="sidebarToggle"
                         aria-label="Afficher la navigation" aria-expanded="true">
                     <i data-lucide="panel-left" width="18" height="18"></i>
-                    <span class="sidebar-toggle-label ms-1">Masquer la navigation</span>
+                    <span class="sidebar-toggle-label ml-1">Masquer la navigation</span>
                 </button>
             {% else %}
                 <a class="sidebar-toggle-btn" href="{{ path('app_dashboard_index') }}"
                    aria-label="Accéder au tableau de bord">
                     <i data-lucide="layout-dashboard" width="18" height="18"></i>
-                    <span class="sidebar-toggle-label ms-1">Tableau de bord</span>
+                    <span class="sidebar-toggle-label ml-1">Tableau de bord</span>
                 </a>
             {% endif %}
 
             {# Help dropdown #}
-            <div class="dropdown" data-controller="profile-dropdown">
+            <div class="relative" data-controller="profile-dropdown">
                 <button class="navbar-icon-btn" type="button"
                         data-profile-dropdown-target="button"
                         data-action="click->profile-dropdown#toggle"
@@ -84,39 +84,39 @@
                     data-profile-dropdown-target="menu"
                     hidden>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                        <a class="dropdown-item flex items-center justify-between"
                            href="{{ path('app_blog_index') }}">
                             <span>Blog QSE</span>
-                            <i data-lucide="book-open" width="15" height="15" class="ms-4 text-muted"></i>
+                            <i data-lucide="book-open" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                        <a class="dropdown-item flex items-center justify-between"
                            href="{{ path('app_outils_index') }}">
                             <span>Tous les outils</span>
-                            <i data-lucide="layers" width="15" height="15" class="ms-4 text-muted"></i>
+                            <i data-lucide="layers" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                        <a class="dropdown-item flex items-center justify-between"
                            href="{{ path('app_contact_index') }}">
                             <span>Nous contacter</span>
-                            <i data-lucide="mail" width="15" height="15" class="ms-4 text-muted"></i>
+                            <i data-lucide="mail" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                 </ul>
             </div>
 
             {# Profile dropdown — avatar uniquement #}
-            <div class="dropdown position-relative" data-controller="profile-dropdown">
+            <div class="relative" data-controller="profile-dropdown">
                 <button class="navbar-icon-btn navbar-avatar-btn p-0" type="button"
                         id="profileDropdown"
                         data-profile-dropdown-target="button"
                         data-action="click->profile-dropdown#toggle keydown.enter->profile-dropdown#toggle keydown.space->profile-dropdown#toggle keydown.arrow-down->profile-dropdown#openWithKeyboard keydown.arrow-up->profile-dropdown#openWithKeyboard"
                         aria-expanded="false" aria-haspopup="true"
                         aria-label="Menu utilisateur">
-                    <div class="profile-dropdown__avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                    <div class="profile-dropdown__avatar bg-primary text-white rounded-full flex items-center justify-center">
                         {{ app.user.email|slice(0, 1)|upper }}
                     </div>
                 </button>
@@ -125,41 +125,41 @@
                     aria-labelledby="profileDropdown"
                     hidden>
                     <li>
-                        <div class="px-4 py-3 border-bottom">
-                            <div class="fw-semibold text-truncate" style="max-width:220px;">{{ app.user.email }}</div>
-                            <small class="text-muted">Membre connecté</small>
+                        <div class="px-4 py-3 border-b">
+                            <div class="font-semibold truncate" style="max-width:220px;">{{ app.user.email }}</div>
+                            <small class="text-muted-foreground">Membre connecté</small>
                         </div>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                        <a class="dropdown-item flex items-center justify-between"
                            href="{{ path('app_profile_index') }}" role="menuitem">
                             <span>Mon profil</span>
-                            <i data-lucide="user" width="15" height="15" class="ms-4 text-muted"></i>
+                            <i data-lucide="user" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between"
+                        <a class="dropdown-item flex items-center justify-between"
                            href="{{ path('app_creations_index') }}" role="menuitem">
                             <span>Mes créations</span>
-                            <i data-lucide="file-text" width="15" height="15" class="ms-4 text-muted"></i>
+                            <i data-lucide="file-text" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between text-primary"
+                        <a class="dropdown-item flex items-center justify-between text-primary"
                            href="{{ path('app_admin_dashboard_index') }}" role="menuitem">
                             <span>Administration</span>
-                            <i data-lucide="shield" width="15" height="15" class="ms-4"></i>
+                            <i data-lucide="shield" width="15" height="15" class="ml-4"></i>
                         </a>
                     </li>
                     {% endif %}
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center justify-content-between text-danger"
+                        <a class="dropdown-item flex items-center justify-between text-destructive"
                            href="{{ path('app_logout') }}" role="menuitem">
                             <span>Déconnexion</span>
-                            <i data-lucide="log-out" width="15" height="15" class="ms-4"></i>
+                            <i data-lucide="log-out" width="15" height="15" class="ml-4"></i>
                         </a>
                     </li>
                 </ul>
@@ -167,7 +167,7 @@
 
         </div>
         {% else %}
-        <a class="btn btn-primary btn-sm d-none d-lg-inline-flex ms-4"
+        <a class="hidden lg:inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline ml-auto"
            href="{{ path('app_login') }}">Connexion</a>
         {% endif %}
 

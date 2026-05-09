@@ -42,7 +42,7 @@ export default class extends Controller {
         }
 
         // Fermer le modal
-        const modal = this.element.closest('.modal');
+        const modal = this.element.closest('[data-controller~="bootstrap-modal"]');
         if (modal) {
             const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
             if (modalController && typeof modalController.hide === 'function') {
@@ -65,7 +65,7 @@ export default class extends Controller {
         }
 
         // Fermer le modal
-        const modal = this.element.closest('.modal');
+        const modal = this.element.closest('[data-controller~="bootstrap-modal"]');
         if (modal) {
             const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
             if (modalController && typeof modalController.hide === 'function') {

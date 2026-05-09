@@ -139,54 +139,54 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     {% for message in app.flashes('danger') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
+            <span class="flex-1 text-sm">{{ message }}</span>
+            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
         </div>
     {% endfor %}
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <a href="{{ path('app_admin_blog_index') }}" class="btn btn-sm btn-outline-secondary mb-2" data-turbo="false">
-                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+            <a href="{{ path('app_admin_blog_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline mb-2" data-turbo="false">
+                <i data-lucide="arrow-left" width="16" height="16" class="mr-1"></i>
                 Retour à la liste
             </a>
-            <h1 class="h3 fw-bold mb-1">Nouvel article</h1>
-            <p class="text-muted mb-0">Créer un nouvel article de blog</p>
+            <h1 class="text-2xl font-bold mb-1">Nouvel article</h1>
+            <p class="text-muted-foreground mb-0">Créer un nouvel article de blog</p>
         </div>
     </div>
 
     <!-- Formulaire -->
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+    <div class="grid grid-cols-12 gap-6">
+        <div class="lg:col-span-8 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm">
+                <div class="p-6">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
-                    
-                    <div class="mb-3">
+
+                    <div class="mb-4">
                         {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.title) }}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.slug, {'attr': {'class': 'form-control', 'placeholder': 'Laissé vide pour génération automatique'}}) }}
                         {{ form_help(form.slug) }}
                         {{ form_errors(form.slug) }}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         {{ form_label(form.excerpt, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.excerpt, {'attr': {'class': 'form-control', 'rows': 3}}) }}
                         {{ form_errors(form.excerpt) }}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label">Image à la une</label>
-                        <p class="form-text text-muted small mb-2">Indiquez une URL ou téléversez un fichier (le fichier est prioritaire si les deux sont renseignés).</p>
+                        <p class="form-text text-muted-foreground text-sm mb-2">Indiquez une URL ou téléversez un fichier (le fichier est prioritaire si les deux sont renseignés).</p>
                         <div class="mb-2">
                             {{ form_row(form.featuredImageUrl, {'label': false, 'attr': {'class': 'form-control', 'placeholder': 'https://exemple.com/image.jpg'}}) }}
                         </div>
@@ -195,59 +195,61 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                         </div>
                         <div class="form-text">Fichier : 4&nbsp;Mo max. Dimensions recommandées : min 400×300px, max 4000×3000px.</div>
                         {{ form_errors(form.featuredImage) }}
-                        
+
                         <div class="mt-2 d-none" data-image-upload-target="loading">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                <span class="visually-hidden">Chargement...</span>
+                            <div class="flex items-center gap-2">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" role="status">
+                                    <span class="sr-only">Chargement...</span>
+                                </div>
+                                <span class="text-muted-foreground">Génération des variantes optimisées...</span>
                             </div>
-                            <span class="ms-2 text-muted">Génération des variantes optimisées...</span>
                         </div>
-                        
-                        <div class="mt-2 alert alert-danger d-none" data-image-upload-target="error" role="alert"></div>
-                        
+
+                        <div class="mt-2 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 text-red-800 px-3 py-2 text-sm d-none" data-image-upload-target="error" role="alert"></div>
+
                         <!-- Prévisualisation -->
                         <div class="mt-3 d-none" data-image-upload-target="previewWrapper" id="blog-image-preview-new-wrapper">
-                            <p class="small text-muted mb-2">Aperçu de l'image sélectionnée</p>
-                            <img data-image-upload-target="preview" id="blog-image-preview-new" src="#" alt="Aperçu de l'image" class="img-fluid rounded shadow-sm mb-2">
+                            <p class="text-sm text-muted-foreground mb-2">Aperçu de l'image sélectionnée</p>
+                            <img data-image-upload-target="preview" id="blog-image-preview-new" src="#" alt="Aperçu de l'image" class="max-w-full h-auto rounded shadow-sm mb-2">
                             <div data-image-upload-target="variants"></div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-upload#clearPreview">
-                                <i data-lucide="x" width="14" height="14" class="me-1"></i>
+                            <button type="button" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline" data-action="click->image-upload#clearPreview">
+                                <i data-lucide="x" width="14" height="14" class="mr-1"></i>
                                 Supprimer l'aperçu
                             </button>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
                             {{ form_label(form.content, null, {'label_attr': {'class': 'form-label mb-0'}}) }}
-                            <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="collapse" data-bs-target="#markdownHelp">
-                                <i data-lucide="help-circle" width="14" height="14" class="me-1"></i>
+                            <button type="button" class="inline-flex items-center justify-center gap-2 border border-sky-500 text-sky-500 px-3 py-1.5 text-sm rounded-md font-medium hover:bg-sky-500/5 transition-colors no-underline" data-bs-toggle="collapse" data-bs-target="#markdownHelp">
+                                <i data-lucide="help-circle" width="14" height="14" class="mr-1"></i>
                                 Aide Markdown & Ancres
                             </button>
                         </div>
-                        
+
                         <!-- Aide Markdown -->
-                        <div class="collapse mb-3" id="markdownHelp">
-                            <div class="card card-body bg-light">
-                                <h6 class="fw-bold mb-2">💡 Sommaire automatique</h6>
+                        <div class="collapse mb-4" id="markdownHelp">
+                            <div class="card card-body bg-muted">
+                                <h6 class="font-bold mb-2">💡 Sommaire automatique</h6>
                                 <p class="small mb-2">Insérez <code>[TOC]</code> ou <code>[[TOC]]</code> n'importe où dans votre article pour générer automatiquement un sommaire à partir de vos titres (h2-h6).</p>
-                                
-                                <h6 class="fw-bold mb-2 mt-3">🔗 Ancres automatiques</h6>
+
+                                <h6 class="font-bold mb-2 mt-3">🔗 Ancres automatiques</h6>
                                 <p class="small mb-2">Chaque titre génère automatiquement une ancre. Par exemple :</p>
                                 <ul class="small mb-2">
                                     <li><code>## Introduction</code> → ancre <code>#introduction</code></li>
                                     <li><code>### Étape 1 : Diagnostic</code> → ancre <code>#etape-1-diagnostic</code></li>
                                 </ul>
-                                
-                                <h6 class="fw-bold mb-2 mt-3">📝 Syntaxe Markdown</h6>
-                                <div class="row small">
-                                    <div class="col-md-6">
+
+                                <h6 class="font-bold mb-2 mt-3">📝 Syntaxe Markdown</h6>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
                                         <code>## Titre niveau 2</code><br>
                                         <code>### Titre niveau 3</code><br>
                                         <code>**gras**</code><br>
                                         <code>*italique*</code>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div>
                                         <code>[lien](#ancre)</code><br>
                                         <code>![image](url)</code><br>
                                         <code>- liste</code><br>
@@ -261,37 +263,37 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                         {{ form_errors(form.content) }}
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="md:col-span-6 col-span-12 mb-4">
                             {{ form_label(form.category, null, {'label_attr': {'class': 'form-label'}}) }}
                             {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
                             {{ form_errors(form.category) }}
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="md:col-span-6 col-span-12 mb-4">
                             {{ form_label(form.readTime, null, {'label_attr': {'class': 'form-label'}}) }}
                             {{ form_widget(form.readTime, {'attr': {'class': 'form-control', 'placeholder': '5 min'}}) }}
                             {{ form_errors(form.readTime) }}
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         {{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.tags, {'attr': {'class': 'form-select'}}) }}
                         {{ form_help(form.tags) }}
                         {{ form_errors(form.tags) }}
-                        <small class="form-text text-muted">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs tags</small>
+                        <small class="form-text text-muted-foreground">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs tags</small>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="md:col-span-6 col-span-12 mb-4">
                             {{ form_label(form.publishedAt, null, {'label_attr': {'class': 'form-label'}}) }}
                             {{ form_widget(form.publishedAt, {'attr': {'class': 'form-control'}}) }}
                             {{ form_errors(form.publishedAt) }}
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <div class="form-check">
                             {{ form_widget(form.featured, {'attr': {'class': 'form-check-input'}}) }}
                             {{ form_label(form.featured, null, {'label_attr': {'class': 'form-check-label'}}) }}
@@ -299,16 +301,16 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                         {{ form_errors(form.featured) }}
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                    <div class="flex gap-2">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                            <i data-lucide="save" width="16" height="16" class="mr-1"></i>
                             Enregistrer
                         </button>
-                        <button type="submit" name="publish_now" value="1" class="btn btn-success">
-                            <i data-lucide="send" width="16" height="16" class="me-1"></i>
+                        <button type="submit" name="publish_now" value="1" class="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                            <i data-lucide="send" width="16" height="16" class="mr-1"></i>
                             Enregistrer et publier
                         </button>
-                        <a href="{{ path('app_admin_blog_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_blog_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors no-underline">
                             Annuler
                         </a>
                     </div>
@@ -319,22 +321,22 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
         </div>
 
         <!-- Sidebar avec aide -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h6 class="mb-0">Aide</h6>
                 </div>
-                <div class="card-body">
-                    <h6 class="small text-muted text-uppercase mb-2">Conseils</h6>
-                    <ul class="small mb-3">
+                <div class="p-6">
+                    <h6 class="text-sm text-muted-foreground uppercase mb-2">Conseils</h6>
+                    <ul class="text-sm mb-4">
                         <li>Le slug sera généré automatiquement depuis le titre si laissé vide</li>
                         <li>L'extrait sera affiché dans la liste des articles</li>
                         <li>Utilisez "Enregistrer et publier" pour publier immédiatement</li>
                         <li>Les articles publiés sont visibles publiquement</li>
                     </ul>
 
-                    <h6 class="small text-muted text-uppercase mb-2">Conseils supplémentaires</h6>
-                    <ul class="small mb-0">
+                    <h6 class="text-sm text-muted-foreground uppercase mb-2">Conseils supplémentaires</h6>
+                    <ul class="text-sm mb-0">
                         <li>Choisissez une catégorie appropriée</li>
                         <li>Ajoutez des tags pertinents</li>
                         <li>Rédigez un extrait accrocheur</li>

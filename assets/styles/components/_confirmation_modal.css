@@ -1,0 +1,18 @@
+
+/* ── Backdrop Tailwind (remplace .modal-backdrop Bootstrap) ──────────── */
+.tw-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    animation: twFadeIn 0.2s ease-out;
+}
+
+/* ── Animation d'entrée ──────────────────────────────────────────────── */
+@keyframes twFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Scroll body lock géré par JS ; modal caché par style="display:none" ── */

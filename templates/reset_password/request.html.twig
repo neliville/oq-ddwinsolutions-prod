@@ -21,8 +21,8 @@
             </p>
         </div>
 
-        <div class="auth-card row g-0">
-            <div class="col-lg-5 order-lg-1">
+        <div class="auth-card">
+            <div class="lg:col-span-5 lg:order-1">
                 <section class="auth-card__panel auth-card__panel--form">
                     <header>
                         <h1 class="auth-card__title">Réinitialiser votre mot de passe</h1>
@@ -30,7 +30,10 @@
                     </header>
 
                     {% for flash_error in app.flashes('reset_password_error') %}
-                        <div class="alert auth-alert alert-danger" role="alert">{{ flash_error }}</div>
+                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
+                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
+                            <div class="grow">{{ flash_error }}</div>
+                        </div>
                     {% endfor %}
 
                     {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
@@ -57,9 +60,9 @@
                 </section>
             </div>
 
-            <div class="col-lg-7 order-lg-2">
+            <div class="lg:col-span-7 lg:order-2">
                 <section class="auth-card__panel auth-card__panel--info">
-                    <div class="position-relative">
+                    <div class="relative">
                         <h2 class="auth-info__title">Sécurité et assistance</h2>
                         <p class="auth-info__subtitle">Notre équipe met tout en œuvre pour protéger vos données et vous aider à reprendre le contrôle rapidement.</p>
 
@@ -82,13 +85,13 @@
                                 <span class="auth-info__list-icon">💬</span>
                                 <div class="auth-info__list-content">
                                     <h3 class="auth-info__list-heading">Support réactif</h3>
-                                    <p class="auth-benefits__description">Besoin d’aide ? Contactez-nous à <a class="text-white fw-semibold text-decoration-none" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.</p>
+                                    <p class="auth-benefits__description">Besoin d’aide ? Contactez-nous à <a class="text-white font-semibold no-underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.</p>
                                 </div>
                             </li>
                         </ul>
 
-                        <p class="auth-meta mt-4">
-                            <i class="fas fa-shield-alt me-2"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.
+                        <p class="auth-meta mt-6">
+                            <i class="fas fa-shield-alt mr-2"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.
                         </p>
                     </div>
                 </section>

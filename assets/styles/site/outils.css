@@ -1,4 +1,3 @@
-@use '../core/variables';
 
 .tools-page {
   background: var(--bg-primary);

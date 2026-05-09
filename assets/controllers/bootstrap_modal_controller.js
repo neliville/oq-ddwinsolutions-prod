@@ -355,17 +355,17 @@ export default class extends Controller {
         // Utiliser l'approche simple du code initial
         this.element.style.display = 'block';
 
-        // Ajouter la classe Bootstrap 'show' pour l'animation
+        // Ajouter la classe 'show' pour le state tracking
         requestAnimationFrame(() => {
             this.element.classList.add('show');
 
             // Gérer aria-hidden dynamiquement
             this.element.setAttribute('aria-hidden', 'false');
 
-            // Ajouter le backdrop Bootstrap
-            if (!document.body.querySelector('.modal-backdrop')) {
+            // Ajouter le backdrop Tailwind
+            if (!document.body.querySelector('.tw-backdrop')) {
                 const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
+                backdrop.className = 'tw-backdrop';
                 document.body.appendChild(backdrop);
             }
             // Empêcher le scroll du body
@@ -390,14 +390,14 @@ export default class extends Controller {
             return;
         }
 
-        // Retirer la classe Bootstrap 'show'
+        // Retirer la classe 'show'
         this.element.classList.remove('show');
 
         // Gérer aria-hidden dynamiquement
         this.element.setAttribute('aria-hidden', 'true');
 
-        // Retirer le backdrop Bootstrap
-        const backdrop = document.body.querySelector('.modal-backdrop');
+        // Retirer le backdrop Tailwind
+        const backdrop = document.body.querySelector('.tw-backdrop');
         if (backdrop) {
             backdrop.remove();
         }

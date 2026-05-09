@@ -1,6 +1,6 @@
 {# Modal pour afficher la liste des analyses Pareto sauvegardées #}
 <div {{ attributes.defaults({
-    class: 'modal fade',
+    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
@@ -12,26 +12,27 @@
     {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title d-flex align-items-center" id="{{ id ? (id ~ '-title') : 'paretoLoadModalTitle' }}">
-                    <i data-lucide="folder-open" width="24" height="24" class="me-2" aria-hidden="true"></i>
-                    Mes analyses Pareto
-                </h5>
-                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue"></button>
-            </div>
-            <div class="modal-body">
-                <div class="list-group" id="paretoAnalysesList">
-                    {# Le contenu sera injecté dynamiquement par JavaScript #}
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Chargement...</span>
-                        </div>
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]" role="document">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+            <h5 class="flex items-center font-semibold text-foreground text-base" id="{{ id ? (id ~ '-title') : 'paretoLoadModalTitle' }}">
+                <i data-lucide="folder-open" width="24" height="24" class="mr-2 shrink-0" aria-hidden="true"></i>
+                Mes analyses Pareto
+            </h5>
+            <button type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="px-6 py-4 overflow-y-auto flex-1">
+            <ul class="flex flex-col gap-2" id="paretoAnalysesList">
+                {# Le contenu sera injecté dynamiquement par JavaScript #}
+                <li class="flex justify-center py-6">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" role="status">
+                        <span class="sr-only">Chargement...</span>
                     </div>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
-

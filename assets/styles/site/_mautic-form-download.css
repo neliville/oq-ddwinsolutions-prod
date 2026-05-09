@@ -13,7 +13,6 @@
     font-family: inherit;
   }
 
-  // Labels : style form-label Bootstrap
   .mauticform_label {
     display: block;
     margin-bottom: var(--space-2, 0.5rem);
@@ -22,7 +21,6 @@
     font-size: 1rem;
   }
 
-  // Inputs texte et email : style form-control form-control-lg
   .mauticform_input,
   input[type="text"],
   input[type="email"] {
@@ -49,16 +47,10 @@
     }
   }
 
-  // Chaque ligne de champ
   .mauticform-row {
     margin-bottom: var(--space-4, 1rem);
   }
 
-  // Masquer uniquement les champs techniques (invisibles pour l'utilisateur)
-  // - Download Request
-  // - Ressource / ressource_id (ex. ishikawa-5m-template → fichier var/downloads/Ishikawa_5M_Template_Outil-Qualite.xlsx)
-  // Attention : "ressource" dans "ressources" (nom du formulaire) ne doit pas matcher,
-  // on cible _ressource ou ressource_id pour éviter de cacher email/firstname
   .mauticform-row:has(label[id*="download_request"]),
   .mauticform-row:has(input[name*="download_request"]),
   .mauticform-row:has(label[id*="ressource_id"]),
@@ -68,7 +60,6 @@
     display: none !important;
   }
 
-  // Bouton Envoyer : style btn btn-primary btn-lg w-100
   .mauticform-button,
   input[type="submit"],
   button[type="submit"] {
@@ -98,7 +89,6 @@
     }
   }
 
-  // Messages d'erreur Mautic
   .mauticform-error {
     color: var(--red, #ef4444);
     font-size: 0.875rem;

@@ -8,11 +8,25 @@ export default class extends Controller {
 
     connect() {
         this._onSaved = this._onSaved.bind(this);
+        this._onBeforeCache = this._onBeforeCache.bind(this);
         document.addEventListener('app:analysis:saved', this._onSaved);
+        document.addEventListener('turbo:before-cache', this._onBeforeCache);
     }
 
     disconnect() {
         document.removeEventListener('app:analysis:saved', this._onSaved);
+        document.removeEventListener('turbo:before-cache', this._onBeforeCache);
+    }
+
+    _onBeforeCache() {
+        const modal = this.element.querySelector('#postSaveCtaModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        modal.style.display = '';
+        const backdrop = document.querySelector('.tw-backdrop');
+        if (backdrop) backdrop.remove();
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
     }
 
     _onSaved(event) {
@@ -20,12 +34,12 @@ export default class extends Controller {
         sessionStorage.setItem(this.storageKeyValue, '1');
 
         const modal = this.element.querySelector('#postSaveCtaModal');
-        if (!modal || typeof bootstrap === 'undefined') return;
+        if (!modal) return;
 
         const detail = event.detail || {};
         const nameEl = this.element.querySelector('[data-post-save-cta-analysis-name]');
         if (nameEl && detail.title) nameEl.textContent = detail.title;
 
-        bootstrap.Modal.getOrCreateInstance(modal).show();
+        document.dispatchEvent(new CustomEvent('modal:open', { detail: { modalId: 'postSaveCtaModal' } }));
     }
 }

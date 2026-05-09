@@ -48,10 +48,10 @@
         </header>
 
         {% if not app.user %}
-        <div class="alert alert-warning text-center mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
-            <i data-lucide="info" width="18" height="18" class="me-2" aria-hidden="true"></i>
-            <strong>Vous n'êtes pas connecté.</strong>
-            <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour sauvegarder vos analyses et les réutiliser facilement.
+        <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
+            <i data-lucide="info" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+            <span><strong>Vous n'êtes pas connecté.</strong>
+            <a href="{{ path('app_login') }}" class="font-semibold underline text-yellow-900">Connectez-vous</a> pour sauvegarder vos analyses et les réutiliser facilement.</span>
         </div>
         {% endif %}
 
@@ -60,26 +60,26 @@
             <p>Le diagramme de Pareto illustre que 80% des effets proviennent d'environ 20% des causes. Cet outil vous permet d'identifier les leviers prioritaires pour maximiser l'impact de vos plans d'action.</p>
         </section>
 
-        <section class="pareto-controls tool-actions-bar d-flex flex-wrap align-items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
-            <button class="btn btn-primary btn-sm" type="button" onclick="newParetoAnalysis()" aria-label="Initialiser une nouvelle analyse Pareto">
-                <i class="fas fa-sync-alt me-2"></i>Nouvelle analyse
+        <section class="pareto-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newParetoAnalysis()" aria-label="Initialiser une nouvelle analyse Pareto">
+                <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
-            <button class="btn btn-info btn-sm" type="button" onclick="generateParetoChart()" aria-label="Générer le diagramme de Pareto">
-                <i class="fas fa-chart-line me-2"></i>Générer le diagramme
+            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateParetoChart()" aria-label="Générer le diagramme de Pareto">
+                <i class="fas fa-chart-line mr-2"></i>Générer le diagramme
             </button>
-            <button class="btn btn-outline-danger btn-sm" type="button" onclick="resetParetoForm()" aria-label="Réinitialiser le formulaire Pareto">
-                <i class="fas fa-eraser me-2"></i>Réinitialiser
+            <button class="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="resetParetoForm()" aria-label="Réinitialiser le formulaire Pareto">
+                <i class="fas fa-eraser mr-2"></i>Réinitialiser
             </button>
             {% if app.user %}
-            <button class="btn btn-success btn-sm" type="button" onclick="savePareto()" aria-label="Sauvegarder l'analyse Pareto">
-                <i class="fas fa-save me-2"></i>Sauvegarder
+            <button class="inline-flex items-center justify-center gap-1.5 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="savePareto()" aria-label="Sauvegarder l'analyse Pareto">
+                <i class="fas fa-save mr-2"></i>Sauvegarder
             </button>
-            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openParetoSaved()" aria-label="Charger une analyse Pareto">
-                <i class="fas fa-folder-open me-2"></i>Mes analyses
+            <button class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openParetoSaved()" aria-label="Charger une analyse Pareto">
+                <i class="fas fa-folder-open mr-2"></i>Mes analyses
             </button>
             <div class="dropdown export-dropdown" data-controller="dropdown-basic">
-                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="paretoExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                    <i class="fas fa-download me-2"></i>Exporter
+                <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="paretoExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                    <i class="fas fa-download mr-2"></i>Exporter
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="paretoExportDropdown" data-dropdown-basic-target="menu" hidden>
                     <li><button class="dropdown-item" type="button" onclick="exportPareto('png')">Exporter en PNG</button></li>
@@ -94,17 +94,17 @@
 
         <section class="pareto-form" data-aos="fade-up" data-aos-delay="120">
             <h2>Saisissez vos causes et occurrences</h2>
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold" for="paretoTitle">Titre de l'analyse</label>
+            <div class="grid gap-4 md:grid-cols-2 mb-6">
+                <div>
+                    <label class="form-label font-semibold" for="paretoTitle">Titre de l'analyse</label>
                     <input type="text"
                            id="paretoTitle"
                            class="form-control"
                            placeholder="Ex : Pannes production Semaine 38"
                            oninput="updateParetoTitle(this.value)">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold" for="paretoDescription">Description courte</label>
+                <div>
+                    <label class="form-label font-semibold" for="paretoDescription">Description courte</label>
                     <input type="text"
                            id="paretoDescription"
                            class="form-control"
@@ -113,8 +113,8 @@
                 </div>
             </div>
             <div class="pareto-data-list" id="paretoEntries" aria-live="polite"></div>
-            <button class="btn btn-outline-success btn-sm mt-3" type="button" onclick="addParetoEntry()" aria-label="Ajouter une cause">
-                <i class="fas fa-plus me-2"></i>Ajouter une cause
+            <button class="inline-flex items-center justify-center gap-1.5 border border-green-600 text-green-600 px-3 py-1.5 text-sm rounded-md hover:bg-green-50 transition-colors mt-3" type="button" onclick="addParetoEntry()" aria-label="Ajouter une cause">
+                <i class="fas fa-plus mr-2"></i>Ajouter une cause
             </button>
         </section>
 
@@ -169,7 +169,7 @@
 {% block stylesheets %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<link rel="stylesheet" href="{{ asset('styles/tools/pareto.scss') }}" data-turbo-track="reload">
+<link rel="stylesheet" href="{{ asset('styles/tools/pareto.css') }}" data-turbo-track="reload">
 {% endblock %}
 
 {% block javascripts %}

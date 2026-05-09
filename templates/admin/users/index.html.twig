@@ -3,58 +3,52 @@
 {% block title %}Gestion des utilisateurs | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 fw-bold mb-1">Gestion des utilisateurs</h1>
-            <p class="text-muted mb-0">Gérer les utilisateurs et leurs rôles</p>
+            <h1 class="text-2xl font-bold mb-1">Gestion des utilisateurs</h1>
+            <p class="text-muted-foreground mb-0">Gérer les utilisateurs et leurs rôles</p>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Total utilisateurs</h6>
-                            <h3 class="fw-bold mb-0">{{ allCount }}</h3>
-                        </div>
-                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="users" width="24" height="24" class="text-primary"></i>
-                        </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Total utilisateurs</h6>
+                        <h3 class="font-bold mb-0">{{ allCount }}</h3>
+                    </div>
+                    <div class="bg-primary/10 rounded-full p-3">
+                        <i data-lucide="users" width="24" height="24" class="text-primary"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Administrateurs</h6>
-                            <h3 class="fw-bold mb-0">{{ adminCount }}</h3>
-                        </div>
-                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="shield" width="24" height="24" class="text-danger"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Administrateurs</h6>
+                        <h3 class="font-bold mb-0">{{ adminCount }}</h3>
+                    </div>
+                    <div class="bg-red-100 rounded-full p-3">
+                        <i data-lucide="shield" width="24" height="24" class="text-destructive"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Utilisateurs</h6>
-                            <h3 class="fw-bold mb-0">{{ userCount }}</h3>
-                        </div>
-                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="user" width="24" height="24" class="text-success"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Utilisateurs</h6>
+                        <h3 class="font-bold mb-0">{{ userCount }}</h3>
+                    </div>
+                    <div class="bg-green-100 rounded-full p-3">
+                        <i data-lucide="user" width="24" height="24" class="text-green-600"></i>
                     </div>
                 </div>
             </div>
@@ -62,19 +56,19 @@
     </div>
 
     <!-- Filtres -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="btn-group" role="group" aria-label="Filtres">
-                <a href="{{ path('app_admin_users_index', {filter: 'all'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+    <div class="rounded-lg bg-card shadow-sm mb-6">
+        <div class="p-6">
+            <div class="flex flex-wrap gap-1" role="group" aria-label="Filtres">
+                <a href="{{ path('app_admin_users_index', {filter: 'all'}) }}"
+                   class="{{ currentFilter == 'all' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Tous ({{ allCount }})
                 </a>
-                <a href="{{ path('app_admin_users_index', {filter: 'admin'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'admin' ? 'btn-primary' : 'btn-outline-primary' }}">
+                <a href="{{ path('app_admin_users_index', {filter: 'admin'}) }}"
+                   class="{{ currentFilter == 'admin' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Administrateurs ({{ adminCount }})
                 </a>
-                <a href="{{ path('app_admin_users_index', {filter: 'user'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'user' ? 'btn-primary' : 'btn-outline-primary' }}">
+                <a href="{{ path('app_admin_users_index', {filter: 'user'}) }}"
+                   class="{{ currentFilter == 'user' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Utilisateurs ({{ userCount }})
                 </a>
             </div>
@@ -92,11 +86,11 @@
                       action="{{ path('app_admin_users_bulk') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('bulk_users') }}">
 
-                <div class="p-3 border-bottom bg-light-subtle d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <div class="small text-muted">
+                <div class="p-4 border-b border-border bg-muted/30 flex flex-wrap items-center justify-between gap-2">
+                    <div class="text-sm text-muted-foreground">
                         <strong data-users-bulk-actions-target="count">0</strong> utilisateur(s) sélectionné(s)
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         <select class="form-select form-select-sm"
                                 name="action"
                                 style="min-width: 240px;"
@@ -110,7 +104,7 @@
                             <option value="revoke_admin">Retirer le rôle admin</option>
                         </select>
                         <button type="submit"
-                                class="btn btn-sm btn-primary"
+                                class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                                 data-users-bulk-actions-target="submit"
                                 disabled>
                             Appliquer
@@ -151,8 +145,8 @@
                                        data-action="change->users-bulk-actions#refresh">
                             </td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                <div class="flex items-center">
+                                    <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center mr-2" style="width: 32px; height: 32px;">
                                         {{ user.email|slice(0, 1)|upper }}
                                     </div>
                                     <div>
@@ -163,14 +157,14 @@
                             <td>
                                 {% for role in user.roles %}
                                 {% if role == 'ROLE_ADMIN' %}
-                                <span class="badge bg-danger me-1">
-                                    <i data-lucide="shield" width="12" height="12" class="me-1"></i>
+                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold mr-1">
+                                    <i data-lucide="shield" width="12" height="12" class="mr-1"></i>
                                     Admin
                                 </span>
                                 {% elseif role == 'ROLE_USER' %}
-                                <span class="badge bg-success me-1">User</span>
+                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold mr-1">User</span>
                                 {% else %}
-                                <span class="badge bg-secondary me-1">{{ role }}</span>
+                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold mr-1">{{ role }}</span>
                                 {% endif %}
                                 {% endfor %}
                             </td>
@@ -178,7 +172,7 @@
                                 <small>{{ user.createdAt|date('d/m/Y H:i') }}</small>
                             </td>
                             <td>
-                                <small class="text-muted">
+                                <small class="text-muted-foreground">
                                     {% if user.lastLoginAt %}
                                         {{ user.lastLoginAt|date('d/m/Y H:i') }}
                                     {% else %}
@@ -187,7 +181,7 @@
                                 </small>
                             </td>
                             <td>
-                                <small class="text-muted">
+                                <small class="text-muted-foreground">
                                     {% if user.lastActivityAt %}
                                         {{ user.lastActivityAt|date('d/m/Y H:i') }}
                                     {% else %}
@@ -196,21 +190,21 @@
                                 </small>
                             </td>
                             <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ path('app_admin_users_show', {id: user.id}) }}" 
-                                       class="btn btn-outline-primary" title="Voir">
+                                <div class="flex gap-1" role="group">
+                                    <a href="{{ path('app_admin_users_show', {id: user.id}) }}"
+                                       class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-2 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors" title="Voir">
                                         <i data-lucide="eye" width="14" height="14"></i>
                                     </a>
-                                    <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" 
-                                       class="btn btn-outline-secondary" title="Modifier">
+                                    <a href="{{ path('app_admin_users_edit', {id: user.id}) }}"
+                                       class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-2 py-1 text-sm rounded-md hover:bg-accent transition-colors" title="Modifier">
                                         <i data-lucide="edit" width="14" height="14"></i>
                                     </a>
                                     {% if user.id != app.user.id %}
-                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" 
-                                          class="d-inline" 
+                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}"
+                                          class="inline"
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                        <button type="submit" class="inline-flex items-center justify-center gap-2 border border-destructive text-destructive px-2 py-1 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
                                             <i data-lucide="trash-2" width="14" height="14"></i>
                                         </button>
                                     </form>
@@ -225,59 +219,57 @@
             </div>
         {% endblock %}
         {% block list_cards %}
-            <div class="row g-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for user in users %}
-                <div class="col-12 col-md-6 col-xl-4">
-                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-start gap-2 mb-2">
-                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
-                                    {{ user.email|slice(0, 1)|upper }}
-                                </div>
-                                <div class="min-w-0 flex-grow-1">
-                                    <h2 class="h6 fw-semibold mb-1 text-break">{{ user.email }}</h2>
-                                    <div class="d-flex flex-wrap gap-1 mb-2">
-                                        {% for role in user.roles %}
-                                        {% if role == 'ROLE_ADMIN' %}
-                                        <span class="badge bg-danger"><i data-lucide="shield" width="12" height="12" class="me-1"></i>Admin</span>
-                                        {% elseif role == 'ROLE_USER' %}
-                                        <span class="badge bg-success">User</span>
-                                        {% else %}
-                                        <span class="badge bg-secondary">{{ role }}</span>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
+                    <div class="p-6 flex flex-col">
+                        <div class="flex items-start gap-2 mb-2">
+                            <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center shrink-0" style="width: 40px; height: 40px;">
+                                {{ user.email|slice(0, 1)|upper }}
                             </div>
-                            <dl class="row small mb-0 flex-grow-1 g-1">
-                                <dt class="col-5 text-muted">Création</dt>
-                                <dd class="col-7 mb-0">{{ user.createdAt|date('d/m/Y H:i') }}</dd>
-                                <dt class="col-5 text-muted">Connexion</dt>
-                                <dd class="col-7 mb-0">{{ user.lastLoginAt ? user.lastLoginAt|date('d/m/Y H:i') : '—' }}</dd>
-                                <dt class="col-5 text-muted">Activité</dt>
-                                <dd class="col-7 mb-0">{{ user.lastActivityAt ? user.lastActivityAt|date('d/m/Y H:i') : '—' }}</dd>
-                            </dl>
-                            <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top">
-                                <a href="{{ path('app_admin_users_show', {id: user.id}) }}" class="btn btn-outline-primary btn-sm"><i data-lucide="eye" width="14" height="14" class="me-1"></i>Voir</a>
-                                <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="edit" width="14" height="14" class="me-1"></i>Modifier</a>
-                                {% if user.id != app.user.id %}
-                                <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i data-lucide="trash-2" width="14" height="14" class="me-1"></i>Supprimer</button>
-                                </form>
-                                {% endif %}
+                            <div class="min-w-0 flex-1">
+                                <h2 class="text-base font-semibold mb-1 break-all">{{ user.email }}</h2>
+                                <div class="flex flex-wrap gap-1 mb-2">
+                                    {% for role in user.roles %}
+                                    {% if role == 'ROLE_ADMIN' %}
+                                    <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold"><i data-lucide="shield" width="12" height="12" class="mr-1"></i>Admin</span>
+                                    {% elseif role == 'ROLE_USER' %}
+                                    <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">User</span>
+                                    {% else %}
+                                    <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ role }}</span>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                    </article>
-                </div>
+                        <dl class="grid grid-cols-2 text-sm gap-1 mb-0 flex-1">
+                            <dt class="text-muted-foreground">Création</dt>
+                            <dd class="mb-0">{{ user.createdAt|date('d/m/Y H:i') }}</dd>
+                            <dt class="text-muted-foreground">Connexion</dt>
+                            <dd class="mb-0">{{ user.lastLoginAt ? user.lastLoginAt|date('d/m/Y H:i') : '—' }}</dd>
+                            <dt class="text-muted-foreground">Activité</dt>
+                            <dd class="mb-0">{{ user.lastActivityAt ? user.lastActivityAt|date('d/m/Y H:i') : '—' }}</dd>
+                        </dl>
+                        <div class="flex flex-wrap gap-2 mt-4 pt-2 border-t border-border">
+                            <a href="{{ path('app_admin_users_show', {id: user.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors"><i data-lucide="eye" width="14" height="14" class="mr-1"></i>Voir</a>
+                            <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
+                            {% if user.id != app.user.id %}
+                            <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}
             {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-top rounded-bottom">
+            <div class="card-footer bg-white border-t border-border rounded-b">
                 <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-content-center flex-wrap">
+                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
                         {% if currentPage > 1 %}
                         <li class="page-item">
                             <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage - 1}) }}">
@@ -316,10 +308,10 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="card border-0 shadow-sm">
-        <div class="card-body text-center py-5">
-            <i data-lucide="users" width="48" height="48" class="text-muted mb-3"></i>
-            <p class="text-muted mb-0">Aucun utilisateur{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+    <div class="rounded-lg bg-card shadow-sm">
+        <div class="p-6 text-center py-12">
+            <i data-lucide="users" width="48" height="48" class="text-muted-foreground mb-4"></i>
+            <p class="text-muted-foreground mb-0">Aucun utilisateur{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
         </div>
     </div>
     {% endif %}

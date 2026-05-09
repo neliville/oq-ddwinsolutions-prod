@@ -3,16 +3,16 @@
 {% block title %}Gestion des catégories | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 fw-bold mb-1">Gestion des catégories</h1>
-            <p class="text-muted mb-0">Gérer les catégories de blog</p>
+            <h1 class="text-2xl font-bold mb-1">Gestion des catégories</h1>
+            <p class="text-muted-foreground mb-0">Gérer les catégories de blog</p>
         </div>
         <div>
-            <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary">
-                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+            <a href="{{ path('app_admin_categories_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
                 Nouvelle catégorie
             </a>
         </div>
@@ -22,8 +22,8 @@
     {% if categories|length > 0 %}
     {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-categories', list_caption: 'Catégories' } %}
         {% block list_table %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
                     <thead class="table-light">
                         <tr>
                             <th style="width: 60px;">Ordre</th>
@@ -43,8 +43,8 @@
                                 <strong>{{ category.order }}</strong>
                             </td>
                             <td>
-                                <span class="badge me-2" style="background-color: {{ category.color }}; color: white;">
-                                    <i data-lucide="{{ category.icon }}" width="14" height="14" class="me-1"></i>
+                                <span class="badge mr-2" style="background-color: {{ category.color }}; color: white;">
+                                    <i data-lucide="{{ category.icon }}" width="14" height="14" class="mr-1"></i>
                                     {{ category.name }}
                                 </span>
                             </td>
@@ -55,35 +55,35 @@
                                 <small>{{ category.description|default('-')|slice(0, 50) }}{% if category.description|length > 50 %}...{% endif %}</small>
                             </td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="rounded me-2" style="width: 24px; height: 24px; background-color: {{ category.color }}; border: 1px solid #ddd;"></div>
+                                <div class="flex items-center">
+                                    <div class="rounded mr-2" style="width: 24px; height: 24px; background-color: {{ category.color }}; border: 1px solid #ddd;"></div>
                                     <small>{{ category.color }}</small>
                                 </div>
                             </td>
                             <td>
                                 <i data-lucide="{{ category.icon }}" width="20" height="20"></i>
-                                <small class="text-muted ms-1">{{ category.icon }}</small>
+                                <small class="text-muted-foreground ml-1">{{ category.icon }}</small>
                             </td>
                             <td>
-                                <span class="badge bg-secondary">{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</span>
+                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</span>
                             </td>
                             <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" 
-                                       class="btn btn-outline-secondary" title="Modifier">
+                                <div class="flex gap-1" role="group">
+                                    <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}"
+                                       class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline" title="Modifier">
                                         <i data-lucide="edit" width="14" height="14"></i>
                                     </a>
                                     {% if category.blogPosts|length == 0 %}
-                                    <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" 
-                                          class="d-inline" 
+                                    <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}"
+                                          class="inline"
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
-                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
                                             <i data-lucide="trash-2" width="14" height="14"></i>
                                         </button>
                                     </form>
                                     {% else %}
-                                    <button type="button" class="btn btn-outline-secondary" disabled title="Catégorie utilisée, impossible de supprimer">
+                                    <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled title="Catégorie utilisée, impossible de supprimer">
                                         <i data-lucide="lock" width="14" height="14"></i>
                                     </button>
                                     {% endif %}
@@ -96,50 +96,48 @@
             </div>
         {% endblock %}
         {% block list_cards %}
-            <div class="row g-3">
+            <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
                 {% for category in categories %}
-                <div class="col-12 col-md-6 col-xl-4">
-                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <span class="badge fs-6" style="background-color: {{ category.color }}; color: white;">
-                                    <i data-lucide="{{ category.icon }}" width="16" height="16" class="me-1"></i>{{ category.name }}
-                                </span>
-                                <span class="badge bg-secondary ms-auto">#{{ category.order }}</span>
-                            </div>
-                            <code class="small d-block mb-2">{{ category.slug }}</code>
-                            <p class="small text-muted flex-grow-1 mb-2">{{ category.description|default('—')|slice(0, 120) }}{% if category.description|length > 120 %}…{% endif %}</p>
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <div class="rounded border" style="width: 28px; height: 28px; background-color: {{ category.color }};"></div>
-                                <small class="text-muted">{{ category.color }}</small>
-                                <span class="badge bg-light text-dark ms-auto">{{ category.blogPosts|length }} art.</span>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 pt-2 border-top mt-auto">
-                                <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" class="btn btn-outline-secondary btn-sm"><i data-lucide="edit" width="14" height="14" class="me-1"></i>Modifier</a>
-                                {% if category.blogPosts|length == 0 %}
-                                <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i data-lucide="trash-2" width="14" height="14" class="me-1"></i>Supprimer</button>
-                                </form>
-                                {% else %}
-                                <button type="button" class="btn btn-outline-secondary btn-sm" disabled><i data-lucide="lock" width="14" height="14" class="me-1"></i>Utilisée</button>
-                                {% endif %}
-                            </div>
+                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
+                    <div class="p-6 flex flex-col">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="badge fs-6" style="background-color: {{ category.color }}; color: white;">
+                                <i data-lucide="{{ category.icon }}" width="16" height="16" class="mr-1"></i>{{ category.name }}
+                            </span>
+                            <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold ml-auto">#{{ category.order }}</span>
                         </div>
-                    </article>
-                </div>
+                        <code class="text-sm block mb-2">{{ category.slug }}</code>
+                        <p class="text-sm text-muted-foreground flex-1 mb-2">{{ category.description|default('—')|slice(0, 120) }}{% if category.description|length > 120 %}…{% endif %}</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="rounded border" style="width: 28px; height: 28px; background-color: {{ category.color }};"></div>
+                            <small class="text-muted-foreground">{{ category.color }}</small>
+                            <span class="inline-flex items-center rounded-md bg-muted text-muted-foreground px-2 py-0.5 text-xs ml-auto">{{ category.blogPosts|length }} art.</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-2 border-t border-border mt-auto">
+                            <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
+                            {% if category.blogPosts|length == 0 %}
+                            <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
+                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
+                            </form>
+                            {% else %}
+                            <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled><i data-lucide="lock" width="14" height="14" class="mr-1"></i>Utilisée</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}{% endblock %}
     {% endembed %}
     {% else %}
-    <div class="card border-0 shadow-sm">
-        <div class="card-body text-center py-5">
-            <i data-lucide="folder" width="48" height="48" class="text-muted mb-3"></i>
-            <p class="text-muted mb-0">Aucune catégorie</p>
-            <a href="{{ path('app_admin_categories_new') }}" class="btn btn-primary mt-3">
-                <i data-lucide="plus" width="16" height="16" class="me-1"></i>
+    <div class="rounded-lg bg-card shadow-sm">
+        <div class="p-6 text-center py-12">
+            <i data-lucide="folder" width="48" height="48" class="text-muted-foreground mb-4"></i>
+            <p class="text-muted-foreground mb-0">Aucune catégorie</p>
+            <a href="{{ path('app_admin_categories_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline mt-4">
+                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
                 Créer la première catégorie
             </a>
         </div>
@@ -153,4 +151,3 @@ if (typeof lucide !== 'undefined') {
 }
 </script>
 {% endblock %}
-

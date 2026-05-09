@@ -10,12 +10,15 @@
 #}
 {% if items is defined and items|length > 0 %}
 <nav aria-label="Fil d'Ariane">
-    <ol class="breadcrumb">
+    <ol class="flex flex-wrap items-center gap-1 text-sm text-muted-foreground list-none p-0 m-0">
         {% for item in items %}
-            <li class="breadcrumb-item {{ loop.last ? 'active' : '' }}"
+            <li class="flex items-center gap-1 {% if loop.last %}text-foreground font-medium{% endif %}"
                 {% if loop.last %}aria-current="page"{% endif %}>
+                {% if not loop.first %}
+                    <i data-lucide="chevron-right" width="14" height="14" class="shrink-0" aria-hidden="true"></i>
+                {% endif %}
                 {% if not loop.last and item.url is defined %}
-                    <a href="{{ item.url }}">{{ item.label }}</a>
+                    <a href="{{ item.url }}" class="hover:text-foreground transition-colors no-underline">{{ item.label }}</a>
                 {% else %}
                     {{ item.label }}
                 {% endif %}

@@ -52,169 +52,179 @@
     ]
 }{% endif %}{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/tools/tool_seo.scss') }}" data-turbo-track="reload">
-{% endblock %}
+{% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
 
 {% block body %}
-    <div class="tool-seo-page">
-        <!-- Hero Section -->
-        <section class="tool-seo-hero">
-            <div class="container">
-                {% include 'components/tool_breadcrumb.html.twig' with { tool_name: tool.name } %}
-                <div class="tool-seo-hero__content">
-                    <div class="tool-seo-hero__badge">
-                        <span class="badge-dot"></span>
-                        Outil gratuit • Sans installation • RGPD
-                    </div>
-                    <h1 class="tool-seo-hero__title">{{ tool.name }}</h1>
-                    <p class="tool-seo-hero__description">{{ tool.description }}</p>
-                    {% set meta = tool_meta(tool.slug) %}
-                    {% if meta %}
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="badge bg-secondary">Niveau : {{ meta.level }}</span>
-                        {% for tag in meta.tags %}
-                        <span class="badge bg-light text-dark">{{ tag }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    <div class="tool-seo-hero__cta">
-                        {% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
-                        <a href="{{ path(tool_route) }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-play-circle me-2" aria-hidden="true"></i>
-                            Utiliser l'outil gratuitement
-                        </a>
-                        <a href="#fonctionnalites" class="btn btn-outline-primary btn-lg">
-                            En savoir plus
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div class="tool-seo-page">
 
-        <!-- Description Section -->
-        <section class="tool-seo-description">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <div class="tool-seo-description__content">
-                            <h2>Qu'est-ce que {{ tool.name }} ?</h2>
-                            <p class="lead">{{ tool.long_description }}</p>
-                        </div>
-                        {% if tool.when_use is defined and tool.when_use|length > 0 %}
-                        <div class="row mt-4">
-                            <div class="col-lg-8 mx-auto">
-                                <h3 class="h5 fw-bold mb-2">Quand utiliser cette méthode en QSE ?</h3>
-                                <ul class="mb-0">
-                                    {% for item in tool.when_use %}
-                                    <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </section>
+    {# ══ HERO ══════════════════════════════════════════════════════════════ #}
+    <section class="tool-seo-hero">
+        <div class="container">
+            {% include 'components/tool_breadcrumb.html.twig' with { tool_name: tool.name } %}
 
-        <!-- Features Section -->
-        <section id="fonctionnalites" class="tool-seo-features">
-            <div class="container">
-                <h2 class="section-title">Fonctionnalités</h2>
-                <div class="row g-4">
-                    {% for feature in tool.features %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="feature-card">
-                            <div class="feature-card__icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <h3 class="feature-card__title">{{ feature }}</h3>
-                        </div>
-                    </div>
+            <div class="tool-seo-hero__content">
+                <div class="tool-seo-hero__badge">
+                    <span class="badge-dot"></span>
+                    Outil gratuit • Sans installation • RGPD
+                </div>
+
+                <h1 class="tool-seo-hero__title">{{ tool.name }}</h1>
+                <p class="tool-seo-hero__description">{{ tool.description }}</p>
+
+                {# Badges niveau / tags #}
+                {% set meta = tool_meta(tool.slug) %}
+                {% if meta %}
+                <div class="flex flex-wrap gap-2 justify-center mb-6">
+                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold" style="background:rgba(255,255,255,0.2);color:#fff;">
+                        Niveau : {{ meta.level }}
+                    </span>
+                    {% for tag in meta.tags %}
+                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs" style="background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);">
+                        {{ tag }}
+                    </span>
                     {% endfor %}
                 </div>
-            </div>
-        </section>
+                {% endif %}
 
-        <!-- Use Cases Section -->
-        <section class="tool-seo-use-cases">
-            <div class="container">
-                <h2 class="section-title">Cas d'usage</h2>
-                <div class="row g-4">
-                    {% for useCase in tool.use_cases %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="use-case-card">
-                            <div class="use-case-card__icon">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <p class="use-case-card__text">{{ useCase }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="tool-seo-cta">
-            <div class="container">
-                <div class="tool-seo-cta__content">
-                    <h2>Prêt à commencer ?</h2>
-                    <p>Créez votre première analyse en quelques minutes, sans inscription requise.</p>
-                    {% set tool_route = tool.slug == '5-pourquoi' ? 'app_fivewhy_index' : (tool.slug == '8d' ? 'app_eightd_index' : 'app_' ~ tool.slug ~ '_index') %}
-                    <a href="{{ path(tool_route) }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-rocket me-2" aria-hidden="true"></i>
-                        Commencer maintenant
+                <div class="tool-seo-hero__cta">
+                    <a href="{{ path(tool_route) }}" class="btn-hero-primary">
+                        <i class="fas fa-play-circle" aria-hidden="true"></i>
+                        Utiliser l'outil gratuitement
+                    </a>
+                    <a href="#fonctionnalites" class="btn-hero-outline">
+                        En savoir plus
                     </a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- FAQ Section -->
-        {% if tool.faq is defined and tool.faq|length > 0 %}
-        <section class="tool-seo-faq">
-            <div class="container">
-                <h2 class="section-title">Questions fréquentes</h2>
-                <div class="faq-list">
-                    {% for item in tool.faq %}
-                    <div class="faq-item">
-                        <h3 class="faq-question">{{ item.q }}</h3>
-                        <div class="faq-answer"><p>{{ item.a }}</p></div>
-                    </div>
-                    {% endfor %}
+    {# ══ DESCRIPTION ════════════════════════════════════════════════════════ #}
+    <section class="tool-seo-description">
+        <div class="container">
+            <div class="tool-seo-description__grid">
+
+                <div class="tool-seo-description__content">
+                    <h2>Qu'est-ce que {{ tool.name }} ?</h2>
+                    <p>{{ tool.long_description }}</p>
                 </div>
-            </div>
-        </section>
-        {% endif %}
 
-        <!-- Maillage : outils complémentaires -->
-        {% if tool.related_tools is defined and tool.related_tools|length > 0 %}
-        <section class="tool-seo-related py-5 bg-light">
-            <div class="container">
-                <h2 class="section-title mb-4">Outils complémentaires</h2>
-                <div class="row g-3 justify-content-center">
-                    {% for related in tool.related_tools %}
-                    {% set related_route = related.slug == '5-pourquoi' ? 'app_tool_seo_5pourquoi' : (related.slug == '8d' ? 'app_tool_seo_8d' : 'app_tool_seo_' ~ related.slug) %}
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <a href="{{ path(related_route) }}" class="card border text-decoration-none h-100 tool-seo-related-card">
-                            <div class="card-body d-flex align-items-center gap-3 p-3">
-                                <div class="bg-{{ related.color }} bg-opacity-10 text-{{ related.color }} rounded-2 p-2 flex-shrink-0">
-                                    <i data-lucide="{{ related.icon }}" width="20" height="20"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-semibold small text-dark">{{ related.name }}</div>
-                                    <div class="text-muted small">En savoir plus →</div>
-                                </div>
-                            </div>
-                        </a>
+                {% if tool.when_use is defined and tool.when_use|length > 0 %}
+                <aside class="tool-seo-description__aside">
+                    <h3>Quand utiliser cette méthode en QSE ?</h3>
+                    <ul>
+                        {% for item in tool.when_use %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </aside>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+
+    {# ══ FONCTIONNALITÉS ════════════════════════════════════════════════════ #}
+    <section id="fonctionnalites" class="tool-seo-features">
+        <div class="container">
+            <h2 class="section-title">Fonctionnalités</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for feature in tool.features %}
+                <div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="feature-card__title">{{ feature }}</h3>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
-        </section>
-        {% endif %}
+        </div>
+    </section>
 
-    </div>
+    {# ══ CAS D'USAGE ════════════════════════════════════════════════════════ #}
+    <section class="tool-seo-use-cases">
+        <div class="container">
+            <h2 class="section-title">Cas d'usage</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for useCase in tool.use_cases %}
+                <div>
+                    <div class="use-case-card">
+                        <div class="use-case-card__icon">
+                            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                        </div>
+                        <p class="use-case-card__text">{{ useCase }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# ══ CTA ════════════════════════════════════════════════════════════════ #}
+    <section class="tool-seo-cta">
+        <div class="container">
+            <div class="tool-seo-cta__content">
+                <h2>Prêt à commencer ?</h2>
+                <p>Créez votre première analyse en quelques minutes, sans inscription requise.</p>
+                <a href="{{ path(tool_route) }}" class="btn-cta-white">
+                    <i class="fas fa-rocket" aria-hidden="true"></i>
+                    Commencer maintenant
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {# ══ FAQ ════════════════════════════════════════════════════════════════ #}
+    {% if tool.faq is defined and tool.faq|length > 0 %}
+    <section class="tool-seo-faq">
+        <div class="container">
+            <h2 class="section-title">Questions fréquentes</h2>
+
+            <div class="faq-list">
+                {% for item in tool.faq %}
+                <details class="group border border-border rounded-lg mb-2 overflow-hidden"{% if loop.first %} open{% endif %}>
+                    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-foreground select-none list-none hover:bg-accent transition-colors">
+                        {{ item.q }}
+                        <svg class="shrink-0 ml-4 w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </summary>
+                    <div class="px-5 pb-4 text-muted-foreground leading-relaxed">
+                        <p>{{ item.a }}</p>
+                    </div>
+                </details>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {# ══ OUTILS COMPLÉMENTAIRES ═════════════════════════════════════════════ #}
+    {% if tool.related_tools is defined and tool.related_tools|length > 0 %}
+    <section class="py-12 bg-muted/30">
+        <div class="container">
+            <h2 class="text-2xl font-bold text-center mb-8">Outils complémentaires</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-3xl mx-auto">
+                {% for related in tool.related_tools %}
+                {% set related_route = related.slug == '5-pourquoi' ? 'app_tool_seo_5pourquoi' : (related.slug == '8d' ? 'app_tool_seo_8d' : 'app_tool_seo_' ~ related.slug) %}
+                <a href="{{ path(related_route) }}" class="rounded-lg border bg-card no-underline flex tool-seo-related-card">
+                    <div class="flex items-center gap-3 p-4 w-full">
+                        <div class="bg-primary/10 text-primary rounded-lg p-2 flex-shrink-0">
+                            <i data-lucide="{{ related.icon }}" width="20" height="20"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm text-foreground">{{ related.name }}</div>
+                            <div class="text-muted-foreground text-xs mt-0.5">En savoir plus →</div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+</div>
 {% endblock %}

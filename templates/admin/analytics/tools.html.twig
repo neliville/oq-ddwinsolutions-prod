@@ -3,112 +3,104 @@
 {% block title %}Créations par outil | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+<div class="w-full">
+    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
         <div>
-            <h1 class="h3 fw-bold mb-1">Utilisation des outils</h1>
-            <p class="text-muted mb-0">Nombre d’analyses enregistrées par outil (tous utilisateurs) et comparaison avec les exports tracés.</p>
+            <h1 class="text-2xl font-bold mb-1">Utilisation des outils</h1>
+            <p class="text-muted-foreground mb-0">Nombre d'analyses enregistrées par outil (tous utilisateurs) et comparaison avec les exports tracés.</p>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="{{ path('app_admin_export_analytics_index') }}" class="btn btn-outline-primary btn-sm">
-                <i data-lucide="download" class="me-1" width="16" height="16"></i> Exports
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ path('app_admin_export_analytics_index') }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
+                <i data-lucide="download" class="mr-1" width="16" height="16"></i> Exports
             </a>
-            <a href="{{ path('app_admin_analytics_index') }}" class="btn btn-outline-secondary btn-sm">
-                <i data-lucide="bar-chart-2" class="me-1" width="16" height="16"></i> Analytics
+            <a href="{{ path('app_admin_analytics_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline">
+                <i data-lucide="bar-chart-2" class="mr-1" width="16" height="16"></i> Analytics
             </a>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Analyses enregistrées (total)</h6>
-                    <h3 class="fw-bold mb-0">{{ totalCreations|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">Toutes sauvegardes confondues sur les 6 outils</small>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Analyses enregistrées (total)</h6>
+                <h3 class="font-bold mb-0">{{ totalCreations|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">Toutes sauvegardes confondues sur les 6 outils</small>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase small mb-2">Exports tracés (total)</h6>
-                    <h3 class="fw-bold mb-0">{{ totalExports|number_format(0, ',', ' ') }}</h3>
-                    <small class="text-muted">PDF, PNG, JSON… (voir aussi la page Exports)</small>
-                </div>
+        <div class="rounded-lg bg-card shadow-sm h-full">
+            <div class="p-6">
+                <h6 class="text-muted-foreground uppercase text-sm mb-2">Exports tracés (total)</h6>
+                <h3 class="font-bold mb-0">{{ totalExports|number_format(0, ',', ' ') }}</h3>
+                <small class="text-muted-foreground">PDF, PNG, JSON… (voir aussi la page Exports)</small>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-xl-6">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Outils les plus utilisés (créations)</h5>
-                    <small class="text-muted">Classement par nombre d’analyses sauvegardées</small>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div class="rounded-lg bg-card shadow-sm mb-0">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Outils les plus utilisés (créations)</h5>
+                <small class="text-muted-foreground">Classement par nombre d'analyses sauvegardées</small>
+            </div>
+            <div>
+                {% if creationByTool|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                        <thead class="bg-muted/50">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium" scope="col">Rang</th>
+                                <th class="px-4 py-3 text-left font-medium" scope="col">Outil</th>
+                                <th class="px-4 py-3 text-right font-medium" scope="col">Créations</th>
+                                <th class="px-4 py-3 text-right font-medium" scope="col">Part</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in creationByTool %}
+                            <tr>
+                                <td class="px-4 py-3 text-muted-foreground text-sm">{{ loop.index }}</td>
+                                <td class="px-4 py-3"><strong>{{ row.label }}</strong> <span class="text-muted-foreground text-sm">({{ row.key }})</span></td>
+                                <td class="px-4 py-3 text-right font-semibold">{{ row.count|number_format(0, ',', ' ') }}</td>
+                                <td class="px-4 py-3 text-right text-muted-foreground">{{ totalCreations > 0 ? (row.count / totalCreations * 100)|round(1) : 0 }} %</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body p-0">
-                    {% if creationByTool|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Rang</th>
-                                    <th scope="col">Outil</th>
-                                    <th class="text-end" scope="col">Créations</th>
-                                    <th class="text-end" scope="col">Part</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in creationByTool %}
-                                <tr>
-                                    <td class="text-muted small">{{ loop.index }}</td>
-                                    <td><strong>{{ row.label }}</strong> <span class="text-muted small">({{ row.key }})</span></td>
-                                    <td class="text-end fw-semibold">{{ row.count|number_format(0, ',', ' ') }}</td>
-                                    <td class="text-end text-muted">{{ totalCreations > 0 ? (row.count / totalCreations * 100)|round(1) : 0 }} %</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-5 text-muted">Aucune analyse enregistrée.</div>
-                    {% endif %}
-                </div>
+                {% else %}
+                <div class="p-6 text-center py-12 text-muted-foreground">Aucune analyse enregistrée.</div>
+                {% endif %}
             </div>
         </div>
-        <div class="col-xl-6">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Exports par outil (global)</h5>
-                    <small class="text-muted">Volumes d’exports enregistrés par outil</small>
+        <div class="rounded-lg bg-card shadow-sm mb-0">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
+                <h5 class="mb-0">Exports par outil (global)</h5>
+                <small class="text-muted-foreground">Volumes d'exports enregistrés par outil</small>
+            </div>
+            <div>
+                {% if exportsByTool|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                        <thead class="bg-muted/50">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium" scope="col">Outil</th>
+                                <th class="px-4 py-3 text-right font-medium" scope="col">Exports</th>
+                                <th class="px-4 py-3 text-right font-medium" scope="col">Part</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in exportsByTool %}
+                            <tr>
+                                <td class="px-4 py-3">{{ row.tool }}</td>
+                                <td class="px-4 py-3 text-right font-semibold">{{ row.total|number_format(0, ',', ' ') }}</td>
+                                <td class="px-4 py-3 text-right text-muted-foreground">{{ totalExports > 0 ? (row.total / totalExports * 100)|round(1) : 0 }} %</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body p-0">
-                    {% if exportsByTool|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Outil</th>
-                                    <th class="text-end" scope="col">Exports</th>
-                                    <th class="text-end" scope="col">Part</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in exportsByTool %}
-                                <tr>
-                                    <td>{{ row.tool }}</td>
-                                    <td class="text-end fw-semibold">{{ row.total|number_format(0, ',', ' ') }}</td>
-                                    <td class="text-end text-muted">{{ totalExports > 0 ? (row.total / totalExports * 100)|round(1) : 0 }} %</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-5 text-muted">Aucun export tracé.</div>
-                    {% endif %}
-                </div>
+                {% else %}
+                <div class="p-6 text-center py-12 text-muted-foreground">Aucun export tracé.</div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
 
 {% block content %}
 <main class="creations-page" role="main" aria-label="Mes créations">
-    <div class="container-fluid">
+    <div class="w-full">
         <header class="creations-header" data-aos="fade-up">
             <h1>Mes créations</h1>
             <p class="lead">Consultez et gérez toutes vos analyses sauvegardées</p>
@@ -75,27 +75,27 @@
             <h2 class="creations-empty__title">Aucune création sauvegardée</h2>
             <p class="creations-empty__description">Commencez à créer vos analyses avec nos outils et sauvegardez-les pour les retrouver ici.</p>
             <div class="creations-empty__actions">
-                <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                     <i class="fas fa-project-diagram" aria-hidden="true"></i>
                     <span>Créer un diagramme Ishikawa</span>
                 </a>
-                <a href="{{ path('app_fivewhy_index') }}" class="btn btn-info">
+                <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center gap-2 bg-sky-500 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                     <i class="fas fa-question-circle" aria-hidden="true"></i>
                     <span>Créer une analyse 5 Pourquoi</span>
                 </a>
-                <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-outline-secondary">
+                <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors no-underline">
                     <i class="fas fa-list-check" aria-hidden="true"></i>
                     <span>Créer une analyse QQOQCCP</span>
                 </a>
-                <a href="{{ path('app_amdec_index') }}" class="btn btn-outline-danger">
+                <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center gap-2 border border-destructive text-destructive px-4 py-2 rounded-md font-medium hover:bg-destructive/5 transition-colors no-underline">
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                     <span>Créer une analyse AMDEC</span>
                 </a>
-                <a href="{{ path('app_pareto_index') }}" class="btn btn-outline-info">
+                <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center gap-2 border border-sky-500 text-sky-600 px-4 py-2 rounded-md font-medium hover:bg-sky-50 transition-colors no-underline">
                     <i class="fas fa-chart-line" aria-hidden="true"></i>
                     <span>Créer une analyse Pareto</span>
                 </a>
-                <a href="{{ path('app_eightd_index') }}" class="btn btn-outline-warning">
+                <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center gap-2 border border-yellow-500 text-yellow-600 px-4 py-2 rounded-md font-medium hover:bg-yellow-50 transition-colors no-underline">
                     <i class="fas fa-layer-group" aria-hidden="true"></i>
                     <span>Lancer une méthode 8D</span>
                 </a>
@@ -109,7 +109,7 @@
                     <i class="fas fa-project-diagram" aria-hidden="true"></i>
                     <span>Diagrammes Ishikawa</span>
                 </h2>
-                <span class="badge bg-primary">{{ ishikawaRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-semibold">{{ ishikawaRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in ishikawaRecords %}
@@ -137,12 +137,11 @@
                             <button 
                                 class="creation-btn creation-btn--delete" 
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-ishikawa-{{ record.id }}"
+                                data-modal-open="delete-ishikawa-{{ record.id }}"
                                 aria-label="Supprimer le diagramme Ishikawa {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                         </div>
                     </div>
@@ -167,7 +166,7 @@
                     <i class="fas fa-question-circle" aria-hidden="true"></i>
                     <span>Analyses 5 Pourquoi</span>
                 </h2>
-                <span class="badge bg-info">{{ fiveWhyRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold">{{ fiveWhyRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in fiveWhyRecords %}
@@ -195,12 +194,11 @@
                             <button 
                                 class="creation-btn creation-btn--delete" 
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-fivewhy-{{ record.id }}"
+                                data-modal-open="delete-fivewhy-{{ record.id }}"
                                 aria-label="Supprimer l'analyse 5 Pourquoi {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                         </div>
                     </div>
@@ -225,7 +223,7 @@
                     <i class="fas fa-list-check" aria-hidden="true"></i>
                     <span>Analyses QQOQCCP</span>
                 </h2>
-                <span class="badge bg-secondary">{{ qqoqccpRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ qqoqccpRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in qqoqccpRecords %}
@@ -259,12 +257,11 @@
                             <button 
                                 class="creation-btn creation-btn--delete" 
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-qqoqccp-{{ record.id }}"
+                                data-modal-open="delete-qqoqccp-{{ record.id }}"
                                 aria-label="Supprimer l'analyse QQOQCCP {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                         </div>
                     </div>
@@ -289,7 +286,7 @@
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                     <span>Analyses AMDEC</span>
                 </h2>
-                <span class="badge bg-danger">{{ amdecRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">{{ amdecRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in amdecRecords %}
@@ -323,12 +320,11 @@
                             <button
                                 class="creation-btn creation-btn--delete"
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-amdec-{{ record.id }}"
+                                data-modal-open="delete-amdec-{{ record.id }}"
                                 aria-label="Supprimer l'analyse AMDEC {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                             {% component DeleteConfirmationModal with {
                                 id: 'delete-amdec-' ~ record.id,
@@ -353,7 +349,7 @@
                     <i class="fas fa-chart-line" aria-hidden="true"></i>
                     <span>Analyses Pareto</span>
                 </h2>
-                <span class="badge bg-info">{{ paretoRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold">{{ paretoRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in paretoRecords %}
@@ -387,12 +383,11 @@
                             <button
                                 class="creation-btn creation-btn--delete"
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-pareto-{{ record.id }}"
+                                data-modal-open="delete-pareto-{{ record.id }}"
                                 aria-label="Supprimer l'analyse Pareto {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                             {% component DeleteConfirmationModal with {
                                 id: 'delete-pareto-' ~ record.id,
@@ -417,7 +412,7 @@
                     <i class="fas fa-layer-group" aria-hidden="true"></i>
                     <span>Rapports Méthode 8D</span>
                 </h2>
-                <span class="badge bg-warning text-dark">{{ eightDRecords|length }}</span>
+                <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-700 px-2.5 py-0.5 text-xs font-semibold">{{ eightDRecords|length }}</span>
             </div>
             <div class="creations-grid">
                 {% for record in eightDRecords %}
@@ -451,12 +446,11 @@
                             <button
                                 class="creation-btn creation-btn--delete"
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#delete-eightd-{{ record.id }}"
+                                data-modal-open="delete-eightd-{{ record.id }}"
                                 aria-label="Supprimer le rapport 8D {{ record.title }}"
                             >
                                 <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="visually-hidden">Supprimer</span>
+                                <span class="sr-only">Supprimer</span>
                             </button>
                             {% component DeleteConfirmationModal with {
                                 id: 'delete-eightd-' ~ record.id,
@@ -480,7 +474,7 @@
 
 {% block stylesheets %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('styles/tools/creations.scss') }}" data-turbo-track="reload">
+<link rel="stylesheet" href="{{ asset('styles/tools/creations.css') }}" data-turbo-track="reload">
 <!-- Toastify CSS pour les notifications (même style que Ishikawa / exports PDF) -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 {% endblock %}

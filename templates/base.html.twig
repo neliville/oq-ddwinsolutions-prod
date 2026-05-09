@@ -102,7 +102,7 @@
     </noscript>
 
     <!-- Custom CSS (critique pour le premier rendu, un seul fichier bloquant) -->
-    <link href="{{ asset('styles/app.scss') }}" rel="stylesheet">
+    <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
 
     {# Import map + app.js : DOIT être dans le head pour que @hotwired/turbo soit résolu avant tout chargement de module #}
     {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -199,7 +199,8 @@
 
 <body{% block body_attributes %}{% endblock %}>
     {# Skip link pour accessibilité - visible uniquement au focus clavier #}
-    <a href="#main-content" class="visually-hidden-focusable btn btn-primary position-absolute top-0 start-0 m-2" style="z-index: 9999;">
+    <a href="#main-content"
+       class="absolute top-2 left-2 -translate-y-[200%] focus:translate-y-0 z-[9999] inline-flex items-center bg-primary text-primary-foreground px-4 py-2 rounded-md no-underline transition-transform duration-150 font-medium">
         Aller au contenu principal
     </a>
 
@@ -264,7 +265,7 @@
     {% endif %}
 
     {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
-    <div data-controller="notifications" class="d-none" aria-hidden="true"></div>
+    <div data-controller="notifications" class="hidden" aria-hidden="true"></div>
 
     {# Modal de confirmation global réutilisable #}
     {% component ConfirmationModal with {
@@ -272,8 +273,7 @@
         title: 'Confirmation',
         message: 'Êtes-vous sûr de vouloir continuer ?',
         confirmText: 'Confirmer',
-        cancelText: 'Annuler',
-        confirmClass: 'btn-primary'
+        cancelText: 'Annuler'
     } %}
     {% endcomponent %}
 

@@ -3,27 +3,27 @@
 {% block title %}Logs d'administration | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 fw-bold mb-1">Logs d'administration</h1>
-            <p class="text-muted mb-0">Historique des actions d'administration</p>
+            <h1 class="text-2xl font-bold mb-1">Logs d'administration</h1>
+            <p class="text-muted-foreground mb-0">Historique des actions d'administration</p>
         </div>
         <div>
-            <a href="{{ path('app_admin_logs_export', app.request.query.all) }}" class="btn btn-sm btn-outline-primary">
-                <i data-lucide="download" width="16" height="16" class="me-1"></i>
+            <a href="{{ path('app_admin_logs_export', app.request.query.all) }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
+                <i data-lucide="download" width="16" height="16" class="mr-1"></i>
                 Exporter (CSV)
             </a>
         </div>
     </div>
 
     <!-- Filtres -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" action="{{ path('app_admin_logs_index') }}" class="row g-3">
-                <div class="col-md-2">
-                    <label for="action" class="form-label small">Action</label>
+    <div class="rounded-lg bg-card shadow-sm mb-6">
+        <div class="p-6">
+            <form method="get" action="{{ path('app_admin_logs_index') }}" class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 md:col-span-2">
+                    <label for="action" class="form-label text-sm">Action</label>
                     <select name="action" id="action" class="form-select form-select-sm">
                         <option value="">Toutes</option>
                         {% for actionItem in actions %}
@@ -33,8 +33,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label for="entityType" class="form-label small">Entité</label>
+                <div class="col-span-12 md:col-span-2">
+                    <label for="entityType" class="form-label text-sm">Entité</label>
                     <select name="entityType" id="entityType" class="form-select form-select-sm">
                         <option value="">Toutes</option>
                         {% for entityTypeItem in entityTypes %}
@@ -44,8 +44,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label for="user" class="form-label small">Utilisateur</label>
+                <div class="col-span-12 md:col-span-3">
+                    <label for="user" class="form-label text-sm">Utilisateur</label>
                     <select name="user" id="user" class="form-select form-select-sm">
                         <option value="">Tous</option>
                         {% for userItem in users %}
@@ -55,8 +55,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label for="period" class="form-label small">Période</label>
+                <div class="col-span-12 md:col-span-2">
+                    <label for="period" class="form-label text-sm">Période</label>
                     <select name="period" id="period" class="form-select form-select-sm">
                         <option value="today" {{ currentPeriod == 'today' ? 'selected' : '' }}>Aujourd'hui</option>
                         <option value="week" {{ currentPeriod == 'week' ? 'selected' : '' }}>7 jours</option>
@@ -64,13 +64,13 @@
                         <option value="year" {{ currentPeriod == 'year' ? 'selected' : '' }}>1 an</option>
                     </select>
                 </div>
-                <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button type="submit" class="btn btn-sm btn-primary">
-                        <i data-lucide="filter" width="14" height="14" class="me-1"></i>
+                <div class="col-span-12 md:col-span-3 flex items-end gap-2">
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                        <i data-lucide="filter" width="14" height="14" class="mr-1"></i>
                         Filtrer
                     </button>
-                    <a href="{{ path('app_admin_logs_index') }}" class="btn btn-sm btn-outline-secondary">
-                        <i data-lucide="x" width="14" height="14" class="me-1"></i>
+                    <a href="{{ path('app_admin_logs_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline">
+                        <i data-lucide="x" width="14" height="14" class="mr-1"></i>
                         Réinitialiser
                     </a>
                 </div>
@@ -101,8 +101,8 @@
                                 <small>{{ log.createdAt|date('d/m/Y H:i:s') }}</small>
                             </td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                <div class="flex items-center">
+                                    <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center mr-2" style="width: 32px; height: 32px;">
                                         <i data-lucide="user" width="16" height="16"></i>
                                     </div>
                                     <div>
@@ -112,30 +112,30 @@
                             </td>
                             <td>
                                 {% if log.action == 'CREATE' %}
-                                <span class="badge bg-success">{{ log.action }}</span>
+                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
                                 {% elseif log.action == 'UPDATE' %}
-                                <span class="badge bg-primary">{{ log.action }}</span>
+                                <span class="inline-flex items-center rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
                                 {% elseif log.action == 'DELETE' %}
-                                <span class="badge bg-danger">{{ log.action }}</span>
+                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
                                 {% else %}
-                                <span class="badge bg-secondary">{{ log.action }}</span>
+                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if log.entityType %}
                                 <code class="small">{{ log.entityType|split('\\')|last }}</code>
                                 {% if log.entityId %}
-                                <br><small class="text-muted">ID: {{ log.entityId }}</small>
+                                <br><small class="text-muted-foreground">ID: {{ log.entityId }}</small>
                                 {% endif %}
                                 {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted-foreground">-</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <small>{{ log.description|default('-') }}</small>
                             </td>
                             <td>
-                                <small class="text-muted">{{ log.ipAddress|default('-') }}</small>
+                                <small class="text-muted-foreground">{{ log.ipAddress|default('-') }}</small>
                             </td>
                         </tr>
                         {% endfor %}
@@ -144,40 +144,38 @@
             </div>
         {% endblock %}
         {% block list_cards %}
-            <div class="row g-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for log in logs %}
-                <div class="col-12 col-md-6 col-xl-4">
-                    <article class="card border-0 shadow-sm admin-list-item-card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                <span class="small text-muted">{{ log.createdAt|date('d/m/Y H:i:s') }}</span>
-                                {% if log.action == 'CREATE' %}
-                                <span class="badge bg-success">{{ log.action }}</span>
-                                {% elseif log.action == 'UPDATE' %}
-                                <span class="badge bg-primary">{{ log.action }}</span>
-                                {% elseif log.action == 'DELETE' %}
-                                <span class="badge bg-danger">{{ log.action }}</span>
-                                {% else %}
-                                <span class="badge bg-secondary">{{ log.action }}</span>
-                                {% endif %}
-                            </div>
-                            <p class="small fw-semibold mb-1 text-break">{{ log.user.email }}</p>
-                            {% if log.entityType %}
-                            <p class="small mb-2"><code>{{ log.entityType|split('\\')|last }}</code>{% if log.entityId %} <span class="text-muted">#{{ log.entityId }}</span>{% endif %}</p>
+                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
+                    <div class="p-6 flex flex-col">
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <span class="text-sm text-muted-foreground">{{ log.createdAt|date('d/m/Y H:i:s') }}</span>
+                            {% if log.action == 'CREATE' %}
+                            <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
+                            {% elseif log.action == 'UPDATE' %}
+                            <span class="inline-flex items-center rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
+                            {% elseif log.action == 'DELETE' %}
+                            <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
+                            {% else %}
+                            <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
                             {% endif %}
-                            <p class="small flex-grow-1 mb-2">{{ log.description|default('—')|slice(0, 200) }}{% if log.description|length > 200 %}…{% endif %}</p>
-                            <p class="small text-muted mb-0 mt-auto pt-2 border-top">IP : {{ log.ipAddress|default('—') }}</p>
                         </div>
-                    </article>
-                </div>
+                        <p class="text-sm font-semibold mb-1 break-all">{{ log.user.email }}</p>
+                        {% if log.entityType %}
+                        <p class="text-sm mb-2"><code>{{ log.entityType|split('\\')|last }}</code>{% if log.entityId %} <span class="text-muted-foreground">#{{ log.entityId }}</span>{% endif %}</p>
+                        {% endif %}
+                        <p class="text-sm flex-1 mb-2">{{ log.description|default('—')|slice(0, 200) }}{% if log.description|length > 200 %}…{% endif %}</p>
+                        <p class="text-sm text-muted-foreground mb-0 mt-auto pt-2 border-t border-border">IP : {{ log.ipAddress|default('—') }}</p>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}
             {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-top rounded-bottom">
+            <div class="card-footer bg-white border-t border-border rounded-b">
                 <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-content-center flex-wrap">
+                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
                         {% if currentPage > 1 %}
                         <li class="page-item">
                             <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: currentPage - 1}) }}">
@@ -216,10 +214,10 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="card border-0 shadow-sm">
-        <div class="card-body text-center py-5">
-            <i data-lucide="file-text" width="48" height="48" class="text-muted mb-3"></i>
-            <p class="text-muted mb-0">Aucun log{{ currentAction or currentEntityType or currentUserId ? ' (avec les filtres appliqués)' : '' }}</p>
+    <div class="rounded-lg bg-card shadow-sm">
+        <div class="p-6 text-center py-12">
+            <i data-lucide="file-text" width="48" height="48" class="text-muted-foreground mb-4"></i>
+            <p class="text-muted-foreground mb-0">Aucun log{{ currentAction or currentEntityType or currentUserId ? ' (avec les filtres appliqués)' : '' }}</p>
         </div>
     </div>
     {% endif %}

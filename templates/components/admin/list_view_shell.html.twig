@@ -1,33 +1,33 @@
 {# Paramètres : storage_key (requis), list_caption (optionnel) #}
-<div class="admin-list-view-shell card border-0 shadow-sm mb-0" data-controller="admin-list-view" data-admin-list-view-storage-key-value="{{ storage_key }}">
-    <div class="card-header bg-white border-bottom py-2 px-3 d-flex flex-wrap align-items-center justify-content-between gap-2 rounded-top">
-        <span class="small text-muted">{{ list_caption|default('Affichage de la liste') }}</span>
-        <div class="btn-group btn-group-sm" role="group" aria-label="Basculer entre tableau et cartes">
+<div class="admin-list-view-shell rounded-lg bg-card shadow-sm mb-0" data-controller="admin-list-view" data-admin-list-view-storage-key-value="{{ storage_key }}">
+    <div class="px-3 py-2 bg-white border-b border-border flex flex-wrap items-center justify-between gap-2 rounded-t-lg">
+        <span class="text-sm text-muted-foreground">{{ list_caption|default('Affichage de la liste') }}</span>
+        <div class="flex" role="group" aria-label="Basculer entre tableau et cartes">
             <button type="button"
-                    class="btn btn-primary d-inline-flex align-items-center gap-1"
+                    class="inline-flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 text-sm rounded-l-md"
                     data-admin-list-view-target="tableBtn"
                     data-action="admin-list-view#setTable"
                     aria-pressed="true"
                     title="Vue tableau">
                 <i data-lucide="list" width="16" height="16" aria-hidden="true"></i>
-                <span class="d-none d-sm-inline">Tableau</span>
+                <span class="hidden sm:inline">Tableau</span>
             </button>
             <button type="button"
-                    class="btn btn-outline-secondary d-inline-flex align-items-center gap-1"
+                    class="inline-flex items-center gap-1 border border-border text-foreground bg-transparent px-2.5 py-1 text-sm rounded-r-md"
                     data-admin-list-view-target="cardsBtn"
                     data-action="admin-list-view#setCards"
                     aria-pressed="false"
                     title="Vue cartes">
                 <i data-lucide="layout-grid" width="16" height="16" aria-hidden="true"></i>
-                <span class="d-none d-sm-inline">Cartes</span>
+                <span class="hidden sm:inline">Cartes</span>
             </button>
         </div>
     </div>
-    <div class="card-body p-0">
+    <div class="p-0">
         <div data-admin-list-view-target="tablePanel" class="admin-list-view-panel">
             {% block list_table %}{% endblock %}
         </div>
-        <div data-admin-list-view-target="cardsPanel" class="admin-list-view-panel admin-list-view-cards p-3 d-none">
+        <div data-admin-list-view-target="cardsPanel" class="admin-list-view-panel admin-list-view-cards p-3 hidden">
             {% block list_cards %}{% endblock %}
         </div>
     </div>

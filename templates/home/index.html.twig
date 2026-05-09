@@ -15,7 +15,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
 
 {% block stylesheets %}
     {{ parent() }}
-    {# Les styles home (Preuve sociale, FAQ, etc.) sont déjà inclus dans app.scss via @use "site/home" #}
+    {# Les styles home (Preuve sociale, FAQ, etc.) sont déjà inclus dans app.css via @import "site/home.css" #}
 {% endblock %}
 
 {% block body %}
@@ -36,13 +36,13 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                         </p>
 
                         <div class="hero-cta">
-                            <a href="{{ path('app_outils_index') }}" class="btn btn-primary btn-hero-primary">
+                            <a href="{{ path('app_outils_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity no-underline btn-hero-primary">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                                     <path d="M10 3V17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 Accéder aux outils gratuitement
                             </a>
-                            <a href="{{ path('app_register') }}" class="btn btn-secondary btn-hero-secondary">Créer un compte gratuit</a>
+                            <a href="{{ path('app_register') }}" class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-5 py-3 rounded-lg font-medium hover:opacity-90 transition-colors no-underline btn-hero-secondary">Créer un compte gratuit</a>
                         </div>
 
                         <div class="hero-stats">
@@ -74,8 +74,8 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 </div>
                                 <div class="mockup-dashboard">
                                     <div class="dashboard-header">
-                                        <p class="mb-0 fw-semibold">Tableau de bord</p>
-                                        <p class="mb-0 small text-muted">Bienvenue, professionnel QSE</p>
+                                        <p class="font-semibold">Tableau de bord</p>
+                                        <p class="text-sm text-muted-foreground">Bienvenue, professionnel QSE</p>
                                     </div>
                                     <div class="dashboard-stats">
                                         <div class="stat-card">
@@ -184,7 +184,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                     <span>Sauvegarde automatique et historique de vos analyses.</span>
                                 </li>
                             </ul>
-                            <a href="{{ path('app_ishikawa_index') }}" class="btn btn-primary">
+                            <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                                 Créer un diagramme
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                                     <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -251,7 +251,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <span class="badge">Export PDF</span>
                                 <span class="badge">Guide intégré</span>
                             </div>
-                            <a href="{{ path('app_fivewhy_index') }}" class="btn btn-primary">
+                            <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                                 Utiliser l'outil
                             </a>
                         </div>
@@ -272,7 +272,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <span class="badge">Rapport généré</span>
                                 <span class="badge">Sauvegarde sécurisée</span>
                             </div>
-                            <a href="{{ path('app_qqoqccp_index') }}" class="btn btn-secondary">
+                            <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-colors no-underline">
                                 Utiliser l'outil
                             </a>
                         </div>
@@ -292,7 +292,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <span class="badge">Rapport intelligent</span>
                                 <span class="badge">Sauvegarde sécurisée</span>
                             </div>
-                            <a href="{{ path('app_amdec_index') }}" class="btn btn-danger">
+                            <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center gap-2 bg-destructive text-destructive-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                                 Utiliser l'outil
                             </a>
                         </div>
@@ -313,7 +313,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <span class="badge">Suivi progression</span>
                                 <span class="badge">Exports PDF & JSON</span>
                             </div>
-                            <a href="{{ path('app_eightd_index') }}" class="btn btn-warning">
+                            <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                                 Utiliser l'outil
                             </a>
                         </div>
@@ -334,7 +334,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <span class="badge">Graphique interactif</span>
                                 <span class="badge">Export PDF & JSON</span>
                             </div>
-                            <a href="{{ path('app_pareto_index') }}" class="btn btn-info">
+                            <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
                                 Utiliser l'outil
                             </a>
                         </div>
@@ -353,11 +353,11 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                             <div class="tool-card__tags">
                                 <span class="badge">Bientôt disponible</span>
                             </div>
-                            <button class="btn btn-secondary" disabled>À venir</button>
+                            <button class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium opacity-50 cursor-not-allowed" disabled>À venir</button>
                         </div>
                     </div>
                     <div class="tools-cta">
-                        <a href="{{ path('app_outils_index') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ path('app_outils_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity no-underline">
                             Accéder aux outils
                         </a>
                     </div>
@@ -525,8 +525,8 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                     <h2>Prêt à structurer votre démarche QSE ?</h2>
                     <p>Rejoignez les TPE et PME qui utilisent nos outils pour gagner du temps.</p>
                     <div class="cta-buttons">
-                        <a href="{{ path('app_register') }}" class="btn btn-white">Créer un compte gratuit</a>
-                        <a href="{{ path('app_outils_index') }}" class="btn btn-outline-white">Découvrir les outils</a>
+                        <a href="{{ path('app_register') }}" class="inline-flex items-center gap-2 bg-white text-primary px-5 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity no-underline">Créer un compte gratuit</a>
+                        <a href="{{ path('app_outils_index') }}" class="inline-flex items-center gap-2 border border-white/80 text-white px-5 py-3 rounded-lg font-medium hover:bg-white/10 transition-colors no-underline">Découvrir les outils</a>
                     </div>
                 </div>
             </div>

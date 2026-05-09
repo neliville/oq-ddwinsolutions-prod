@@ -3,76 +3,70 @@
 {% block title %}Gestion de la newsletter | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
+            <span class="flex-1 text-sm">{{ message }}</span>
+            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
         </div>
     {% endfor %}
     {% for message in app.flashes('danger') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
+            <span class="flex-1 text-sm">{{ message }}</span>
+            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
         </div>
     {% endfor %}
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 fw-bold mb-1">Gestion de la newsletter</h1>
-            <p class="text-muted mb-0">Gérer les abonnés à la newsletter</p>
+            <h1 class="text-2xl font-bold mb-1">Gestion de la newsletter</h1>
+            <p class="text-muted-foreground mb-0">Gérer les abonnés à la newsletter</p>
         </div>
         <div>
-            <a href="{{ path('app_admin_newsletter_export', {filter: 'active'}) }}" class="btn btn-sm btn-outline-primary">
-                <i data-lucide="download" width="16" height="16" class="me-1"></i>
+            <a href="{{ path('app_admin_newsletter_export', {filter: 'active'}) }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
+                <i data-lucide="download" width="16" height="16" class="mr-1"></i>
                 Exporter (CSV)
             </a>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Abonnés actifs</h6>
-                            <h3 class="fw-bold mb-0">{{ activeCount }}</h3>
-                        </div>
-                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="users" width="24" height="24" class="text-success"></i>
-                        </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Abonnés actifs</h6>
+                        <h3 class="font-bold mb-0">{{ activeCount }}</h3>
+                    </div>
+                    <div class="bg-green-100 rounded-full p-3">
+                        <i data-lucide="users" width="24" height="24" class="text-green-600"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Désabonnés</h6>
-                            <h3 class="fw-bold mb-0">{{ inactiveCount }}</h3>
-                        </div>
-                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="user-x" width="24" height="24" class="text-danger"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Désabonnés</h6>
+                        <h3 class="font-bold mb-0">{{ inactiveCount }}</h3>
+                    </div>
+                    <div class="bg-red-100 rounded-full p-3">
+                        <i data-lucide="user-x" width="24" height="24" class="text-destructive"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted text-uppercase small mb-2">Total</h6>
-                            <h3 class="fw-bold mb-0">{{ total }}</h3>
-                        </div>
-                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                            <i data-lucide="mail" width="24" height="24" class="text-primary"></i>
-                        </div>
+        <div class="rounded-lg bg-card shadow-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Total</h6>
+                        <h3 class="font-bold mb-0">{{ total }}</h3>
+                    </div>
+                    <div class="bg-primary/10 rounded-full p-3">
+                        <i data-lucide="mail" width="24" height="24" class="text-primary"></i>
                     </div>
                 </div>
             </div>
@@ -80,19 +74,19 @@
     </div>
 
     <!-- Filtres -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="btn-group" role="group" aria-label="Filtres">
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'all'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+    <div class="rounded-lg bg-card shadow-sm mb-6">
+        <div class="p-6">
+            <div class="flex flex-wrap gap-1" role="group" aria-label="Filtres">
+                <a href="{{ path('app_admin_newsletter_index', {filter: 'all'}) }}"
+                   class="{{ currentFilter == 'all' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Tous ({{ total }})
                 </a>
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'active'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'active' ? 'btn-primary' : 'btn-outline-primary' }}">
+                <a href="{{ path('app_admin_newsletter_index', {filter: 'active'}) }}"
+                   class="{{ currentFilter == 'active' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Actifs ({{ activeCount }})
                 </a>
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'inactive'}) }}" 
-                   class="btn btn-sm {{ currentFilter == 'inactive' ? 'btn-primary' : 'btn-outline-primary' }}">
+                <a href="{{ path('app_admin_newsletter_index', {filter: 'inactive'}) }}"
+                   class="{{ currentFilter == 'inactive' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
                     Inactifs ({{ inactiveCount }})
                 </a>
             </div>
@@ -132,41 +126,41 @@
                             </td>
                             <td>
                                 {% if subscriber.unsubscribedAt %}
-                                <small class="text-muted">{{ subscriber.unsubscribedAt|date('d/m/Y H:i') }}</small>
+                                <small class="text-muted-foreground">{{ subscriber.unsubscribedAt|date('d/m/Y H:i') }}</small>
                                 {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted-foreground">-</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if subscriber.source %}
-                                <span class="badge bg-info">{{ subscriber.source }}</span>
+                                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold">{{ subscriber.source }}</span>
                                 {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-muted-foreground">-</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if subscriber.active %}
-                                <span class="badge bg-success">Actif</span>
+                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">Actif</span>
                                 {% else %}
-                                <span class="badge bg-danger">Inactif</span>
+                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">Inactif</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <div class="btn-group btn-group-sm" role="group">
+                                <div class="flex gap-1" role="group">
                                     {% if subscriber.active %}
-                                    <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="d-inline" data-turbo="false">
+                                    <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline" data-turbo="false">
                                         <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
-                                        <button type="submit" class="btn btn-outline-warning" title="Désabonner">
+                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors" title="Désabonner">
                                             <i data-lucide="user-x" width="14" height="14"></i>
                                         </button>
                                     </form>
                                     {% endif %}
-                                    <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" 
-                                          class="d-inline" 
+                                    <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}"
+                                          class="inline"
                                           data-turbo="false"
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet abonné ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
-                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
                                             <i data-lucide="trash-2" width="14" height="14"></i>
                                         </button>
                                     </form>
@@ -179,58 +173,56 @@
             </div>
         {% endblock %}
         {% block list_cards %}
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border">
                 <input type="checkbox" class="form-check-input" id="selectAllCards" aria-label="Tout sélectionner (vue cartes)">
-                <label for="selectAllCards" class="small text-muted mb-0">Sélectionner tout</label>
+                <label for="selectAllCards" class="text-sm text-muted-foreground mb-0">Sélectionner tout</label>
             </div>
-            <div class="row g-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for subscriber in subscribers %}
-                <div class="col-12 col-md-6 col-xl-4">
-                    <article class="card border-0 shadow-sm admin-list-item-card h-100 {% if not subscriber.active %}opacity-75{% endif %}">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex gap-2 mb-2">
-                                <input type="checkbox" class="form-check-input subscriber-checkbox flex-shrink-0 mt-1" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
-                                <div class="min-w-0 flex-grow-1">
-                                    <h2 class="h6 fw-semibold mb-1 text-break">{{ subscriber.email }}</h2>
-                                    {% if subscriber.active %}
-                                    <span class="badge bg-success">Actif</span>
-                                    {% else %}
-                                    <span class="badge bg-danger">Inactif</span>
-                                    {% endif %}
-                                    {% if subscriber.source %}
-                                    <span class="badge bg-info ms-1">{{ subscriber.source }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <dl class="row small g-1 mb-3">
-                                <dt class="col-5 text-muted">Inscription</dt>
-                                <dd class="col-7 mb-0">{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</dd>
-                                <dt class="col-5 text-muted">Désabonnement</dt>
-                                <dd class="col-7 mb-0">{{ subscriber.unsubscribedAt ? subscriber.unsubscribedAt|date('d/m/Y H:i') : '—' }}</dd>
-                            </dl>
-                            <div class="d-flex flex-wrap gap-2 mt-auto pt-2 border-top">
+                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full {% if not subscriber.active %}opacity-75{% endif %}">
+                    <div class="p-6 flex flex-col">
+                        <div class="flex gap-2 mb-2">
+                            <input type="checkbox" class="form-check-input subscriber-checkbox shrink-0 mt-1" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
+                            <div class="min-w-0 flex-1">
+                                <h2 class="text-base font-semibold mb-1 break-all">{{ subscriber.email }}</h2>
                                 {% if subscriber.active %}
-                                <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="d-inline" data-turbo="false">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
-                                    <button type="submit" class="btn btn-outline-warning btn-sm"><i data-lucide="user-x" width="14" height="14" class="me-1"></i>Désabonner</button>
-                                </form>
+                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">Actif</span>
+                                {% else %}
+                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">Inactif</span>
                                 {% endif %}
-                                <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" class="d-inline" data-turbo="false" onsubmit="return confirm('Supprimer cet abonné ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i data-lucide="trash-2" width="14" height="14" class="me-1"></i>Supprimer</button>
-                                </form>
+                                {% if subscriber.source %}
+                                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold ml-1">{{ subscriber.source }}</span>
+                                {% endif %}
                             </div>
                         </div>
-                    </article>
-                </div>
+                        <dl class="grid grid-cols-2 text-sm gap-1 mb-4">
+                            <dt class="text-muted-foreground">Inscription</dt>
+                            <dd class="mb-0">{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</dd>
+                            <dt class="text-muted-foreground">Désabonnement</dt>
+                            <dd class="mb-0">{{ subscriber.unsubscribedAt ? subscriber.unsubscribedAt|date('d/m/Y H:i') : '—' }}</dd>
+                        </dl>
+                        <div class="flex flex-wrap gap-2 mt-auto pt-2 border-t border-border">
+                            {% if subscriber.active %}
+                            <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline" data-turbo="false">
+                                <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
+                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors"><i data-lucide="user-x" width="14" height="14" class="mr-1"></i>Désabonner</button>
+                            </form>
+                            {% endif %}
+                            <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" class="inline" data-turbo="false" onsubmit="return confirm('Supprimer cet abonné ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
+                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}
             {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-top rounded-bottom">
+            <div class="card-footer bg-white border-t border-border rounded-b">
                 <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-content-center flex-wrap">
+                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
                         {% if currentPage > 1 %}
                         <li class="page-item">
                             <a class="page-link" href="{{ path('app_admin_newsletter_index', {filter: currentFilter, page: currentPage - 1}) }}">
@@ -269,10 +261,10 @@
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="card border-0 shadow-sm">
-        <div class="card-body text-center py-5">
-            <i data-lucide="users" width="48" height="48" class="text-muted mb-3"></i>
-            <p class="text-muted mb-0">Aucun abonné{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+    <div class="rounded-lg bg-card shadow-sm">
+        <div class="p-6 text-center py-12">
+            <i data-lucide="users" width="48" height="48" class="text-muted-foreground mb-4"></i>
+            <p class="text-muted-foreground mb-0">Aucun abonné{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
         </div>
     </div>
     {% endif %}

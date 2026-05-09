@@ -1,13 +1,13 @@
-<section class="hero-section position-relative overflow-hidden" id="hero">
+<section class="hero-section relative overflow-hidden" id="hero">
     <div class="hero-gradient"></div>
-    <div class="container position-relative">
+    <div class="max-w-7xl mx-auto px-4 relative">
         <div class="reassurance-bar" data-aos="fade-down">
             <span>🔒 Conforme RGPD</span>
             <span>💾 Aucune installation</span>
             <span>📱 Compatible mobile</span>
         </div>
-        <div class="row align-items-center hero-row">
-            <div class="col-lg-6 col-xl-5" data-aos="fade-right">
+        <div class="grid grid-cols-12 items-center hero-row">
+            <div class="lg:col-span-6 xl:col-span-5" data-aos="fade-right">
                 <span class="hero-badge">Suite QSE complète</span>
                 <h1 class="hero-title">Vos outils qualité professionnels, <span>100% gratuits</span></h1>
                 <p class="hero-text">
@@ -15,12 +15,12 @@
                     pour vos audits ISO 9001 en quelques clics.
                 </p>
                 <div class="hero-actions">
-                    <a class="btn btn-primary hero-btn shadow-lg" href="#outils">
-                        <i data-lucide="rocket" class="me-2" aria-hidden="true"></i>
+                    <a class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity hero-btn shadow-lg" href="#outils">
+                        <i data-lucide="rocket" class="mr-2" aria-hidden="true"></i>
                         Commencer maintenant
                     </a>
-                    <a class="btn btn-outline-light hero-btn hero-btn--ghost" href="#avantages">
-                        <i data-lucide="sparkles" class="me-2" aria-hidden="true"></i>
+                    <a class="inline-flex items-center gap-2 border border-white/80 text-white px-5 py-3 rounded-lg font-medium hover:bg-white/10 transition-colors hero-btn hero-btn--ghost" href="#avantages">
+                        <i data-lucide="sparkles" class="mr-2" aria-hidden="true"></i>
                         Découvrir les avantages
                     </a>
                 </div>
@@ -39,12 +39,12 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-lg-6 offset-xl-1" data-aos="fade-left">
+            <div class="lg:col-span-6 xl:col-start-2" data-aos="fade-left">
                 <div class="hero-visual shadow-xl">
                     {% include 'components/media/responsive_picture.html.twig' with {
                         path: 'img/hero.webp',
                         alt: 'Mockup tableau de bord OUTILS-QUALITÉ',
-                        class: 'img-fluid rounded-4',
+                        class: 'w-full h-auto rounded-2xl',
                         width: 1280,
                         height: 800,
                         webp_filter: 'hero_webp',

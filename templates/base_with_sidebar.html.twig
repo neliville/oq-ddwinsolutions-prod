@@ -11,7 +11,7 @@
         {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
     </header>
 {% endif %}
-<div class="d-flex">
+<div class="flex">
     <!-- Overlay pour mobile quand sidebar ouverte -->
     {% if app.user %}
     <div class="sidebar-overlay" id="sidebarOverlay" style="display: none;"></div>
@@ -25,109 +25,8 @@
     {% endif %}
 
     <!-- Contenu principal -->
-    <main id="main-content" class="main-content flex-grow-1{% if app.user %} dashboard-layout{% endif %}" tabindex="-1" {% if app.user %}style="transition: margin-left 0.3s; padding-top: 110px; padding-bottom: 64px;"{% else %}style="padding-top: 76px;"{% endif %}>
+    <main id="main-content" class="main-content grow{% if app.user %} dashboard-layout{% endif %}" tabindex="-1" {% if app.user %}style="transition: margin-left 0.3s;"{% endif %}>
         {% block content %}{% endblock %}
     </main>
 </div>
-
-{% if app.user %}
-<style>
-    /* Styles responsive pour la sidebar */
-    .sidebar-toggle-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        min-height: 44px;
-        min-width: 44px;
-        font-weight: 600;
-        border-radius: 999px;
-    }
-
-    .sidebar-toggle-btn:focus-visible {
-        outline: 3px solid var(--primary-color);
-        outline-offset: 2px;
-    }
-
-    .sidebar-toggle-label {
-        color: var(--dark-color);
-        font-size: 0.95rem;
-    }
-
-    @media (max-width: 1200px) {
-        .sidebar-toggle-label {
-            display: none;
-        }
-    }
-
-    body.sidebar-collapsed .sidebar-overlay {
-        display: none !important;
-        opacity: 0 !important;
-    }
-
-    body.sidebar-collapsed .admin-sidebar {
-        transform: translateX(-100%) !important;
-    }
-
-    @media (min-width: 1201px) {
-        .main-content {
-            margin-left: 280px !important;
-        }
-        .sidebar-overlay {
-            display: none !important;
-        }
-        .admin-sidebar {
-            transform: translateX(0) !important;
-        }
-        body.sidebar-collapsed .admin-sidebar {
-            transform: translateX(-100%) !important;
-        }
-        body.sidebar-collapsed .main-content {
-            margin-left: 0 !important;
-        }
-    }
-
-    @media (max-width: 1200px) {
-        .main-content {
-            margin-left: 0 !important;
-            padding-top: 100px !important;
-            padding-bottom: 56px !important;
-        }
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1019;
-            transition: opacity 0.3s ease;
-        }
-        .sidebar-overlay.show {
-            display: block !important;
-            opacity: 1;
-        }
-        .sidebar-overlay:not(.show) {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        #sidebarToggle {
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        #sidebarToggle:focus-visible {
-            outline: 3px solid var(--primary-color);
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-    }
-</style>
-{% endif %}
 {% endblock %}
-

@@ -3,46 +3,47 @@
 {% block title %}{{ tool.name ?? 'Analyse partagée' }} | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="container py-6">
-    <div class="mb-5">
-        <h1 class="h3 fw-bold mb-2">{{ tool.name ?? 'Analyse partagée' }}</h1>
-        <p class="text-muted mb-0">
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="mb-10">
+        <h1 class="text-2xl font-bold mb-2">{{ tool.name ?? 'Analyse partagée' }}</h1>
+        <p class="text-muted-foreground mb-0">
             Vous consultez une version partagée de cette analyse en lecture seule.
             {% if tool.originRoute is defined %}
-                <a class="ms-1" href="{{ path(tool.originRoute) }}">Retourner à l'outil complet</a>.
+                <a class="ml-1" href="{{ path(tool.originRoute) }}">Retourner à l'outil complet</a>.
             {% endif %}
         </p>
     </div>
 
-    <div class="alert alert-info shadow-sm" role="status">
-        L'affichage interactif complet sera prochainement disponible sur cette page partagée.
-        En attendant, vous pouvez importer l'analyse dans votre espace personnel pour continuer le travail.
+    <div class="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 text-sky-800 px-4 py-3 shadow-sm" role="status">
+        <i data-lucide="info" width="18" height="18" class="mr-2 shrink-0 mt-0.5" aria-hidden="true"></i>
+        <div>L'affichage interactif complet sera prochainement disponible sur cette page partagée.
+        En attendant, vous pouvez importer l'analyse dans votre espace personnel pour continuer le travail.</div>
     </div>
 
-    <div class="card border-0 shadow-sm mt-4">
-        <div class="card-body">
-            <h2 class="h5 fw-semibold mb-3">Résumé de l'analyse</h2>
-            <dl class="row small mb-0">
-                <dt class="col-sm-4 text-muted">Titre</dt>
-                <dd class="col-sm-8">{{ analysis.title }}</dd>
+    <div class="rounded-lg bg-card shadow-sm mt-6">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold mb-3">Résumé de l'analyse</h2>
+            <dl class="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 text-sm mb-0">
+                <dt class="text-muted-foreground font-medium">Titre</dt>
+                <dd>{{ analysis.title }}</dd>
                 {% if analysisData.subject is defined and analysisData.subject %}
-                    <dt class="col-sm-4 text-muted">Sujet</dt>
-                    <dd class="col-sm-8">{{ analysisData.subject }}</dd>
+                    <dt class="text-muted-foreground font-medium">Sujet</dt>
+                    <dd>{{ analysisData.subject }}</dd>
                 {% endif %}
-                <dt class="col-sm-4 text-muted">Partagée par</dt>
-                <dd class="col-sm-8">{{ analysis.user.email ?? 'Utilisateur OUTILS-QUALITÉ' }}</dd>
-                <dt class="col-sm-4 text-muted">Valide jusqu'au</dt>
-                <dd class="col-sm-8">{{ share.expiresAt|date('d/m/Y H:i') }}</dd>
+                <dt class="text-muted-foreground font-medium">Partagée par</dt>
+                <dd>{{ analysis.user.email ?? 'Utilisateur OUTILS-QUALITÉ' }}</dd>
+                <dt class="text-muted-foreground font-medium">Valide jusqu'au</dt>
+                <dd>{{ share.expiresAt|date('d/m/Y H:i') }}</dd>
             </dl>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mt-4">
-        <div class="card-header bg-white border-bottom-0">
-            <h2 class="h6 mb-0">Données du partage</h2>
+    <div class="rounded-lg bg-card shadow-sm mt-6">
+        <div class="p-6 pb-0">
+            <h2 class="text-sm font-semibold mb-0">Données du partage</h2>
         </div>
-        <div class="card-body">
-            <pre class="bg-light p-3 rounded small overflow-auto mb-0">{{ analysisData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+        <div class="p-6">
+            <pre class="bg-muted p-3 rounded text-sm overflow-auto mb-0">{{ analysisData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
         </div>
     </div>
 </div>

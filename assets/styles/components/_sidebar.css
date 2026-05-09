@@ -1,4 +1,4 @@
-// Sidebar — SaaS style
+
 
 .admin-sidebar {
   position: fixed;
@@ -14,7 +14,6 @@
   padding-top: 76px;
   transition: transform 0.3s ease;
 
-  // ── Nav (scrollable, hidden scrollbar) ────────────────────────────────
   .sidebar-nav {
     flex: 1 1 0;
     overflow-y: auto;
@@ -26,7 +25,6 @@
     &::-webkit-scrollbar { display: none; }
   }
 
-  // ── Sections ──────────────────────────────────────────────────────────
   .sidebar-section { margin-bottom: 2px; }
 
   .sidebar-section-label {
@@ -38,7 +36,6 @@
     color: #94a3b8;
   }
 
-  // ── Nav items ──────────────────────────────────────────────────────────
   .sidebar-item {
     display: flex;
     align-items: center;
@@ -55,7 +52,7 @@
     width: 100%;
     text-align: left;
     cursor: pointer;
-    min-height: unset; // override global 44px touch-target
+    min-height: unset;
     transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease;
 
     .sidebar-item-icon {
@@ -94,7 +91,6 @@
     }
   }
 
-  // ── Submenus ──────────────────────────────────────────────────────────
   .sidebar-submenu {
     padding-left: 26px;
     margin-top: 1px;
@@ -122,7 +118,6 @@
     }
   }
 
-  // ── Footer ────────────────────────────────────────────────────────────
   .sidebar-footer {
     flex-shrink: 0;
     border-top: 1px solid rgba(15, 23, 42, 0.07);
@@ -189,7 +184,6 @@
     }
   }
 
-  // ── Mobile ────────────────────────────────────────────────────────────
   @media (max-width: 1200px) {
     transform: translateX(-100%);
 

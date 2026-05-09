@@ -345,17 +345,16 @@
             "config/packages/reset_password.yaml"
         ]
     },
-    "symfonycasts/sass-bundle": {
-        "version": "0.8",
+    "symfonycasts/tailwind-bundle": {
+        "version": "0.12",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "0.5",
-            "ref": "c891eb9a33f522440ec7dfc0dae3f63ce3a9ee87"
+            "version": "0.8",
+            "ref": "d0bd0276f74de90adfaa4c6cd74cc0caacd77e0a"
         },
         "files": [
-            "config/packages/symfonycasts_sass.yaml",
-            "assets/styles/app.scss"
+            "config/packages/symfonycasts_tailwind.yaml"
         ]
     }
 }

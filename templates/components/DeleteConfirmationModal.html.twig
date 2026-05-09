@@ -11,7 +11,7 @@
     {% endcomponent %}
 #}
 <div {{ attributes.defaults({
-    class: 'modal fade',
+    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
@@ -23,41 +23,45 @@
     {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
     data-turbo="false"
 >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" {{ stimulus_controller('delete-confirmation', {
-            url: deleteUrl,
-            method: deleteMethod ?? 'DELETE',
-            redirect: redirectUrl
-        }) }}>
-            <div class="modal-header">
-                <h5 class="modal-title d-flex align-items-center" id="{{ id ? (id ~ '-title') : 'deleteConfirmationModalTitle' }}">
-                    <i data-lucide="alert-triangle" width="24" height="24" class="text-warning me-2" aria-hidden="true"></i>
-                    {{ title ?? 'Confirmation de suppression' }}
-                </h5>
-                <button type="button" class="btn-close" data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue"></button>
-            </div>
-            <div class="modal-body">
-                <p data-delete-confirmation-target="message">
-                    {{ message ?? 'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.' }}
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-action="bootstrap-modal#hide">Annuler</button>
-                <button 
-                    type="button" 
-                    class="btn btn-danger" 
-                    data-action="click->delete-confirmation#onConfirmed"
-                    data-delete-confirmation-url-value="{{ deleteUrl }}"
-                    data-delete-confirmation-method-value="{{ deleteMethod ?? 'DELETE' }}"
-                    {% if redirectUrl %}
-                    data-delete-confirmation-redirect-value="{{ redirectUrl }}"
-                    {% endif %}
-                >
-                    <i data-lucide="trash-2" width="18" height="18" class="me-1"></i>
-                    Supprimer
-                </button>
-            </div>
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg" role="document"
+         {{ stimulus_controller('delete-confirmation', {
+             url: deleteUrl,
+             method: deleteMethod ?? 'DELETE',
+             redirect: redirectUrl
+         }) }}>
+        <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h5 class="flex items-center font-semibold text-foreground text-base" id="{{ id ? (id ~ '-title') : 'deleteConfirmationModalTitle' }}">
+                <i data-lucide="alert-triangle" width="24" height="24" class="text-yellow-500 mr-2 shrink-0" aria-hidden="true"></i>
+                {{ title ?? 'Confirmation de suppression' }}
+            </h5>
+            <button type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <p data-delete-confirmation-target="message">
+                {{ message ?? 'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.' }}
+            </p>
+        </div>
+        <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
+            <button type="button"
+                    class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"
+                    data-action="bootstrap-modal#hide">Annuler</button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center gap-1 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity"
+                data-action="click->delete-confirmation#onConfirmed"
+                data-delete-confirmation-url-value="{{ deleteUrl }}"
+                data-delete-confirmation-method-value="{{ deleteMethod ?? 'DELETE' }}"
+                {% if redirectUrl %}
+                data-delete-confirmation-redirect-value="{{ redirectUrl }}"
+                {% endif %}
+            >
+                <i data-lucide="trash-2" width="18" height="18" class="mr-1"></i>
+                Supprimer
+            </button>
         </div>
     </div>
 </div>
-

@@ -25,16 +25,10 @@
   box-shadow: var(--shadow-md) !important;
 }
 
-// ===================================================================
-// UTILITIES ADDITIONNELLES - Pour remplacer les styles inline
-// ===================================================================
-
-// === Spacing Utilities ===
 .mt-navbar {
-  margin-top: 76px; // Espacement après navbar fixe
+  margin-top: 76px;
 }
 
-// === Visibilité ===
 .visually-hidden-honeypot {
   position: absolute !important;
   left: -9999px !important;
@@ -45,7 +39,6 @@
   pointer-events: none !important;
 }
 
-// Alias Bootstrap - Skip link visible au focus
 .visually-hidden-focusable:not(:focus):not(:focus-within) {
   position: absolute !important;
   width: 1px !important;
@@ -58,7 +51,6 @@
   border: 0 !important;
 }
 
-// === Icônes et Images ===
 .icon-sm {
   width: 16px;
   height: 16px;
@@ -79,7 +71,6 @@
   height: 40px;
 }
 
-// === Animations ===
 .chevron-rotate {
   transition: transform var(--transition-base);
 
@@ -88,12 +79,10 @@
   }
 }
 
-// === Min-width flex fix (Bootstrap n'inclut pas min-w-0) ===
 .min-w-0 {
   min-width: 0 !important;
 }
 
-// === Truncate ===
 .text-truncate-200 {
   max-width: 200px;
   overflow: hidden;
@@ -115,11 +104,6 @@
   white-space: nowrap;
 }
 
-// ===================================================================
-// MOBILE OPTIMIZATIONS - Touch-friendly et performances
-// ===================================================================
-
-// === Touch Targets (minimum 44x44px pour accessibilité mobile) ===
 .btn,
 button,
 a[role="button"] {
@@ -132,18 +116,15 @@ a[role="button"] {
   }
 }
 
-// === Tap Highlight optimisé ===
 * {
   -webkit-tap-highlight-color: rgba(79, 70, 229, 0.15);
 }
 
-// === Scroll Performance ===
 .modal,
 .dropdown-menu {
   -webkit-overflow-scrolling: touch;
 }
 
-// === Font Size Responsive ===
 @media (max-width: 576px) {
   h1,
   .h1 {
@@ -151,18 +132,16 @@ a[role="button"] {
   }
 
   body {
-    font-size: 16px; // Jamais moins de 16px pour éviter le zoom iOS
+    font-size: 16px;
   }
 }
 
-// === Prevent Text Selection on Interactive Elements ===
 .btn,
 .badge {
   -webkit-user-select: none;
   user-select: none;
 }
 
-// === Loading Performance - Réduire animations sur mobile ===
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -170,14 +149,12 @@ a[role="button"] {
   }
 }
 
-// === Image Performance ===
 img,
 picture {
   max-width: 100%;
   height: auto;
 }
 
-// === Focus Visible ===
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -185,4 +162,23 @@ picture {
 
 :focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Scrollbar global — force l'affichage d'une scrollbar classique visible */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }

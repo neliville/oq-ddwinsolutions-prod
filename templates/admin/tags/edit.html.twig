@@ -3,45 +3,45 @@
 {% block title %}Modifier le tag | Administration{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="w-full">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <a href="{{ path('app_admin_tags_index') }}" class="btn btn-sm btn-outline-secondary mb-2">
-                <i data-lucide="arrow-left" width="16" height="16" class="me-1"></i>
+            <a href="{{ path('app_admin_tags_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline mb-2">
+                <i data-lucide="arrow-left" width="16" height="16" class="mr-1"></i>
                 Retour à la liste
             </a>
-            <h1 class="h3 fw-bold mb-1">Modifier le tag</h1>
-            <p class="text-muted mb-0">{{ tag.name }}</p>
+            <h1 class="text-2xl font-bold mb-1">Modifier le tag</h1>
+            <p class="text-muted-foreground mb-0">{{ tag.name }}</p>
         </div>
     </div>
 
     <!-- Formulaire -->
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+    <div class="grid grid-cols-12 gap-6">
+        <div class="lg:col-span-8 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm">
+                <div class="p-6">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                    
-                    <div class="mb-3">
+
+                    <div class="mb-4">
                         {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.name) }}
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
                         {{ form_help(form.slug) }}
                         {{ form_errors(form.slug) }}
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i data-lucide="save" width="16" height="16" class="me-1"></i>
+                    <div class="flex gap-2">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+                            <i data-lucide="save" width="16" height="16" class="mr-1"></i>
                             Enregistrer les modifications
                         </button>
-                        <a href="{{ path('app_admin_tags_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('app_admin_tags_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors no-underline">
                             Annuler
                         </a>
                     </div>
@@ -52,19 +52,19 @@
         </div>
 
         <!-- Informations -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm">
+                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
                     <h6 class="mb-0">Informations</h6>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <small class="text-muted d-block">Articles</small>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <small class="text-muted-foreground block">Articles</small>
                         <strong>{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</strong>
                     </div>
                     {% if tag.blogPosts|length > 0 %}
-                    <div class="alert alert-warning small mb-0">
-                        <i data-lucide="alert-triangle" width="14" height="14" class="me-1"></i>
+                    <div class="flex items-start gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-3 py-2 text-sm">
+                        <i data-lucide="alert-triangle" width="14" height="14" class="mr-1 mt-0.5 shrink-0"></i>
                         Ce tag ne peut pas être supprimé car il est utilisé.
                     </div>
                     {% endif %}
@@ -80,4 +80,3 @@ if (typeof lucide !== 'undefined') {
 }
 </script>
 {% endblock %}
-

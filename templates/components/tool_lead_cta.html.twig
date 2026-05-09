@@ -1,5 +1,5 @@
 {# Micro-CTA lead pour les pages d'outils + embed newsletter Mautic #}
-<section class="tool-lead-cta rounded-3 p-4 p-md-5 mb-4 mb-md-5" aria-labelledby="tool-lead-cta-heading">
+<section class="tool-lead-cta rounded-xl p-6 md:p-10 mb-6 md:mb-10" aria-labelledby="tool-lead-cta-heading">
     <div class="tool-lead-cta__row">
         <div class="tool-lead-cta__icon" aria-hidden="true">
             <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
@@ -7,8 +7,8 @@
         <div class="tool-lead-cta__content">
             <h2 id="tool-lead-cta-heading" class="tool-lead-cta__title">Recevez nos ressources QSE</h2>
             <p class="tool-lead-cta__text">Guide complet, bonnes pratiques et astuces d'experts par email — gratuitement.</p>
-            <a href="{{ path('app_home_index') }}#newsletter" class="btn btn-primary btn-sm">
-                <i class="fas fa-envelope me-2" aria-hidden="true"></i>Recevoir le guide par email
+            <a href="{{ path('app_home_index') }}#newsletter" class="inline-flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity no-underline">
+                <i class="fas fa-envelope mr-2" aria-hidden="true"></i>Recevoir le guide par email
             </a>
         </div>
     </div>
@@ -16,7 +16,7 @@
         {% include 'components/coming_soon_download.html.twig' %}
     </div>
     <div class="tool-lead-cta__newsletter">
-        <p class="small mb-2">Ou inscrivez-vous directement :</p>
+        <p class="text-sm mb-2">Ou inscrivez-vous directement :</p>
         {% include 'components/newsletter-form.html.twig' with { compact: true } %}
     </div>
 </section>

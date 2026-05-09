@@ -5,7 +5,7 @@
     } %}
 #}
 {% if errors|length > 0 %}
-    <div class="invalid-feedback d-block" role="alert" aria-live="polite">
+    <div class="text-sm text-destructive mt-1 block" role="alert" aria-live="polite">
         {% for error in errors %}
             {{ error.message }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}

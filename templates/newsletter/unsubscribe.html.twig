@@ -5,19 +5,19 @@
 {% block meta_description %}Désabonnez-vous de notre newsletter. Votre avis nous aide à améliorer nos contenus.{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4 p-md-5">
-                    <h1 class="h3 mb-4">Vous êtes bien désinscrit(e)</h1>
-                    
-                    <div class="alert alert-success mb-4">
-                        <i class="fas fa-check-circle me-2"></i>
-                        L'adresse <strong>{{ email }}</strong> ne recevra plus nos emails de outils-qualite.com.
+<div class="max-w-7xl mx-auto px-4 my-12">
+    <div class="flex justify-center">
+        <div class="w-full lg:max-w-2xl">
+            <div class="rounded-lg bg-card shadow-sm">
+                <div class="p-6 md:p-12">
+                    <h1 class="text-2xl font-bold mb-6">Vous êtes bien désinscrit(e)</h1>
+
+                    <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-6" role="alert">
+                        <i class="fas fa-check-circle mr-2 shrink-0 mt-0.5"></i>
+                        <div>L'adresse <strong>{{ email }}</strong> ne recevra plus nos emails de outils-qualite.com.</div>
                     </div>
 
-                    <p class="mb-4">
+                    <p class="mb-6">
                         Pour nous aider à améliorer nos contenus, pouvez-vous nous dire pourquoi vous vous désabonnez&nbsp;?
                     </p>
 
@@ -29,8 +29,8 @@
                             'data-turbo': 'false'
                         }
                     }) }}
-                        <div class="mb-4">
-                            {{ form_label(form.reasons, null, {'label_attr': {'class': 'form-label fw-semibold mb-3'}}) }}
+                        <div class="mb-6">
+                            {{ form_label(form.reasons, null, {'label_attr': {'class': 'form-label font-semibold mb-3 block'}}) }}
                             <div class="form-check-group">
                                 {% for child in form.reasons %}
                                     <div class="form-check">
@@ -42,18 +42,18 @@
                             {{ form_errors(form.reasons) }}
                         </div>
 
-                        <div class="mb-4">
-                            {{ form_label(form.comment, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        <div class="mb-6">
+                            {{ form_label(form.comment, null, {'label_attr': {'class': 'form-label font-semibold block'}}) }}
                             {{ form_widget(form.comment) }}
                             {{ form_errors(form.comment) }}
                         </div>
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="submit" class="btn btn-primary" data-turbo="false">
-                                <i class="fas fa-paper-plane me-2"></i>
+                        <div class="flex flex-col gap-2 md:flex-row md:justify-end">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline" data-turbo="false">
+                                <i class="fas fa-paper-plane"></i>
                                 Envoyer mon retour
                             </button>
-                            <button type="submit" name="skip" value="1" class="btn btn-outline-secondary" data-turbo="false">
+                            <button type="submit" name="skip" value="1" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline" data-turbo="false">
                                 Passer cette étape
                             </button>
                         </div>
@@ -93,4 +93,3 @@
 }
 </style>
 {% endblock %}
-

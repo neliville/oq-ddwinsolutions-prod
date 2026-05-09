@@ -27,8 +27,8 @@
             </p>
         </div>
 
-        <div class="auth-card row g-0">
-            <div class="col-lg-5 order-lg-1">
+        <div class="auth-card">
+            <div class="lg:col-span-5 lg:order-1">
                 <section class="auth-card__panel auth-card__panel--form">
                     <header>
                         <h1 class="auth-card__title">Connexion</h1>
@@ -38,21 +38,21 @@
                     </header>
 
                     {% if app.user %}
-                        <div class="alert auth-alert alert-success d-flex align-items-start gap-3" role="alert">
+                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
                             <i class="fas fa-check-circle mt-1"></i>
                             <div>
                                 <strong>Vous êtes déjà connecté</strong> en tant que {{ app.user.userIdentifier }}.
                                 <div class="mt-1">
-                                    <a href="{{ path('app_logout') }}" class="fw-semibold text-success text-decoration-none">Se déconnecter</a>
+                                    <a href="{{ path('app_logout') }}" class="font-semibold text-green-600 no-underline">Se déconnecter</a>
                                 </div>
                             </div>
                         </div>
                     {% else %}
                         {% if error %}
-                            <div class="alert auth-alert alert-danger alert-dismissible fade show d-flex align-items-start gap-3" role="alert">
-                                <i class="fas fa-exclamation-triangle mt-1"></i>
-                                <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
+                                <i class="fas fa-exclamation-triangle mt-1 shrink-0"></i>
+                                <div class="grow">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
                             </div>
                         {% endif %}
 
@@ -88,9 +88,9 @@
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                             <div class="auth-form__actions">
-                                <div class="form-check m-0">
-                                    <input class="form-check-input" type="checkbox" name="_remember_me" id="_remember_me">
-                                    <label class="form-check-label" for="_remember_me">
+                                <div class="flex items-center gap-2">
+                                    <input class="w-4 h-4 rounded border-border text-primary focus:ring-primary" type="checkbox" name="_remember_me" id="_remember_me">
+                                    <label class="text-sm text-foreground" for="_remember_me">
                                         Se souvenir de moi
                                     </label>
                                 </div>
@@ -114,9 +114,9 @@
                 </section>
             </div>
 
-            <div class="col-lg-7 order-lg-2">
+            <div class="lg:col-span-7 lg:order-2">
                 <section class="auth-card__panel auth-card__panel--info">
-                    <div class="position-relative">
+                    <div class="relative">
                         <h2 class="auth-info__title">Pourquoi se connecter ?</h2>
                         <p class="auth-info__subtitle">
                             Centralisez vos outils qualité, restez synchronisé avec votre équipe et partagez vos analyses en toute sécurité.
@@ -153,7 +153,7 @@
                             </li>
                         </ul>
 
-                        <div class="auth-highlights mt-4">
+                        <div class="auth-highlights mt-6">
                             <div class="auth-highlight">
                                 <span class="auth-highlight__value">+15&nbsp;000</span>
                                 <span class="auth-highlight__label">analyses générées</span>
@@ -168,8 +168,8 @@
                             </div>
                         </div>
 
-                        <p class="auth-meta mt-4">
-                            <i class="fas fa-shield-alt me-2"></i>Conforme RGPD – Vos données restent strictement confidentielles.
+                        <p class="auth-meta mt-6">
+                            <i class="fas fa-shield-alt mr-2"></i>Conforme RGPD – Vos données restent strictement confidentielles.
                         </p>
                     </div>
                 </section>

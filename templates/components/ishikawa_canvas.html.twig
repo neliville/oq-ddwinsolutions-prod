@@ -9,7 +9,7 @@
                         <span aria-hidden="true">💡</span>
                         <span>Interactions & astuces</span>
                     </button>
-                    <div id="ishikawaInteractions" class="alert alert-info is-hidden" data-reveal-target="item" role="region" aria-live="polite">
+                    <div id="ishikawaInteractions" class="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 text-sky-800 px-4 py-3 is-hidden" data-reveal-target="item" role="region" aria-live="polite">
                         <div class="interactions-columns">
                             <div class="interactions-column">
                                 <h3>Interactions</h3>
@@ -34,7 +34,7 @@
 
             <div class="control-section problem-card">
                 <div class="control-section-title">Problème à analyser</div>
-                <div class="input-group">
+                <div>
                     <input type="text" id="problemInput" placeholder="Ex: Retards de livraison" value="Utilisez ce modèle d'analyse pour optimiser l'amélioration des processus et identifier les causes racines." {% if readonly %}readonly{% endif %}>
                 </div>
             </div>
@@ -43,8 +43,8 @@
                 <div class="control-section-header">
                     <div class="control-section-title">Catégories (Arêtes)</div>
                     {% if not readonly %}
-                        <button class="btn btn-primary categories-add-btn" onclick="window.ishikawaApp.openAddCategoryModal()">
-                            <i class="fas fa-plus me-2" aria-hidden="true"></i>
+                        <button class="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity categories-add-btn" onclick="window.ishikawaApp.openAddCategoryModal()">
+                            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                             Ajouter une catégorie
                         </button>
                     {% endif %}
@@ -59,27 +59,27 @@
     <div class="canvas-area">
         <div class="canvas-header">
             <div class="canvas-title">Diagramme en arêtes de poisson</div>
-            <div class="canvas-actions d-flex flex-wrap align-items-center gap-2" role="toolbar" aria-label="Actions disponibles">
+            <div class="canvas-actions flex flex-wrap items-center gap-2" role="toolbar" aria-label="Actions disponibles">
                 {% if app.user and not readonly %}
-                    <button id="saveIshikawaBtn" class="btn btn-success btn-sm" onclick="saveIshikawa()" aria-label="Sauvegarder le diagramme">
+                    <button id="saveIshikawaBtn" class="inline-flex items-center gap-1.5 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" onclick="saveIshikawa()" aria-label="Sauvegarder le diagramme">
                         <i class="fas fa-save" aria-hidden="true"></i>
                         Sauvegarder
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openIshikawaSaved()" aria-label="Charger un diagramme Ishikawa">
-                        <i class="fas fa-folder-open me-2"></i>Mes analyses
+                    <button class="inline-flex items-center gap-1.5 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors bg-transparent" type="button" onclick="openIshikawaSaved()" aria-label="Charger un diagramme Ishikawa">
+                        <i class="fas fa-folder-open mr-2"></i>Mes analyses
                     </button>
-                    <button class="btn btn-outline-primary btn-sm" type="button" onclick="newIshikawaAnalysis()" aria-label="Créer un nouveau diagramme">
-                        <i class="fas fa-plus me-2"></i>Nouvelle analyse
+                    <button class="inline-flex items-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors bg-transparent" type="button" onclick="newIshikawaAnalysis()" aria-label="Créer un nouveau diagramme">
+                        <i class="fas fa-plus mr-2"></i>Nouvelle analyse
                     </button>
-                    <button id="shareIshikawaBtn" class="btn btn-warning btn-sm" type="button" onclick="shareIshikawa()" aria-label="Partager le diagramme">
-                        <i class="fas fa-share-alt me-2" aria-hidden="true"></i>
+                    <button id="shareIshikawaBtn" class="inline-flex items-center gap-1.5 bg-yellow-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="shareIshikawa()" aria-label="Partager le diagramme">
+                        <i class="fas fa-share-alt mr-2" aria-hidden="true"></i>
                         Partager
                     </button>
                 {% endif %}
                 {% if app.user %}
                 <div class="dropdown export-dropdown" data-controller="dropdown-basic">
-                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="exportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                        <i class="fas fa-download me-2" aria-hidden="true"></i>
+                    <button class="inline-flex items-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="exportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
+                        <i class="fas fa-download mr-2" aria-hidden="true"></i>
                         Exporter
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown" data-dropdown-basic-target="menu" hidden>
@@ -93,15 +93,15 @@
                 {% endif %}
                 {% if not readonly %}
                     <div class="dropdown" data-controller="dropdown-basic">
-                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="resetDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options de réinitialisation">
-                            <i class="fas fa-rotate-left me-2" aria-hidden="true"></i>
+                        <button class="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="resetDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options de réinitialisation">
+                            <i class="fas fa-rotate-left mr-2" aria-hidden="true"></i>
                             Réinitialiser
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="resetDropdown" data-dropdown-basic-target="menu" hidden>
                             <li><button class="dropdown-item" onclick="window.ishikawaApp.resetCauses()">Réinitialiser uniquement les causes</button></li>
                             <li><button class="dropdown-item" onclick="window.ishikawaApp.resetCategories()">Réinitialiser les catégories</button></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><button class="dropdown-item text-danger" onclick="window.ishikawaApp.resetEverything()">Tout effacer</button></li>
+                            <li><button class="dropdown-item text-destructive" onclick="window.ishikawaApp.resetEverything()">Tout effacer</button></li>
                         </ul>
                     </div>
                 {% endif %}
@@ -136,8 +136,8 @@
                     <div class="color-picker-wrapper" id="colorPicker"></div>
                 </div>
                 <div class="button-group">
-                    <button class="btn btn-secondary" onclick="window.ishikawaApp.closeModal('addCategoryModal')">Annuler</button>
-                    <button class="btn btn-primary" onclick="window.ishikawaApp.saveNewCategory()">Ajouter</button>
+                    <button class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors bg-transparent" onclick="window.ishikawaApp.closeModal('addCategoryModal')">Annuler</button>
+                    <button class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity" onclick="window.ishikawaApp.saveNewCategory()">Ajouter</button>
                 </div>
             </div>
         </div>
@@ -157,13 +157,13 @@
                 <div class="form-group">
                     <label>Causes associées</label>
                     <div id="causesList" class="causes-list"></div>
-                    <button class="btn btn-success btn-block btn-sm" onclick="window.ishikawaApp.addCause()" style="margin-top: 12px;">
+                    <button class="inline-flex items-center gap-1.5 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity w-full justify-center" onclick="window.ishikawaApp.addCause()" style="margin-top: 12px;">
                         ➕ Ajouter une cause
                     </button>
                 </div>
                 <div class="button-group">
-                    <button class="btn btn-secondary" onclick="window.ishikawaApp.closeModal('categoryModal')">Fermer</button>
-                    <button class="btn btn-primary" onclick="window.ishikawaApp.saveCategoryChanges()">Sauvegarder</button>
+                    <button class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors bg-transparent" onclick="window.ishikawaApp.closeModal('categoryModal')">Fermer</button>
+                    <button class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity" onclick="window.ishikawaApp.saveCategoryChanges()">Sauvegarder</button>
                 </div>
             </div>
         </div>
@@ -181,8 +181,8 @@
                     <textarea id="causeDescriptionInput" placeholder="Décrivez la cause identifiée..."></textarea>
                 </div>
                 <div class="button-group">
-                    <button class="btn btn-secondary" onclick="window.ishikawaApp.closeModal('causeModal')">Annuler</button>
-                    <button class="btn btn-primary" onclick="window.ishikawaApp.saveCause()">Sauvegarder</button>
+                    <button class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors bg-transparent" onclick="window.ishikawaApp.closeModal('causeModal')">Annuler</button>
+                    <button class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity" onclick="window.ishikawaApp.saveCause()">Sauvegarder</button>
                 </div>
             </div>
         </div>
