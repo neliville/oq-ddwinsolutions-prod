@@ -4,6 +4,13 @@ framework:
         paths:
             - assets/
         missing_import_mode: strict
+        # En dev, l’Asset Mapper sert les fichiers : sans entrée ici, .jsx/.tsx tombent en text/plain → erreur « Failed to load module script » (UX React + imports dynamiques).
+        extensions:
+            jsx: text/javascript
+            tsx: text/javascript
+        # npm (esbuild) sous assets/ : ne pas indexer node_modules (sinon échec des imports JS → 500 sur tout asset, dont les .css)
+        excluded_patterns:
+            - '*/assets/react-src/build/**'
 
 when@prod:
     framework:
@@ -12,3 +19,4 @@ when@prod:
             excluded_patterns:
                 - '*/assets/styles/_*.scss'
                 - '*/assets/styles/**/_*.scss'
+                - '*/assets/react-src/build/**'

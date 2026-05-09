@@ -1,0 +1,55 @@
+{# Partial : carte d'une création (Mes créations) — type, badges, actions #}
+{# Variables attendues : kind, badge_label, badge_icon (fa class sans "fas"), record, load_href, delete_modal_id, load_aria_label, delete_aria_label #}
+<article class="creation-card creation-card--{{ kind }}"
+         role="article"
+         aria-labelledby="{{ heading_id }}"
+         data-creations-hub-target="card"
+         data-search-text="{{ record.title|lower|e('html_attr') }}"
+         data-creation-kind="{{ kind }}">
+    <div class="creation-card__inner">
+        <div class="creation-card__main">
+            <div class="creation-card__toolbar">
+                <span class="creation-card__type-badge">
+                    <span class="creation-card__type-badge-icon" aria-hidden="true">
+                        <i class="{{ badge_icon }}"></i>
+                    </span>
+                    {{ badge_label }}
+                </span>
+                <span class="creation-card__status-badge creation-card__status-badge--saved">
+                    <i class="fas fa-circle-check" aria-hidden="true"></i>
+                    Sauvegardé
+                </span>
+            </div>
+            <div class="creation-card__title-panel">
+                <h3 class="creation-card__title" id="{{ heading_id }}">{{ record.title }}</h3>
+            </div>
+            <div class="creation-card__badges">
+                <span class="creation-card__chip creation-card__chip--date">
+                    <i class="fas fa-calendar-day" aria-hidden="true"></i>
+                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
+                </span>
+                {% if record.updatedAt %}
+                    <span class="creation-card__chip creation-card__chip--updated">
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                        Maj {{ record.updatedAt|date('d/m/Y H:i') }}
+                    </span>
+                {% endif %}
+            </div>
+            <div class="creation-card__actions">
+                <a href="{{ load_href }}"
+                   class="creation-btn creation-btn--load creation-btn--load-{{ kind }} no-underline"
+                   aria-label="{{ load_aria_label }}">
+                    <i class="fas fa-folder-open" aria-hidden="true"></i>
+                    <span>Charger</span>
+                </a>
+                <button type="button"
+                        class="creation-btn creation-btn--delete"
+                        data-modal-open="{{ delete_modal_id }}"
+                        aria-label="{{ delete_aria_label }}">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                    <span class="sr-only">Supprimer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</article>

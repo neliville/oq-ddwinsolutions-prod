@@ -61,6 +61,16 @@
     font-size: 1rem;
   }
 
+  .mauticform-helpmessage,
+  .mauticform-help-message,
+  .mauticform-row small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #64748b;
+  }
+
   .mauticform_input,
   input[type="text"],
   input[type="email"] {
@@ -77,9 +87,9 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 
     &:focus {
-      border-color: var(--primary, #4f46e5);
+      border-color: hsl(var(--primary));
       outline: 0;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.22);
     }
 
     &::placeholder {
@@ -95,6 +105,9 @@
   a.mauticform-button,
   .mauticform-button,
   .mauticform-button.btn,
+  button.mauticform-button,
+  .mauticform-button-wrapper a,
+  .mauticform-button-wrapper button,
   input[type="submit"],
   button[type="submit"],
   button:not([type]) {
@@ -105,28 +118,38 @@
     font-weight: 600;
     line-height: 1.5;
     text-align: center;
-    color: #fff !important;
-    -webkit-text-fill-color: #fff;
-    background: linear-gradient(135deg, var(--primary-light, #6366f1), var(--primary, #4f46e5)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    background-color: hsl(var(--primary)) !important;
+    background-image: none !important;
     border: none !important;
     border-radius: var(--border-radius, 0.5rem);
-    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+    box-shadow: 0 4px 14px hsl(var(--primary) / 0.32);
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.15s ease;
+    opacity: 1 !important;
+    transition: opacity 0.15s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    span,
+    .mauticform-button-label {
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    }
 
     &:hover,
     &:focus,
     &:focus-visible {
-      color: #fff !important;
-      -webkit-text-fill-color: #fff;
-      background: linear-gradient(135deg, var(--primary, #4f46e5), var(--primary-dark, #4338ca)) !important;
-      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
-      transform: translateY(-2px);
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
+      opacity: 0.92 !important;
+      box-shadow: 0 6px 18px hsl(var(--primary) / 0.38);
+      transform: translateY(-1px);
     }
 
     &:active {
       transform: translateY(0);
-      color: #fff !important;
+      opacity: 1 !important;
     }
   }
 
@@ -147,14 +170,19 @@
     a.mauticform-button,
     .mauticform-button,
     .mauticform-button.btn,
+    button.mauticform-button,
+    .mauticform-button-wrapper a,
+    .mauticform-button-wrapper button,
     input[type="submit"],
     button[type="submit"],
     button:not([type]) {
       padding: 0.55rem 1rem;
       font-size: 1rem;
       min-height: 42px;
-      color: #fff !important;
-      -webkit-text-fill-color: #fff;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
     }
 
     .mauticform-row {
@@ -173,21 +201,58 @@
   }
 }
 
+/* Textes légaux : contraste lisible sur carte claire (sidebar blog, etc.) */
+.newsletter-form-root .newsletter-legal {
+  color: #64748b;
+}
+
+.newsletter-form-root .newsletter-legal small {
+  color: inherit;
+}
+
+.newsletter-form-root .newsletter-legal a {
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+.newsletter-form-root .newsletter-legal a:hover {
+  color: #4338ca;
+}
+
+.newsletter-form-root .newsletter-legal .newsletter-legal-note {
+  color: #64748b;
+}
+
+/* Carte accueil : une colonne pleine largeur pour le CTA (évite colonne étroite + bouton illisible) */
 .newsletter-card .newsletter-mautic-embed:not(.newsletter-mautic-embed--compact) {
   .mauticform-innerform {
-    display: grid;
-    gap: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
   }
 
-  @media (min-width: 992px) {
-    .mauticform-innerform {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 200px);
-      align-items: end;
-    }
-
-    .mauticform-row:has([type="submit"]),
-    .mauticform-row:has(button[type="submit"]) {
-      margin-bottom: 0;
-    }
+  .mauticform-row:has([type="submit"]),
+  .mauticform-row:has(button[type="submit"]),
+  .mauticform-row:has(.mauticform-button-wrapper) {
+    margin-bottom: 0;
+    width: 100%;
   }
+}
+
+/* Ciblage renforcé sur la carte accueil (spécificité > feuille Mautic distante) */
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper a,
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper button,
+.newsletter-card #mautic-newsletter-container button[type="submit"],
+.newsletter-card #mautic-newsletter-container input[type="submit"] {
+  min-height: 2.75rem;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+  text-indent: 0 !important;
+  letter-spacing: normal !important;
+}
+
+/* Même problème de calque Mautic au-dessus de la navbar que sur le téléchargement 5M */
+body:has(#mautic-newsletter-container) #mainNav {
+  z-index: 12000;
 }

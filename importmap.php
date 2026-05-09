@@ -82,22 +82,90 @@ return [
         'version' => '6.1.0',
     ],
     'react' => [
-        'version' => '18.3.1',
+        'version' => '19.2.4',
     ],
     'react-dom/client' => [
-        'version' => '18.3.1',
+        'version' => '19.2.4',
     ],
     'react-dom' => [
-        'version' => '18.3.1',
+        'version' => '19.2.4',
     ],
     'scheduler' => [
-        'version' => '0.23.2',
+        'version' => '0.27.0',
     ],
     '@symfony/ux-react' => [
         'path' => './vendor/symfony/ux-react/assets/dist/loader.js',
     ],
-    '@xyflow/react/dist/style.css' => [
-        'version' => '12.3.0',
-        'type' => 'css',
+    '@xyflow/react' => [
+        'version' => '12.10.2',
+    ],
+    'react/jsx-runtime' => [
+        'version' => '19.2.4',
+    ],
+    'classcat' => [
+        'version' => '5.0.5',
+    ],
+    '@xyflow/system' => [
+        'version' => '0.0.76',
+    ],
+    'zustand/traditional' => [
+        'version' => '4.5.7',
+    ],
+    'zustand/shallow' => [
+        'version' => '4.5.7',
+    ],
+    'd3-drag' => [
+        'version' => '3.0.0',
+    ],
+    'd3-selection' => [
+        'version' => '3.0.0',
+    ],
+    'd3-zoom' => [
+        'version' => '3.0.0',
+    ],
+    'd3-interpolate' => [
+        'version' => '3.0.1',
+    ],
+    'use-sync-external-store/shim/with-selector.js' => [
+        'version' => '1.5.0',
+    ],
+    'zustand/vanilla' => [
+        'version' => '5.0.13',
+    ],
+    'd3-dispatch' => [
+        'version' => '3.0.1',
+    ],
+    'd3-transition' => [
+        'version' => '3.0.1',
+    ],
+    'd3-color' => [
+        'version' => '3.0.1',
+    ],
+    'use-sync-external-store/shim' => [
+        'version' => '1.5.0',
+    ],
+    'd3-timer' => [
+        'version' => '3.0.1',
+    ],
+    'd3-ease' => [
+        'version' => '3.0.1',
+    ],
+    'zustand' => [
+        'version' => '5.0.13',
+    ],
+    'zustand/react' => [
+        'version' => '5.0.13',
+    ],
+    'html-to-image' => [
+        'version' => '1.11.13',
+    ],
+    'zustand/middleware' => [
+        'version' => '5.0.13',
+    ],
+    'zustand/react/shallow' => [
+        'version' => '5.0.13',
+    ],
+    'zustand/vanilla/shallow' => [
+        'version' => '5.0.13',
     ],
 ];

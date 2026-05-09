@@ -92,12 +92,13 @@ echo -e "\n${YELLOW}4. Installation des dépendances Composer...${NC}"
 set +e
 COMPOSER_BASE_CMD="install --no-dev --optimize-autoloader --no-interaction --no-scripts --prefer-dist --no-progress"
 
+# PIPESTATUS[0] = code de sortie de Composer (le pipe + « || true » faussaient $? = 0 presque toujours)
 if [ -f "composer.phar" ]; then
     php composer.phar $COMPOSER_BASE_CMD 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
-    COMPOSER_EXIT=$?
+    COMPOSER_EXIT=${PIPESTATUS[0]}
 else
     composer $COMPOSER_BASE_CMD 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class|cache:clear|Script cache:clear)" || true
-    COMPOSER_EXIT=$?
+    COMPOSER_EXIT=${PIPESTATUS[0]}
 fi
 set -e
 
@@ -167,10 +168,10 @@ echo -e "\n${YELLOW}8. Régénération du cache Symfony...${NC}"
 set +e
 # Utiliser cache:clear avec --no-warmup d'abord, puis warmup séparément
 php bin/console cache:clear --env=prod --no-debug --no-warmup 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
-CACHE_CLEAR_EXIT=$?
+CACHE_CLEAR_EXIT=${PIPESTATUS[0]}
 # Maintenant réchauffer le cache
 php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
-CACHE_WARMUP_EXIT=$?
+CACHE_WARMUP_EXIT=${PIPESTATUS[0]}
 set -e
 
 # Vérifier si le cache a été créé même en cas d'erreur
@@ -192,24 +193,45 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod 2>&1 | g
 set -e
 echo -e "${GREEN}   ✓ Migrations vérifiées${NC}"
 
-# 9.5 Compiler les feuilles Sass (Symfonycasts) — requis pour les outils (ex. ishikawa.scss)
-echo -e "\n${YELLOW}9.5 Compilation Sass (symfonycasts/sass-bundle)...${NC}"
-set +e
-php bin/console sass:build --env=prod --no-debug --no-interaction 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)"
-SASS_EXIT=${PIPESTATUS[0]}
-set -e
-if [ "${SASS_EXIT}" -ne 0 ]; then
-    echo -e "${RED}   ✗ sass:build a échoué (code ${SASS_EXIT}). Corriger puis relancer le déploiement.${NC}"
-    exit 1
+# 9.5 Compiler les feuilles Sass (optionnel) — uniquement si symfonycasts/sass-bundle est installé
+echo -e "\n${YELLOW}9.5 Compilation Sass (symfonycasts/sass-bundle, si présent)...${NC}"
+if php bin/console list --raw 2>/dev/null | grep -q '^sass:build'; then
+    set +e
+    php bin/console sass:build --env=prod --no-debug --no-interaction 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
+    SASS_EXIT=${PIPESTATUS[0]}
+    set -e
+    if [ "${SASS_EXIT}" -ne 0 ]; then
+        echo -e "${RED}   ✗ sass:build a échoué (code ${SASS_EXIT}). Corriger puis relancer le déploiement.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}   ✓ Sass compilé${NC}"
+else
+    echo -e "${GREEN}   ✓ Commande sass:build absente — étape ignorée (projet sans Sass bundle)${NC}"
 fi
-echo -e "${GREEN}   ✓ Sass compilé${NC}"
 
 # 9.8. Installer les packages importmap (vendor JS)
 echo -e "\n${YELLOW}9.8. Installation des packages importmap...${NC}"
 set +e
 php bin/console importmap:install --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
+IMPORTMAP_EXIT=${PIPESTATUS[0]}
 set -e
+if [ "${IMPORTMAP_EXIT}" -ne 0 ]; then
+    echo -e "${RED}   ✗ importmap:install a échoué (code ${IMPORTMAP_EXIT}). Corriger puis relancer le déploiement.${NC}"
+    exit 1
+fi
 echo -e "${GREEN}   ✓ Packages importmap installés${NC}"
+
+# 9.9 Compiler Tailwind (symfonycasts/tailwind-bundle) — même ordre que composer compile-assets ; requis car composer install utilise --no-scripts
+echo -e "\n${YELLOW}9.9 Compilation Tailwind (symfonycasts/tailwind-bundle)...${NC}"
+set +e
+php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
+TAILWIND_EXIT=${PIPESTATUS[0]}
+set -e
+if [ "${TAILWIND_EXIT}" -ne 0 ]; then
+    echo -e "${RED}   ✗ tailwind:build a échoué (code ${TAILWIND_EXIT}). Corriger puis relancer le déploiement.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}   ✓ Tailwind compilé${NC}"
 
 # 10. Compiler les assets avec Asset Mapper
 echo -e "\n${YELLOW}10. Compilation des assets (Asset Mapper)...${NC}"
@@ -220,17 +242,27 @@ if [ -d "var/cache/prod" ]; then
     find var/cache/prod -name "*MakerBundle*" -delete 2>/dev/null || true
 fi
 
-# Compiler les assets en filtrant les erreurs MakerBundle
-php bin/console asset-map:compile --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || {
-    # Si l'erreur persiste, essayer une dernière fois après avoir vidé le cache
-    echo -e "${YELLOW}   ⚠ Première tentative échouée, nouvelle tentative après vidage du cache...${NC}"
+# Compiler les assets (code de sortie = php, pas grep — évite faux positifs / négatifs)
+AM_LOG=$(mktemp)
+php bin/console asset-map:compile --env=prod --no-debug >"${AM_LOG}" 2>&1
+AM_EXIT=$?
+grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" "${AM_LOG}" || true
+if [ "${AM_EXIT}" -ne 0 ]; then
+    echo -e "${YELLOW}   ⚠ Première tentative asset-map:compile échouée (code ${AM_EXIT}), nouvelle tentative après vidage du cache...${NC}"
     rm -rf var/cache/prod/* 2>/dev/null || true
+    set +e
     php bin/console cache:warmup --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError)" || true
-    php bin/console asset-map:compile --env=prod --no-debug 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || {
-        echo -e "${RED}Erreur lors de la compilation des assets${NC}"
+    set -e
+    php bin/console asset-map:compile --env=prod --no-debug >"${AM_LOG}" 2>&1
+    AM_EXIT=$?
+    grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" "${AM_LOG}" || true
+    if [ "${AM_EXIT}" -ne 0 ]; then
+        echo -e "${RED}Erreur lors de la compilation des assets (code ${AM_EXIT})${NC}"
+        rm -f "${AM_LOG}"
         exit 1
-    }
-}
+    fi
+fi
+rm -f "${AM_LOG}"
 set -e
 echo -e "${GREEN}   ✓ Assets compilés${NC}"
 
@@ -272,6 +304,7 @@ echo "  - Code mis à jour depuis GitHub"
 echo "  - Dépendances installées"
 echo "  - Migrations exécutées"
 echo "  - Sass compilé (outils / pages SCSS)"
+echo "  - Tailwind compilé (app.css / bundle v4)"
 echo "  - Assets compilés"
 echo "  - Cache vidé"
 echo ""
@@ -281,6 +314,6 @@ echo ""
 echo -e "${YELLOW}En cas d'erreur 500:${NC}"
 echo "  1. Vérifier les logs: ${GREEN}tail -n 100 var/log/prod.log${NC}"
 echo "  2. Vider le cache: ${GREEN}rm -rf var/cache/* && php bin/console cache:warmup --env=prod --no-debug${NC}"
-echo "  3. Recompiler les assets: ${GREEN}php bin/console asset-map:compile --env=prod --no-debug${NC}"
+echo "  3. Recompiler Tailwind puis les assets: ${GREEN}php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction && php bin/console asset-map:compile --env=prod --no-debug${NC}"
 echo "  4. Voir TROUBLESHOOTING.md pour plus d'aide"
 

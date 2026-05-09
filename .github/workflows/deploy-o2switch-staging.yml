@@ -40,9 +40,9 @@ jobs:
       - name: Install dependencies (prod)
         run: |
           composer install --no-dev --optimize-autoloader --no-interaction
-          php bin/console sass:build --env=prod
-          php bin/console asset-map:compile --env=prod
-          php bin/console cache:clear --env=prod
+          php bin/console tailwind:build --minify --env=prod --no-interaction
+          php bin/console asset-map:compile --env=prod --no-interaction
+          php bin/console cache:clear --env=prod --no-interaction
 
       - name: Run PHPUnit if exists
         if: hashFiles('phpunit.xml*') != ''

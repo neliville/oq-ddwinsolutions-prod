@@ -5,13 +5,19 @@
 
 {% block meta_description %}Téléchargez gratuitement notre modèle prêt à l'emploi pour l'analyse 5M (Ishikawa) : .xlsx et PDF, avec astuces d'analyse.{% endblock %}
 
+{% block meta_keywords %}téléchargement modèle 5M, diagramme Ishikawa, analyse des causes, 5M, xlsx, PDF, outils qualité{% endblock %}
+
+{% block og_title %}Télécharger le modèle 5M | OUTILS-QUALITÉ{% endblock %}
+
+{% block og_description %}Modèle .xlsx / PDF et astuces 5M pour vos analyses Ishikawa — envoi du lien par email.{% endblock %}
+
 {% block body %}
 <section class="py-12 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="telechargement-modele-title">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-center">
             <div class="w-full max-w-2xl text-center" data-aos="fade-up">
-                <h1 id="telechargement-modele-title" class="text-4xl font-bold mb-3">Téléchargez le modèle 5M</h1>
-                <p class="text-lg mb-0 opacity-75">
+                <h1 id="telechargement-modele-title" class="text-4xl md:text-5xl font-bold mb-4">Téléchargez le modèle 5M</h1>
+                <p class="text-lg text-black/80 mb-0">
                     .xlsx, PDF et astuces — pour vos analyses Ishikawa (5M).
                 </p>
             </div>
@@ -19,29 +25,29 @@
     </div>
 </section>
 
-<main id="main-content" class="max-w-7xl mx-auto px-4 py-12" role="main">
-    <div class="flex justify-center px-2">
-        <div class="w-full max-w-lg">
-            <div class="download-modele-5m">
-                <div class="rounded-lg bg-white download-modele-5m__card">
-                    <div class="p-6 md:p-10">
-                        <h2 class="download-modele-5m__title text-xl mb-3">Vos coordonnées</h2>
-                        <p class="download-modele-5m__lead mb-4">
-                            On vous envoie le <strong>lien de téléchargement par email</strong> dès que vous cliquez sur Envoyer. Si le message met quelques minutes à arriver, un petit tour dans les <strong>indésirables</strong> suffit souvent.
+<section class="py-12" aria-labelledby="telechargement-coords-title">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-2xl">
+                <div class="download-modele-5m rounded-lg bg-card text-card-foreground shadow-lg border border-border/60" data-aos="fade-up">
+                    <div class="p-6 md:p-8">
+                        <h2 id="telechargement-coords-title" class="text-center text-xl font-semibold mb-2">Vos coordonnées</h2>
+                        <p class="text-center text-muted-foreground text-sm mb-6 max-w-xl mx-auto leading-relaxed">
+                            On vous envoie le <strong class="text-foreground">lien de téléchargement par email</strong> dès que vous cliquez sur Envoyer. Si le message met quelques minutes à arriver, un petit tour dans les <strong class="text-foreground">indésirables</strong> suffit souvent.
                         </p>
 
                         {% if mauticFormScriptUrl %}
-                            <div id="mautic-form-container" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
+                            <div id="mautic-form-container" class="text-left" aria-label="Formulaire de téléchargement" data-ressource-id="{{ ressourceId|default('ishikawa-5m-template')|e('html_attr') }}">
                                 <script type="text/javascript" src="{{ mauticFormScriptUrl }}"></script>
                                 <script type="text/javascript">
                                 (function() {
                                     var container = document.getElementById('mautic-form-container');
                                     if (!container) return;
                                     var ressourceId = container.getAttribute('data-ressource-id');
-                                    if (!ressourceId) return;
+
                                     function injectRessourceId() {
                                         try {
-                                            if (!container || !container.isConnected) return;
+                                            if (!ressourceId || !container || !container.isConnected) return;
                                             var form = container.querySelector('form');
                                             if (!form || !form.isConnected) return;
                                             if (form.querySelector('input[name="mauticform[ressource_id]"]')) return;
@@ -52,8 +58,62 @@
                                             form.appendChild(input);
                                         } catch (e) { /* ne pas casser le formulaire Mautic */ }
                                     }
-                                    [500, 1500, 3000].forEach(function(ms) {
-                                        setTimeout(injectRessourceId, ms);
+
+                                    /**
+                                     * La feuille Mautic est injectée après app.css et peut imposer fond clair + texte clair.
+                                     * Styles inline = priorité sur la CSS distante (hors !important rare).
+                                     */
+                                    function applyMauticCtaContrastFix() {
+                                        try {
+                                            if (!container || !container.isConnected) return;
+                                            var cs = getComputedStyle(document.documentElement);
+                                            var p = cs.getPropertyValue('--primary').trim();
+                                            if (!p) return;
+                                            var pf = cs.getPropertyValue('--primary-foreground').trim();
+                                            var bg = 'hsl(' + p + ')';
+                                            var fg = pf ? 'hsl(' + pf + ')' : '#fff';
+                                            var q = [
+                                                'button[type="submit"]',
+                                                'input[type="submit"]',
+                                                'a.mauticform-button',
+                                                'button.mauticform-button',
+                                                '.mauticform-button-wrapper button',
+                                                '.mauticform-button-wrapper a',
+                                                'button[class*="mauticform"]'
+                                            ].join(',');
+                                            container.querySelectorAll(q).forEach(function(el) {
+                                                el.style.setProperty('background-color', bg, 'important');
+                                                el.style.setProperty('background-image', 'none', 'important');
+                                                el.style.setProperty('color', fg, 'important');
+                                                el.style.setProperty('-webkit-text-fill-color', fg, 'important');
+                                                el.style.setProperty('opacity', '1', 'important');
+                                                el.querySelectorAll('span, .mauticform-button-label, label').forEach(function(n) {
+                                                    n.style.setProperty('color', fg, 'important');
+                                                    n.style.setProperty('-webkit-text-fill-color', fg, 'important');
+                                                    n.style.setProperty('opacity', '1', 'important');
+                                                });
+                                                if (el.tagName === 'INPUT' && el.type === 'submit' && (!el.value || !String(el.value).trim())) {
+                                                    el.value = 'Envoyer';
+                                                }
+                                            });
+                                        } catch (e) { /* noop */ }
+                                    }
+
+                                    var debounce;
+                                    var mo = new MutationObserver(function() {
+                                        clearTimeout(debounce);
+                                        debounce = setTimeout(function() {
+                                            applyMauticCtaContrastFix();
+                                            injectRessourceId();
+                                        }, 50);
+                                    });
+                                    mo.observe(container, { childList: true, subtree: true });
+
+                                    [0, 100, 400, 800, 1500, 3000, 5000].forEach(function(ms) {
+                                        setTimeout(function() {
+                                            applyMauticCtaContrastFix();
+                                            injectRessourceId();
+                                        }, ms);
                                     });
                                 })();
                                 </script>
@@ -69,5 +129,5 @@
             </div>
         </div>
     </div>
-</main>
+</section>
 {% endblock %}

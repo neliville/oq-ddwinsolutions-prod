@@ -51,8 +51,8 @@ jobs:
         run: |
           composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
-      - name: Build Sass assets (test env)
-        run: php bin/console sass:build --env=test --no-interaction || true
+      - name: Compiler les assets Tailwind (env test)
+        run: php bin/console tailwind:build --minify --env=test --no-interaction
 
       - name: Prepare test database (SQLite)
         run: |

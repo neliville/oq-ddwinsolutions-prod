@@ -37,9 +37,9 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
     &:focus {
-      border-color: var(--primary, #4f46e5);
+      border-color: hsl(var(--primary));
       outline: 0;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.22);
     }
 
     &::placeholder {
@@ -60,9 +60,16 @@
     display: none !important;
   }
 
+  /* CTA : tokens shadcn (hsl(var(--primary))). !important pour passer après la CSS Mautic injectée. */
+  a.mauticform-button,
   .mauticform-button,
+  .mauticform-button.btn,
+  button.mauticform-button,
+  .mauticform-button-wrapper a,
+  .mauticform-button-wrapper button,
   input[type="submit"],
-  button[type="submit"] {
+  button[type="submit"],
+  button:not([type]) {
     display: block;
     width: 100%;
     padding: 0.75rem 1.5rem;
@@ -70,22 +77,39 @@
     font-weight: 600;
     line-height: 1.5;
     text-align: center;
-    color: #fff;
-    background: linear-gradient(135deg, var(--primary-light, #6366f1), var(--primary, #4f46e5));
-    border: none;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+    color: hsl(var(--primary-foreground)) !important;
+    -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    background-color: hsl(var(--primary)) !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: var(--border-radius, 0.5rem);
+    box-shadow: 0 4px 14px hsl(var(--primary) / 0.32);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    opacity: 1 !important;
+    transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 
-    &:hover {
-      background: linear-gradient(135deg, var(--primary, #4f46e5), var(--primary-dark, #4338ca));
-      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    span,
+    .mauticform-button-label,
+    label {
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      opacity: 1 !important;
+    }
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.92 !important;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
+      box-shadow: 0 6px 18px hsl(var(--primary) / 0.38);
       transform: translateY(-1px);
     }
 
     &:active {
       transform: translateY(0);
+      opacity: 1 !important;
     }
   }
 
@@ -97,24 +121,19 @@
 }
 
 /**
- * Page téléchargement modèle 5M — carte légère (peu de texte, formulaire mis en avant).
+ * Page téléchargement modèle 5M — styles résiduels si classe wrapper conservée dans le Twig.
  */
 .download-modele-5m {
-  &__card {
-    border-radius: 1rem;
-    border: 1px solid rgba(148, 163, 184, 0.28);
-    box-shadow: 0 20px 50px -28px rgba(15, 23, 42, 0.18);
+  #mautic-form-container {
+    margin-top: 0;
   }
+}
 
-  &__title {
-    font-weight: 700;
-    color: var(--text-primary, #0f172a);
-  }
-
-  &__lead {
-    color: var(--text-secondary, #64748b);
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    max-width: 36rem;
-  }
+/*
+ * Mautic (thème / embed) : certains calques plein viewport passent au-dessus de la navbar
+ * (--z-navbar 2050). Les clics sur l’avatar / aide semblent « morts » (interceptés par le calque).
+ * On remonte uniquement la barre sur les pages qui embarquent ce formulaire.
+ */
+body:has(#mautic-form-container) #mainNav {
+  z-index: 12000;
 }

@@ -2,8 +2,8 @@
   "name": "outils-qualite-react-build",
   "private": true,
   "scripts": {
-    "build": "babel ../IshikawaEditor --out-dir ../../react/controllers --extensions .jsx,.js --copy-files",
-    "watch": "babel ../IshikawaEditor --out-dir ../../react/controllers --extensions .jsx,.js --copy-files --watch"
+    "build": "esbuild ../IshikawaEditor/index.jsx --bundle --format=esm --jsx=automatic --outfile=../../react/controllers/IshikawaEditor.js --loader:.jsx=jsx --external:react --external:react-dom --external:@xyflow/react --external:zustand --external:zustand/middleware --external:zustand/react/shallow --external:html-to-image",
+    "watch": "esbuild ../IshikawaEditor/index.jsx --bundle --format=esm --jsx=automatic --outfile=../../react/controllers/IshikawaEditor.js --loader:.jsx=jsx --external:react --external:react-dom --external:@xyflow/react --external:zustand --external:zustand/middleware --external:zustand/react/shallow --external:html-to-image --watch"
   },
   "dependencies": {
     "@xyflow/react": "^12.3.0",
@@ -13,9 +13,6 @@
     "html-to-image": "^1.11.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.0",
-    "@babel/core": "^7.23.0",
-    "@babel/preset-env": "^7.23.0",
-    "@babel/preset-react": "^7.23.0"
+    "esbuild": "^0.25.0"
   }
 }

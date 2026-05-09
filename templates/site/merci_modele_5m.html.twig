@@ -16,19 +16,21 @@
                 <p class="mb-4">
                     Pensez à vérifier votre boîte de réception et, si besoin, votre dossier <strong>courrier indésirable</strong> ou <strong>spam</strong>. Le message peut parfois y atterrir.
                 </p>
-                <a href="{{ path(‘app_ishikawa_index’) }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">Découvrir le diagramme Ishikawa</a>
+                <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">Découvrir le diagramme Ishikawa</a>
             </div>
         </div>
     </div>
 </section>
 
-<main id="main-content" class="max-w-7xl mx-auto px-4 py-12" role="main">
-    <div class="flex justify-center">
-        <div class="w-full max-w-xl text-center">
-            <p class="text-muted-foreground mb-0">
-                Vous n’avez pas reçu l’email ? Vérifiez l’adresse saisie ou réessayez dans quelques minutes.
-            </p>
+<section class="py-12" aria-label="Informations complémentaires">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-xl text-center">
+                <p class="text-muted-foreground mb-0 text-sm leading-relaxed">
+                    Vous n’avez pas reçu l’email ? Vérifiez l’adresse saisie ou réessayez dans quelques minutes.
+                </p>
+            </div>
         </div>
     </div>
-</main>
+</section>
 {% endblock %}

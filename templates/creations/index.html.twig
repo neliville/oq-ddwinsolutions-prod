@@ -2,70 +2,166 @@
 
 {% block title %}Mes créations | OUTILS-QUALITÉ{% endblock %}
 
-{% block meta_description %}
-<meta name="description"
-    content="Consultez et gérez toutes vos analyses sauvegardées : diagrammes Ishikawa et analyses 5 Pourquoi.">
-{% endblock %}
+{# Texte brut uniquement : parent capture ce bloc pour seo_description_raw ; pas de balises HTML (sinon meta description vide + OG cassés). #}
+{% block meta_description %}Consultez et gérez toutes vos analyses sauvegardées : diagrammes Ishikawa, analyses 5 Pourquoi et autres outils.{% endblock %}
 
 {% block content %}
-<main class="creations-page" role="main" aria-label="Mes créations">
-    <div class="w-full">
-        <header class="creations-header" data-aos="fade-up">
-            <h1>Mes créations</h1>
-            <p class="lead">Consultez et gérez toutes vos analyses sauvegardées</p>
+<div class="creations-page w-full" aria-label="Mes créations" {% if totalRecords > 0 %}data-controller="creations-hub"{% endif %}>
+    <div class="w-full max-w-[1400px] mx-auto">
+        <header class="creations-header mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between text-left">
+            <div class="flex flex-col gap-1">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Mes créations</h1>
+                <p class="text-base text-muted-foreground max-w-xl">Consultez et gérez toutes vos analyses sauvegardées</p>
+            </div>
         </header>
 
-        <div class="creations-stats" role="region" aria-label="Statistiques des créations">
-            <div class="creations-stat-card creations-stat-card--total" tabindex="0" role="article" aria-label="Total des créations">
+        {% if totalRecords > 0 %}
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+            <label class="relative flex w-full max-w-md items-center gap-2">
+                <span class="sr-only">Rechercher par titre</span>
+                <span class="pointer-events-none absolute left-3 text-muted-foreground" aria-hidden="true">
+                    <i class="fas fa-search text-sm"></i>
+                </span>
+                <input type="search"
+                       name="creations-search"
+                       autocomplete="off"
+                       placeholder="Rechercher par titre…"
+                       data-creations-hub-target="searchInput"
+                       data-action="input->creations-hub#search"
+                       class="h-11 w-full rounded-lg border border-input bg-background pl-10 pr-3 text-sm shadow-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            </label>
+        </div>
+        {% endif %}
+
+        {% if totalRecords > 0 %}
+        <div class="creations-filters-stack mb-4 flex flex-col gap-3">
+            <div class="creations-filter-hint flex flex-col gap-2 rounded-xl border border-dashed border-primary/25 bg-primary/5 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
+                <div class="flex shrink-0 items-center gap-2">
+                    <span class="inline-flex size-9 items-center justify-center rounded-lg bg-primary/15 text-primary" aria-hidden="true">
+                        <i class="fas fa-hand-pointer text-sm"></i>
+                    </span>
+                    <span class="text-xs font-semibold uppercase tracking-wide text-primary">Filtrer par outil</span>
+                </div>
+                <p class="m-0 text-sm leading-snug text-muted-foreground sm:flex-1">
+                    <span class="font-medium text-foreground">Astuce :</span>
+                    les cartes avec le chiffre ci-dessous sont des filtres interactifs — cliquez sur l’outil souhaité pour n’afficher que ce type de création. Cliquez sur <span class="whitespace-nowrap font-medium text-foreground">« Total »</span> pour tout voir à nouveau.
+                </p>
+            </div>
+        </div>
+        <h2 id="creations-filter-heading" class="sr-only">Choisir un type d’outil pour filtrer la liste</h2>
+        <div class="creations-stats mb-10" role="group" aria-labelledby="creations-filter-heading">
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--total text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="all"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="all"
+                    aria-pressed="true"
+                    aria-label="Afficher toutes les créations">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-file-alt" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ totalRecords }}</div>
                 <p class="creations-stat-card__label">Total des créations</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--ishikawa" tabindex="0" role="article" aria-label="Diagrammes Ishikawa">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--ishikawa text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="ishikawa"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="ishikawa"
+                    aria-pressed="false"
+                    aria-label="Filtrer les diagrammes Ishikawa">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-project-diagram" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ ishikawaRecords|length }}</div>
                 <p class="creations-stat-card__label">Diagrammes Ishikawa</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--fivewhy" tabindex="0" role="article" aria-label="Analyses 5 Pourquoi">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--fivewhy text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="fivewhy"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="fivewhy"
+                    aria-pressed="false"
+                    aria-label="Filtrer les analyses 5 Pourquoi">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-question-circle" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ fiveWhyRecords|length }}</div>
                 <p class="creations-stat-card__label">Analyses 5 Pourquoi</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--qqoqccp" tabindex="0" role="article" aria-label="Analyses QQOQCCP">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--qqoqccp text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="qqoqccp"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="qqoqccp"
+                    aria-pressed="false"
+                    aria-label="Filtrer les analyses QQOQCCP">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-list-check" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ qqoqccpRecords|length }}</div>
                 <p class="creations-stat-card__label">Analyses QQOQCCP</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--amdec" tabindex="0" role="article" aria-label="Analyses AMDEC">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--amdec text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="amdec"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="amdec"
+                    aria-pressed="false"
+                    aria-label="Filtrer les analyses AMDEC">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ amdecRecords|length }}</div>
                 <p class="creations-stat-card__label">Analyses AMDEC</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--pareto" tabindex="0" role="article" aria-label="Analyses Pareto">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--pareto text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="pareto"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="pareto"
+                    aria-pressed="false"
+                    aria-label="Filtrer les analyses Pareto">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-chart-line" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ paretoRecords|length }}</div>
                 <p class="creations-stat-card__label">Analyses Pareto</p>
-            </div>
-            <div class="creations-stat-card creations-stat-card--eightd" tabindex="0" role="article" aria-label="Méthodes 8D">
+            </button>
+            <button type="button"
+                    class="creations-stat-card creations-stat-card--eightd text-left creations-stat-card--interactive"
+                    data-creations-hub-target="filterBtn"
+                    data-filter="eightd"
+                    data-action="click->creations-hub#setFilter"
+                    data-creations-hub-filter-param="eightd"
+                    aria-pressed="false"
+                    aria-label="Filtrer les méthodes 8D">
                 <div class="creations-stat-card__icon">
                     <i class="fas fa-layer-group" aria-hidden="true"></i>
                 </div>
                 <div class="creations-stat-card__value">{{ eightDRecords|length }}</div>
                 <p class="creations-stat-card__label">Méthodes 8D</p>
-            </div>
+            </button>
         </div>
+
+        <div data-creations-hub-target="emptyState"
+             hidden
+             class="mb-10 rounded-xl border border-dashed border-border bg-muted/40 px-6 py-10 text-center">
+            <p class="text-base font-semibold text-foreground">Aucun résultat</p>
+            <p class="mt-2 text-sm text-muted-foreground">Modifiez votre recherche ou changez le filtre par type d’outil.</p>
+            <button type="button"
+                    data-action="click->creations-hub#resetFilters"
+                    class="mt-4 inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground">
+                Réinitialiser
+            </button>
+        </div>
+        {% endif %}
 
         {% if totalRecords == 0 %}
         <div class="creations-empty" role="status" aria-live="polite">
@@ -103,7 +199,7 @@
         </div>
         {% else %}
         {% if ishikawaRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="ishikawa-heading">
+        <section class="creations-section" aria-labelledby="ishikawa-heading" data-creations-hub-target="section" data-creation-kind="ishikawa">
             <div class="creations-section__header">
                 <h2 id="ishikawa-heading">
                     <i class="fas fa-project-diagram" aria-hidden="true"></i>
@@ -113,39 +209,20 @@
             </div>
             <div class="creations-grid">
                 {% for record in ishikawaRecords %}
-                <article class="creation-card creation-card--ishikawa" role="article" aria-labelledby="ishikawa-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-project-diagram"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="ishikawa-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_ishikawa_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger le diagramme Ishikawa {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button 
-                                class="creation-btn creation-btn--delete" 
-                                type="button"
-                                data-modal-open="delete-ishikawa-{{ record.id }}"
-                                aria-label="Supprimer le diagramme Ishikawa {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'ishikawa',
+                    heading_id: 'ishikawa-' ~ record.id ~ '-title',
+                    badge_label: 'Ishikawa',
+                    badge_icon: 'fas fa-project-diagram',
+                    record: record,
+                    load_href: path('app_ishikawa_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-ishikawa-' ~ record.id,
+                    load_aria_label: 'Charger le diagramme Ishikawa ' ~ record.title,
+                    delete_aria_label: 'Supprimer le diagramme Ishikawa ' ~ record.title,
+                } %}
+                {% endfor %}
+            </div>
+            {% for record in ishikawaRecords %}
                 {% component DeleteConfirmationModal with {
                     id: 'delete-ishikawa-' ~ record.id,
                     title: 'Confirmation de suppression',
@@ -154,13 +231,12 @@
                     deleteMethod: 'DELETE'
                 } %}
                 {% endcomponent %}
-                {% endfor %}
-            </div>
+            {% endfor %}
         </section>
         {% endif %}
 
         {% if fiveWhyRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="fivewhy-heading">
+        <section class="creations-section" aria-labelledby="fivewhy-heading" data-creations-hub-target="section" data-creation-kind="fivewhy">
             <div class="creations-section__header">
                 <h2 id="fivewhy-heading">
                     <i class="fas fa-question-circle" aria-hidden="true"></i>
@@ -170,39 +246,20 @@
             </div>
             <div class="creations-grid">
                 {% for record in fiveWhyRecords %}
-                <article class="creation-card creation-card--fivewhy" role="article" aria-labelledby="fivewhy-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="fivewhy-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_fivewhy_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse 5 Pourquoi {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button 
-                                class="creation-btn creation-btn--delete" 
-                                type="button"
-                                data-modal-open="delete-fivewhy-{{ record.id }}"
-                                aria-label="Supprimer l'analyse 5 Pourquoi {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'fivewhy',
+                    heading_id: 'fivewhy-' ~ record.id ~ '-title',
+                    badge_label: '5 Pourquoi',
+                    badge_icon: 'fas fa-question-circle',
+                    record: record,
+                    load_href: path('app_fivewhy_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-fivewhy-' ~ record.id,
+                    load_aria_label: "Charger l'analyse 5 Pourquoi " ~ record.title,
+                    delete_aria_label: "Supprimer l'analyse 5 Pourquoi " ~ record.title,
+                } %}
+                {% endfor %}
+            </div>
+            {% for record in fiveWhyRecords %}
                 {% component DeleteConfirmationModal with {
                     id: 'delete-fivewhy-' ~ record.id,
                     title: 'Confirmation de suppression',
@@ -211,13 +268,12 @@
                     deleteMethod: 'DELETE'
                 } %}
                 {% endcomponent %}
-                {% endfor %}
-            </div>
+            {% endfor %}
         </section>
         {% endif %}
 
         {% if qqoqccpRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="qqoqccp-heading">
+        <section class="creations-section" aria-labelledby="qqoqccp-heading" data-creations-hub-target="section" data-creation-kind="qqoqccp">
             <div class="creations-section__header">
                 <h2 id="qqoqccp-heading">
                     <i class="fas fa-list-check" aria-hidden="true"></i>
@@ -227,45 +283,20 @@
             </div>
             <div class="creations-grid">
                 {% for record in qqoqccpRecords %}
-                <article class="creation-card creation-card--qqoqccp" role="article" aria-labelledby="qqoqccp-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-list-check"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="qqoqccp-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% if record.updatedAt %}
-                                <span>
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_qqoqccp_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse QQOQCCP {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button 
-                                class="creation-btn creation-btn--delete" 
-                                type="button"
-                                data-modal-open="delete-qqoqccp-{{ record.id }}"
-                                aria-label="Supprimer l'analyse QQOQCCP {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'qqoqccp',
+                    heading_id: 'qqoqccp-' ~ record.id ~ '-title',
+                    badge_label: 'QQOQCCP',
+                    badge_icon: 'fas fa-list-check',
+                    record: record,
+                    load_href: path('app_qqoqccp_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-qqoqccp-' ~ record.id,
+                    load_aria_label: "Charger l'analyse QQOQCCP " ~ record.title,
+                    delete_aria_label: "Supprimer l'analyse QQOQCCP " ~ record.title,
+                } %}
+                {% endfor %}
+            </div>
+            {% for record in qqoqccpRecords %}
                 {% component DeleteConfirmationModal with {
                     id: 'delete-qqoqccp-' ~ record.id,
                     title: 'Confirmation de suppression',
@@ -274,13 +305,12 @@
                     deleteMethod: 'DELETE'
                 } %}
                 {% endcomponent %}
-                {% endfor %}
-            </div>
+            {% endfor %}
         </section>
         {% endif %}
 
         {% if amdecRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="amdec-heading">
+        <section class="creations-section" aria-labelledby="amdec-heading" data-creations-hub-target="section" data-creation-kind="amdec">
             <div class="creations-section__header">
                 <h2 id="amdec-heading">
                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
@@ -290,60 +320,34 @@
             </div>
             <div class="creations-grid">
                 {% for record in amdecRecords %}
-                <article class="creation-card creation-card--amdec" role="article" aria-labelledby="amdec-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="amdec-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% if record.updatedAt %}
-                                <span>
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_amdec_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse AMDEC {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button
-                                class="creation-btn creation-btn--delete"
-                                type="button"
-                                data-modal-open="delete-amdec-{{ record.id }}"
-                                aria-label="Supprimer l'analyse AMDEC {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                            {% component DeleteConfirmationModal with {
-                                id: 'delete-amdec-' ~ record.id,
-                                title: 'Confirmation de suppression',
-                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible.',
-                                deleteUrl: path('app_api_amdec_delete', {id: record.id}),
-                                deleteMethod: 'DELETE'
-                            } %}
-                            {% endcomponent %}
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'amdec',
+                    heading_id: 'amdec-' ~ record.id ~ '-title',
+                    badge_label: 'AMDEC',
+                    badge_icon: 'fas fa-exclamation-triangle',
+                    record: record,
+                    load_href: path('app_amdec_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-amdec-' ~ record.id,
+                    load_aria_label: "Charger l'analyse AMDEC " ~ record.title,
+                    delete_aria_label: "Supprimer l'analyse AMDEC " ~ record.title,
+                } %}
                 {% endfor %}
             </div>
+            {% for record in amdecRecords %}
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-amdec-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer cette analyse AMDEC ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_amdec_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
+            {% endfor %}
         </section>
         {% endif %}
 
         {% if paretoRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="pareto-heading">
+        <section class="creations-section" aria-labelledby="pareto-heading" data-creations-hub-target="section" data-creation-kind="pareto">
             <div class="creations-section__header">
                 <h2 id="pareto-heading">
                     <i class="fas fa-chart-line" aria-hidden="true"></i>
@@ -353,60 +357,34 @@
             </div>
             <div class="creations-grid">
                 {% for record in paretoRecords %}
-                <article class="creation-card creation-card--pareto" role="article" aria-labelledby="pareto-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="pareto-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% if record.updatedAt %}
-                                <span>
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_pareto_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger l'analyse Pareto {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button
-                                class="creation-btn creation-btn--delete"
-                                type="button"
-                                data-modal-open="delete-pareto-{{ record.id }}"
-                                aria-label="Supprimer l'analyse Pareto {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                            {% component DeleteConfirmationModal with {
-                                id: 'delete-pareto-' ~ record.id,
-                                title: 'Confirmation de suppression',
-                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible.',
-                                deleteUrl: path('app_api_pareto_delete', {id: record.id}),
-                                deleteMethod: 'DELETE'
-                            } %}
-                            {% endcomponent %}
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'pareto',
+                    heading_id: 'pareto-' ~ record.id ~ '-title',
+                    badge_label: 'Pareto',
+                    badge_icon: 'fas fa-chart-line',
+                    record: record,
+                    load_href: path('app_pareto_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-pareto-' ~ record.id,
+                    load_aria_label: "Charger l'analyse Pareto " ~ record.title,
+                    delete_aria_label: "Supprimer l'analyse Pareto " ~ record.title,
+                } %}
                 {% endfor %}
             </div>
+            {% for record in paretoRecords %}
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-pareto-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer cette analyse Pareto ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_pareto_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
+            {% endfor %}
         </section>
         {% endif %}
 
         {% if eightDRecords|length > 0 %}
-        <section class="creations-section" aria-labelledby="eightd-heading">
+        <section class="creations-section" aria-labelledby="eightd-heading" data-creations-hub-target="section" data-creation-kind="eightd">
             <div class="creations-section__header">
                 <h2 id="eightd-heading">
                     <i class="fas fa-layer-group" aria-hidden="true"></i>
@@ -416,65 +394,39 @@
             </div>
             <div class="creations-grid">
                 {% for record in eightDRecords %}
-                <article class="creation-card creation-card--eightd" role="article" aria-labelledby="eightd-{{ record.id }}-title">
-                    <div class="creation-card__header">
-                        <div class="creation-card__icon" aria-hidden="true">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <div class="creation-card__content">
-                            <h3 class="creation-card__title" id="eightd-{{ record.id }}-title">{{ record.title }}</h3>
-                            <div class="creation-card__meta">
-                                <span>
-                                    <i class="fas fa-calendar" aria-hidden="true"></i>
-                                    Créé le {{ record.createdAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% if record.updatedAt %}
-                                <span>
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                    Mis à jour le {{ record.updatedAt|date('d/m/Y à H:i') }}
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="creation-card__actions">
-                        <a href="{{ path('app_eightd_index') }}?load={{ record.id }}" class="creation-btn creation-btn--load" aria-label="Charger le rapport 8D {{ record.title }}">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i>
-                            <span>Charger</span>
-                        </a>
-                        <div>
-                            <button
-                                class="creation-btn creation-btn--delete"
-                                type="button"
-                                data-modal-open="delete-eightd-{{ record.id }}"
-                                aria-label="Supprimer le rapport 8D {{ record.title }}"
-                            >
-                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                                <span class="sr-only">Supprimer</span>
-                            </button>
-                            {% component DeleteConfirmationModal with {
-                                id: 'delete-eightd-' ~ record.id,
-                                title: 'Confirmation de suppression',
-                                message: 'Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible.',
-                                deleteUrl: path('app_api_eightd_delete', {id: record.id}),
-                                deleteMethod: 'DELETE'
-                            } %}
-                            {% endcomponent %}
-                        </div>
-                    </div>
-                </article>
+                {% include 'creations/_creation_card.html.twig' with {
+                    kind: 'eightd',
+                    heading_id: 'eightd-' ~ record.id ~ '-title',
+                    badge_label: 'Méthode 8D',
+                    badge_icon: 'fas fa-layer-group',
+                    record: record,
+                    load_href: path('app_eightd_index') ~ '?load=' ~ record.id,
+                    delete_modal_id: 'delete-eightd-' ~ record.id,
+                    load_aria_label: 'Charger le rapport 8D ' ~ record.title,
+                    delete_aria_label: 'Supprimer le rapport 8D ' ~ record.title,
+                } %}
                 {% endfor %}
             </div>
+            {% for record in eightDRecords %}
+                {% component DeleteConfirmationModal with {
+                    id: 'delete-eightd-' ~ record.id,
+                    title: 'Confirmation de suppression',
+                    message: 'Êtes-vous sûr de vouloir supprimer cette analyse 8D ? Cette action est irréversible.',
+                    deleteUrl: path('app_api_eightd_delete', {id: record.id}),
+                    deleteMethod: 'DELETE'
+                } %}
+                {% endcomponent %}
+            {% endfor %}
         </section>
         {% endif %}
         {% endif %}
     </div>
-</main>
+</div>
 {% endblock %}
 
 {% block stylesheets %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('styles/tools/creations.css') }}" data-turbo-track="reload">
+{{ parent() }}
+<!-- Font Awesome : déjà chargé dans base.html.twig — pas de doublon -->
 <!-- Toastify CSS pour les notifications (même style que Ishikawa / exports PDF) -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 {% endblock %}

@@ -428,13 +428,15 @@ git commit -m "feat(ishikawa): v2 page controller and tests"
         </span>
     </header>
 
-    <div class="flex-1 min-h-[70vh] w-full">
+    {# react_component() = attributs Stimulus sur la balise, pas contenu texte #}
+    <div
+        class="flex-1 min-h-[70vh] w-full"
         {{ react_component('IshikawaEditor', {
             recordId: record_id,
             apiBase: '/api/ishikawa',
             csrfToken: csrf_token('ishikawa_record'),
         }) }}
-    </div>
+    ></div>
 </div>
 {% endblock %}
 ```

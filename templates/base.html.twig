@@ -224,6 +224,7 @@
         'app_legal_conditions_utilisation',
         'app_outils_index',
         'app_ishikawa_index',
+        'app_ishikawa_v2_index',
         'app_fivewhy_index',
         'app_qqoqccp_index',
         'app_amdec_index',
@@ -244,7 +245,7 @@
         </nav>
     {% endif %}
 
-    <!-- Main Content -->
+    {# Un seul <main id="main-content"> : toujours ici ; les pages qui redéfinissent block body s’y insèrent (évite double main + lien d’évitement cassé). #}
     <main id="main-content" tabindex="-1">
         {% block body %}
             {% block content %}{% endblock %}

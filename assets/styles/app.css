@@ -44,6 +44,11 @@
 /* ─── Admin ───────────────────────────────────────────────────────────── */
 @import "./admin/admin.css";
 
+/* Mes créations / KPI : couche « components » pour gagner sur les utilitaires Tailwind du même fichier compilé */
+@import "./tools/creations.css" layer(components);
+/* Cartes créations : CSS plat (le nesting &__ du fichier ci-dessus n’est pas aplati par Tailwind v4) */
+@import "./tools/_creation-card-flat.css" layer(components);
+
 /* ─── Source scanning explicite (templates Twig hors dossier assets) ─ */
 @source "../../templates/**/*.html.twig";
 @source "../../assets/**/*.js";
@@ -263,4 +268,17 @@ body.sidebar-collapsed .admin-sidebar {
         outline-offset: 2px;
         border-radius: 4px;
     }
+}
+
+/*
+ * Mes créations — filtres KPI : Bootstrap (injecté après app.css via importmap) peut rendre le texte
+ * des <button> illisible. Ces règles hors @layer passent après les feuilles en cascade et corrigent le contraste.
+ */
+.creations-page .creations-stats button.creations-stat-card--interactive,
+.creations-page .creations-stats button.creations-stat-card--interactive .creations-stat-card__value {
+    color: #0f172a !important;
+}
+
+.creations-page .creations-stats button.creations-stat-card--interactive .creations-stat-card__label {
+    color: #475569 !important;
 }

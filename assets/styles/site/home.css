@@ -35,7 +35,7 @@
     margin-bottom: var(--space-3);
     font-weight: 500;
     padding-left: var(--space-4);
-    border-left: 4px solid var(--primary);
+    border-left: 4px solid hsl(var(--primary));
     border-radius: 0 4px 4px 0;
   }
 
@@ -52,10 +52,20 @@
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: var(--space-6);
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-primary);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
+
+    /* Dégradé activé seulement quand le clipping texte est bien supporté */
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      background: linear-gradient(135deg, var(--text-primary) 0%, hsl(var(--primary)) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
   }
 
   .hero-subtitle {
@@ -102,13 +112,14 @@
       .stat-value {
         font-size: 2.25rem;
         font-weight: 700;
-        color: var(--primary);
+        color: hsl(var(--primary));
         line-height: 1;
       }
 
       .stat-label {
         font-size: 0.875rem;
-        color: var(--text-muted);
+        font-weight: 500;
+        color: var(--text-secondary, #475569);
         margin-top: var(--space-2);
       }
     }
@@ -408,6 +419,41 @@
       margin: 0;
     }
   }
+
+  /* Barre de confiance (remplace l’ancien paragraphe) : lisibilité & focus clavier */
+  .context-trust-bar {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 56rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4) var(--space-8);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.45;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .context-trust-bar__mark {
+      flex-shrink: 0;
+      color: #059669;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    strong {
+      font-weight: 700;
+      color: #0f172a;
+    }
+  }
 }
 
 /* Spécificité renforcée (ID) pour éviter d'être écrasé par Bootstrap/reset sur cette section */
@@ -423,7 +469,7 @@
     .section-badge {
       display: inline-block;
       padding: var(--space-2) var(--space-4);
-      background: var(--primary);
+      background: hsl(var(--primary));
       color: #fff;
       border-radius: 999px;
       font-size: 0.875rem;
@@ -438,8 +484,9 @@
 
     p {
       font-size: 1rem;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #475569);
       margin: 0;
+      line-height: 1.6;
     }
   }
 
@@ -459,20 +506,25 @@
   .social-stat {
     text-align: center;
     flex: 1;
-    min-width: 120px;
+    min-width: 10rem;
+    max-width: 20rem;
 
     &__value {
       display: block;
       font-size: clamp(2rem, 4vw, 2.75rem);
       font-weight: 800;
-      color: var(--primary);
+      color: hsl(var(--primary));
       line-height: 1.1;
+      letter-spacing: -0.02em;
     }
 
     &__label {
+      display: block;
       font-size: 0.9375rem;
-      color: var(--text-muted);
-      margin-top: var(--space-1);
+      font-weight: 500;
+      color: var(--text-secondary, #475569);
+      margin-top: var(--space-2);
+      line-height: 1.45;
     }
   }
 
@@ -482,6 +534,7 @@
     gap: var(--space-6);
     max-width: 900px;
     margin: 0 auto;
+    align-items: start;
   }
 
   .testimonial-card {
@@ -491,6 +544,9 @@
     border-radius: var(--border-radius-xl);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     transition: box-shadow var(--transition-base), border-color var(--transition-base);
 
     &:hover {
@@ -499,6 +555,8 @@
     }
 
     &__body {
+      flex: 0 1 auto;
+      min-height: 0;
       padding: var(--space-5) var(--space-5) var(--space-4);
       max-height: 200px;
       overflow: hidden;
@@ -507,8 +565,13 @@
 
     &:not(.is-open) .testimonial-card__body {
       max-height: 0;
-      padding-top: 0;
-      padding-bottom: 0;
+      padding: 0;
+      overflow: hidden;
+      visibility: hidden;
+    }
+
+    &.is-open .testimonial-card__body {
+      visibility: visible;
     }
 
     .testimonial-text {
@@ -532,15 +595,23 @@
       font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
+      text-align: left;
       transition: background var(--transition-base);
 
       &:hover {
         background: var(--gray-700);
       }
 
+      &:focus-visible {
+        outline: 3px solid hsl(var(--primary));
+        outline-offset: 2px;
+        z-index: 1;
+      }
+
       .testimonial-chevron {
         flex-shrink: 0;
         display: inline-flex;
+        color: #fff;
         transition: transform var(--transition-base);
       }
     }
@@ -568,7 +639,7 @@
     .section-badge {
       display: inline-block;
       padding: var(--space-2) var(--space-4);
-      background: var(--primary);
+      background: hsl(var(--primary));
       color: #fff;
       border-radius: 999px;
       font-size: 0.875rem;
@@ -583,8 +654,9 @@
 
     p {
       font-size: 1.125rem;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #475569);
       margin: 0;
+      line-height: 1.6;
     }
   }
 
@@ -625,6 +697,12 @@
     text-align: left;
     transition: background var(--transition-base);
 
+    &:focus-visible {
+      outline: 3px solid hsl(var(--primary));
+      outline-offset: -3px;
+      z-index: 1;
+    }
+
     &:hover {
       background: var(--gray-700);
     }
@@ -652,8 +730,8 @@
     max-height: 300px;
     overflow: hidden;
     transition: max-height var(--transition-slow);
-    color: var(--text-secondary);
-    line-height: 1.7;
+    color: #334155;
+    line-height: 1.65;
     padding: 0 var(--space-5) var(--space-5);
     box-sizing: border-box;
     width: 100%;
@@ -661,6 +739,7 @@
     p {
       margin: 0;
       padding: 0;
+      font-size: 1rem;
 
       &:last-child {
         margin-bottom: 0;
@@ -785,7 +864,7 @@
 
         .badge {
           background: rgba(79, 70, 229, 0.08);
-          color: var(--primary);
+          color: hsl(var(--primary));
           font-size: 0.75rem;
           font-weight: 600;
           padding: var(--space-1) var(--space-3);
@@ -870,6 +949,11 @@
 
 .newsletter-wrapper {
   padding: var(--space-20) 0;
+
+  .newsletter-card .newsletter-content p {
+    color: var(--text-secondary, #475569);
+    line-height: 1.6;
+  }
 }
 
 .expertise-section {
@@ -921,7 +1005,7 @@
       padding: var(--space-6);
       background: var(--bg-primary);
       border-radius: var(--border-radius-lg);
-      border-left: 4px solid var(--primary);
+      border-left: 4px solid hsl(var(--primary));
 
       .cert-badges {
         display: flex;
@@ -930,7 +1014,7 @@
 
         .cert-badge-small {
           padding: var(--space-2) var(--space-4);
-          background: var(--primary);
+          background: hsl(var(--primary));
           color: #fff;
           border-radius: var(--border-radius-sm);
           font-size: 0.875rem;
@@ -945,7 +1029,7 @@
   padding: var(--space-20) 0;
 
   .cta-box {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, var(--primary-dark) 100%);
     padding: var(--space-16);
     border-radius: var(--border-radius-2xl);
     text-align: center;

@@ -1,5 +1,123 @@
 /* Styles pour améliorer la lisibilité du contenu Markdown des articles (UX friendly) */
 
+/*
+ * Hero article : fond clair en couleurs fixes (hex) — lisible même si les tokens HSL
+ * ou le chargement de feuilles échoue (évite texte clair sur fond blanc).
+ * Accent marque : bandeau indigo + pastille catégorie.
+ */
+.article-hero-section {
+  /* margin-top : défini en inline dans article.html.twig (navbar fixe, hauteur variable) */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  color: #0f172a;
+  /* Fond garanti + léger dégradé indigo (pas de hsl(var()) ici) */
+  background-color: #eef2ff;
+  background-image: linear-gradient(180deg, #e8eefe 0%, #f8fafc 55%, #ffffff 100%);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: inset 0 3px 0 0 #4f46e5;
+}
+
+@media (min-width: 768px) {
+  .article-hero-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .article-hero-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.75rem;
+  }
+}
+
+.article-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 70% at 100% 0%, rgba(79, 70, 229, 0.09), transparent 50%);
+  pointer-events: none;
+}
+
+.article-hero-section .article-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.article-hero-section .article-hero-breadcrumbs a {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.article-hero-section .article-hero-breadcrumbs a:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.article-hero-section .article-hero-breadcrumbs .article-hero-breadcrumbs__sep {
+  color: #94a3b8;
+}
+
+.article-hero-section .article-hero-breadcrumbs [aria-current="page"] {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.article-hero-section .article-hero-breadcrumbs [aria-current="page"] span {
+  color: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-hero-section .article-hero-meta,
+.article-hero-section .article-hero-meta time,
+.article-hero-section .article-hero-meta > span[role="listitem"]:not(.article-hero-category) {
+  color: #64748b;
+}
+
+.article-hero-section .article-hero-meta .article-hero-category {
+  background: #e0e7ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.article-hero-section .article-hero-meta svg {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.article-hero-section .article-hero-title {
+  color: #0f172a;
+}
+
+.article-hero-section .article-hero-excerpt {
+  color: #334155;
+  line-height: 1.65;
+}
+
+.article-hero-section .article-hero-media picture,
+.article-hero-section .article-hero-media img {
+  border-radius: 0.75rem;
+  box-shadow: 0 12px 40px -12px rgba(15, 23, 42, 0.2);
+}
+
+.article-hero-section .article-hero-icon-fallback {
+  background: #ede9fe !important;
+  border: 1px solid #c4b5fd;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+}
+
+.article-hero-section .article-hero-icon-fallback [data-lucide],
+.article-hero-section .article-hero-icon-fallback svg {
+  color: #4f46e5 !important;
+  stroke: #4f46e5 !important;
+}
+
 .article-content.prose {
     color: #374151;
     font-size: 1.125rem;

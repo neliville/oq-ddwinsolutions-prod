@@ -28,7 +28,7 @@
 
 {# OG/Twitter : même titre et description que la page (meta) si non surchargés #}
 {% set og_title_value = og_title_raw ?: seo_title_raw ?: 'Outils Qualité Gratuits en Ligne — Ishikawa, 5 Pourquoi, AMDEC, Pareto | Outils-Qualité' %}
-{% set og_description_value = og_description_raw ?: seo_description_raw ?: 'Créez gratuitement vos diagrammes Ishikawa, analyses 5 Pourquoi, AMDEC et Pareto en ligne. Export PDF, conforme ISO 9001. Sans inscription.' %}
+{% set og_description_value = (og_description_raw ?: seo_description_raw ?: 'Créez gratuitement vos diagrammes Ishikawa, analyses 5 Pourquoi, AMDEC et Pareto en ligne. Export PDF, conforme ISO 9001. Sans inscription.')|striptags|trim %}
 
 {% set og_image_value = og_image_raw|default(app_default_image) %}
 {% set og_url_value = og_url_raw|default(app.request.uri) %}

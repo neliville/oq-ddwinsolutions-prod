@@ -29,8 +29,8 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                             <span class="badge-dot"></span>
                             Gratuit • Sans installation • RGPD
                         </div>
-                        <p class="hero-problem">Analyses qualité chronophages, diagrammes dispersés, peu de structure pour vos audits&nbsp;?</p>
-                        <h1 class="hero-title">Outils QSE simples et gratuits pour structurer votre entreprise</h1>
+                        <p class="hero-problem">Analyses causes racines, évaluation des risques, plan d'action… tout ça dans des fichiers Excel éparpillés&nbsp;?</p>
+                        <h1 class="hero-title">Résolvez vos problèmes qualité. Gratuitement. En ligne.</h1>
                         <p class="hero-subtitle">
                             Diagrammes Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, Pareto et Méthode 8D : des modèles pratiques utilisés sur le terrain par des PME françaises. Créez, exportez et sauvegardez en quelques clics.
                         </p>
@@ -40,7 +40,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                                     <path d="M10 3V17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                Accéder aux outils gratuitement
+                                Utiliser les outils maintenant →
                             </a>
                             <a href="{{ path('app_register') }}" class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-5 py-3 rounded-lg font-medium hover:opacity-90 transition-colors no-underline btn-hero-secondary">Créer un compte gratuit</a>
                         </div>
@@ -138,12 +138,24 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
         <!-- Contexte -->
         <section class="context-section">
             <div class="container">
-                <div class="context-text">
-                    <p>
-                        Outils-qualite.com met à disposition des ressources QSE simples, concrètes et immédiatement utilisables, sans logiciel complexe ni théorie inutile.
-                        Ces outils s'adressent aux TPE et PME souhaitant structurer leurs pratiques qualité, sécurité et environnement avec des supports clairs et opérationnels.
-                    </p>
-                </div>
+                <ul class="context-trust-bar" role="list" aria-label="Points forts de la plateforme">
+                    <li>
+                        <span class="context-trust-bar__mark" aria-hidden="true">✓</span>
+                        <span>Export <strong>PDF &amp; JSON</strong> intégré</span>
+                    </li>
+                    <li>
+                        <span class="context-trust-bar__mark" aria-hidden="true">✓</span>
+                        <span>Utilisable sans inscription</span>
+                    </li>
+                    <li>
+                        <span class="context-trust-bar__mark" aria-hidden="true">✓</span>
+                        <span>Serveurs sécurisés en France</span>
+                    </li>
+                    <li>
+                        <span class="context-trust-bar__mark" aria-hidden="true">✓</span>
+                        <span>Conforme RGPD</span>
+                    </li>
+                </ul>
             </div>
         </section>
 
@@ -413,16 +425,16 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                 </div>
                 <div class="social-proof-stats">
                     <div class="social-stat">
-                        <span class="social-stat__value">{{ leadsCount|default(0) }}+</span>
-                        <span class="social-stat__label">Utilisations d'outils</span>
-                    </div>
-                    <div class="social-stat">
-                        <span class="social-stat__value">{{ subscribersCount|default(0) }}+</span>
-                        <span class="social-stat__label">Inscrits à la newsletter</span>
-                    </div>
-                    <div class="social-stat">
                         <span class="social-stat__value">6</span>
-                        <span class="social-stat__label">Outils qualité gratuits</span>
+                        <span class="social-stat__label">Outils interactifs gratuits</span>
+                    </div>
+                    <div class="social-stat">
+                        <span class="social-stat__value">100%</span>
+                        <span class="social-stat__label">Conforme ISO 9001 & RGPD</span>
+                    </div>
+                    <div class="social-stat">
+                        <span class="social-stat__value">0€</span>
+                        <span class="social-stat__label">Accès illimité, sans carte bancaire</span>
                     </div>
                 </div>
                 <div class="testimonials-grid">
@@ -461,8 +473,8 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                 <div class="newsletter-card">
                     <div class="newsletter-content">
                         <span class="newsletter-badge">Newsletter</span>
-                        <h2>Recevez nos nouveautés qualité</h2>
-                        <p>Un condensé d'astuces, d'outils et de bonnes pratiques QSE directement dans votre boîte mail.</p>
+                        <h2>Les pros de la qualité lisent ça le lundi matin.</h2>
+                        <p>Outils terrain, méthodes QSE, retours d'expérience — une fois par semaine, sans remplissage.</p>
                     </div>
                     <div class="newsletter-form-container">
                         {% include 'components/newsletter-form.html.twig' %}
@@ -512,6 +524,13 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                                 </div>
                             </div>
                         </div>
+
+                        <p class="mt-4 text-sm text-gray-500">
+                            Découvrez aussi
+                            <a href="https://duerpilot.fr" target="_blank" rel="noopener"
+                               class="text-blue-600 hover:underline">DUERPilot</a>,
+                            notre solution SaaS dédiée au DUERP pour les TPE/PME françaises.
+                        </p>
 
                     </div>
                 </div>

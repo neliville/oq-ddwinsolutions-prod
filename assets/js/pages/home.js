@@ -19,6 +19,15 @@ function registerTestimonialAccordions() {
   }
 
   // Créer un nouveau handler avec délégation d'événements
+  const syncTestimonialBodies = () => {
+    grid.querySelectorAll('.testimonial-card').forEach((card) => {
+      const body = card.querySelector('.testimonial-card__body');
+      if (!body) return;
+      const open = card.classList.contains('is-open');
+      body.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+  };
+
   const clickHandler = (e) => {
     const btn = e.target.closest('.testimonial-card__trigger');
     if (!btn) return;
@@ -37,11 +46,13 @@ function registerTestimonialAccordions() {
       card.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
     }
+    syncTestimonialBodies();
   };
 
   // Stocker le handler pour pouvoir le supprimer plus tard
   grid._testimonialClickHandler = clickHandler;
   grid.addEventListener('click', clickHandler);
+  syncTestimonialBodies();
 }
 
 function registerFaqAccordions() {
@@ -55,6 +66,15 @@ function registerFaqAccordions() {
   }
 
   // Créer un nouveau handler avec délégation d'événements
+  const syncFaqPanels = () => {
+    list.querySelectorAll('.faq-item').forEach((el) => {
+      const answer = el.querySelector('.faq-answer');
+      if (!answer) return;
+      const open = el.classList.contains('is-open');
+      answer.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+  };
+
   const clickHandler = (e) => {
     const btn = e.target.closest('.faq-question');
     if (!btn) return;
@@ -73,9 +93,11 @@ function registerFaqAccordions() {
       item.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
     }
+    syncFaqPanels();
   };
 
   // Stocker le handler pour pouvoir le supprimer plus tard
   list._faqClickHandler = clickHandler;
   list.addEventListener('click', clickHandler);
+  syncFaqPanels();
 }

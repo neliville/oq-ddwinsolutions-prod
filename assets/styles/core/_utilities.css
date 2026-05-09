@@ -1,5 +1,6 @@
+/* --primary en triplet HSL (shadcn) : var(--primary) seul est invalide dans un gradient. */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, var(--primary), var(--purple)) !important;
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, #764ba2 100%) !important;
 }
 
 .bg-gradient-secondary {

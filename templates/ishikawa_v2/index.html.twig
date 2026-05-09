@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} — Outils Qualité{% endblock %}
+
+{# Page outil lourde (React) : rechargement complet à l’arrivée depuis une autre page Turbo + désactivation du drive sur ce document. #}
+{% block head %}
+    {{ parent() }}
+    <meta name="turbo-visit-control" content="reload">
+{% endblock %}
+
+{% block body_attributes %} data-turbo="false"{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/ishikawa-reactflow.css') }}" data-turbo-track="reload">
+    {# AOS (base) peut laisser opacity:0 sur [data-aos] si init / tracking bloque ; cette page n’utilise pas d’animations AOS. #}
+    <style>
+        /* Même logique que .ishikawa-page : la navbar publique est fixed — sans ce padding, tout le bloc v2 est sous la barre. */
+        .ishikawa-v2-root {
+            padding-top: max(6.75rem, calc(var(--space-6, 1.5rem) + 4.5rem));
+        }
+        .ishikawa-v2-root,
+        .ishikawa-v2-root [data-aos] {
+            opacity: 1 !important;
+            transform: none !important;
+            visibility: visible !important;
+        }
+        #main-content:has(.ishikawa-v2-root) {
+            min-height: 70vh;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+{# Turbo + Stimulus/React : évite remplacements DOM agressifs sur cette page de test. #}
+<div class="ishikawa-v2-root min-h-screen flex flex-col bg-background" data-turbo="false">
+    <header class="flex flex-wrap items-center gap-4 px-5 py-3 bg-slate-800 text-white border-b border-slate-700">
+        <a href="{{ path('app_ishikawa_index') }}" class="text-sky-300 hover:underline text-sm no-underline">
+            ← Version actuelle
+        </a>
+        <span class="font-medium text-sm">Diagramme Ishikawa</span>
+        <span class="inline-flex items-center rounded-full bg-yellow-200 text-yellow-900 text-xs font-bold px-2.5 py-0.5">
+            NOUVELLE VERSION — Test
+        </span>
+        <span class="text-xs text-slate-400 ml-auto">
+            Validez avant migration définitive
+        </span>
+    </header>
+
+    {# react_component() produit des attributs data-* pour Stimulus : ils doivent être sur l’élément racine du montage, pas dans le corps du nœud. #}
+    <div
+        class="flex-1 min-h-[70vh] w-full"
+        data-turbo="false"
+        {{ react_component('IshikawaEditor', {
+            recordId: record_id,
+            apiBase: '/api/ishikawa',
+            csrfToken: csrf_token('ishikawa_record'),
+        }) }}
+    ></div>
+</div>
+{% endblock %}

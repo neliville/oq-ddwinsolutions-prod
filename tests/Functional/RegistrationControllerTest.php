@@ -34,8 +34,8 @@ class RegistrationControllerTest extends WebTestCase
         
         $client->submit($form);
 
-        // Vérifier la redirection vers la page de connexion
-        $this->assertResponseRedirects('/login');
+        // Après inscription, redirection vers la page de bienvenue (compte créé)
+        $this->assertResponseRedirects('/bienvenue');
 
         // Vérifier que l'utilisateur a été créé
         $userRepository = static::getContainer()->get(UserRepository::class);

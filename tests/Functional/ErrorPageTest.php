@@ -14,7 +14,7 @@ class ErrorPageTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(404);
         $this->assertSelectorTextContains('.error-page__title', 'Oups, page introuvable');
-        $this->assertSelectorExists('.error-page__actions a.btn.btn-primary');
+        $this->assertSelectorTextContains('.error-page__actions', 'Explorer nos outils');
     }
 
     public function test500PageDisplaysFallbackTemplate(): void
