@@ -1,0 +1,43 @@
+<section class="home-landing-section py-16 sm:py-20 bg-muted/30" aria-labelledby="home-audits-heading">
+    <div class="container max-w-6xl mx-auto px-4">
+        <header class="text-center max-w-3xl mx-auto mb-10" data-aos="fade-up">
+            <h2 id="home-audits-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">Auditez vos référentiels ISO plus simplement</h2>
+            <p class="text-muted-foreground mt-3 m-0">
+                Choisissez votre référentiel, évaluez les exigences, documentez vos preuves et générez les actions nécessaires.
+            </p>
+        </header>
+
+        <div class="grid gap-4 sm:grid-cols-3 mb-8">
+            <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="0">
+                <twig:Card:Header>
+                    <twig:Card:Title class="text-lg">ISO 9001</twig:Card:Title>
+                    <twig:Card:Description>Qualité</twig:Card:Description>
+                </twig:Card:Header>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="40">
+                <twig:Card:Header>
+                    <twig:Card:Title class="text-lg">ISO 14001</twig:Card:Title>
+                    <twig:Card:Description>Environnement</twig:Card:Description>
+                </twig:Card:Header>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="80">
+                <twig:Card:Header>
+                    <twig:Card:Title class="text-lg">ISO 45001</twig:Card:Title>
+                    <twig:Card:Description>Santé &amp; sécurité</twig:Card:Description>
+                </twig:Card:Header>
+            </twig:Card>
+        </div>
+
+        <div class="text-center">
+            {% if is_granted('ROLE_USER') %}
+                <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" size="lg" class="no-underline">
+                    Créer un audit
+                </twig:Button>
+            {% else %}
+                <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="no-underline">
+                    Créer un audit
+                </twig:Button>
+            {% endif %}
+        </div>
+    </div>
+</section>

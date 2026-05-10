@@ -1,0 +1,139 @@
+/**
+ * Styles du formulaire Mautic intégré (form/generate.js)
+ * Référence : structure DOM inspectée dans DevTools
+ * - Wrapper : #mautic-form-container .mauticform_wrapper
+ * - Rows : .mauticform-row
+ * - Fields : .mauticform-field
+ * - Labels : .mauticform_label_*
+ * - Inputs : .mauticform_input
+ */
+
+#mautic-form-container {
+  .mauticform_wrapper {
+    font-family: inherit;
+  }
+
+  .mauticform_label {
+    display: block;
+    margin-bottom: var(--space-2, 0.5rem);
+    font-weight: 500;
+    color: var(--text-primary, #0f172a);
+    font-size: 1rem;
+  }
+
+  .mauticform_input,
+  input[type="text"],
+  input[type="email"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary, #0f172a);
+    background-color: var(--bg-primary, #fff);
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: hsl(var(--primary));
+      outline: 0;
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.22);
+    }
+
+    &::placeholder {
+      color: var(--gray-400, #9ca3af);
+    }
+  }
+
+  .mauticform-row {
+    margin-bottom: var(--space-4, 1rem);
+  }
+
+  .mauticform-row:has(label[id*="download_request"]),
+  .mauticform-row:has(input[name*="download_request"]),
+  .mauticform-row:has(label[id*="ressource_id"]),
+  .mauticform-row:has(input[name*="ressource_id"]),
+  .mauticform-row[id$="_ressource"],
+  .mauticform-row[id$="_ressource_id"] {
+    display: none !important;
+  }
+
+  /* CTA : tokens shadcn (hsl(var(--primary))). !important pour passer après la CSS Mautic injectée. */
+  a.mauticform-button,
+  .mauticform-button,
+  .mauticform-button.btn,
+  button.mauticform-button,
+  .mauticform-button-wrapper a,
+  .mauticform-button-wrapper button,
+  input[type="submit"],
+  button[type="submit"],
+  button:not([type]) {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    color: hsl(var(--primary-foreground)) !important;
+    -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    background-color: hsl(var(--primary)) !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: var(--border-radius, 0.5rem);
+    box-shadow: 0 4px 14px hsl(var(--primary) / 0.32);
+    cursor: pointer;
+    opacity: 1 !important;
+    transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+
+    span,
+    .mauticform-button-label,
+    label {
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      opacity: 1 !important;
+    }
+
+    &:hover,
+    &:focus-visible {
+      opacity: 0.92 !important;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
+      box-shadow: 0 6px 18px hsl(var(--primary) / 0.38);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      opacity: 1 !important;
+    }
+  }
+
+  .mauticform-error {
+    color: var(--red, #ef4444);
+    font-size: 0.875rem;
+    margin-top: var(--space-1, 0.25rem);
+  }
+}
+
+/**
+ * Page téléchargement modèle 5M — styles résiduels si classe wrapper conservée dans le Twig.
+ */
+.download-modele-5m {
+  #mautic-form-container {
+    margin-top: 0;
+  }
+}
+
+/*
+ * Mautic (thème / embed) : certains calques plein viewport passent au-dessus de la navbar
+ * (--z-navbar 2050). Les clics sur l’avatar / aide semblent « morts » (interceptés par le calque).
+ * On remonte uniquement la barre sur les pages qui embarquent ce formulaire.
+ */
+body:has(#mautic-form-container) #mainNav {
+  z-index: 12000;
+}

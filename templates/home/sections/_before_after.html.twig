@@ -1,0 +1,55 @@
+<section class="home-landing-section py-16 sm:py-20" aria-labelledby="home-before-after-heading">
+    <div class="container max-w-6xl mx-auto px-4">
+        <header class="text-center max-w-2xl mx-auto mb-10" data-aos="fade-up">
+            <h2 id="home-before-after-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">Le terrain, avant et après</h2>
+            <p class="text-muted-foreground mt-2 m-0">Même exigence QHSE, autre niveau de maîtrise.</p>
+            <twig:Separator class="mt-6 max-w-xs mx-auto" />
+        </header>
+
+        <div class="js-before-after grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:items-stretch">
+            <twig:Card class="before-card border-destructive/20 shadow-sm" data-aos="fade-up">
+                <twig:Card:Header>
+                    <twig:Card:Title class="text-destructive">Avant</twig:Card:Title>
+                </twig:Card:Header>
+                <twig:Card:Content class="pt-0">
+                    <ul class="list-none m-0 p-0 space-y-2.5 text-sm text-muted-foreground">
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Analyses dispersées</span></li>
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Plans d’actions dans Excel</span></li>
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Relances oubliées</span></li>
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Audits difficiles à suivre</span></li>
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Risques peu visibles</span></li>
+                        <li class="flex gap-2.5 items-start"><span class="text-destructive/80 font-semibold shrink-0 leading-snug" aria-hidden="true">−</span><span>Peu de preuves en cas d’audit</span></li>
+                    </ul>
+                </twig:Card:Content>
+            </twig:Card>
+
+            <div class="transition-arrow hidden lg:flex items-center justify-center text-muted-foreground" aria-hidden="true" data-aos="zoom-in" data-aos-delay="100">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" class="text-primary shrink-0">
+                    <path d="M8 20h20M24 14l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <twig:Card class="after-card border-primary/30 bg-primary/5 shadow-sm" data-aos="fade-up" data-aos-delay="80">
+                <twig:Card:Header>
+                    <twig:Card:Title class="text-primary">Avec Outils-Qualite.com</twig:Card:Title>
+                </twig:Card:Header>
+                <twig:Card:Content class="pt-0">
+                    <ul class="list-none m-0 p-0 space-y-2 text-sm text-foreground">
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>Analyses sauvegardées</span></li>
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>CAPA centralisées</span></li>
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>Audits structurés</span></li>
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>Risques suivis</span></li>
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>Dashboard clair</span></li>
+                        <li class="flex gap-2"><span class="text-primary font-bold shrink-0">✓</span><span>Exports exploitables</span></li>
+                    </ul>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="transition-arrow flex lg:hidden justify-center mt-4 text-muted-foreground" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" class="text-primary rotate-90">
+                <path d="M8 20h20M24 14l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+</section>

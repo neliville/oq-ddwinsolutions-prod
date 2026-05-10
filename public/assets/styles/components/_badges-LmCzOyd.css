@@ -1,0 +1,46 @@
+
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+  border-radius: var(--border-radius-sm);
+}
+
+.badge-status {
+  &.is-published {
+    background-color: var(--success);
+    color: white;
+  }
+
+  &.is-draft {
+    background-color: var(--warning);
+    color: white;
+  }
+
+  &.is-archived {
+    background-color: var(--gray-500);
+    color: white;
+  }
+
+  &.is-featured {
+    background-color: var(--primary);
+    color: white;
+  }
+
+  &.is-pending {
+    background-color: var(--info);
+    color: white;
+  }
+}
+
+.badge-category {
+  color: white;
+
+}
+
+.badge-tag {
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  font-weight: 500;
+}

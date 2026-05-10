@@ -1,0 +1,60 @@
+.newsletter-card {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-2xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-12, 3rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+
+  .newsletter-badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.1);
+    /* --primary est un triplet HSL (shadcn) : var(--primary) seul est invalide pour color */
+    color: #4f46e5;
+    color: hsl(var(--primary));
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+  }
+
+  .newsletter-form-root {
+    width: 100%;
+  }
+
+  .newsletter-legal {
+    color: var(--text-muted);
+
+    a {
+      color: #4f46e5;
+      color: hsl(var(--primary));
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+      font-weight: 600;
+    }
+
+    a:hover {
+      color: #4338ca;
+      color: hsl(var(--primary) / 0.88);
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .newsletter-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

@@ -1,0 +1,304 @@
+/**
+ * Formulaire Mautic newsletter (form/generate.js) — id MAUTIC_FORM_NEWSLETTER_ID
+ * Conteneur : #mautic-newsletter-container
+ */
+
+@keyframes newsletter-mautic-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes newsletter-mautic-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.newsletter-mautic-embed {
+  position: relative;
+  min-height: 3rem;
+
+  &__viewport {
+    position: relative;
+  }
+
+  &:not(:has(.mauticform_wrapper)) .newsletter-mautic-embed__viewport::before {
+    content: "";
+    display: block;
+    height: 3.25rem;
+    border-radius: var(--border-radius, 0.5rem);
+    background: linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.12) 0%,
+      rgba(148, 163, 184, 0.22) 45%,
+      rgba(148, 163, 184, 0.12) 90%
+    );
+    background-size: 200% 100%;
+    animation: newsletter-mautic-shimmer 1.2s ease-in-out infinite;
+  }
+
+  .mauticform_wrapper {
+    font-family: inherit;
+    animation: newsletter-mautic-reveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .mauticform_label {
+    display: block;
+    margin-bottom: var(--space-2, 0.5rem);
+    font-weight: 500;
+    color: var(--text-primary, #0f172a);
+    font-size: 1rem;
+  }
+
+  .mauticform-helpmessage,
+  .mauticform-help-message,
+  .mauticform-row small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #64748b;
+  }
+
+  .mauticform_input,
+  input[type="text"],
+  input[type="email"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary, #0f172a);
+    background-color: var(--bg-primary, #fff);
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: var(--border-radius, 0.5rem);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+    &:focus {
+      border-color: hsl(var(--primary));
+      outline: 0;
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.22);
+    }
+
+    &::placeholder {
+      color: var(--gray-400, #9ca3af);
+    }
+  }
+
+  .mauticform-row {
+    margin-bottom: var(--space-4, 1rem);
+    transition: opacity 0.25s ease;
+  }
+
+  a.mauticform-button,
+  .mauticform-button,
+  .mauticform-button.btn,
+  button.mauticform-button,
+  .mauticform-button-wrapper a,
+  .mauticform-button-wrapper button,
+  input[type="submit"],
+  button[type="submit"],
+  button:not([type]) {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    /* Repli hex si hsl(var(--primary)) est invalide (ex. --primary encore en #hex) */
+    color: #fff !important;
+    color: hsl(var(--primary-foreground)) !important;
+    -webkit-text-fill-color: #fff !important;
+    -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    background-color: #4f46e5 !important;
+    background-color: hsl(var(--primary)) !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: var(--border-radius, 0.5rem);
+    box-shadow: 0 4px 14px hsl(var(--primary) / 0.32);
+    cursor: pointer;
+    opacity: 1 !important;
+    transition: opacity 0.15s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    span,
+    .mauticform-button-label {
+      color: #fff !important;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: #fff !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      color: #fff !important;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: #fff !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: #4f46e5 !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
+      opacity: 0.92 !important;
+      box-shadow: 0 6px 18px hsl(var(--primary) / 0.38);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      opacity: 1 !important;
+    }
+  }
+
+  .mauticform-error {
+    color: var(--red, #ef4444);
+    font-size: 0.875rem;
+    margin-top: var(--space-1, 0.25rem);
+  }
+
+  &--compact {
+    .mauticform_input,
+    input[type="text"],
+    input[type="email"] {
+      padding: 0.55rem 0.85rem;
+      font-size: 0.9375rem;
+    }
+
+    a.mauticform-button,
+    .mauticform-button,
+    .mauticform-button.btn,
+    button.mauticform-button,
+    .mauticform-button-wrapper a,
+    .mauticform-button-wrapper button,
+    input[type="submit"],
+    button[type="submit"],
+    button:not([type]) {
+      padding: 0.55rem 1rem;
+      font-size: 1rem;
+      min-height: 42px;
+      color: #fff !important;
+      color: hsl(var(--primary-foreground)) !important;
+      -webkit-text-fill-color: #fff !important;
+      -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+      background-color: #4f46e5 !important;
+      background-color: hsl(var(--primary)) !important;
+      background-image: none !important;
+    }
+
+    .mauticform-row {
+      margin-bottom: 0.75rem;
+    }
+  }
+}
+
+.newsletter-form-root {
+  &--compact .newsletter-legal {
+    margin-top: 0.75rem !important;
+
+    small {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+/* Textes légaux : contraste lisible sur carte claire (sidebar blog, etc.) */
+.newsletter-form-root .newsletter-legal {
+  color: #64748b;
+}
+
+.newsletter-form-root .newsletter-legal small {
+  color: inherit;
+}
+
+.newsletter-form-root .newsletter-legal a,
+.newsletter-form-root .newsletter-legal a.newsletter-legal-link {
+  color: #4f46e5 !important;
+  color: hsl(var(--primary)) !important;
+  -webkit-text-fill-color: #4f46e5 !important;
+  -webkit-text-fill-color: hsl(var(--primary)) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+  font-weight: 600;
+}
+
+.newsletter-form-root .newsletter-legal a:hover,
+.newsletter-form-root .newsletter-legal a.newsletter-legal-link:hover {
+  color: #4338ca !important;
+  color: hsl(var(--primary) / 0.88) !important;
+  -webkit-text-fill-color: #4338ca !important;
+  -webkit-text-fill-color: hsl(var(--primary) / 0.88) !important;
+}
+
+.newsletter-form-root .newsletter-legal .newsletter-legal-note {
+  color: #64748b;
+}
+
+/* Carte accueil : une colonne pleine largeur pour le CTA (évite colonne étroite + bouton illisible) */
+.newsletter-card .newsletter-mautic-embed:not(.newsletter-mautic-embed--compact) {
+  .mauticform-innerform {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .mauticform-row:has([type="submit"]),
+  .mauticform-row:has(button[type="submit"]),
+  .mauticform-row:has(.mauticform-button-wrapper) {
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
+
+/* Ciblage renforcé sur la carte accueil (spécificité > feuille Mautic distante) */
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper a,
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper button,
+.newsletter-card #mautic-newsletter-container button[type="submit"],
+.newsletter-card #mautic-newsletter-container input[type="submit"],
+.newsletter-card #mautic-newsletter-container .mauticform_wrapper a.mauticform-button,
+.newsletter-card #mautic-newsletter-container .mauticform_wrapper button.mauticform-button {
+  min-height: 2.75rem;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+  text-indent: 0 !important;
+  letter-spacing: normal !important;
+  color: #fff !important;
+  color: hsl(var(--primary-foreground)) !important;
+  -webkit-text-fill-color: #fff !important;
+  -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+  background-color: #4f46e5 !important;
+  background-color: hsl(var(--primary)) !important;
+  background-image: none !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper a span,
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper button span,
+.newsletter-card #mautic-newsletter-container .mauticform-button-wrapper .mauticform-button-label,
+.newsletter-card #mautic-newsletter-container .mauticform_wrapper .mauticform-button-label {
+  color: #fff !important;
+  color: hsl(var(--primary-foreground)) !important;
+  -webkit-text-fill-color: #fff !important;
+  -webkit-text-fill-color: hsl(var(--primary-foreground)) !important;
+  opacity: 1 !important;
+}
+
+/* Même problème de calque Mautic au-dessus de la navbar que sur le téléchargement 5M */
+body:has(#mautic-newsletter-container) #mainNav {
+  z-index: 12000;
+}

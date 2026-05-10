@@ -1,0 +1,54 @@
+/**
+ * Liens dans le contenu principal (dashboard, modules QSE, admin listes) :
+ * survol par fond léger + léger relief plutôt qu’un simple soulignement bleu.
+ */
+.app-inline-link {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: calc(var(--radius-md, 0.5rem) - 2px);
+  padding: 0.15em 0.35em;
+  margin: -0.15em -0.2em;
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.app-inline-link:hover {
+  background-color: hsl(var(--primary) / 0.11);
+  color: hsl(var(--primary));
+  text-decoration: none;
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 0.18);
+}
+
+.app-inline-link:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Liens discrets (retour, fil d’Ariane) : même logique, teinte neutre */
+.app-inline-link--muted {
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: calc(var(--radius-md, 0.5rem) - 2px);
+  padding: 0.15em 0.35em;
+  margin: -0.15em -0.2em;
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.app-inline-link--muted:hover {
+  background-color: hsl(var(--muted) / 0.55);
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  box-shadow: 0 0 0 1px hsl(var(--border));
+}
+
+.app-inline-link--muted:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}

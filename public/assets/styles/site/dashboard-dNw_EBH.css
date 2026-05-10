@@ -1,0 +1,376 @@
+/* Pied minimal connecté : priorité sur tout héritage « footer marketing » (fond sombre, liens). */
+footer.site-footer--minimal-app {
+  background: hsl(var(--muted) / 0.45) !important;
+  color: hsl(var(--muted-foreground)) !important;
+  padding: 0.625rem 0 !important;
+  margin-top: 0;
+}
+
+footer.site-footer--minimal-app .font-semibold {
+  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+}
+
+@media (min-width: 1201px) {
+  body.layout-dashboard > footer {
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
+  }
+
+  body.layout-dashboard.sidebar-collapsed > footer {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  body.layout-dashboard > footer {
+    margin-left: 0;
+  }
+}
+
+.dashboard-page {
+  h1, h2, h3 { color: var(--text-primary); }
+
+  .card {
+    border: 1px solid rgba(15, 23, 42, 0.07) !important;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 24px -8px rgba(15, 23, 42, 0.10);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+    background: var(--bg-primary);
+
+    .card-body { padding: var(--space-5); }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.16);
+      border-color: rgba(79, 70, 229, 0.25) !important;
+    }
+  }
+
+  .dashboard-tool-card {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: translateY(-2px);
+        border-color: rgba(79, 70, 229, 0.3) !important;
+      }
+    }
+  }
+
+  .card.border { border-style: solid !important; }
+
+  .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  /* Cible ≥ 44 px pour les liens « ouvrir l’outil » dans les cartes statistiques */
+  .dashboard-stat-card__tool-link {
+    box-sizing: border-box;
+    min-width: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+
+  .dashboard-stat-card__tool-link:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  .list-group-item {
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    box-shadow: var(--shadow-xs);
+    background: rgba(248, 250, 252, 0.7);
+    overflow: hidden;
+
+    .d-flex > .flex-grow-1 {
+      min-width: 0;
+
+      h3 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .btn.flex-shrink-0 {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+
+  .dashboard-tool-link {
+    white-space: nowrap;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    .dashboard-tool-link {
+      white-space: normal;
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+  }
+
+  .dashboard-resources-card .card-body { padding-bottom: var(--space-4); }
+
+  .dashboard-resource-link {
+    background: var(--bg-secondary);
+    border: 1px solid transparent;
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+
+    &:hover {
+      background: #fff;
+      border-color: rgba(79, 70, 229, 0.2);
+      transform: translateX(2px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .card { border-radius: var(--radius-lg); }
+    .card .card-body { padding: var(--space-4); }
+  }
+
+  /* Téléphones (≲576px) : moins d’air mort, cartes pleine largeur, hovers tactiles neutres */
+  @media (max-width: 576px) {
+    .dashboard-page > div:first-child {
+      margin-bottom: 1.25rem !important;
+      gap: 0.75rem;
+    }
+
+    .dashboard-page > div:first-child .text-2xl {
+      font-size: 1.35rem;
+    }
+
+    .dashboard-page .rounded-lg.shadow-sm .p-6,
+    .dashboard-page .rounded-lg.border .p-6 {
+      padding: var(--space-4);
+    }
+
+    .dashboard-page .rounded-lg.border .p-3 {
+      padding: var(--space-3);
+    }
+
+    .dashboard-page .grid.grid-cols-12.gap-4 {
+      gap: 0.75rem;
+      margin-bottom: 1.5rem !important;
+    }
+
+    .dashboard-page .grid.grid-cols-12.gap-6 {
+      gap: 1rem;
+    }
+
+    @media (hover: none) {
+      .dashboard-page .card:hover,
+      .dashboard-page .dashboard-tool-card:hover {
+        transform: none;
+      }
+
+      .dashboard-page .dashboard-resource-link:hover {
+        transform: none;
+      }
+
+      .dashboard-page .dashboard-tool-link:hover {
+        transform: none;
+      }
+    }
+  }
+}
+
+.guest-sticky-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1040;
+  background: #fff;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 -4px 24px -8px rgba(15, 23, 42, 0.12);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+
+  &.guest-banner--visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &.guest-banner--hiding {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.tool-page-header {
+  .tool-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .tool-header-guest-banner {
+    background: rgba(79, 70, 229, 0.05);
+    border: 1px solid rgba(79, 70, 229, 0.12);
+  }
+}
+
+/* ─── Mes dernières créations : teintes douces par outil (évite bg-{{ color }} non généré par Tailwind) ─ */
+.dashboard-page .dashboard-recent-creations__title {
+  color: hsl(var(--foreground));
+}
+
+.dashboard-page .dashboard-recent-creations__all {
+  color: hsl(var(--primary));
+  border: 2px solid hsl(var(--primary) / 0.45);
+  background: hsl(var(--primary) / 0.06);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dashboard-page .dashboard-recent-creations__all:hover {
+    background: hsl(var(--primary) / 0.12);
+    border-color: hsl(var(--primary) / 0.55);
+  }
+}
+
+.dashboard-page .dashboard-recent-list {
+  gap: 0.5rem;
+}
+
+.dashboard-page .dashboard-recent-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.35);
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dashboard-page .dashboard-recent-row:hover {
+  background: hsl(var(--card));
+  border-color: hsl(var(--primary) / 0.22);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.dashboard-page .dashboard-recent-row__main {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-width: 0;
+  flex: 1 1 12rem;
+}
+
+.dashboard-page .dashboard-recent-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.dashboard-page .dashboard-recent-icon--ishikawa {
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.2);
+}
+
+.dashboard-page .dashboard-recent-icon--fivewhy {
+  background: hsl(var(--brand-cyan) / 0.14);
+  color: hsl(var(--brand-cyan));
+  border-color: hsl(var(--brand-cyan) / 0.28);
+}
+
+.dashboard-page .dashboard-recent-icon--qqoqccp {
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  border-color: hsl(var(--border));
+}
+
+.dashboard-page .dashboard-recent-icon--amdec {
+  background: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+  border-color: hsl(var(--destructive) / 0.22);
+}
+
+.dashboard-page .dashboard-recent-icon--pareto {
+  background: hsl(var(--brand-info) / 0.12);
+  color: hsl(var(--brand-info));
+  border-color: hsl(var(--brand-info) / 0.26);
+}
+
+.dashboard-page .dashboard-recent-icon--eightd {
+  background: hsl(var(--brand-warning) / 0.14);
+  color: hsl(30 90% 35%);
+  border-color: hsl(var(--brand-warning) / 0.35);
+}
+
+.dashboard-page .dashboard-recent-row__meta {
+  line-height: 1.35;
+}
+
+.dashboard-page .dashboard-recent-load {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.dashboard-page .dashboard-recent-load:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.dashboard-page .dashboard-recent-load:hover {
+  border-color: hsl(var(--primary) / 0.35);
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.06);
+}
+
+@media (max-width: 520px) {
+  .dashboard-page .dashboard-recent-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-page .dashboard-recent-load {
+    width: 100%;
+    min-height: 44px;
+  }
+}

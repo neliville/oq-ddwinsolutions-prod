@@ -1,0 +1,83 @@
+<section id="hero" class="hero" aria-labelledby="home-hero-heading">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="home-hero-badges mb-4 flex flex-wrap items-center gap-2">
+                    <span class="badge-dot shrink-0" aria-hidden="true"></span>
+                    <twig:Badge variant="secondary" class="font-normal">Gratuit</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Sans installation</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Pensé QHSE</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Export PDF</twig:Badge>
+                </div>
+                <p class="hero-problem mt-4">Passez de l’analyse ponctuelle au pilotage QHSE structuré.</p>
+                <h1 id="home-hero-heading" class="hero-title js-hero-title">Pilotez vos analyses, audits et actions QHSE au même endroit</h1>
+                <p class="hero-subtitle js-hero-subtitle">
+                    Utilisez gratuitement des outils qualité, lancez vos audits ISO, suivez vos CAPA, maîtrisez vos risques et visualisez votre pilotage QHSE dans un dashboard clair.
+                </p>
+
+                <div class="hero-cta js-hero-cta flex flex-col sm:flex-row flex-wrap gap-3">
+                    {% if is_granted('ROLE_USER') %}
+                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
+                            Accéder à mon dashboard
+                        </twig:Button>
+                    {% else %}
+                        <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
+                            Commencer gratuitement
+                        </twig:Button>
+                    {% endif %}
+                    <twig:Button as="a" href="{{ path('app_outils_index') }}" variant="outline" size="lg" class="no-underline h-11 px-5 sm:h-10 bg-background/80">
+                        Voir les outils
+                    </twig:Button>
+                </div>
+
+                <div class="hero-stats js-kpi-card mt-8">
+                    <div class="stat-item">
+                        <span class="stat-value">6</span>
+                        <span class="stat-label">Outils interactifs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">0€</span>
+                        <span class="stat-label">Accès illimité</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">100%</span>
+                        <span class="stat-label">Conforme ISO &amp; RGPD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-landing-preview js-hero-preview home-hero-preview" data-aos="fade-up" data-aos-delay="80">
+                <div class="home-hero-preview__browser">
+                    <div class="home-hero-preview__browser-bar">
+                        <span class="home-hero-preview__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+                        <span class="home-hero-preview__url text-muted-foreground text-xs truncate">outils-qualite.com</span>
+                    </div>
+                    <div class="home-hero-preview__grid">
+                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu dashboard">
+                            <p class="text-xs font-semibold text-foreground m-0">Dashboard</p>
+                            <p class="text-[11px] text-muted-foreground m-0 mt-1">Priorités, retards, synthèse</p>
+                            <div class="mt-2 space-y-1">
+                                <div class="h-1.5 rounded bg-primary/25 w-full"></div>
+                                <div class="h-1.5 rounded bg-muted w-4/5"></div>
+                                <div class="h-1.5 rounded bg-muted w-3/5"></div>
+                            </div>
+                        </article>
+                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu CAPA">
+                            <p class="text-xs font-semibold text-foreground m-0">CAPA</p>
+                            <p class="text-[11px] text-muted-foreground m-0 mt-1">Actions &amp; échéances</p>
+                            <div class="mt-2 flex gap-1">
+                                <twig:Badge variant="secondary" class="text-[10px] px-1.5 py-0">En cours</twig:Badge>
+                                <twig:Badge variant="outline" class="text-[10px] px-1.5 py-0">À faire</twig:Badge>
+                            </div>
+                        </article>
+                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu audit ISO">
+                            <p class="text-xs font-semibold text-foreground m-0">Audit ISO</p>
+                            <p class="text-[11px] text-muted-foreground m-0 mt-1">9001 · 14001 · 45001</p>
+                            <div class="mt-2 h-8 rounded border border-dashed border-border/80 flex items-center justify-center text-[10px] text-muted-foreground">Exigences</div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

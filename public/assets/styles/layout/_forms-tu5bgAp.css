@@ -1,0 +1,70 @@
+/* Classes « form-* » héritées des gabarits (sans librairie Bootstrap) */
+.form-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--text-secondary, #475569);
+}
+
+.form-control,
+.form-select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary, #0f172a);
+  background-color: var(--bg-primary, #fff);
+}
+
+.form-select {
+  min-height: 2.75rem;
+}
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.form-check-label {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--text-primary, #0f172a);
+}
+
+.form-control-color {
+  width: 3rem;
+  height: 2.5rem;
+  padding: 0.125rem;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select,
+.form-control,
+.form-select {
+  font-family: inherit;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-300);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+  &:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.15);
+  }
+}

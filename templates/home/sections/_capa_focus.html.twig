@@ -1,0 +1,31 @@
+<section class="home-landing-section py-16 sm:py-20" aria-labelledby="home-capa-heading">
+    <div class="container max-w-6xl mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center mb-10" data-aos="fade-up">
+            <h2 id="home-capa-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">Une analyse n’a de valeur que si elle devient une action</h2>
+            <p class="text-muted-foreground mt-3 m-0">
+                Les causes, écarts et risques peuvent être transformés en actions suivies avec responsable, échéance, statut et vérification d’efficacité.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2 mb-10" data-aos="fade-up">
+            <twig:Badge variant="secondary">Responsable</twig:Badge>
+            <twig:Badge variant="secondary">Priorité</twig:Badge>
+            <twig:Badge variant="secondary">Échéance</twig:Badge>
+            <twig:Badge variant="secondary">Statut</twig:Badge>
+            <twig:Badge variant="secondary">Preuve</twig:Badge>
+            <twig:Badge variant="secondary">Vérification d’efficacité</twig:Badge>
+        </div>
+
+        <div class="text-center">
+            {% if is_granted('ROLE_USER') %}
+                <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" size="lg" class="no-underline">
+                    Créer une action
+                </twig:Button>
+            {% else %}
+                <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="no-underline">
+                    Créer une action
+                </twig:Button>
+            {% endif %}
+        </div>
+    </div>
+</section>

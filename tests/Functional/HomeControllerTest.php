@@ -12,7 +12,7 @@ class HomeControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Résolvez vos problèmes qualité. Gratuitement. En ligne.');
+        $this->assertSelectorTextContains('h1', 'Pilotez vos analyses, audits et actions QHSE au même endroit');
     }
 
     public function testHomePageContainsExpectedSections(): void
@@ -26,5 +26,15 @@ class HomeControllerTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('#outils')->count());
         $this->assertGreaterThan(0, $crawler->filter('#fonctionnalites')->count());
         $this->assertGreaterThan(0, $crawler->filter('#newsletter')->count());
+    }
+
+    public function testHomePageHasKeyContentAndOutToolsLink(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h2', 'Votre cockpit QHSE quotidien');
+        $this->assertGreaterThan(0, $crawler->selectLink('Explorer tous les outils')->count());
     }
 }

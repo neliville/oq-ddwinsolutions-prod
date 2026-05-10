@@ -11,7 +11,7 @@
 ###< symfony/framework-bundle ###
 
 ###> symfony/asset-mapper ###
-/public/assets/
+# public/assets/ versionné : précompilation en CI (.github/workflows/compile-public-assets.yml) puis déploiement sans tailwind:build sur o2switch si besoin.
 /public/media/cache/
 /assets/vendor/
 ###< symfony/asset-mapper ###
