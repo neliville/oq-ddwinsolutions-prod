@@ -223,6 +223,15 @@ echo -e "${GREEN}   ✓ Packages importmap installés${NC}"
 
 # 9.9 Compiler Tailwind (symfonycasts/tailwind-bundle) — même ordre que composer compile-assets ; requis car composer install utilise --no-scripts
 echo -e "\n${YELLOW}9.9 Compilation Tailwind (symfonycasts/tailwind-bundle)...${NC}"
+# Sur certains hébergements (ex. o2switch), /tmp est en noexec : le binaire Tailwind v4 (Bun) ne peut pas charger les .node depuis /tmp → ERR_DLOPEN_FAILED.
+# Forcer un répertoire temporaire sous le projet (hors /tmp), exécutable.
+PROJECT_ROOT="$(pwd)"
+export TMPDIR="${TMPDIR:-${PROJECT_ROOT}/var/tmp}"
+export TMP="${TMP:-${TMPDIR}}"
+export TEMP="${TEMP:-${TMPDIR}}"
+mkdir -p "${TMPDIR}"
+chmod 700 "${TMPDIR}" 2>/dev/null || true
+echo -e "${GREEN}   TMPDIR=${TMPDIR} (évite noexec sur /tmp)${NC}"
 set +e
 php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction 2>&1 | grep -vE "(MakerBundle|ClassNotFoundError|Attempted to load class)" || true
 TAILWIND_EXIT=${PIPESTATUS[0]}
@@ -314,6 +323,7 @@ echo ""
 echo -e "${YELLOW}En cas d'erreur 500:${NC}"
 echo "  1. Vérifier les logs: ${GREEN}tail -n 100 var/log/prod.log${NC}"
 echo "  2. Vider le cache: ${GREEN}rm -rf var/cache/* && php bin/console cache:warmup --env=prod --no-debug${NC}"
-echo "  3. Recompiler Tailwind puis les assets: ${GREEN}php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction && php bin/console asset-map:compile --env=prod --no-debug${NC}"
-echo "  4. Voir TROUBLESHOOTING.md pour plus d'aide"
+echo "  3. Recompiler Tailwind puis les assets: ${GREEN}export TMPDIR=\$(pwd)/var/tmp && mkdir -p \"\$TMPDIR\" && php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction && php bin/console asset-map:compile --env=prod --no-debug${NC}"
+echo "  4. Si tailwind:build échoue encore (dlopen / Bun) : ${GREEN}export TMPDIR=\$HOME/tmp && mkdir -p \"\$TMPDIR\"${NC} puis relancer l’étape 9.9"
+echo "  5. Voir TROUBLESHOOTING.md pour plus d'aide"
 
