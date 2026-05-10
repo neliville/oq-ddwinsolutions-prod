@@ -39,6 +39,7 @@
     "\/assets\/controllers\/users_bulk_actions_controller.js",
     "\/assets\/controllers\/notifications_controller.js",
     "\/assets\/controllers\/admin_list_view_controller.js",
+    "\/assets\/controllers\/guest_signup_prompt_controller.js",
     "\/assets\/controllers\/filters_panel_controller.js",
     "\/assets\/controllers\/tabs_controller.js",
     "\/assets\/controllers\/image_upload_controller.js",

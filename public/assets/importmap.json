@@ -20,7 +20,7 @@
         "type": "js"
     },
     "\/assets\/@symfony\/stimulus-bundle\/controllers.js": {
-        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-JmYyWvu.js",
+        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-bnL_AYD.js",
         "type": "js"
     },
     "\/assets\/@symfony\/ux-live-component\/live_controller.js": {
@@ -77,6 +77,10 @@
     },
     "\/assets\/controllers\/admin_list_view_controller.js": {
         "path": "\/assets\/controllers\/admin_list_view_controller-cER0uDq.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/guest_signup_prompt_controller.js": {
+        "path": "\/assets\/controllers\/guest_signup_prompt_controller-MwISZtT.js",
         "type": "js"
     },
     "\/assets\/controllers\/filters_panel_controller.js": {

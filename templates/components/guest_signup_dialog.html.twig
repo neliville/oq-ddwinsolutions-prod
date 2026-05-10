@@ -1,0 +1,78 @@
+{# Invité uniquement : appelé depuis base.html.twig. context: 'marketing' | 'tool' #}
+{% set ctx = context|default('marketing') %}
+<div
+    data-controller="guest-signup-prompt"
+    data-guest-signup-prompt-delay-ms-value="14000"
+    data-guest-signup-prompt-scroll-ratio-value="0.88"
+>
+    <twig:Dialog id="guest-signup-prompt">
+        {# Déclencheur caché requis par ux-dialog (ouverture programmatique). #}
+        <button
+            type="button"
+            class="sr-only"
+            tabindex="-1"
+            data-ux-dialog-target="trigger"
+            data-action="click->ux-dialog#open"
+            id="guestSignupPromptOpenStub"
+        >
+            Ouvrir l’invitation à créer un compte
+        </button>
+
+        <twig:Dialog:Content class="guest-signup-dialog-content w-[calc(100%-1.5rem)] max-w-[26rem] gap-0 overflow-hidden border-border/80 p-0 shadow-2xl ring-1 ring-border/40 sm:max-w-lg [&::backdrop]:bg-black/55 [&::backdrop]:backdrop-blur-[2px]">
+            <div class="border-b border-border/60 bg-gradient-to-br from-primary/[0.12] via-background to-background px-6 pb-5 pt-6 sm:px-8">
+                <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary ring-1 ring-primary/20">
+                    <twig:ux:icon name="lucide:sparkles" class="size-6" aria-hidden="true" />
+                </div>
+                <twig:Dialog:Header class="space-y-2 border-0 p-0 text-center sm:text-left">
+                    <twig:Dialog:Title class="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                        {% if ctx == 'tool' %}
+                            Enregistrez vos analyses sur cet outil
+                        {% else %}
+                            Passez à l’espace complet Outils-Qualite.com
+                        {% endif %}
+                    </twig:Dialog:Title>
+                    <twig:Dialog:Description class="text-pretty text-sm leading-relaxed text-muted-foreground">
+                        {% if ctx == 'tool' %}
+                            Un compte gratuit vous permet de <strong class="font-semibold text-foreground">sauvegarder</strong> vos travaux, de les retrouver sur tous vos appareils et d’<strong class="font-semibold text-foreground">exporter en PDF</strong> pour vos dossiers et audits.
+                        {% else %}
+                            Créez un compte pour <strong class="font-semibold text-foreground">sauvegarder</strong> vos analyses, lancer des audits ISO, suivre des CAPA et piloter risques et actions depuis un <strong class="font-semibold text-foreground">dashboard</strong> — toujours gratuit pour démarrer.
+                        {% endif %}
+                    </twig:Dialog:Description>
+                </twig:Dialog:Header>
+            </div>
+
+            <div class="space-y-3 px-6 py-5 sm:px-8">
+                <p class="m-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">En résumé</p>
+                <ul class="m-0 list-none space-y-2.5 p-0 text-sm text-foreground">
+                    <li class="flex gap-2.5">
+                        <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
+                            <twig:ux:icon name="lucide:check" class="size-3" />
+                        </span>
+                        <span>Sauvegarde sécurisée de vos analyses</span>
+                    </li>
+                    <li class="flex gap-2.5">
+                        <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
+                            <twig:ux:icon name="lucide:check" class="size-3" />
+                        </span>
+                        <span>Exports PDF prêts pour la traçabilité QHSE</span>
+                    </li>
+                    <li class="flex gap-2.5">
+                        <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
+                            <twig:ux:icon name="lucide:check" class="size-3" />
+                        </span>
+                        <span>{% if ctx == 'tool' %}Même compte : outils gratuits, CAPA, audits ISO et risques{% else %}Accès au cockpit : audits, CAPA, risques{% endif %}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <twig:Dialog:Footer class="flex flex-col-reverse gap-2 border-t border-border/60 bg-muted/30 px-6 py-4 sm:flex-row sm:justify-end sm:px-8">
+                <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" class="no-underline w-full sm:w-auto justify-center">
+                    Se connecter
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_register') }}" variant="default" class="no-underline w-full sm:w-auto justify-center shadow-md">
+                    Créer un compte gratuit
+                </twig:Button>
+            </twig:Dialog:Footer>
+        </twig:Dialog:Content>
+    </twig:Dialog>
+</div>

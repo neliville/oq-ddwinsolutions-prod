@@ -23,6 +23,7 @@ class HomeControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('nav');
         $this->assertSelectorExists('footer');
+        $this->assertSelectorTextContains('footer', "Outils d'Analyse Gratuits");
         $this->assertGreaterThan(0, $crawler->filter('#outils')->count());
         $this->assertGreaterThan(0, $crawler->filter('#fonctionnalites')->count());
         $this->assertGreaterThan(0, $crawler->filter('#newsletter')->count());
