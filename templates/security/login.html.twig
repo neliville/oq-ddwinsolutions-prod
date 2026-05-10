@@ -38,72 +38,70 @@
                     </header>
 
                     {% if app.user %}
-                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
-                            <i class="fas fa-check-circle mt-1"></i>
-                            <div>
+                        <twig:Alert variant="success" class="mb-3 px-4 py-3 shadow-sm" role="alert">
+                            <twig:Alert:Description class="!text-current text-sm self-center">
                                 <strong>Vous êtes déjà connecté</strong> en tant que {{ app.user.userIdentifier }}.
-                                <div class="mt-1">
-                                    <a href="{{ path('app_logout') }}" class="font-semibold text-green-600 no-underline">Se déconnecter</a>
+                                <div class="mt-2">
+                                    <twig:Button as="a" href="{{ path('app_logout') }}" variant="outline" size="sm" class="no-underline">Se déconnecter</twig:Button>
                                 </div>
-                            </div>
-                        </div>
+                            </twig:Alert:Description>
+                        </twig:Alert>
                     {% else %}
                         {% if error %}
-                            <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-                                <i class="fas fa-exclamation-triangle mt-1 shrink-0"></i>
-                                <div class="grow">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                                <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
-                            </div>
+                            <twig:Alert variant="destructive" class="mb-3 px-4 py-3 shadow-sm" role="alert">
+                                <twig:Alert:Description class="!text-current text-sm self-center grow">
+                                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                                </twig:Alert:Description>
+                                <twig:Alert:Action>
+                                    <twig:Button variant="ghost" size="icon" type="button" class="text-current opacity-70 hover:opacity-100" onclick="this.closest('[data-slot=alert]').remove()" aria-label="Fermer le message">
+                                        <i data-lucide="x" width="16" height="16"></i>
+                                    </twig:Button>
+                                </twig:Alert:Action>
+                            </twig:Alert>
                         {% endif %}
 
-                        <form method="post" data-turbo="false" class="auth-form">
-                            <div>
-                                <label for="username" class="form-label">Adresse email</label>
-                                <input
+                        <form method="post" data-turbo="false" class="auth-form space-y-4">
+                            <div class="space-y-2">
+                                <twig:Label for="username">Adresse email</twig:Label>
+                                <twig:Input
                                     type="email"
                                     value="{{ last_username }}"
                                     name="_username"
                                     id="username"
-                                    class="form-control"
                                     autocomplete="email"
                                     required
                                     autofocus
                                     placeholder="votre.email@exemple.com"
-                                >
+                                />
                             </div>
 
-                            <div>
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <input
+                            <div class="space-y-2">
+                                <twig:Label for="password">Mot de passe</twig:Label>
+                                <twig:Input
                                     type="password"
                                     name="_password"
                                     id="password"
-                                    class="form-control"
                                     autocomplete="current-password"
                                     required
                                     placeholder="••••••••"
-                                >
+                                />
                             </div>
 
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                            <div class="auth-form__actions">
+                            <div class="auth-form__actions flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div class="flex items-center gap-2">
-                                    <input class="w-4 h-4 rounded border-border text-primary focus:ring-primary" type="checkbox" name="_remember_me" id="_remember_me">
-                                    <label class="text-sm text-foreground" for="_remember_me">
-                                        Se souvenir de moi
-                                    </label>
+                                    <twig:Checkbox name="_remember_me" id="_remember_me" />
+                                    <twig:Label for="_remember_me" class="text-sm font-normal cursor-pointer">Se souvenir de moi</twig:Label>
                                 </div>
-                                <a href="{{ path('app_forgot_password_request') }}" class="auth-form__link">
-                                    <i class="fas fa-key"></i>
+                                <twig:Button as="a" href="{{ path('app_forgot_password_request') }}" variant="link" class="no-underline h-auto p-0 text-sm justify-start sm:justify-end">
                                     Mot de passe oublié ?
-                                </a>
+                                </twig:Button>
                             </div>
 
-                            <button class="auth-form__submit" type="submit">
-                                <i class="fas fa-sign-in-alt"></i>
+                            <twig:Button type="submit" variant="default" class="w-full">
                                 Se connecter
-                            </button>
+                            </twig:Button>
                         </form>
 
                         <div class="auth-card__footer">

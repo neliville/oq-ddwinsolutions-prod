@@ -1,0 +1,119 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Audit #{{ audit.id }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto px-4 py-6">
+    <div class="mb-6">
+        <a href="{{ path('app_qse_audit_index') }}" class="text-sm app-inline-link app-inline-link--muted">← Audits</a>
+        <h1 class="text-2xl font-bold mt-2">{{ audit.companyName|default('Audit') }}</h1>
+        <p class="text-muted-foreground text-sm mt-1">
+            {{ audit.auditStandard ? audit.auditStandard.name : '—' }}
+            · {{ audit.auditedAt|date('d/m/Y') }} · Auditeur : {{ audit.mainAuditor|default('—') }}
+            · Conformité globale : {{ audit.globalComplianceRate is not null ? audit.globalComplianceRate ~ '%' : '—' }}
+        </p>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+            <a href="{{ path('app_qse_audit_export_json', { id: audit.id }) }}" class="text-sm app-inline-link">Exporter JSON</a>
+            {% include 'collaboration/_share_dialog.html.twig' with { dialog_id: 'collab_share_audit_' ~ audit.id, target_type: 'audit', target_id: audit.id } %}
+            {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_audit_' ~ audit.id, source: 'audit', audit_id: audit.id, trigger_label: 'Inviter un collaborateur' } %}
+        </div>
+    </div>
+
+    <nav class="flex flex-wrap gap-2 mb-6" aria-label="Chapitres">
+        {% for ch in chapters %}
+            <a href="{{ path('app_qse_audit_show', { id: audit.id, chapter: ch }) }}"
+               class="px-3 py-1.5 rounded-md text-sm border {{ ch == currentChapter ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted' }}">
+                {{ ch }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if currentChapter %}
+        <form method="post" action="{{ path('app_qse_audit_save_chapter', { id: audit.id }) }}" class="space-y-6">
+            <input type="hidden" name="_token" value="{{ csrf_token('qse_audit_chapter') }}">
+            <input type="hidden" name="chapter" value="{{ currentChapter }}">
+
+            {% for req in requirements %}
+                {% set ev = evaluationsByReqId[req.id] ?? null %}
+                <div class="rounded-lg border border-border bg-card p-4">
+                    <div class="flex flex-wrap gap-2 items-start mb-3">
+                        <span class="text-xs font-mono bg-muted px-2 py-0.5 rounded">{{ req.isoArticle }}</span>
+                        <span class="font-medium">{{ req.requirementText }}</span>
+                    </div>
+                    {% if req.isoComment %}
+                        <p class="text-sm text-amber-900 dark:text-amber-200/90 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded p-2 mb-3">{{ req.isoComment }}</p>
+                    {% endif %}
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium mb-1">Note</label>
+                            <select name="eval[{{ req.id }}][score]" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">
+                                <option value="" {{ ev and ev.score is null ? 'selected' : '' }}>Non évalué</option>
+                                <option value="3" {{ ev and ev.score == 3 ? 'selected' : '' }}>3 — Conforme</option>
+                                <option value="2" {{ ev and ev.score == 2 ? 'selected' : '' }}>2 — Partiel</option>
+                                <option value="1" {{ ev and ev.score == 1 ? 'selected' : '' }}>1 — NC</option>
+                                <option value="0" {{ ev and ev.score == 0 ? 'selected' : '' }}>0 — N/A</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium mb-1">Preuves</label>
+                            <input type="text" name="eval[{{ req.id }}][evidence]" value="{{ ev ? ev.evidence|default('') : '' }}" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm" placeholder="Références documents">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium mb-1">Commentaire d’audit</label>
+                            <textarea name="eval[{{ req.id }}][comment]" rows="2" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">{{ ev ? ev.auditComment|default('') : '' }}</textarea>
+                        </div>
+                    </div>
+                    {% if ev and ev.id and (ev.score == 1 or ev.score == 2) %}
+                        <p class="mt-3">
+                            <a href="{{ path('app_qse_audit_suggest_capa', { id: audit.id, evaluationId: ev.id }) }}" class="text-sm font-medium app-inline-link">Créer une CAPA (brouillon)</a>
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold text-sm">Enregistrer le chapitre</button>
+        </form>
+    {% else %}
+        <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-50">
+            <p class="font-semibold m-0 mb-2">Aucune exigence n’est chargée pour ce référentiel</p>
+            <p class="m-0 mb-2 leading-relaxed text-amber-900/95 dark:text-amber-100/90">
+                La saisie d’audit repose sur des <strong>exigences</strong> (chapitres / articles) enregistrées en base pour
+                <strong>{{ audit.auditStandard.name }}</strong>
+                (<code class="rounded bg-background/80 px-1 py-0.5 text-xs">{{ audit.auditStandard.code }}</code>).
+                Tant qu’il n’y a aucune ligne pour ce code, les chapitres ne peuvent pas s’afficher — ce n’est pas un bug de l’audit lui-même, seulement un référentiel encore vide pour cette norme.
+            </p>
+            {% if audit.auditStandard.code == 'iso_9001' %}
+                <p class="m-0 mb-2 leading-relaxed text-amber-900/95 dark:text-amber-100/90">
+                    Pour <strong>ISO&nbsp;9001</strong>, vous pouvez remplir les exigences avec la commande serveur&nbsp;:
+                </p>
+                <pre class="mb-3 overflow-x-auto rounded-md border border-amber-200/80 bg-background px-3 py-2 text-xs dark:border-amber-800">php bin/console app:qse:import-iso9001-requirements</pre>
+            {% elseif audit.auditStandard.code in ['iso_14001', 'iso_45001'] %}
+                <p class="m-0 mb-2 leading-relaxed text-amber-900/95 dark:text-amber-100/90">
+                    Pour <strong>ISO&nbsp;14001</strong> et <strong>ISO&nbsp;45001</strong>, les exigences du classeur
+                    <code class="rounded bg-background/80 px-1 py-0.5 text-xs">Exigences ISO 9001v2015__en_cours.xlsx</code>
+                    (onglets 14001 et 45001) peuvent être chargées en base avec la commande serveur&nbsp;:
+                </p>
+                <pre class="mb-2 overflow-x-auto rounded-md border border-amber-200/80 bg-background px-3 py-2 text-xs dark:border-amber-800">php bin/console app:qse:import-audit-exigences-workbook</pre>
+                <p class="m-0 mb-2 text-xs leading-relaxed text-amber-900/90 dark:text-amber-100/85">
+                    Par défaut, seuls les onglets 14001 et 45001 sont importés (l’ISO&nbsp;9001 du même fichier reste gérée par
+                    <code class="rounded bg-background/80 px-1">app:qse:import-iso9001-requirements</code>). Utilisez
+                    <code class="rounded bg-background/80 px-1">--tabs=9001,14001,45001</code> si vous souhaitez tout réimporter depuis le classeur.
+                </p>
+            {% else %}
+                <p class="m-0 mb-2 leading-relaxed text-amber-900/95 dark:text-amber-100/90">
+                    Pour ce référentiel, les exigences doivent être ajoutées via l’<strong>import administrateur</strong>
+                    (fichier prévu à cet effet) ou un autre processus interne, en ciblant explicitement cette norme.
+                </p>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <p class="m-0 flex flex-wrap gap-x-3 gap-y-1">
+                    <a href="{{ path('app_admin_qse_req_import_index') }}" class="app-inline-link font-medium">Import d’exigences (administration)</a>
+                    <a href="{{ path('app_admin_qse_audit_requirements_index', { standard: audit.auditStandard.id }) }}" class="app-inline-link font-medium">Exigences en base pour ce référentiel</a>
+                </p>
+            {% else %}
+                <p class="m-0 text-amber-900/90 dark:text-amber-100/85">Si vous n’êtes pas administrateur, demandez à l’équipe qui gère la plateforme d’importer les exigences pour cette norme.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

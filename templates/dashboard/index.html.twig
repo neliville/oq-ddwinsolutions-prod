@@ -6,320 +6,569 @@
 
 {% block content %}
 <div class="w-full dashboard-page">
+    <div id="app-collaboration-csrf" data-csrf="{{ csrf_token('collaboration') }}" class="sr-only" aria-hidden="true"></div>
 
     {# ── Header ─────────────────────────────────────────────────────────────── #}
-    <div class="flex items-start justify-between gap-3 flex-wrap mb-12">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Tableau de bord</h1>
-            <p class="text-muted-foreground mb-0">Bienvenue, <span class="font-medium">{{ app.user.email }}</span></p>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-3 flex-wrap mb-6 sm:mb-10 lg:mb-12">
+        <div class="min-w-0">
+            <h1 class="text-xl sm:text-2xl font-bold mb-1">Tableau de bord</h1>
+            <p class="text-muted-foreground mb-0 text-sm sm:text-base">Bienvenue, <span class="font-medium break-words">{{ dashboard_welcome_name }}</span></p>
+            <p class="text-xs text-muted-foreground mt-1 mb-0">Pilotage : <span class="font-medium text-foreground">{{ piloting_focus_label }}</span> — axe QHSE : <span class="font-medium text-foreground">{{ qhse_priority_label }}</span> — <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="app-inline-link">Ajuster dans les préférences</a></p>
         </div>
-        <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-            <i data-lucide="plus" width="18" height="18" class="mr-2"></i>
-            Nouvelle analyse
-        </a>
+        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto sm:justify-end">
+            {% include 'collaboration/_invite_dialog.html.twig' with {
+                dialog_id: 'collab_invite_dashboard',
+                source: 'dashboard',
+                trigger_label: 'Inviter un collaborateur',
+                trigger_variant: 'outline',
+            } %}
+            <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" variant="default" class="no-underline w-full sm:w-auto min-h-[48px] sm:min-h-8 gap-2">
+                <i data-lucide="plus" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                Nouvelle analyse
+            </twig:Button>
+        </div>
     </div>
 
-    {# ── Stats ──────────────────────────────────────────────────────────────── #}
-    <div class="grid grid-cols-12 gap-4 xl:gap-6 mb-12">
-
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="50">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="stat-icon bg-primary/10 text-primary rounded-xl p-2">
-                            <i data-lucide="file-text" width="20" height="20"></i>
-                        </div>
-                        <span class="text-muted-foreground text-sm font-medium">Total</span>
-                    </div>
-                    <div class="text-2xl font-bold mb-0">{{ totalRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">créations</div>
-                </div>
+    {% if collaboration_suggestion is defined and collaboration_suggestion %}
+        <twig:Alert variant="info" class="mb-6" id="collab-suggestion-banner" data-suggestion-key="{{ collaboration_suggestion.suggestion_key }}">
+            <twig:Alert:Title>{{ collaboration_suggestion.title }}</twig:Alert:Title>
+            <twig:Alert:Description class="text-sm">{{ collaboration_suggestion.body }}</twig:Alert:Description>
+            <div data-slot="alert-action" class="absolute top-2 right-2 flex flex-wrap gap-1">
+                <twig:Button as="a" href="{{ collaboration_suggestion.cta_href }}" variant="secondary" size="sm" class="no-underline">{{ collaboration_suggestion.cta_label }}</twig:Button>
+                <twig:Button type="button" variant="ghost" size="sm" class="collab-suggestion-dismiss">Masquer</twig:Button>
             </div>
+        </twig:Alert>
+        <script>
+        (function () {
+          const b = document.getElementById('collab-suggestion-banner');
+          if (!b || b.dataset.bound) return;
+          b.dataset.bound = '1';
+          const key = b.getAttribute('data-suggestion-key');
+          const csrf = {{ csrf_token('collaboration')|json_encode|raw }};
+          b.querySelector('.collab-suggestion-dismiss')?.addEventListener('click', async function () {
+            await fetch('{{ path('app_api_collaboration_suggestion_dismiss') }}', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf },
+              body: JSON.stringify({ suggestionKey: key, csrf_token: csrf }),
+            });
+            b.remove();
+          });
+        })();
+        </script>
+    {% endif %}
+
+    <twig:Card class="border-border/80 shadow-sm mb-6">
+        <twig:Card:Content class="p-4 sm:p-5">
+            <h2 class="text-base font-semibold m-0 mb-2 flex items-center gap-2">
+                <i data-lucide="users" width="18" height="18" class="text-primary shrink-0" aria-hidden="true"></i>
+                Collaboration
+            </h2>
+            <p class="text-xs text-muted-foreground m-0 mb-3">Invitations et partages actifs (audit / CAPA).</p>
+            <ul class="grid grid-cols-1 sm:grid-cols-3 gap-2 list-none m-0 p-0 text-sm">
+                <li class="rounded-md border border-border/70 px-3 py-2 flex justify-between gap-2"><span class="text-muted-foreground">Invitations en attente</span><twig:Badge variant="secondary" class="tabular-nums">{{ collaboration_summary.invitationsPending }}</twig:Badge></li>
+                <li class="rounded-md border border-border/70 px-3 py-2 flex justify-between gap-2"><span class="text-muted-foreground">Invitations acceptées</span><twig:Badge variant="secondary" class="tabular-nums">{{ collaboration_summary.invitationsAccepted }}</twig:Badge></li>
+                <li class="rounded-md border border-border/70 px-3 py-2 flex justify-between gap-2"><span class="text-muted-foreground">Liens partagés actifs</span><twig:Badge variant="secondary" class="tabular-nums">{{ collaboration_summary.activeShares }}</twig:Badge></li>
+            </ul>
+        </twig:Card:Content>
+    </twig:Card>
+
+    {% if user_preferences.primaryStandard.value == 'undefined' %}
+        <div class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="status">
+            <strong class="font-semibold">Référentiel à préciser.</strong>
+            Indiquez votre référentiel principal dans les
+            <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="app-inline-link font-medium">préférences QHSE</a>
+            pour des indicateurs plus ciblés.
+        </div>
+    {% endif %}
+
+    {# ── Cockpit manager : 6 blocs « attention aujourd’hui » ───────────────── #}
+    {% set pf = user_preferences.pilotingFocus.value %}
+    {% set hl_capa = pf == 'capa' %}
+    {% set hl_audit = pf in ['audit', 'certification_prep'] %}
+    {% set hl_risk = pf == 'risk' %}
+    <p class="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-3xl">Qu’est-ce qui nécessite mon attention aujourd’hui&nbsp;?</p>
+    <div class="space-y-6 mb-8 sm:mb-10" aria-labelledby="dashboard-attention-heading">
+        <h2 id="dashboard-attention-heading" class="sr-only">Priorités et pilotage QSE</h2>
+
+        {# Bloc 1 — Urgence #}
+        {% if user_preferences.isDashboardSectionVisible('deadlines') %}
+        <twig:Card class="border-border/80 shadow-sm" aria-labelledby="dash-b1">
+            <twig:Card:Content class="p-4 sm:p-5">
+                <h3 id="dash-b1" class="text-base font-bold mb-3 flex items-center gap-2">
+                    <i data-lucide="alarm-clock" width="18" height="18" class="text-destructive shrink-0" aria-hidden="true"></i>
+                    1. Urgence &amp; délais
+                </h3>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 list-none m-0 p-0 text-sm">
+                    <li><a href="{{ path('app_qse_capa_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">CAPA en retard</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.overdueOpenCapas }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_audit_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">Plans d’audit en retard</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.overdueAuditPlans }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_capa_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">CAPA échéance 7&nbsp;j</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.dueCapaNext7Days }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_audit_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">Écarts audit (notes 1–2)</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.openNonConformEvaluations }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_risk_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">Risques critiques sans CAPA</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.criticalRisksWithoutCapa }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_capa_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">CAPA en attente de vérification</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.capasAwaitingVerification }}</twig:Badge></a></li>
+                    <li><a href="{{ path('app_qse_audit_index') }}" class="flex justify-between gap-2 rounded-md border border-border/70 px-3 py-2.5 no-underline text-foreground hover:bg-muted/60 min-h-[44px] items-center"><span class="text-muted-foreground">Audits brouillon &gt; 14&nbsp;j</span><twig:Badge variant="secondary" class="tabular-nums font-semibold">{{ cockpit.staleAuditDrafts }}</twig:Badge></a></li>
+                </ul>
+            </twig:Card:Content>
+        </twig:Card>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            {# Bloc 2 — CAPA par statut #}
+            {% if user_preferences.isDashboardSectionVisible('capa') %}
+            <twig:Card class="border-border/80 shadow-sm h-full{% if hl_capa %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b2">
+                <twig:Card:Content class="p-4 sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 id="dash-b2" class="text-base font-bold m-0 flex items-center gap-2">
+                        <i data-lucide="kanban" width="18" height="18" class="text-primary shrink-0" aria-hidden="true"></i>
+                        2. CAPA (vue synthétique)
+                    </h3>
+                    <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Toutes les CAPA</twig:Button>
+                </div>
+                <p class="text-xs text-muted-foreground mb-3">Ouvertes récentes par statut (aperçu).</p>
+                {% set capa_order = ['en_cours', 'en_attente_de_verification', 'a_valider', 'validee', 'brouillon', 'reouverte'] %}
+                <div class="flex flex-col gap-3 max-h-[22rem] overflow-y-auto pr-1">
+                    {% set capa_groups_shown = false %}
+                    {% for key in capa_order %}
+                        {% set group = managerDashboard.capas_by_status[key] ?? [] %}
+                        {% if group|length > 0 %}
+                            {% set capa_groups_shown = true %}
+                            <div>
+                                <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">{{ key|qse_status_label('capa') }}</h4>
+                                <ul class="text-sm space-y-1 list-none m-0 p-0">
+                                    {% for c in group|slice(0, 4) %}
+                                        <li><a href="{{ path('app_qse_capa_show', { id: c.id }) }}" class="app-inline-link">{{ c.title }}</a>{% if c.dueAt %} <span class="text-muted-foreground text-xs">· {{ c.dueAt|date('d/m/Y') }}</span>{% endif %}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not capa_groups_shown %}
+                        <p class="text-sm text-muted-foreground mb-0">Aucune CAPA ouverte.</p>
+                    {% endif %}
+                </div>
+                </twig:Card:Content>
+            </twig:Card>
+            {% endif %}
+
+            {# Bloc 3 — Risques #}
+            {% if user_preferences.isDashboardSectionVisible('risks') %}
+            <twig:Card class="border-border/80 shadow-sm h-full{% if hl_risk %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b3">
+                <twig:Card:Content class="p-4 sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 id="dash-b3" class="text-base font-bold m-0 flex items-center gap-2">
+                        <i data-lucide="shield-alert" width="18" height="18" class="text-amber-600 shrink-0" aria-hidden="true"></i>
+                        3. Risques
+                    </h3>
+                    <twig:Button as="a" href="{{ path('app_qse_risk_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Matrice</twig:Button>
+                </div>
+                <h4 class="text-xs font-semibold text-muted-foreground mb-1">Criticité élevée</h4>
+                <ul class="text-sm space-y-1 list-none m-0 p-0 mb-4">
+                    {% for r in managerDashboard.top_risks %}
+                        <li><a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link">{{ r.identifiedRisk|length > 48 ? r.identifiedRisk|slice(0, 45) ~ '…' : r.identifiedRisk }}</a> <span class="text-muted-foreground">({{ r.criticalityScore ?? '—' }})</span></li>
+                    {% else %}
+                        <li class="text-muted-foreground">Aucune entrée</li>
+                    {% endfor %}
+                </ul>
+                <h4 class="text-xs font-semibold text-muted-foreground mb-1">Révision sous 14&nbsp;j</h4>
+                <ul class="text-sm space-y-1 list-none m-0 p-0">
+                    {% for r in managerDashboard.risks_review_soon %}
+                        <li><a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link">{{ r.identifiedRisk|length > 40 ? r.identifiedRisk|slice(0, 37) ~ '…' : r.identifiedRisk }}</a> <span class="text-muted-foreground">{{ r.reviewAt|date('d/m/Y') }}</span></li>
+                    {% else %}
+                        <li class="text-muted-foreground">Aucune</li>
+                    {% endfor %}
+                </ul>
+                </twig:Card:Content>
+            </twig:Card>
+            {% endif %}
+
+            {# Bloc 4 — Audits #}
+            {% if user_preferences.isDashboardSectionVisible('audits') %}
+            <twig:Card class="border-border/80 shadow-sm h-full{% if hl_audit %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b4">
+                <twig:Card:Content class="p-4 sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 id="dash-b4" class="text-base font-bold m-0 flex items-center gap-2">
+                        <i data-lucide="clipboard-check" width="18" height="18" class="text-sky-600 shrink-0" aria-hidden="true"></i>
+                        4. Audits
+                    </h3>
+                    <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Liste</twig:Button>
+                </div>
+                <p class="text-sm text-muted-foreground mb-2">Conformité moyenne (audits calculés)&nbsp;: <strong class="text-foreground">{% if cockpit.avgAuditCompliancePercent is not null %}{{ cockpit.avgAuditCompliancePercent }}&nbsp;%{% else %}—{% endif %}</strong></p>
+                <h4 class="text-xs font-semibold text-muted-foreground mb-1">Chapitres avec le plus d’écarts (1–2)</h4>
+                <ul class="text-sm space-y-1 list-none m-0 p-0 mb-4">
+                    {% for row in managerDashboard.weak_chapters %}
+                        <li><span class="font-medium">{{ row.chapter }}</span> <span class="text-muted-foreground">({{ row.issues }})</span></li>
+                    {% else %}
+                        <li class="text-muted-foreground">Pas assez de données</li>
+                    {% endfor %}
+                </ul>
+                <h4 class="text-xs font-semibold text-muted-foreground mb-1">Audits récents</h4>
+                <ul class="text-sm space-y-1 list-none m-0 p-0">
+                    {% for a in cockpitAudits %}
+                        <li><a href="{{ path('app_qse_audit_show', { id: a.id }) }}" class="app-inline-link">{{ a.companyName|default('Audit') }}</a> <span class="text-muted-foreground">{{ a.auditedAt|date('d/m/Y') }}</span></li>
+                    {% else %}
+                        <li class="text-muted-foreground">Aucun — <a href="{{ path('app_qse_audit_pick_standard') }}" class="app-inline-link">créer</a></li>
+                    {% endfor %}
+                </ul>
+                </twig:Card:Content>
+            </twig:Card>
+            {% endif %}
+
+            {# Bloc 5 — PDCA #}
+            {% if user_preferences.isDashboardSectionVisible('pdca') %}
+            <twig:Card class="border-border/80 shadow-sm h-full" aria-labelledby="dash-b5">
+                <twig:Card:Content class="p-4 sm:p-5">
+                <h3 id="dash-b5" class="text-base font-bold mb-2 flex items-center gap-2">
+                    <i data-lucide="orbit" width="18" height="18" class="text-primary shrink-0" aria-hidden="true"></i>
+                    5. PDCA (synthèse)
+                </h3>
+                <p class="text-sm text-muted-foreground mb-3">Vue Plan / Do / Check / Act avec liens vers les modules.</p>
+                    <twig:Button as="a" href="{{ path('app_qse_pdca_index') }}" variant="default" size="sm" class="no-underline w-full sm:w-auto gap-2 shadow-sm">
+                        <i data-lucide="arrow-right" width="16" height="16" class="shrink-0 opacity-90" aria-hidden="true"></i>
+                        Ouvrir le cockpit PDCA
+                    </twig:Button>
+                </twig:Card:Content>
+            </twig:Card>
+            {% endif %}
+
+            {# Bloc 6 — Décisions & anomalies #}
+            {% if user_preferences.isDashboardSectionVisible('anomalies') %}
+            <twig:Card class="border-border/80 shadow-sm lg:col-span-2" aria-labelledby="dash-b6">
+                <twig:Card:Content class="p-4 sm:p-5">
+                <h3 id="dash-b6" class="text-base font-bold mb-3 flex items-center gap-2">
+                    <i data-lucide="list-todo" width="18" height="18" class="text-foreground shrink-0" aria-hidden="true"></i>
+                    6. Décisions / anomalies à traiter
+                </h3>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none m-0 p-0 text-sm">
+                    <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">CAPA ouvertes sans responsable</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.openCapasWithoutResponsible }}</twig:Badge></li>
+                    <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">CAPA en vérif. sans commentaire</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.capasInVerificationMissingComment }}</twig:Badge></li>
+                    <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">Brouillons audit anciens</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.staleAuditDrafts }}</twig:Badge></li>
+                    <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">Risques critiques sans CAPA</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.criticalRisksWithoutCapa }}</twig:Badge></li>
+                </ul>
+                <p class="text-xs text-muted-foreground mt-3 mb-0">Utilisez les liens des blocs 1–4 pour corriger ces points dans les écrans dédiés.</p>
+                </twig:Card:Content>
+            </twig:Card>
+            {% endif %}
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="100">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-green-100 text-green-600 rounded-xl p-2">
+        {% if user_preferences.isDashboardSectionVisible('kpi') %}
+        <twig:Card id="dashboard-ai-suggestions-slot" class="border-dashed bg-muted/20 shadow-none" data-feature="ai-placeholder" role="region" aria-label="Espace réservé assistances IA">
+            <twig:Card:Content class="p-4 text-center text-sm text-muted-foreground">
+            Espace réservé — assistances IA (suggestions causes, CAPA, risques) : architecture prête, sans implémentation pour l’instant.
+            </twig:Card:Content>
+        </twig:Card>
+        {% endif %}
+    </div>
+
+    {# ── Stats (KPI) : lisibles au pouce, titres masqués pour lecteurs d’écran ─ #}
+    {% if user_preferences.isDashboardSectionVisible('kpi') %}
+    <section class="grid grid-cols-12 gap-3 sm:gap-4 xl:gap-6 mb-6 sm:mb-10 lg:mb-12" aria-labelledby="dashboard-kpi-heading">
+        <h2 id="dashboard-kpi-heading" class="sr-only">Synthèse de vos analyses par outil</h2>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-total-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-primary/10 text-primary rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="file-text" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-total-label" class="text-muted-foreground text-sm sm:text-sm font-semibold leading-tight">Total</span>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ totalRecords }} créations enregistrées">{{ totalRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">créations enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-ishikawa-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-green-100 text-green-600 rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="git-branch" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">Ishikawa</span>
+                            <span id="stat-ishikawa-label" class="text-muted-foreground text-sm font-semibold leading-tight">Ishikawa</span>
                         </div>
-                        <a href="{{ path('app_ishikawa_index') }}" class="text-muted-foreground" aria-label="Ouvrir Ishikawa">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_ishikawa_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Diagramme Ishikawa">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ ishikawaRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">diagrammes</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ ishikawaRecords }} diagrammes Ishikawa">{{ ishikawaRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">diagrammes enregistrés</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="150">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2">
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-fivewhy-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="help-circle" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">5 Pourquoi</span>
+                            <span id="stat-fivewhy-label" class="text-muted-foreground text-sm font-semibold leading-tight">5 Pourquoi</span>
                         </div>
-                        <a href="{{ path('app_fivewhy_index') }}" class="text-muted-foreground" aria-label="Ouvrir 5 Pourquoi">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_fivewhy_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Méthode 5 Pourquoi">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ fiveWhyRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">analyses</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ fiveWhyRecords }} analyses 5 Pourquoi">{{ fiveWhyRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="200">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-secondary text-secondary-foreground rounded-xl p-2">
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-qqoqccp-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-secondary text-secondary-foreground rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="list-checks" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">QQOQCCP</span>
+                            <span id="stat-qqoqccp-label" class="text-muted-foreground text-sm font-semibold leading-tight">QQOQCCP</span>
                         </div>
-                        <a href="{{ path('app_qqoqccp_index') }}" class="text-muted-foreground" aria-label="Ouvrir QQOQCCP">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_qqoqccp_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil QQOQCCP">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ qqoqccpRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">analyses</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ qqoqccpRecords }} analyses QQOQCCP">{{ qqoqccpRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="250">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-red-100 text-destructive rounded-xl p-2">
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-amdec-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-red-100 text-destructive rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="alert-triangle" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">AMDEC</span>
+                            <span id="stat-amdec-label" class="text-muted-foreground text-sm font-semibold leading-tight">AMDEC</span>
                         </div>
-                        <a href="{{ path('app_amdec_index') }}" class="text-muted-foreground" aria-label="Ouvrir AMDEC">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_amdec_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil AMDEC">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ amdecRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">analyses</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ amdecRecords }} analyses AMDEC">{{ amdecRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2">
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-pareto-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="bar-chart-2" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">Pareto</span>
+                            <span id="stat-pareto-label" class="text-muted-foreground text-sm font-semibold leading-tight">Pareto</span>
                         </div>
-                        <a href="{{ path('app_pareto_index') }}" class="text-muted-foreground" aria-label="Ouvrir Pareto">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_pareto_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Diagramme de Pareto">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ paretoRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">analyses</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ paretoRecords }} analyses Pareto">{{ paretoRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-        <div class="col-span-6 md:col-span-4 lg:col-span-3" data-aos="fade-up" data-aos-delay="350">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="stat-icon bg-amber-100 text-amber-600 rounded-xl p-2">
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-eightd-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-amber-100 text-amber-600 rounded-xl p-2 shrink-0" aria-hidden="true">
                                 <i data-lucide="layers" width="20" height="20"></i>
                             </div>
-                            <span class="text-muted-foreground text-sm font-medium">Méthode 8D</span>
+                            <span id="stat-eightd-label" class="text-muted-foreground text-sm font-semibold leading-tight">Méthode 8D</span>
                         </div>
-                        <a href="{{ path('app_eightd_index') }}" class="text-muted-foreground" aria-label="Ouvrir 8D">
-                            <i data-lucide="arrow-right" width="16" height="16"></i>
+                        <a href="{{ path('app_eightd_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Méthode 8D">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="text-2xl font-bold mb-0">{{ eightDRecords }}</div>
-                    <div class="text-muted-foreground text-sm mt-1">rapports</div>
-                </div>
-            </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ eightDRecords }} rapports 8D">{{ eightDRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">rapports enregistrés</p>
+                </twig:Card:Content>
+            </twig:Card>
         </div>
 
-    </div>
+    </section>
+    {% endif %}
 
     {# ── Corps principal ─────────────────────────────────────────────────────── #}
-    <div class="grid grid-cols-12 gap-6">
+    <div class="grid grid-cols-12 gap-4 sm:gap-6">
 
         {# Colonne gauche #}
         <div class="col-span-12 lg:col-span-8">
 
             {# Mes outils disponibles #}
-            <div class="rounded-lg bg-card shadow-sm mb-6" data-aos="fade-up">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h5 class="font-bold mb-0">Mes outils disponibles</h5>
-                        <a href="{{ path('app_outils_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">
-                            Voir tous
+            <section class="rounded-lg bg-card shadow-sm mb-6 border border-border/50" data-aos="fade-up" aria-labelledby="dashboard-tools-heading">
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-5 sm:mb-6">
+                        <h2 id="dashboard-tools-heading" class="text-lg sm:text-xl font-bold mb-0 text-foreground tracking-tight">Mes outils disponibles</h2>
+                        <a href="{{ path('app_outils_index') }}"
+                           class="dashboard-tools-see-all inline-flex items-center justify-center gap-2 border-2 border-primary text-primary px-4 py-3 text-base font-semibold rounded-lg hover:bg-primary/10 active:bg-primary/15 transition-colors no-underline w-full sm:w-auto min-h-[48px] sm:min-h-[44px] sm:py-2 sm:text-sm shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                           aria-label="Voir tous les outils qualité sur la page dédiée">
+                            <span>Voir tous les outils</span>
+                            <i data-lucide="arrow-right" width="18" height="18" class="shrink-0 sm:w-4 sm:h-4" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-primary/10 text-primary rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-primary/10 text-primary rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="git-branch" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Diagramme Ishikawa</h6>
-                                            <small class="text-muted-foreground">Analyse des causes (5M)</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Diagramme Ishikawa</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Analyse des causes (5M)</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">Identifiez les causes racines d'un problème avec le diagramme en arête de poisson.</p>
-                                    <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">Identifiez les causes racines d'un problème avec le diagramme en arête de poisson.</p>
+                                    <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-sky-100 text-sky-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="help-circle" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Méthode 5 Pourquoi</h6>
-                                            <small class="text-muted-foreground">Cause racine en profondeur</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Méthode 5 Pourquoi</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Cause racine en profondeur</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">Posez successivement "Pourquoi ?" pour remonter jusqu'à la cause fondamentale.</p>
-                                    <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">Posez successivement « Pourquoi&nbsp;? » pour remonter jusqu'à la cause fondamentale.</p>
+                                    <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-secondary text-secondary-foreground rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-secondary text-secondary-foreground rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="list-checks" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Analyse QQOQCCP</h6>
-                                            <small class="text-muted-foreground">Questionnement complet 5W2H</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Analyse QQOQCCP</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Questionnement complet 5W2H</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">Structurez votre diagnostic en répondant aux 7 questions fondamentales.</p>
-                                    <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">Structurez votre diagnostic en répondant aux 7 questions fondamentales.</p>
+                                    <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-red-100 text-destructive rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-red-100 text-destructive rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="alert-triangle" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Analyse AMDEC</h6>
-                                            <small class="text-muted-foreground">Priorisation des risques (NPR)</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Analyse AMDEC</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Priorisation des risques (NPR)</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">Calcul automatique de criticité, recommandations de priorisation des actions.</p>
-                                    <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">Calcul automatique de criticité, recommandations de priorisation des actions.</p>
+                                    <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center justify-center gap-2 bg-destructive text-destructive-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-destructive">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-sky-100 text-sky-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="bar-chart-2" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Diagramme Pareto</h6>
-                                            <small class="text-muted-foreground">Analyse 80 / 20</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Diagramme Pareto</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Analyse 80 / 20</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">Visualisez les causes majeures, pourcentages cumulés et priorisez vos actions.</p>
-                                    <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">Visualisez les causes majeures, pourcentages cumulés et priorisez vos actions.</p>
+                                    <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                         <div>
-                            <div class="rounded-lg bg-card border h-full dashboard-tool-card">
-                                <div class="p-3">
-                                    <div class="flex items-center mb-3 gap-3">
-                                        <div class="bg-amber-100 text-amber-600 rounded-xl p-2 shrink-0">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                                <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                    <div class="flex items-start mb-3 gap-3">
+                                        <div class="bg-amber-100 text-amber-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
                                             <i data-lucide="layers" width="22" height="22"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="font-bold mb-0">Méthode 8D</h6>
-                                            <small class="text-muted-foreground">Résolution structurée</small>
+                                        <div class="min-w-0">
+                                            <h3 class="font-bold mb-1 text-lg text-foreground leading-tight">Méthode 8D</h3>
+                                            <p class="text-muted-foreground text-sm mb-0 leading-snug">Résolution structurée</p>
                                         </div>
                                     </div>
-                                    <p class="text-muted-foreground text-sm mb-3">8 disciplines : containment, causes racines, capitalisation, indicateurs.</p>
-                                    <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline dashboard-tool-link">
-                                        <i data-lucide="play" width="14" height="14" class="mr-1"></i>
-                                        Utiliser l'outil
+                                    <p class="text-foreground/90 text-base leading-relaxed mb-4 flex-1">8 disciplines&nbsp;: containment, causes racines, capitalisation, indicateurs.</p>
+                                    <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 text-base sm:text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity no-underline dashboard-tool-link min-h-[48px] sm:min-h-[44px] mt-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                                        <i data-lucide="play" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                                        Utiliser l’outil
                                     </a>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
                     </div>
                 </div>
-            </div>
+            </section>
 
             {# Dernières créations #}
             {% if recentRecords|length > 0 %}
-            <div class="rounded-lg bg-card shadow-sm" data-aos="fade-up" data-aos-delay="100">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h5 class="font-bold mb-0">Mes dernières créations</h5>
-                        <a href="{{ path('app_creations_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">Voir toutes</a>
+            <div class="dashboard-recent-creations rounded-xl bg-card border border-border shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-6 sm:p-7">
+                    <div class="dashboard-recent-creations__header flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-5">
+                        <h2 class="dashboard-recent-creations__title font-bold mb-0 text-lg tracking-tight text-foreground">Mes dernières créations</h2>
+                        <a href="{{ path('app_creations_index') }}" class="dashboard-recent-creations__all inline-flex items-center justify-center gap-2 self-stretch sm:self-auto px-4 py-3 sm:py-2 min-h-[48px] sm:min-h-0 text-base sm:text-sm font-semibold rounded-lg border-2 border-primary text-primary hover:bg-primary/10 active:bg-primary/15 no-underline transition-colors w-full sm:w-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Voir toutes mes créations enregistrées">
+                            <span>Voir toutes</span>
+                            <i data-lucide="arrow-right" width="18" height="18" class="shrink-0 sm:w-4 sm:h-4" aria-hidden="true"></i>
+                        </a>
                     </div>
-                    <div class="flex flex-col">
+                    <ul class="dashboard-recent-list list-none m-0 p-0 flex flex-col gap-2">
                         {% for item in recentRecords %}
                         {% set record = item.record %}
                         {% set type = item.type %}
                         {% set icon = { 'ishikawa': 'git-branch', 'fivewhy': 'help-circle', 'qqoqccp': 'list-checks', 'amdec': 'alert-triangle', 'pareto': 'bar-chart-2', 'eightd': 'layers' }[type] ?? 'file-text' %}
-                        {% set color = { 'ishikawa': 'primary', 'fivewhy': 'info', 'qqoqccp': 'secondary', 'amdec': 'danger', 'pareto': 'info', 'eightd': 'warning' }[type] ?? 'primary' %}
                         {% set loadPath = {
                             'ishikawa': path('app_ishikawa_index') ~ '?load=' ~ record.id,
                             'fivewhy':  path('app_fivewhy_index')  ~ '?load=' ~ record.id,
@@ -328,53 +577,55 @@
                             'pareto':   path('app_pareto_index')   ~ '?load=' ~ record.id,
                             'eightd':   path('app_eightd_index')   ~ '?load=' ~ record.id
                         }[type] ?? path('app_creations_index') %}
-                        <div class="py-3 border-b border-border last:border-0">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-{{ color }} bg-opacity-10 text-{{ color }} rounded-xl p-2 shrink-0">
-                                    <i data-lucide="{{ icon }}" width="18" height="18"></i>
+                        <li class="m-0 p-0">
+                            <article class="dashboard-recent-row group">
+                                <div class="dashboard-recent-row__main">
+                                    <div class="dashboard-recent-icon dashboard-recent-icon--{{ type|e('html_attr') }}" aria-hidden="true">
+                                        <i data-lucide="{{ icon }}" width="20" height="20" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="dashboard-recent-row__text min-w-0">
+                                        <h3 class="dashboard-recent-row__title font-semibold mb-0.5 truncate text-base text-foreground">{{ record.title }}</h3>
+                                        <p class="dashboard-recent-row__meta mb-0 text-sm text-muted-foreground inline-flex items-center gap-1.5">
+                                            <i data-lucide="calendar" width="14" height="14" class="shrink-0 opacity-80" aria-hidden="true"></i>
+                                            <span>{{ record.createdAt|date('d/m/Y à H:i') }}</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="grow min-w-0">
-                                    <h6 class="font-semibold mb-1 truncate">{{ record.title }}</h6>
-                                    <small class="text-muted-foreground">
-                                        <i data-lucide="calendar" width="12" height="12" class="mr-1"></i>
-                                        {{ record.createdAt|date('d/m/Y à H:i') }}
-                                    </small>
-                                </div>
-                                <a href="{{ loadPath }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline shrink-0">
-                                    <i data-lucide="folder-open" width="14" height="14" class="mr-1"></i>
-                                    Charger
+                                <a href="{{ loadPath }}" class="dashboard-recent-load inline-flex items-center justify-center gap-1.5 shrink-0 no-underline">
+                                    <i data-lucide="folder-open" width="16" height="16" aria-hidden="true"></i>
+                                    <span>Charger</span>
                                 </a>
-                            </div>
-                        </div>
+                            </article>
+                        </li>
                         {% endfor %}
-                    </div>
+                    </ul>
                 </div>
             </div>
             {% else %}
             <div class="rounded-lg bg-card shadow-sm" data-aos="fade-up" data-aos-delay="100">
                 <div class="p-6 text-center py-12">
-                    <div class="mb-6">
+                    <div class="mb-6" aria-hidden="true">
                         <div class="inline-flex bg-primary/10 text-primary rounded-full p-4">
-                            <i data-lucide="file-plus" width="36" height="36"></i>
+                            <i data-lucide="file-plus" width="36" height="36" aria-hidden="true"></i>
                         </div>
                     </div>
-                    <h5 class="font-bold mb-2">Aucune création pour l'instant</h5>
+                    <p class="text-lg font-bold mb-2 text-foreground" role="status">Aucune création pour l'instant</p>
                     <p class="text-muted-foreground mb-6">Commencez par créer votre première analyse avec l'un de vos outils.</p>
                     <div class="flex flex-wrap gap-2 justify-center">
-                        <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                            <i data-lucide="git-branch" width="16" height="16" class="mr-2"></i>
+                        <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-md text-sm font-medium hover:opacity-90 transition-opacity no-underline min-h-[44px]">
+                            <i data-lucide="git-branch" width="16" height="16" class="mr-2 shrink-0" aria-hidden="true"></i>
                             Ishikawa
                         </a>
-                        <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">
-                            <i data-lucide="help-circle" width="16" height="16" class="mr-2"></i>
+                        <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-2.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline min-h-[44px]">
+                            <i data-lucide="help-circle" width="16" height="16" class="mr-2 shrink-0" aria-hidden="true"></i>
                             5 Pourquoi
                         </a>
-                        <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline">
-                            <i data-lucide="list-checks" width="16" height="16" class="mr-2"></i>
+                        <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-2.5 text-sm rounded-md hover:bg-accent transition-colors no-underline min-h-[44px]">
+                            <i data-lucide="list-checks" width="16" height="16" class="mr-2 shrink-0" aria-hidden="true"></i>
                             QQOQCCP
                         </a>
-                        <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors no-underline">
-                            <i data-lucide="alert-triangle" width="16" height="16" class="mr-2"></i>
+                        <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-2.5 text-sm rounded-md hover:bg-destructive/5 transition-colors no-underline min-h-[44px]">
+                            <i data-lucide="alert-triangle" width="16" height="16" class="mr-2 shrink-0" aria-hidden="true"></i>
                             AMDEC
                         </a>
                     </div>
@@ -390,12 +641,12 @@
             {# Compte utilisateur #}
             <div class="rounded-lg bg-card shadow-sm mb-6" data-aos="fade-up" data-aos-delay="150">
                 <div class="p-6">
-                    <h5 class="font-semibold mb-6 flex items-center gap-2">
-                        <i data-lucide="user-circle" width="20" height="20" class="text-primary"></i>
+                    <h2 class="text-lg font-semibold mb-6 flex items-center gap-2 text-foreground">
+                        <i data-lucide="user-circle" width="20" height="20" class="text-primary shrink-0" aria-hidden="true"></i>
                         Mon compte
-                    </h5>
+                    </h2>
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="bg-primary text-white rounded-full flex items-center justify-center font-bold shrink-0" style="width: 48px; height: 48px;">
+                        <div class="bg-primary text-white rounded-full flex items-center justify-center font-bold shrink-0" style="width: 48px; height: 48px;" aria-hidden="true">
                             {{ app.user.email|slice(0, 1)|upper }}
                         </div>
                         <div class="min-w-0">
@@ -404,17 +655,17 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a href="{{ path('app_creations_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline w-full">
-                            <i data-lucide="file-text" width="14" height="14" class="mr-2"></i>
+                        <a href="{{ path('app_creations_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-2.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline w-full min-h-[44px]">
+                            <i data-lucide="file-text" width="14" height="14" class="mr-2 shrink-0" aria-hidden="true"></i>
                             Mes créations
                         </a>
-                        <a href="{{ path('app_profile_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline w-full">
-                            <i data-lucide="settings" width="14" height="14" class="mr-2"></i>
+                        <a href="{{ path('app_profile_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-2.5 text-sm rounded-md hover:bg-accent transition-colors no-underline w-full min-h-[44px]">
+                            <i data-lucide="settings" width="14" height="14" class="mr-2 shrink-0" aria-hidden="true"></i>
                             Mon profil
                         </a>
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_admin_dashboard_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline w-full">
-                            <i data-lucide="shield" width="14" height="14" class="mr-2"></i>
+                        <a href="{{ path('app_admin_dashboard_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-2.5 text-sm rounded-md hover:bg-accent transition-colors no-underline w-full min-h-[44px]">
+                            <i data-lucide="shield" width="14" height="14" class="mr-2 shrink-0" aria-hidden="true"></i>
                             Administration
                         </a>
                         {% endif %}
@@ -425,44 +676,45 @@
             {# Ressources QSE #}
             <div class="rounded-lg bg-card shadow-sm dashboard-resources-card" data-aos="fade-up" data-aos-delay="250">
                 <div class="p-6">
-                    <h5 class="font-semibold mb-1 flex items-center gap-2">
-                        <i data-lucide="book-open" width="20" height="20" class="text-primary"></i>
+                    <h2 class="text-lg font-semibold mb-1 flex items-center gap-2 text-foreground">
+                        <i data-lucide="book-open" width="20" height="20" class="text-primary shrink-0" aria-hidden="true"></i>
                         Ressources QSE
-                    </h5>
+                    </h2>
                     <p class="text-muted-foreground text-sm mb-6">Guides et modèles prêts à l'emploi pour vos analyses qualité.</p>
 
                     <div class="flex flex-col gap-2">
-                        <a href="{{ path('app_ressources_index') }}" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline">
-                            <div class="bg-primary/10 text-primary rounded-md p-2 shrink-0">
-                                <i data-lucide="package-open" width="16" height="16"></i>
+                        <a href="{{ path('app_ressources_index') }}" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline min-h-[48px]">
+                            <div class="bg-primary/10 text-primary rounded-md p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="package-open" width="16" height="16" aria-hidden="true"></i>
                             </div>
                             <div class="min-w-0">
                                 <div class="font-semibold text-sm text-foreground">Ressources & modèles QSE</div>
                                 <div class="text-muted-foreground" style="font-size: 0.75rem;">Modèle 5M, guides, checklists…</div>
                             </div>
-                            <i data-lucide="chevron-right" width="14" height="14" class="text-muted-foreground ml-auto shrink-0"></i>
+                            <i data-lucide="chevron-right" width="14" height="14" class="text-muted-foreground ml-auto shrink-0" aria-hidden="true"></i>
                         </a>
 
-                        <a href="{{ path('app_blog_index') }}" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline">
-                            <div class="bg-green-100 text-green-600 rounded-md p-2 shrink-0">
-                                <i data-lucide="newspaper" width="16" height="16"></i>
+                        <a href="{{ path('app_blog_index') }}" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline min-h-[48px]">
+                            <div class="bg-green-100 text-green-600 rounded-md p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="newspaper" width="16" height="16" aria-hidden="true"></i>
                             </div>
                             <div class="min-w-0">
                                 <div class="font-semibold text-sm text-foreground">Articles & guides QSE</div>
                                 <div class="text-muted-foreground" style="font-size: 0.75rem;">Bonnes pratiques et méthodologies</div>
                             </div>
-                            <i data-lucide="chevron-right" width="14" height="14" class="text-muted-foreground ml-auto shrink-0"></i>
+                            <i data-lucide="chevron-right" width="14" height="14" class="text-muted-foreground ml-auto shrink-0" aria-hidden="true"></i>
                         </a>
 
-                        <a href="https://ddwinsolutions.fr/#contact" target="_blank" rel="noopener" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline">
-                            <div class="bg-amber-100 text-amber-600 rounded-md p-2 shrink-0">
-                                <i data-lucide="headphones" width="16" height="16"></i>
+                        <a href="https://ddwinsolutions.fr/#contact" target="_blank" rel="noopener noreferrer" class="dashboard-resource-link flex items-center gap-3 p-3 rounded-xl no-underline min-h-[48px]">
+                            <div class="bg-amber-100 text-amber-600 rounded-md p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="headphones" width="16" height="16" aria-hidden="true"></i>
                             </div>
                             <div class="min-w-0">
                                 <div class="font-semibold text-sm text-foreground">Accompagnement QSE</div>
                                 <div class="text-muted-foreground" style="font-size: 0.75rem;">Conseil personnalisé DDWin Solutions</div>
                             </div>
-                            <i data-lucide="external-link" width="14" height="14" class="text-muted-foreground ml-auto shrink-0"></i>
+                            <i data-lucide="external-link" width="14" height="14" class="text-muted-foreground ml-auto shrink-0" aria-hidden="true"></i>
+                            <span class="sr-only">(ouvre un nouvel onglet)</span>
                         </a>
                     </div>
                 </div>
@@ -473,8 +725,8 @@
 
 </div>
 
-{% if showOnboarding %}
-    {% include 'components/onboarding_modal.html.twig' %}
+{% if show_onboarding_wizard %}
+    {% include 'components/onboarding_profile_dialog.html.twig' %}
 {% endif %}
 {% endblock %}
 

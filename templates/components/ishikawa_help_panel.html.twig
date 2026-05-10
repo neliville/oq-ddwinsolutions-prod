@@ -1,0 +1,45 @@
+{# Panneau « Aide & ressources » + accordéon + CTA téléchargement 5M — partagé Ishikawa v1 / v2 #}
+{% set ishikawa_help_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">Certaines catégories et causes sont déjà pré-chargées pour vous aider à démarrer. Vous pouvez déplacer librement chaque catégorie pour ajuster sa position. Pour une expérience complète, utilisez un grand écran.</p>
+    <p class="mb-0">Utilisez l’action prévue dans l’outil pour <strong class="font-semibold text-foreground">vider les causes</strong> lorsque vous voulez repartir d’une analyse neuve.</p>
+</div>
+{% endset %}
+{% set ishikawa_help_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li>Analyse de <strong class="font-semibold text-foreground">non-conformité</strong> ou de réclamation client</li>
+    <li>Recherche des <strong class="font-semibold text-foreground">causes racines</strong> avant mise en place d'actions correctives</li>
+    <li>Revue de processus, <strong class="font-semibold text-foreground">audit interne</strong> ou préparation certification</li>
+    <li>Niveau recommandé : <strong class="font-semibold text-foreground">Débutant</strong> à Intermédiaire</li>
+</ul>
+{% endset %}
+{% set ishikawa_help_s3 %}
+<div class="rounded-lg border border-border bg-muted/50 p-3 text-sm leading-relaxed text-slate-700 dark:bg-muted/30 dark:text-slate-200">
+    <p class="mb-2"><strong class="font-semibold text-foreground">Problème :</strong> Erreur de production augmentée de 12 % sur la ligne 3.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Causes possibles (5M) :</strong> Main-d'œuvre (formation), Machine (réglage), Milieu (température), Matière (fournisseur), Méthode (instruction). Le diagramme permet de visualiser et prioriser les pistes.</p>
+</div>
+{% endset %}
+{% set ishikawa_help_s4 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0"><strong class="font-semibold text-foreground">Comment remplir un diagramme :</strong> Inscrivez le problème dans l'encadré à droite, puis répartissez les causes par catégorie (5M ou 6M). Une cause peut apparaître dans plusieurs branches.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Erreurs fréquentes :</strong> Trop de causes vagues, mélanger causes et solutions, s'arrêter aux causes immédiates.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Conseil d'expert :</strong> Validez les causes avec des données (mesures, retours terrain) avant de lancer les actions.</p>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'ishikawa',
+    card_description: 'Sections repliables — tout reste fermé par défaut. Ouvrez uniquement ce qui vous sert, le diagramme est juste sous cette encarte.',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: ishikawa_help_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: ishikawa_help_s2|trim },
+        { title: "Exemple d'application", html: ishikawa_help_s3|trim },
+        { title: 'Mini-guide', html: ishikawa_help_s4|trim },
+    ],
+    download: {
+        href: path('app_telechargement_modele_5m'),
+        label: 'Télécharger le pack modèles & astuces 5M',
+        aria_label: 'Télécharger le pack modèles Excel, PDF et astuces analyse 5M',
+        footer_title: 'Modèles et téléchargements',
+        footer_text: 'Modèles prêts à l’emploi (.xlsx / PDF) et fiche d’astuces pour structurer votre analyse 5M hors ligne.',
+    },
+} only %}

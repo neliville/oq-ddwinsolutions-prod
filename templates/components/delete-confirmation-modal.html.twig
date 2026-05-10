@@ -20,25 +20,19 @@
                     <i data-lucide="alert-triangle" width="24" height="24" class="text-yellow-500 mr-2 shrink-0"></i>
                     Confirmation de suppression
                 </h5>
-                <button type="button"
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                        data-action="dialog#close" aria-label="Fermer">
+                <twig:Button variant="ghost" size="icon" type="button" data-action="dialog#close" aria-label="Fermer" class="shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+                </twig:Button>
             </div>
             <div class="px-6 py-4">
                 <p data-dialog-target="message" class="text-foreground m-0">Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.</p>
             </div>
             <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
-                <button type="button"
-                        class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"
-                        data-action="dialog#close">Annuler</button>
-                <button type="button"
-                        class="inline-flex items-center justify-center gap-1 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity"
-                        data-action="click->delete-confirmation#onConfirmed">
-                    <i data-lucide="trash-2" width="18" height="18" class="mr-1"></i>
+                <twig:Button variant="outline" type="button" data-action="dialog#close">Annuler</twig:Button>
+                <twig:Button variant="destructive" type="button" data-action="click->delete-confirmation#onConfirmed">
+                    <i data-lucide="trash-2" width="18" height="18" class="mr-1" aria-hidden="true"></i>
                     Supprimer
-                </button>
+                </twig:Button>
             </div>
         </div>
     </dialog>

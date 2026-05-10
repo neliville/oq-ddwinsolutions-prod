@@ -1,0 +1,21 @@
+{# Pont CAPA depuis un outil : délègue à capa_tool_toolbar (carte identique Ishikawa). Passer « tool » : ishikawa, five_why, amdec, eight_d, qqoqccp, pareto, risk. Optionnel : entity_input_id, tool_label, lead_modifier. #}
+{% if app.user %}
+{% set capa_entity_input_ids = {
+    'ishikawa': 'ishikawaDiagramId',
+    'five_why': 'fiveWhyAnalysisId',
+    'amdec': 'amdecAnalysisId',
+    'eight_d': 'eightdAnalysisId',
+    'qqoqccp': 'qqoqccpAnalysisId',
+    'pareto': 'paretoAnalysisId',
+    'risk': 'riskMatrixEntryId',
+} %}
+{% set _entity_id = entity_input_id|default(capa_entity_input_ids[tool]|default('')) %}
+{% if _entity_id %}
+{% include 'components/qse/capa_tool_toolbar.html.twig' with {
+    tool: tool,
+    entity_input_id: _entity_id,
+    tool_label: tool_label|default(null),
+    lead_modifier: lead_modifier|default(null),
+} only %}
+{% endif %}
+{% endif %}

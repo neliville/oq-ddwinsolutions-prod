@@ -212,8 +212,8 @@ body {
   }
 }
 
-/* Footer */
-footer {
+/* Footer marketing (ne pas cibler le pied minimal connecté) */
+footer:not(.site-footer--minimal-app) {
   background: var(--dark-color) !important;
   color: white;
   padding: 60px 0 30px;
@@ -1400,22 +1400,6 @@ footer {
 
 .category-actions button:hover {
   background: #f8f9fa;
-}
-
-.ishikawa-interactions {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.ishikawa-interactions ul {
-  margin: 0;
-  padding-left: 1.5rem;
-}
-
-.ishikawa-interactions li {
-  margin-bottom: 0.5rem;
-  color: var(--secondary-color);
 }
 
 .ishikawa-main-area {

@@ -1,31 +1,31 @@
 {# Modal pour afficher la liste des analyses 5 Pourquoi sauvegardées #}
 <div {{ attributes.defaults({
-    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
+    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4 bg-zinc-900/55 text-foreground',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
     'role': 'dialog',
     'aria-labelledby': id ? (id ~ '-title') : 'fiveWhyLoadModalTitle',
+    'aria-describedby': id ? (id ~ '-desc') : 'fiveWhyLoadModalDesc',
     id: id ? id : 'fiveWhyLoadModal',
     style: 'display: none;'
 }) }}
-    {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+    {{ stimulus_controller('app-modal', { autoShow: false }) }}
     data-turbo="false"
 >
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]" role="document">
+    <div class="bg-card text-card-foreground rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh] border border-border ring-1 ring-black/5" role="document">
+        <p id="{{ id ? (id ~ '-desc') : 'fiveWhyLoadModalDesc' }}" class="sr-only">Liste de vos analyses 5 Pourquoi enregistrées. Ouvrez une analyse ou supprimez-la avec le bouton prévu à cet effet.</p>
         <div class="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
-            <h5 class="flex items-center font-semibold text-foreground text-base" id="{{ id ? (id ~ '-title') : 'fiveWhyLoadModalTitle' }}">
-                <i data-lucide="folder-open" width="24" height="24" class="mr-2 shrink-0" aria-hidden="true"></i>
+            <h2 class="flex items-center font-semibold text-lg text-foreground m-0" id="{{ id ? (id ~ '-title') : 'fiveWhyLoadModalTitle' }}">
+                <i data-lucide="folder-open" width="24" height="24" class="mr-2 shrink-0 text-primary" aria-hidden="true"></i>
                 Mes analyses 5 Pourquoi
-            </h5>
-            <button type="button"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+            </h2>
+            <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer le dialogue" class="shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            </twig:Button>
         </div>
-        <div class="px-6 py-4 overflow-y-auto flex-1">
-            <ul class="flex flex-col gap-2" id="fiveWhyAnalysesList">
+        <div class="px-6 py-4 overflow-y-auto flex-1 min-h-[8rem]">
+            <ul class="m-0 flex list-none flex-col gap-3 p-0" id="fiveWhyAnalysesList">
                 {# Le contenu sera injecté dynamiquement par JavaScript #}
                 <li class="flex justify-center py-6">
                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" role="status">

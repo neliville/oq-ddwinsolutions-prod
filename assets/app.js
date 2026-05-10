@@ -1,8 +1,7 @@
 import { registerReactControllerComponents } from '@symfony/ux-react';
-import './bootstrap.js';
+import './stimulus_app.js';
 import '@hotwired/turbo';
 import './js/components/newsletter-mautic.js';
-import './js/bootstrap.js';
 import { registerNavbar } from './js/components/navbar.js';
 import { registerDownloadForms } from './js/components/download-form.js';
 import { registerHomePage } from './js/pages/home.js';
@@ -20,10 +19,14 @@ document.addEventListener('click', (e) => {
 const initialiseFrontend = () => {
     registerNavbar();
     registerDownloadForms();
-  registerHomePage();
+    registerHomePage();
 };
 
-document.addEventListener('DOMContentLoaded', initialiseFrontend);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialiseFrontend);
+} else {
+    initialiseFrontend();
+}
 document.addEventListener('turbo:load', initialiseFrontend);
 
 if (typeof Turbo !== 'undefined') {

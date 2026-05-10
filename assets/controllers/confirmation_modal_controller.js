@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * Contrôleur Stimulus pour gérer les modals de confirmation
- * Remplace les confirm() natifs par des modals Bootstrap
+ * Remplace les confirm() natifs par des modales (Stimulus app-modal + Tailwind)
  */
 export default class extends Controller {
     static targets = ['message'];
@@ -42,9 +42,9 @@ export default class extends Controller {
         }
 
         // Fermer le modal
-        const modal = this.element.closest('[data-controller~="bootstrap-modal"]');
+        const modal = this.element.closest('[data-controller~="app-modal"]');
         if (modal) {
-            const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
+            const modalController = this.application.getControllerForElementAndIdentifier(modal, 'app-modal');
             if (modalController && typeof modalController.hide === 'function') {
                 modalController.hide();
             }
@@ -65,9 +65,9 @@ export default class extends Controller {
         }
 
         // Fermer le modal
-        const modal = this.element.closest('[data-controller~="bootstrap-modal"]');
+        const modal = this.element.closest('[data-controller~="app-modal"]');
         if (modal) {
-            const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
+            const modalController = this.application.getControllerForElementAndIdentifier(modal, 'app-modal');
             if (modalController && typeof modalController.hide === 'function') {
                 modalController.hide();
             }

@@ -1,0 +1,15 @@
+{% extends 'emails/base_transactional.html.twig' %}
+
+{% block email_html_title %}Invitation expirée — {{ app_name }}{% endblock %}
+
+{% block email_body %}
+<p style="margin:0 0 20px 0;font-size:18px;font-weight:bold;color:#1a3a5c;">Bonjour,</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">L’invitation pour rejoindre <strong>{{ app_name }}</strong> n’est plus valable (lien expiré).</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">Vous pouvez demander à la personne qui vous a invité de vous envoyer une nouvelle invitation.</p>
+{% include 'emails/_email_cta.html.twig' with { cta_href: app_url, cta_label: 'Visiter le site' } %}
+{% endblock %}
+
+{% block email_footer %}
+<span style="color:#64748b;">Message automatique — {{ app_name }}.</span><br><br>
+{{ parent() }}
+{% endblock %}

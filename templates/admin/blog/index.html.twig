@@ -1,4 +1,4 @@
-{% extends 'base_with_sidebar.html.twig' %}
+{% extends 'layout/admin_base.html.twig' %}
 
 {% block title %}Gestion du blog | Administration{% endblock %}
 
@@ -8,324 +8,322 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full">
-    {% for message in app.flashes('success') %}
-        <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
-            <span class="flex-1 text-sm">{{ message }}</span>
-            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
-        </div>
-    {% endfor %}
-    {% for message in app.flashes('danger') %}
-        <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-            <span class="flex-1 text-sm">{{ message }}</span>
-            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
-        </div>
-    {% endfor %}
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <h1 class="h3 font-bold mb-1">Gestion du blog</h1>
-            <p class="text-muted-foreground mb-0">Gérer les articles de blog</p>
+            <h1 class="text-2xl font-bold tracking-tight text-foreground mb-1">Gestion du blog</h1>
+            <p class="text-muted-foreground text-sm mb-0">Gérer les articles de blog</p>
         </div>
-        <div>
-            <a href="{{ path('app_admin_blog_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline" data-turbo="false">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
-                Nouvel article
-            </a>
-        </div>
+        <twig:Button as="a" href="{{ path('app_admin_blog_new') }}" variant="default" size="default" class="no-underline shrink-0" data-turbo="false">
+            <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" />
+            Nouvel article
+        </twig:Button>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid gap-6 mb-6 md:grid-cols-3">
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Articles publiés</h6>
-                        <h3 class="font-bold mb-0">{{ publishedCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Articles publiés</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ publishedCount }}</p>
                     </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="check-circle" width="24" height="24" class="text-green-600"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                        <twig:ux:icon name="lucide:circle-check" class="size-6 shrink-0" aria-hidden="true" />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Brouillons</h6>
-                        <h3 class="font-bold mb-0">{{ draftCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Brouillons</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ draftCount }}</p>
                     </div>
-                    <div class="bg-amber-100 rounded-full p-3">
-                        <i data-lucide="file-text" width="24" height="24" class="text-amber-600"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400">
+                        <twig:ux:icon name="lucide:file-text" class="size-6 shrink-0" aria-hidden="true" />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Mis en avant</h6>
-                        <h3 class="font-bold mb-0">{{ featuredCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Mis en avant</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ featuredCount }}</p>
                     </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="star" width="24" height="24" class="text-primary"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <twig:ux:icon name="lucide:star" class="size-6 shrink-0" aria-hidden="true" />
                     </div>
                 </div>
-            </div>
-        </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <!-- Filtres -->
-    <div class="rounded-lg bg-card shadow-sm mb-6">
-        <div class="p-6">
-            <div class="flex flex-wrap gap-1" role="group" aria-label="Filtres">
-                <a href="{{ path('app_admin_blog_index', {filter: 'all'}) }}"
-                   class="{{ currentFilter == 'all' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="p-4 sm:p-5">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Filtres">
+                <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: 'all'}) }}" variant="{{ currentFilter == 'all' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Tous ({{ total }})
-                </a>
-                <a href="{{ path('app_admin_blog_index', {filter: 'published'}) }}"
-                   class="{{ currentFilter == 'published' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: 'published'}) }}" variant="{{ currentFilter == 'published' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Publiés ({{ publishedCount }})
-                </a>
-                <a href="{{ path('app_admin_blog_index', {filter: 'draft'}) }}"
-                   class="{{ currentFilter == 'draft' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: 'draft'}) }}" variant="{{ currentFilter == 'draft' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Brouillons ({{ draftCount }})
-                </a>
-                <a href="{{ path('app_admin_blog_index', {filter: 'featured'}) }}"
-                   class="{{ currentFilter == 'featured' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: 'featured'}) }}" variant="{{ currentFilter == 'featured' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Mis en avant ({{ featuredCount }})
-                </a>
+                </twig:Button>
             </div>
-        </div>
-    </div>
+        </twig:Card:Content>
+    </twig:Card>
 
-    <!-- Liste des articles -->
     {% if posts|length > 0 %}
     {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-blog', list_caption: 'Articles' } %}
         {% block list_table %}
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <caption class="sr-only">Liste des articles de blog</caption>
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">Titre</th>
-                            <th scope="col">Catégorie</th>
-                            <th scope="col">Tags</th>
-                            <th scope="col">Statut</th>
-                            <th scope="col">Vues</th>
-                            <th scope="col">Date</th>
-                            <th scope="col" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for post in posts %}
-                        <tr>
-                            <td>
-                                <strong>{{ post.title }}</strong>
+            <twig:Table>
+                <twig:Table:Caption class="sr-only">Liste des articles de blog</twig:Table:Caption>
+                <twig:Table:Header>
+                    <twig:Table:Row>
+                        <twig:Table:Head class="min-w-[12rem] whitespace-normal">Titre</twig:Table:Head>
+                        <twig:Table:Head class="min-w-[8rem] whitespace-normal">Catégorie</twig:Table:Head>
+                        <twig:Table:Head class="min-w-[10rem] max-w-[18rem] whitespace-normal">Tags</twig:Table:Head>
+                        <twig:Table:Head class="w-[7rem] whitespace-normal">Statut</twig:Table:Head>
+                        <twig:Table:Head class="w-[5.5rem] whitespace-normal text-end">Vues</twig:Table:Head>
+                        <twig:Table:Head class="w-[9.5rem] whitespace-normal">Date</twig:Table:Head>
+                        <twig:Table:Head class="w-[1%] text-end whitespace-nowrap">Actions</twig:Table:Head>
+                    </twig:Table:Row>
+                </twig:Table:Header>
+                <twig:Table:Body>
+                    {% for post in posts %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell class="max-w-[min(28rem,48vw)] whitespace-normal align-top">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-semibold text-foreground">{{ post.title }}</span>
                                 {% if post.featured %}
-                                <span class="inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-semibold ml-2">⭐</span>
+                                    <twig:Badge variant="outline" class="gap-0.5 border-amber-500/40 bg-amber-500/10 text-amber-900 dark:border-amber-500/50 dark:bg-amber-500/15 dark:text-amber-100" title="Mis en avant">
+                                        <twig:ux:icon name="lucide:star" class="size-3 shrink-0" aria-hidden="true" />
+                                        <span class="sr-only">Mis en avant</span>
+                                    </twig:Badge>
                                 {% endif %}
-                                <br>
-                                <small class="text-muted-foreground">/{{ post.slug }}</small>
-                            </td>
-                            <td>
-                                {% if post.category %}
-                                <span class="badge badge-category"
-                                      style="background-color: {{ post.category.color }};"
-                                      aria-label="Catégorie {{ post.category.name }}">
-                                    {{ post.category.name }}
+                            </div>
+                            <p class="mt-1 mb-0 text-xs text-muted-foreground tabular-nums">/{{ post.slug }}</p>
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="whitespace-normal align-top">
+                            {% if post.category %}
+                                <span
+                                    class="inline-flex max-w-full items-center rounded-full border-0 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm"
+                                    style="background-color: {{ post.category.color }};"
+                                    aria-label="Catégorie {{ post.category.name }}"
+                                >
+                                    <span class="truncate">{{ post.category.name }}</span>
                                 </span>
-                                {% else %}
-                                <span class="text-muted-foreground">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if post.tags|length > 0 %}
-                                {% for tag in post.tags|slice(0, 2) %}
-                                <span class="badge badge-tag mr-1">{{ tag.name }}</span>
-                                {% endfor %}
-                                {% if post.tags|length > 2 %}
-                                <small class="text-muted-foreground">+{{ post.tags|length - 2 }}</small>
-                                {% endif %}
-                                {% else %}
-                                <span class="text-muted-foreground">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <span class="badge badge-status {{ post.publishedAt ? 'is-published' : 'is-draft' }}">
-                                    {{ post.publishedAt ? 'Publié' : 'Brouillon' }}
-                                </span>
-                            </td>
-                            <td>
-                                <small>{{ post.views }} vues</small>
-                            </td>
-                            <td>
-                                <small>
-                                    {% if post.publishedAt %}
-                                    {{ post.publishedAt|date('d/m/Y H:i') }}
-                                    {% else %}
-                                    {{ post.createdAt|date('d/m/Y H:i') }}
+                            {% else %}
+                                <span class="text-muted-foreground">—</span>
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="whitespace-normal align-top">
+                            {% if post.tags|length > 0 %}
+                                <div class="flex flex-wrap gap-1">
+                                    {% for tag in post.tags|slice(0, 2) %}
+                                        <twig:Badge variant="secondary" class="max-w-[10rem] truncate font-normal">{{ tag.name }}</twig:Badge>
+                                    {% endfor %}
+                                    {% if post.tags|length > 2 %}
+                                        <twig:Badge variant="outline" class="tabular-nums">+{{ post.tags|length - 2 }}</twig:Badge>
                                     {% endif %}
-                                </small>
-                            </td>
-                            <td>
-                                <div class="flex flex-wrap gap-1" role="group" aria-label="Actions pour l'article {{ post.title }}">
-                                    <a href="{{ path('app_admin_blog_show', {id: post.id}) }}"
-                                       class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline"
-                                       aria-label="Voir l'article {{ post.title }}"
-                                       title="Voir" data-turbo="false">
-                                        <i data-lucide="eye" width="14" height="14" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{ path('app_admin_blog_edit', {id: post.id}) }}"
-                                       class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline"
-                                       aria-label="Modifier l'article {{ post.title }}"
-                                       title="Modifier" data-turbo="false">
-                                        <i data-lucide="edit" width="14" height="14" aria-hidden="true"></i>
-                                    </a>
-                                    {% if post.publishedAt %}
-                                    <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="inline" data-turbo="false">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors"
-                                                aria-label="Dépublier l'article {{ post.title }}"
-                                                title="Dépublier">
-                                            <i data-lucide="eye-off" width="14" height="14" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                    {% else %}
-                                    <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="inline" data-turbo="false">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-green-600 text-green-600 px-3 py-1.5 text-sm rounded-md hover:bg-green-600/5 transition-colors"
-                                                aria-label="Publier l'article {{ post.title }}"
-                                                title="Publier">
-                                            <i data-lucide="check" width="14" height="14" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                    {% endif %}
-                                    <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}"
-                                          class="inline"
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');"
-                                          data-turbo="false">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"
-                                                aria-label="Supprimer l'article {{ post.title }}"
-                                                title="Supprimer">
-                                            <i data-lucide="trash-2" width="14" height="14" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            {% else %}
+                                <span class="text-muted-foreground">—</span>
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="whitespace-normal align-top">
+                            {% if post.publishedAt %}
+                                <twig:Badge variant="outline" class="border-emerald-500/30 bg-emerald-600/15 text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-100">Publié</twig:Badge>
+                            {% else %}
+                                <twig:Badge variant="outline" class="border-amber-500/40 bg-amber-500/15 text-amber-950 dark:border-amber-500/50 dark:bg-amber-500/25 dark:text-amber-50">Brouillon</twig:Badge>
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="whitespace-normal text-end align-top tabular-nums text-sm text-muted-foreground">
+                            {{ post.views }} vues
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="whitespace-normal align-top text-xs text-muted-foreground tabular-nums">
+                            {% if post.publishedAt %}
+                                {{ post.publishedAt|date('d/m/Y H:i') }}
+                            {% else %}
+                                {{ post.createdAt|date('d/m/Y H:i') }}
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell class="text-end align-top">
+                            <div class="inline-flex flex-nowrap items-center justify-end gap-1" role="group" aria-label="Actions pour {{ post.title|e('html_attr') }}">
+                                <twig:Button as="a" href="{{ path('app_admin_blog_show', {id: post.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Voir" data-turbo="false">
+                                    <twig:ux:icon name="lucide:eye" class="size-4" aria-hidden="true" />
+                                    <span class="sr-only">Voir {{ post.title }}</span>
+                                </twig:Button>
+                                <twig:Button as="a" href="{{ path('app_admin_blog_edit', {id: post.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Modifier" data-turbo="false">
+                                    <twig:ux:icon name="lucide:pencil" class="size-4" aria-hidden="true" />
+                                    <span class="sr-only">Modifier {{ post.title }}</span>
+                                </twig:Button>
+                                {% if post.publishedAt %}
+                                    <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="inline-flex" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
+                                        <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-amber-700 hover:bg-amber-500/10 hover:text-amber-800 dark:text-amber-400 dark:hover:bg-amber-500/15" title="Dépublier">
+                                            <twig:ux:icon name="lucide:eye-off" class="size-4" aria-hidden="true" />
+                                            <span class="sr-only">Dépublier {{ post.title }}</span>
+                                        </twig:Button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="inline-flex" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
+                                        <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-emerald-700 hover:bg-emerald-500/10 hover:text-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-500/15" title="Publier">
+                                            <twig:ux:icon name="lucide:circle-check" class="size-4" aria-hidden="true" />
+                                            <span class="sr-only">Publier {{ post.title }}</span>
+                                        </twig:Button>
+                                    </form>
+                                {% endif %}
+                                <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}"
+                                      class="inline-flex"
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');"
+                                      data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
+                                    <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive" title="Supprimer">
+                                        <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" />
+                                        <span class="sr-only">Supprimer {{ post.title }}</span>
+                                    </twig:Button>
+                                </form>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                    {% endfor %}
+                </twig:Table:Body>
+            </twig:Table>
         {% endblock %}
         {% block list_cards %}
-            <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {% for post in posts %}
-                <div>
-                    <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                        <div class="p-6 flex flex-col">
-                            <h2 class="h6 font-semibold mb-1">{{ post.title }}{% if post.featured %} <span class="inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-semibold">⭐</span>{% endif %}</h2>
-                            <p class="text-sm text-muted-foreground mb-2">/{{ post.slug }}</p>
-                            <div class="flex flex-wrap gap-1 mb-2">
-                                <span class="badge badge-status {{ post.publishedAt ? 'is-published' : 'is-draft' }}">{{ post.publishedAt ? 'Publié' : 'Brouillon' }}</span>
-                                {% if post.category %}
-                                <span class="badge badge-category" style="background-color: {{ post.category.color }};">{{ post.category.name }}</span>
+                <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                    <twig:Card:Content class="flex flex-col gap-3 p-5 sm:p-6">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-start gap-2">
+                                <h2 class="text-base font-semibold leading-snug text-foreground m-0">{{ post.title }}</h2>
+                                {% if post.featured %}
+                                    <twig:Badge variant="outline" class="shrink-0 gap-0.5 border-amber-500/40 bg-amber-500/10 text-amber-900 dark:border-amber-500/50 dark:bg-amber-500/15 dark:text-amber-100" title="Mis en avant">
+                                        <twig:ux:icon name="lucide:star" class="size-3 shrink-0" aria-hidden="true" />
+                                    </twig:Badge>
                                 {% endif %}
-                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ post.views }} vues</span>
                             </div>
-                            {% if post.tags|length > 0 %}
-                            <div class="mb-2">
-                                {% for tag in post.tags|slice(0, 4) %}
-                                <span class="badge badge-tag mr-1">{{ tag.name }}</span>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                            <p class="text-sm text-muted-foreground mt-auto mb-3">
-                                {% if post.publishedAt %}{{ post.publishedAt|date('d/m/Y H:i') }}{% else %}{{ post.createdAt|date('d/m/Y H:i') }}{% endif %}
-                            </p>
-                            <div class="flex flex-wrap gap-2 pt-2 border-t">
-                                <a href="{{ path('app_admin_blog_show', {id: post.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline" data-turbo="false"><i data-lucide="eye" width="14" height="14" class="mr-1"></i>Voir</a>
-                                <a href="{{ path('app_admin_blog_edit', {id: post.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline" data-turbo="false"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
-                                {% if post.publishedAt %}
-                                <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="inline" data-turbo="false">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
-                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors"><i data-lucide="eye-off" width="14" height="14" class="mr-1"></i>Dépublier</button>
-                                </form>
-                                {% else %}
-                                <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="inline" data-turbo="false">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
-                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-green-600 text-green-600 px-3 py-1.5 text-sm rounded-md hover:bg-green-600/5 transition-colors"><i data-lucide="check" width="14" height="14" class="mr-1"></i>Publier</button>
-                                </form>
-                                {% endif %}
-                                <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" class="inline" data-turbo="false" onsubmit="return confirm('Supprimer cet article ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
-                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
-                                </form>
-                            </div>
+                            <p class="mt-1 mb-0 text-sm text-muted-foreground">/{{ post.slug }}</p>
                         </div>
-                    </article>
-                </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% if post.publishedAt %}
+                                <twig:Badge variant="outline" class="border-emerald-500/30 bg-emerald-600/15 text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-100">Publié</twig:Badge>
+                            {% else %}
+                                <twig:Badge variant="outline" class="border-amber-500/40 bg-amber-500/15 text-amber-950 dark:border-amber-500/50 dark:bg-amber-500/25 dark:text-amber-50">Brouillon</twig:Badge>
+                            {% endif %}
+                            {% if post.category %}
+                                <span
+                                    class="inline-flex max-w-full items-center rounded-full border-0 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm"
+                                    style="background-color: {{ post.category.color }};"
+                                >
+                                    <span class="truncate">{{ post.category.name }}</span>
+                                </span>
+                            {% endif %}
+                            <twig:Badge variant="outline" class="tabular-nums font-normal">{{ post.views }} vues</twig:Badge>
+                        </div>
+                        {% if post.tags|length > 0 %}
+                        <div class="flex flex-wrap gap-1">
+                            {% for tag in post.tags|slice(0, 4) %}
+                                <twig:Badge variant="secondary" class="max-w-full truncate font-normal">{{ tag.name }}</twig:Badge>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <p class="text-sm text-muted-foreground tabular-nums mt-auto mb-0">
+                            {% if post.publishedAt %}{{ post.publishedAt|date('d/m/Y H:i') }}{% else %}{{ post.createdAt|date('d/m/Y H:i') }}{% endif %}
+                        </p>
+                        <div class="mt-auto flex flex-wrap gap-2 border-t border-border pt-4">
+                            <twig:Button as="a" href="{{ path('app_admin_blog_show', {id: post.id}) }}" variant="outline" size="sm" class="no-underline" data-turbo="false">
+                                <twig:ux:icon name="lucide:eye" class="size-4 shrink-0" aria-hidden="true" />
+                                Voir
+                            </twig:Button>
+                            <twig:Button as="a" href="{{ path('app_admin_blog_edit', {id: post.id}) }}" variant="outline" size="sm" class="no-underline" data-turbo="false">
+                                <twig:ux:icon name="lucide:pencil" class="size-4 shrink-0" aria-hidden="true" />
+                                Modifier
+                            </twig:Button>
+                            {% if post.publishedAt %}
+                            <form method="post" action="{{ path('app_admin_blog_unpublish', {id: post.id}) }}" class="inline-flex" data-turbo="false">
+                                <input type="hidden" name="_token" value="{{ csrf_token('unpublish_' ~ post.id) }}">
+                                <twig:Button type="submit" variant="outline" size="sm" class="text-amber-700 hover:bg-amber-500/10 hover:text-amber-800 dark:text-amber-400">
+                                    <twig:ux:icon name="lucide:eye-off" class="size-4 shrink-0" aria-hidden="true" />
+                                    Dépublier
+                                </twig:Button>
+                            </form>
+                            {% else %}
+                            <form method="post" action="{{ path('app_admin_blog_publish', {id: post.id}) }}" class="inline-flex" data-turbo="false">
+                                <input type="hidden" name="_token" value="{{ csrf_token('publish_' ~ post.id) }}">
+                                <twig:Button type="submit" variant="outline" size="sm" class="text-emerald-700 hover:bg-emerald-500/10 hover:text-emerald-800 dark:text-emerald-400">
+                                    <twig:ux:icon name="lucide:circle-check" class="size-4 shrink-0" aria-hidden="true" />
+                                    Publier
+                                </twig:Button>
+                            </form>
+                            {% endif %}
+                            <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" class="inline-flex" data-turbo="false" onsubmit="return confirm('Supprimer cet article ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ post.id) }}">
+                                <twig:Button type="submit" variant="outline" size="sm" class="text-destructive hover:bg-destructive/10 hover:text-destructive">
+                                    <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" />
+                                    Supprimer
+                                </twig:Button>
+                            </form>
+                        </div>
+                    </twig:Card:Content>
+                </twig:Card>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}
             {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-t border-border rounded-b">
-                <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
-                        {% if currentPage > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage - 1}) }}">
-                                <i data-lucide="chevron-left" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
+            <div class="border-t border-border bg-muted/20 px-4 py-4 sm:px-5">
+                <nav class="flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
+                    {% if currentPage > 1 %}
+                        <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage - 1}) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page précédente">
+                            <twig:ux:icon name="lucide:chevron-left" class="size-4" aria-hidden="true" />
+                        </twig:Button>
+                    {% endif %}
 
-                        {% for i in 1..totalPages %}
+                    {% for i in 1..totalPages %}
                         {% if i == currentPage %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ i }}</span>
-                        </li>
+                            <twig:Button type="button" variant="default" size="sm" class="min-w-9 pointer-events-none" disabled aria-current="page">{{ i }}</twig:Button>
                         {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
-                        </li>
+                            <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: i}) }}" variant="outline" size="sm" class="no-underline min-w-9">{{ i }}</twig:Button>
                         {% elseif i == 4 or i == totalPages - 3 %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
+                            <span class="px-2 text-sm text-muted-foreground" aria-hidden="true">…</span>
                         {% endif %}
-                        {% endfor %}
+                    {% endfor %}
 
-                        {% if currentPage < totalPages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage + 1}) }}">
-                                <i data-lucide="chevron-right" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
+                    {% if currentPage < totalPages %}
+                        <twig:Button as="a" href="{{ path('app_admin_blog_index', {filter: currentFilter, page: currentPage + 1}) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page suivante">
+                            <twig:ux:icon name="lucide:chevron-right" class="size-4" aria-hidden="true" />
+                        </twig:Button>
+                    {% endif %}
                 </nav>
             </div>
             {% endif %}
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="file-text" width="48" height="48" class="text-muted-foreground mb-3"></i>
-            <p class="text-muted-foreground mb-0">Aucun article{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
-            <a href="{{ path('app_admin_blog_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline mt-3" data-turbo="false">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="flex flex-col items-center justify-center gap-4 py-14 text-center">
+            <div class="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <twig:ux:icon name="lucide:file-text" class="size-7 shrink-0" aria-hidden="true" />
+            </div>
+            <p class="text-sm text-muted-foreground m-0">Aucun article{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+            <twig:Button as="a" href="{{ path('app_admin_blog_new') }}" variant="default" class="no-underline" data-turbo="false">
+                <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" />
                 Créer le premier article
-            </a>
-        </div>
-    </div>
+            </twig:Button>
+        </twig:Card:Content>
+    </twig:Card>
     {% endif %}
 </div>
 

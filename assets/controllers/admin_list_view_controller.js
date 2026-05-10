@@ -2,9 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 const storageKeyFor = (key) => `adminListView:${key}`;
 
-const ACTIVE_BTN = 'bg-primary text-primary-foreground';
-const INACTIVE_BTN = 'border border-border text-foreground bg-transparent';
-
+/** États gérés par data-active + CSS (.admin-list-view-toggle) pour rester compatibles avec twig:Button. */
 export default class extends Controller {
     static values = {
         storageKey: { type: String, default: 'default' },
@@ -57,12 +55,6 @@ export default class extends Controller {
     }
 
     _setActiveBtn(btn, active) {
-        if (active) {
-            btn.classList.add(...ACTIVE_BTN.split(' '));
-            btn.classList.remove(...INACTIVE_BTN.split(' '));
-        } else {
-            btn.classList.remove(...ACTIVE_BTN.split(' '));
-            btn.classList.add(...INACTIVE_BTN.split(' '));
-        }
+        btn.dataset.active = active ? 'true' : 'false';
     }
 }

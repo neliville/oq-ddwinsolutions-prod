@@ -9,16 +9,14 @@
      role="dialog"
      style="display: none;"
      data-save-guest-tool="{{ tool|default('') }}"
-     {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+     {{ stimulus_controller('app-modal', { autoShow: false }) }}
      data-turbo="false">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg" role="document">
         <div class="flex items-center justify-between px-6 py-4 border-b border-border">
             <h2 class="text-base font-semibold text-foreground" id="saveGuestModalTitle">Sauvegarder votre travail définitivement ?</h2>
-            <button type="button"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                    data-action="bootstrap-modal#hide" aria-label="Fermer">
+            <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer" class="shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            </twig:Button>
         </div>
         <div class="px-6 py-4">
             <p class="mb-0">Votre travail est enregistré localement sur cet appareil. Pour le retrouver sur tous vos appareils et ne rien perdre, créez un compte gratuit ou connectez-vous.</p>
@@ -28,18 +26,16 @@
                     <input type="email" name="email"
                            class="flex-1 min-w-0 border border-input rounded-md px-3 py-1.5 text-sm bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                            placeholder="votre@email.fr" required maxlength="255" aria-label="Votre email">
-                    <button type="submit" class="inline-flex items-center gap-1 border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors bg-transparent">Envoyer</button>
+                    <twig:Button type="submit" variant="outline" class="border-primary text-primary hover:bg-primary/5 shrink-0">Envoyer</twig:Button>
                 </form>
                 <p id="saveGuestEmailSuccess" class="text-sm text-green-600 mt-2 mb-0 hidden">Merci, nous vous recontacterons.</p>
                 <p id="saveGuestEmailError" class="text-sm text-destructive mt-2 mb-0 hidden"></p>
             </div>
         </div>
         <div class="flex flex-wrap gap-2 px-6 py-4 border-t border-border">
-            <a href="{{ path('app_register') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">Créer un compte gratuit</a>
-            <a href="{{ path('app_login') }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-4 py-2 rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">Se connecter</a>
-            <button type="button"
-                    class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors bg-transparent"
-                    data-action="bootstrap-modal#hide">Plus tard</button>
+            <twig:Button as="a" href="{{ path('app_register') }}" variant="default" class="no-underline px-4 py-2 font-medium">Créer un compte gratuit</twig:Button>
+            <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" class="no-underline border-primary text-primary px-4 py-2 font-medium hover:bg-primary/5">Se connecter</twig:Button>
+            <twig:Button variant="outline" type="button" data-action="app-modal#hide" class="px-4 py-2 font-medium">Plus tard</twig:Button>
         </div>
     </div>
 </div>

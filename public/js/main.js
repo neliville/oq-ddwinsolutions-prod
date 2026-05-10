@@ -1,54 +1,11 @@
-// Main JavaScript functionality
-let bootstrapWaitPromise = null
-
-async function waitForBootstrap(timeout = 3000) {
-  if (window.bootstrap?.Modal && window.bootstrap?.Toast) {
-    return window.bootstrap
-  }
-
-  if (window.bootstrapReady instanceof Promise && window.bootstrapReady !== bootstrapWaitPromise) {
-    try {
-      const lib = await window.bootstrapReady
-      if (lib?.Modal && lib?.Toast) {
-        return lib
-      }
-    } catch (error) {
-      console.warn("Erreur lors de l'initialisation Bootstrap fournie par l'import map :", error)
-    }
-  }
-
-  if (bootstrapWaitPromise) {
-    return bootstrapWaitPromise
-  }
-
-  bootstrapWaitPromise = new Promise((resolve) => {
-    const start = Date.now()
-    const checkInterval = setInterval(() => {
-      if (window.bootstrap?.Modal && window.bootstrap?.Toast) {
-        clearInterval(checkInterval)
-        resolve(window.bootstrap)
-      } else if (Date.now() - start > timeout) {
-        clearInterval(checkInterval)
-        resolve(window.bootstrap || null)
-      }
-    }, 40)
-  }).finally(() => {
-    bootstrapWaitPromise = null
-  })
-
-  return bootstrapWaitPromise
-}
-
-window.bootstrapReady = waitForBootstrap
+// Main JavaScript functionality (sans Bootstrap)
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lucide icons
-  const lucide = window.lucide // Declare lucide variable
+  const lucide = window.lucide
   if (lucide) {
     lucide.createIcons()
   }
 
-  // Navbar scroll effect
   const navbar = document.getElementById("mainNav")
   if (navbar) {
     window.addEventListener("scroll", () => {
@@ -60,8 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Initialize AOS if available
-  const AOS = window.AOS // Declare AOS variable
+  const AOS = window.AOS
   if (AOS) {
     AOS.init({
       duration: 800,
@@ -70,11 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
       offset: 100,
     })
   }
-
-  // Newsletter : gérée par Mautic (form/generate.js), pas d’intercept JS ici
 })
 
-// Utility functions
 function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId)
   if (section) {
@@ -85,119 +38,123 @@ function scrollToSection(sectionId) {
   }
 }
 
-async function showToast(message, type = "info") {
-  // Create toast element if it doesn't exist
-  let toastContainer = document.querySelector(".toast-container")
+function showToast(message, type = "info") {
+  let toastContainer = document.querySelector(".app-toast-container")
   if (!toastContainer) {
     toastContainer = document.createElement("div")
-    toastContainer.className = "toast-container position-fixed bottom-0 end-0 p-3"
+    toastContainer.className =
+      "app-toast-container fixed bottom-4 right-4 z-[1080] flex flex-col gap-2 max-w-sm w-full pointer-events-none"
     document.body.appendChild(toastContainer)
   }
 
   const toastId = "toast-" + Date.now()
-  const toastHtml = `
-        <div id="${toastId}" class="toast" role="alert">
-            <div class="toast-header bg-${type === "success" ? "success" : type === "error" ? "danger" : "primary"} text-white">
-                <i data-lucide="${type === "success" ? "check-circle" : type === "error" ? "alert-circle" : "info"}" width="16" height="16" class="me-2"></i>
-                <strong class="me-auto">${type === "success" ? "Succès" : type === "error" ? "Erreur" : "Information"}</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">
-                ${message}
-            </div>
+  const headerBg =
+    type === "success"
+      ? "bg-emerald-600"
+      : type === "error"
+        ? "bg-red-600"
+        : "bg-slate-700"
+  const title =
+    type === "success" ? "Succès" : type === "error" ? "Erreur" : "Information"
+  const icon =
+    type === "success" ? "check-circle" : type === "error" ? "alert-circle" : "info"
+
+  const wrap = document.createElement("div")
+  wrap.id = toastId
+  wrap.className = "pointer-events-auto rounded-lg border border-slate-200 bg-white shadow-lg overflow-hidden text-sm"
+  wrap.setAttribute("role", "alert")
+  wrap.innerHTML = `
+        <div class="flex items-center gap-2 px-3 py-2 text-white ${headerBg}">
+            <i data-lucide="${icon}" width="16" height="16" class="shrink-0" aria-hidden="true"></i>
+            <strong class="font-semibold">${title}</strong>
+            <button type="button" class="ml-auto inline-flex h-7 w-7 items-center justify-center rounded text-white/90 hover:bg-white/10" aria-label="Fermer">
+              <i data-lucide="x" width="14" height="14"></i>
+            </button>
         </div>
+        <div class="px-3 py-2 text-slate-800">${message}</div>
     `
 
-  toastContainer.insertAdjacentHTML("beforeend", toastHtml)
+  toastContainer.appendChild(wrap)
 
-  const toastElement = document.getElementById(toastId)
-  const bootstrap = await waitForBootstrap()
-  if (bootstrap?.Toast) {
-    const toast = new bootstrap.Toast(toastElement)
-    toast.show()
-  } else {
-    toastElement.classList.add("show")
-    toastElement.style.opacity = "1"
-    setTimeout(() => {
-      toastElement.classList.remove("show")
-      toastElement.remove()
-    }, 4000)
-  }
-
-  // Initialize icons in the new toast
   if (window.lucide) {
     window.lucide.createIcons()
   }
 
-  // Remove toast element after it's hidden
   const destroy = () => {
-    toastElement.remove()
+    wrap.remove()
   }
-  toastElement.addEventListener("hidden.bs.toast", destroy)
-  toastElement.querySelector(".btn-close")?.addEventListener("click", destroy)
+
+  wrap.querySelector("button")?.addEventListener("click", destroy)
+  setTimeout(destroy, 4000)
 }
 
-// Modal de confirmation pour les suppressions et réinitialisations
 function showConfirmationModal(options = {}) {
   return new Promise((resolve) => {
-    // Créer le modal si il n'existe pas
-    let modal = document.getElementById('confirmationModal')
+    let modal = document.getElementById("confirmationModal")
     if (!modal) {
-      modal = document.createElement('div')
-      modal.id = 'confirmationModal'
-      modal.className = 'modal'
+      modal = document.createElement("div")
+      modal.id = "confirmationModal"
+      modal.className = "modal"
       modal.innerHTML = `
         <div class="modal-content" style="max-width: 500px; margin: 10% auto; padding: 0; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); z-index: 10001; overflow: hidden;">
-          <div class="modal-header" style="background: ${options.type === 'danger' ? 'var(--danger-color, #dc2626)' : options.type === 'warning' ? 'var(--warning-color, #d97706)' : 'var(--primary-color, #2563eb)'}; color: #ffffff; padding: 1.5rem; border-top-left-radius: 12px; border-top-right-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #ffffff;">${options.title || 'Confirmation'}</h2>
+          <div class="modal-header" style="background: ${options.type === "danger" ? "var(--danger-color, #dc2626)" : options.type === "warning" ? "var(--warning-color, #d97706)" : "var(--primary-color, #2563eb)"}; color: #ffffff; padding: 1.5rem; border-top-left-radius: 12px; border-top-right-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #ffffff;">${options.title || "Confirmation"}</h2>
             <span class="close" style="color: #ffffff; font-size: 2rem; font-weight: bold; cursor: pointer; opacity: 0.9; transition: opacity 0.2s;">&times;</span>
           </div>
           <div class="modal-body" style="padding: 1.5rem; background: white; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-            <p style="margin: 0 0 1.5rem 0; color: var(--dark-color, #1e293b); font-size: 1rem; line-height: 1.6;">${options.message || 'Êtes-vous sûr de vouloir continuer ?'}</p>
+            <p style="margin: 0 0 1.5rem 0; color: var(--dark-color, #1e293b); font-size: 1rem; line-height: 1.6;">${options.message || "Êtes-vous sûr de vouloir continuer ?"}</p>
             <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-              <button class="btn btn-secondary" id="confirmationCancel" style="min-width: 100px; padding: 0.75rem 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0; background: white; color: var(--dark-color); cursor: pointer; font-weight: 500; transition: all 0.2s;">Annuler</button>
-              <button class="btn btn-primary" id="confirmationConfirm" style="min-width: 100px; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; background: ${options.type === 'danger' ? 'var(--danger-color, #dc2626)' : options.type === 'warning' ? 'var(--warning-color, #d97706)' : 'var(--primary-color, #2563eb)'}; color: white; cursor: pointer; font-weight: 500; transition: all 0.2s;">${options.confirmText || 'Confirmer'}</button>
+              <button type="button" id="confirmationCancel" style="min-width: 100px; padding: 0.75rem 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0; background: white; color: var(--dark-color); cursor: pointer; font-weight: 500; transition: all 0.2s;">Annuler</button>
+              <button type="button" id="confirmationConfirm" style="min-width: 100px; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; background: ${options.type === "danger" ? "var(--danger-color, #dc2626)" : options.type === "warning" ? "var(--warning-color, #d97706)" : "var(--primary-color, #2563eb)"}; color: white; cursor: pointer; font-weight: 500; transition: all 0.2s;">${options.confirmText || "Confirmer"}</button>
             </div>
           </div>
         </div>
       `
       document.body.appendChild(modal)
     } else {
-      // Mettre à jour le contenu du modal existant
-      const header = modal.querySelector('.modal-header')
-      const body = modal.querySelector('.modal-body')
-      const headerBg = options.type === 'danger' ? 'var(--danger-color, #dc2626)' : options.type === 'warning' ? 'var(--warning-color, #d97706)' : 'var(--primary-color, #2563eb)'
+      const header = modal.querySelector(".modal-header")
+      const body = modal.querySelector(".modal-body")
+      const headerBg =
+        options.type === "danger"
+          ? "var(--danger-color, #dc2626)"
+          : options.type === "warning"
+            ? "var(--warning-color, #d97706)"
+            : "var(--primary-color, #2563eb)"
       header.style.background = headerBg
-      header.style.color = '#ffffff'
-      const closeBtn = header.querySelector('.close')
+      header.style.color = "#ffffff"
+      const closeBtn = header.querySelector(".close")
       if (closeBtn) {
-        closeBtn.style.color = '#ffffff'
+        closeBtn.style.color = "#ffffff"
       }
-      const titleEl = header.querySelector('h2')
+      const titleEl = header.querySelector("h2")
       if (titleEl) {
-        titleEl.style.color = '#ffffff'
-        titleEl.textContent = options.title || 'Confirmation'
+        titleEl.style.color = "#ffffff"
+        titleEl.textContent = options.title || "Confirmation"
       }
-      body.querySelector('p').textContent = options.message || 'Êtes-vous sûr de vouloir continuer ?'
-      const confirmBtn = body.querySelector('#confirmationConfirm')
-      confirmBtn.textContent = options.confirmText || 'Confirmer'
-      confirmBtn.style.background = options.type === 'danger' ? 'var(--danger-color, #dc2626)' : options.type === 'warning' ? 'var(--warning-color, #d97706)' : 'var(--primary-color, #2563eb)'
+      body.querySelector("p").textContent =
+        options.message || "Êtes-vous sûr de vouloir continuer ?"
+      const confirmBtn = body.querySelector("#confirmationConfirm")
+      confirmBtn.textContent = options.confirmText || "Confirmer"
+      confirmBtn.style.background =
+        options.type === "danger"
+          ? "var(--danger-color, #dc2626)"
+          : options.type === "warning"
+            ? "var(--warning-color, #d97706)"
+            : "var(--primary-color, #2563eb)"
     }
 
-    // Afficher le modal
-    modal.style.display = 'block'
+    modal.style.display = "block"
 
-    // Gérer les clics
-    const cancelBtn = modal.querySelector('#confirmationCancel')
-    const confirmBtn = modal.querySelector('#confirmationConfirm')
-    const closeBtn = modal.querySelector('.close')
+    const cancelBtn = modal.querySelector("#confirmationCancel")
+    const confirmBtn = modal.querySelector("#confirmationConfirm")
+    const closeBtn = modal.querySelector(".close")
 
     const cleanup = () => {
-      modal.style.display = 'none'
-      cancelBtn.removeEventListener('click', onCancel)
-      confirmBtn.removeEventListener('click', onConfirm)
-      closeBtn.removeEventListener('click', onCancel)
-      document.removeEventListener('click', onOutsideClick)
+      modal.style.display = "none"
+      cancelBtn.removeEventListener("click", onCancel)
+      confirmBtn.removeEventListener("click", onConfirm)
+      closeBtn.removeEventListener("click", onCancel)
+      document.removeEventListener("click", onOutsideClick)
     }
 
     const onCancel = () => {
@@ -216,39 +173,69 @@ function showConfirmationModal(options = {}) {
       }
     }
 
-    cancelBtn.addEventListener('click', onCancel)
-    confirmBtn.addEventListener('click', onConfirm)
-    closeBtn.addEventListener('click', onCancel)
-    document.addEventListener('click', onOutsideClick)
+    cancelBtn.addEventListener("click", onCancel)
+    confirmBtn.addEventListener("click", onConfirm)
+    closeBtn.addEventListener("click", onCancel)
+    document.addEventListener("click", onOutsideClick)
   })
 }
 
-function trackExport(tool, format, metadata = {}) {
+let exportBrandingCache = null
+let exportBrandingPromise = null
+
+async function fetchExportBranding() {
+  if (exportBrandingCache !== null) {
+    return exportBrandingCache
+  }
+  if (exportBrandingPromise === null) {
+    exportBrandingPromise = fetch("/api/user/export-branding", {
+      method: "GET",
+      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
+      credentials: "same-origin",
+    })
+      .then(async (response) => {
+        const ct = response.headers.get("content-type") || ""
+        if (!response.ok || !ct.includes("application/json")) {
+          return {}
+        }
+        try {
+          return await response.json()
+        } catch {
+          return {}
+        }
+      })
+      .catch(() => ({}))
+  }
+  exportBrandingCache = await exportBrandingPromise
+  return exportBrandingCache
+}
+
+async function trackExport(tool, format, metadata = {}) {
   try {
-    fetch('/analytics/track-export', {
-      method: 'POST',
+    const branding = await fetchExportBranding()
+    const mergedMetadata = {
+      ...branding,
+      ...metadata,
+      url: window.location.pathname,
+    }
+    fetch("/analytics/track-export", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
       },
-      credentials: 'same-origin',
+      credentials: "same-origin",
       body: JSON.stringify({
         tool,
         format,
-        metadata: {
-          ...metadata,
-          url: window.location.pathname,
-        },
+        metadata: mergedMetadata,
       }),
-    }).catch(() => {
-      // Ignorer silencieusement les erreurs réseau pour ne pas gêner l'utilisateur
-    });
+    }).catch(() => {})
   } catch (error) {
-    // Pas de propagation : l'export doit rester fonctionnel même si le tracking échoue
+    // Ignorer
   }
 }
 
-// Export functions for use in other modules
 window.scrollToSection = scrollToSection
 window.showToast = showToast
 window.showConfirmationModal = showConfirmationModal

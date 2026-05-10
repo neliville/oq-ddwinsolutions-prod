@@ -260,3 +260,172 @@
   }
 }
 
+/* ── Menus déroulants barre d’outils (ancrage sous le bouton, même logique que l’Ishikawa classique) ── */
+.tool-controls .export-dropdown,
+.tool-actions-bar .export-dropdown,
+.five-why-controls .export-dropdown,
+.pareto-controls .export-dropdown,
+.amdec-controls .export-dropdown,
+.eightd-controls .export-dropdown,
+.qqoqccp-controls .export-dropdown,
+.canvas-actions .export-dropdown {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: center;
+}
+
+.canvas-actions .dropdown:not(.export-dropdown) {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: center;
+}
+
+.tool-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.tool-actions-bar .export-dropdown > .tool-export-menu.dropdown-menu,
+.five-why-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.pareto-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.amdec-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.eightd-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.qqoqccp-controls .export-dropdown > .tool-export-menu.dropdown-menu,
+.canvas-actions .export-dropdown > .tool-export-menu.dropdown-menu,
+.canvas-actions .dropdown > .tool-menu-anchor-start.dropdown-menu {
+  left: 0;
+  right: auto;
+  min-width: 100%;
+  width: max-content;
+  max-width: min(20rem, calc(100vw - 1.5rem));
+  margin-top: 0.375rem;
+}
+
+.tool-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.tool-actions-bar .export-dropdown > .tool-export-menu .dropdown-item,
+.five-why-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.pareto-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.amdec-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.eightd-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.qqoqccp-controls .export-dropdown > .tool-export-menu .dropdown-item,
+.canvas-actions .export-dropdown > .tool-export-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.tool-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.tool-actions-bar .export-dropdown > .tool-export-menu .dropdown-item span,
+.five-why-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.pareto-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.amdec-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.eightd-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.qqoqccp-controls .export-dropdown > .tool-export-menu .dropdown-item span,
+.canvas-actions .export-dropdown > .tool-export-menu .dropdown-item span {
+  min-width: 0;
+}
+
+/* Modales plein écran type « dialogue » (réutilisable sur les outils) */
+.modal-content.tool-dialog {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+}
+
+.modal-content.tool-dialog .modal-header.tool-dialog__header {
+  background: transparent;
+  color: var(--text-primary, #0f172a);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px 12px 0 0;
+  padding: 1rem 1.25rem;
+  flex-shrink: 0;
+}
+
+.modal-content.tool-dialog .modal-header.tool-dialog__header::before {
+  display: none;
+}
+
+.modal-content.tool-dialog .tool-dialog__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: inherit;
+}
+
+.modal-content.tool-dialog .tool-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary, #64748b);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.modal-content.tool-dialog .tool-dialog__close:hover {
+  background: rgba(148, 163, 184, 0.18);
+  color: var(--text-primary, #0f172a);
+}
+
+.modal-content.tool-dialog .tool-dialog__close:focus-visible {
+  outline: 2px solid rgba(79, 70, 229, 0.45);
+  outline-offset: 2px;
+}
+
+.modal-content.tool-dialog .form-group input,
+.modal-content.tool-dialog .form-group textarea {
+  border-width: 1px;
+  border-color: rgba(148, 163, 184, 0.55);
+  background: #fff;
+}
+
+/* Encart « Aide & ressources » (accordéon) sous le titre des pages outils */
+.tool-context-panel {
+  margin-top: clamp(0.25rem, 1.5vw, 0.75rem);
+  margin-bottom: clamp(0.75rem, 2.5vw, 1.25rem);
+}
+
+.tool-context-panel .tool-template-download-cta {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+/* En-tête titre + pastilles (aligné page Ishikawa) pour les outils hors canvas dédié */
+.tool-page-header--compact {
+  margin: 0 auto clamp(0.75rem, 2vw, 1.25rem);
+  width: 100%;
+  max-width: 1280px;
+  padding-inline: clamp(var(--space-4), 3vw, var(--space-6));
+}
+
+.tool-page-header--compact .page-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  margin-bottom: 12px;
+}
+
+.tool-page-header--compact .page-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+.tool-page-header--compact .lead {
+  margin: 0 0 0.75rem;
+  max-width: 48rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #475569);
+}
+

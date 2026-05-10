@@ -59,6 +59,10 @@ security:
         - { path: ^/download/access, roles: PUBLIC_ACCESS }
         - { path: ^/api/lead, roles: PUBLIC_ACCESS }
         - { path: ^/api/ishikawa/save, roles: PUBLIC_ACCESS }
+        # Liste / lecture / suppression : le contrôleur renvoie du JSON (401, 403, 404).
+        # Sans cette règle, ^/api exige ROLE_USER et Symfony redirige vers le login (HTML) → erreur JSON côté client.
+        - { path: '^/api/ishikawa/list$', roles: PUBLIC_ACCESS }
+        - { path: '^/api/ishikawa/[0-9]+$', roles: PUBLIC_ACCESS }
         - { path: ^/api/fivewhy/save, roles: PUBLIC_ACCESS }
         - { path: ^/api/amdec/save, roles: PUBLIC_ACCESS }
         - { path: ^/api/pareto/save, roles: PUBLIC_ACCESS }

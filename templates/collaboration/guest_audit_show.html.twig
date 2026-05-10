@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Audit partagé (lecture seule) | OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}Vue lecture seule d’un audit partagé — OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 py-8">
+    <twig:Alert variant="info" class="mb-6">
+        <twig:Alert:Title>Vue invitée — lecture seule</twig:Alert:Title>
+        <twig:Alert:Description class="text-sm">Ce lien ne permet pas de modifier les données. Niveau enregistré : {{ accessLevel }}.</twig:Alert:Description>
+    </twig:Alert>
+    <h1 class="text-2xl font-bold">{{ audit.companyName|default('Audit') }}</h1>
+    <p class="text-muted-foreground text-sm mt-1">{{ audit.auditStandard ? audit.auditStandard.name : '—' }} · {{ audit.auditedAt|date('d/m/Y') }}</p>
+    {% for block in chapterBlocks %}
+        <h2 class="text-lg font-semibold mt-8 mb-3 border-b border-border pb-1">{{ block.chapter }}</h2>
+        <div class="space-y-4">
+            {% for req in block.requirements %}
+                {% set ev = evaluationsByReqId[req.id] ?? null %}
+                <div class="rounded-lg border border-border bg-card p-4 text-sm">
+                    <p class="font-mono text-xs text-muted-foreground mb-1">{{ req.isoArticle }}</p>
+                    <p class="font-medium mb-2">{{ req.requirementText }}</p>
+                    <p class="text-muted-foreground m-0">Note : {% if ev and ev.score is not null %}{{ ev.score }}{% else %}—{% endif %}</p>
+                    {% if ev and ev.evidence %}<p class="mt-1 m-0"><span class="text-muted-foreground">Preuves :</span> {{ ev.evidence }}</p>{% endif %}
+                    {% if ev and ev.auditComment %}<p class="mt-1 m-0"><span class="text-muted-foreground">Commentaire :</span> {{ ev.auditComment }}</p>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted-foreground mt-6">Aucune exigence à afficher.</p>
+    {% endfor %}
+</div>
+{% endblock %}

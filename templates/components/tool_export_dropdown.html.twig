@@ -1,0 +1,23 @@
+{# Menu « Exporter » réutilisable (Stimulus dropdown-basic + styles globaux tool-export-menu).
+   Variables :
+     - button_id (string) : id unique du bouton déclencheur
+     - items (liste) : entrées { icon: 'fas fa-image', label: '…', onclick: 'fn()' } — onclick en JS court, guillemets doubles dans les chaînes si besoin
+     - use_menu_semantics (bool, défaut false) : role="menu" / role="menuitem" pour l’accessibilité (ex. 5 Pourquoi)
+     - export_aria_label (string, optionnel) : aria-label du bouton
+#}
+{% set use_menu_semantics = use_menu_semantics|default(false) %}
+{% set export_aria_label = export_aria_label|default("Options d'export") %}
+<div class="dropdown export-dropdown" data-controller="dropdown-basic">
+    <button class="inline-flex items-center justify-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="{{ button_id }}" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="{{ export_aria_label|e('html_attr') }}">
+        <i class="fas fa-download mr-2" aria-hidden="true"></i>Exporter
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end tool-export-menu" aria-labelledby="{{ button_id }}" data-dropdown-basic-target="menu" hidden{% if use_menu_semantics %} role="menu"{% endif %}>
+        {% for item in items %}
+            <li>
+                <button type="button" class="dropdown-item" onclick="{{ item.onclick }}"{% if use_menu_semantics %} role="menuitem"{% endif %}>
+                    <i class="{{ item.icon }} w-[1.125rem] shrink-0 text-center text-slate-500" aria-hidden="true"></i><span>{{ item.label }}</span>
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

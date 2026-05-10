@@ -47,19 +47,21 @@
         } %}
         <input type="hidden" id="qqoqccpAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <header class="qqoqccp-header" data-aos="fade-up">
-            <h1>Analyse QQOQCCP (5W2H)</h1>
+        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+            <h1 class="page-title">Analyse QQOQCCP (5W2H)</h1>
             <p class="lead">Checklist complète pour cadrer tout projet ou problème : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi — avec suggestions selon votre contexte.</p>
-            {% set meta = tool_meta('qqoqccp') %}
-            {% if meta %}
-            <div class="flex flex-wrap gap-2 mb-3" role="list">
-                <span class="inline-flex items-center rounded-full bg-secondary/20 text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold" role="listitem">Niveau : {{ meta.level }}</span>
-                {% for tag in meta.tags %}
-                <span class="inline-flex items-center rounded-md bg-muted text-muted-foreground px-2 py-0.5 text-xs" role="listitem">{{ tag }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </header>
+            {% include 'components/tool_meta_hints.html.twig' with {
+                tool_slug: 'qqoqccp',
+                hint_id_prefix: 'qqoqccp',
+                meta_intro: 'Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; le questionnaire suit.',
+                tag_hints: {
+                    'Reporting': 'Structurer les faits avant synthèse ou restitution hiérarchique.',
+                    'Audit': 'Préparer constats, questions et preuves attendues.',
+                    'Questionnement 5W2H': 'Couverture systématique des dimensions du sujet.',
+                    'ISO 9001': 'Appui pour maîtrise documentaire, revues et traitement des écarts.',
+                },
+            } %}
+        </div>
 
         {% if not app.user %}
         <div class="flex items-center justify-center gap-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 mb-4 text-center" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
@@ -69,133 +71,41 @@
         </div>
         {% endif %}
 
-        <section class="mb-6" aria-labelledby="qqoqccp-when-heading" data-aos="fade-up" data-aos-delay="70">
-            <h2 id="qqoqccp-when-heading" class="text-xl font-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
-            <ul class="mb-0">
-                <li><strong>Pour quel type de problème :</strong> audit, investigation, collecte d'informations, préparation de réunion ou de procédure</li>
-                <li>Niveau requis : <strong>Débutant</strong></li>
-            </ul>
-        </section>
-        <section class="mb-6 p-4 bg-muted rounded-lg" aria-labelledby="qqoqccp-example-heading" data-aos="fade-up" data-aos-delay="75">
-            <h2 id="qqoqccp-example-heading" class="text-sm font-bold mb-2">Exemple concret</h2>
-            <p class="mb-0">Retards de livraison : <strong>Qui</strong> — logistique, clients ; <strong>Quoi</strong> — retards répétés ; <strong>Où</strong> — entrepôt Nord ; <strong>Quand</strong> — depuis 2 mois ; <strong>Comment</strong> — process de picking ; <strong>Combien</strong> — 15 % des commandes ; <strong>Pourquoi</strong> — effectifs, formation. → Actions recommandées et checklist exportable.</p>
-        </section>
-        <p class="mb-3"><a href="#qqoqccp-examples-sector" class="small">Voir les exemples d'applications par secteurs</a></p>
-
-        <section class="qqoqccp-guide-card" data-aos="fade-up" data-aos-delay="80">
-            <h2 class="qqoqccp-guide-card__title">🧭 Guide rapide</h2>
-            <p class="qqoqccp-guide-card__intro">Répondez successivement aux 7 questions pour obtenir une vision à 360° de votre projet ou de votre problème.</p>
-            <div class="qqoqccp-guide-card__grid">
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">🙋 Qui ?</span>
-                    <p>Acteurs impliqués, responsables, parties prenantes.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">📋 Quoi ?</span>
-                    <p>Description précise du sujet, de l'événement ou du problème.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">📍 Où ?</span>
-                    <p>Localisation géographique, service ou processus concerné.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">⏰ Quand ?</span>
-                    <p>Période, fréquence, durée, échéances.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">🔧 Comment ?</span>
-                    <p>Processus, méthodes, moyens utilisés.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">💰 Combien ?</span>
-                    <p>Budget, quantités, volumes, ressources consommées.</p>
-                </div>
-                <div class="qqoqccp-guide-card__item">
-                    <span class="qqoqccp-guide-card__badge">🎯 Pourquoi ?</span>
-                    <p>Objectifs, causes identifiées, finalité recherchée.</p>
-                </div>
-            </div>
-        </section>
+        {% include 'components/tool_help/qqoqccp_accordion.html.twig' %}
 
         <section class="qqoqccp-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-4" data-aos="fade-up" data-aos-delay="120" role="toolbar" aria-label="Actions disponibles">
-            <button class="inline-flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="newQqoqccpAnalysis()" aria-label="Réinitialiser l'analyse QQOQCCP">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newQqoqccpAnalysis()" aria-label="Réinitialiser l'analyse QQOQCCP">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
-            <button class="inline-flex items-center gap-1 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="generateQqoqccpReport()" aria-label="Générer le rapport QQOQCCP">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateQqoqccpReport()" aria-label="Générer le rapport QQOQCCP">
                 <i class="fas fa-file-alt mr-2"></i>Générer le rapport
             </button>
-            <button class="inline-flex items-center gap-1 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" type="button" onclick="resetQqoqccpForm()" aria-label="Effacer le formulaire QQOQCCP">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="resetQqoqccpForm()" aria-label="Effacer le formulaire QQOQCCP">
                 <i class="fas fa-eraser mr-2"></i>Réinitialiser
             </button>
             {% if app.user %}
-            <button class="inline-flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="saveQqoqccp()" aria-label="Sauvegarder l'analyse QQOQCCP">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="saveQqoqccp()" aria-label="Sauvegarder l'analyse QQOQCCP">
                 <i class="fas fa-save mr-2"></i>Sauvegarder
             </button>
-            <button class="inline-flex items-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openQqoqccpSaved()" aria-label="Voir mes analyses QQOQCCP">
+            <button class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openQqoqccpSaved()" aria-label="Voir mes analyses QQOQCCP">
                 <i class="fas fa-folder-open mr-2"></i>Mes analyses
             </button>
-            <div class="relative export-dropdown" data-controller="dropdown-basic">
-                <button class="inline-flex items-center gap-1 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" id="qqoqccpExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                    <i class="fas fa-download mr-2"></i>Exporter <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                </button>
-                <ul class="absolute right-0 mt-1 py-1 bg-popover border border-border rounded-md shadow-md z-50 min-w-[160px]" aria-labelledby="qqoqccpExportDropdown" data-dropdown-basic-target="menu" hidden>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportQqoqccp('png')">Exporter en PNG</button></li>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportQqoqccp('pdf')">Exporter en PDF</button></li>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportQqoqccp('json')">Exporter en JSON</button></li>
-                </ul>
-            </div>
+            {% include 'components/tool_export_dropdown.html.twig' with {
+                button_id: 'qqoqccpExportDropdown',
+                items: [
+                    { icon: 'fas fa-image', label: 'Exporter en PNG', onclick: 'exportQqoqccp("png")' },
+                    { icon: 'fas fa-file-pdf', label: 'Exporter en PDF', onclick: 'exportQqoqccp("pdf")' },
+                    { icon: 'fas fa-file-code', label: 'Exporter en JSON', onclick: 'exportQqoqccp("json")' },
+                ],
+            } %}
             {% else %}
             {% include 'components/tool_actions_login.html.twig' %}
             {% endif %}
         </section>
 
-        <section id="qqoqccp-examples-sector" class="mb-6 p-4 bg-muted rounded-lg" aria-labelledby="qqoqccp-sector-heading" data-aos="fade-up" data-aos-delay="140">
-            <h2 id="qqoqccp-sector-heading" class="text-sm font-bold mb-2">Exemples d'applications par secteurs</h2>
-            <ul class="mb-0 small">
-                <li><strong>Industrie / Production :</strong> analyse de panne, non-conformité produit, retard de livraison fournisseur</li>
-                <li><strong>Services / Logistique :</strong> retards clients, erreurs de facturation, litiges</li>
-                <li><strong>Qualité / Audit :</strong> préparation d'audit, rapport d'écart, revue de processus</li>
-            </ul>
-        </section>
         <div class="mb-3">
             {% include 'components/coming_soon_download.html.twig' %}
         </div>
-
-        <section class="qqoqccp-intro-card" data-aos="fade-up" data-aos-delay="150">
-            <h2>Pourquoi utiliser la méthode QQOQCCP ?</h2>
-            <p>Le QQOQCCP, également connu sous le nom de 5W2H, est une méthode de questionnement systématique. Elle vous aide à clarifier une situation, identifier les parties prenantes, comprendre les impacts et préparer un plan d'action efficace.</p>
-        </section>
-
-        <section class="qqoqccp-method-grid" data-aos="fade-up" data-aos-delay="180">
-            <div class="qqoqccp-method-card">
-                <h3>🙋 Qui</h3>
-                <p>Acteurs impliqués, responsables, prestataires, clients, équipes concernées.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>📋 Quoi</h3>
-                <p>Nature du sujet ou du problème, caractéristiques, éléments impactés.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>📍 Où</h3>
-                <p>Localisation, service, zone géographique, poste de travail impacté.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>⏰ Quand</h3>
-                <p>Période, fréquence, durée de l'événement, échéances à respecter.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>🔧 Comment</h3>
-                <p>Processus, modes opératoires, moyens utilisés, déroulement.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>💰 Combien</h3>
-                <p>Volumes, quantités, coûts, ressources consommées ou nécessaires.</p>
-            </div>
-            <div class="qqoqccp-method-card">
-                <h3>🎯 Pourquoi</h3>
-                <p>Objectifs recherchés, causes identifiées, attentes des parties prenantes.</p>
-            </div>
-        </section>
 
         <section class="qqoqccp-form" data-aos="fade-up" data-aos-delay="200" id="qqoqccpForm">
             <div class="qqoqccp-question qqoqccp-question--subject">
@@ -329,6 +239,8 @@
                 </div>
             </div>
         </section>
+
+        {% include 'components/qse/capa_soft_cta.html.twig' with { tool: 'qqoqccp' } %}
 
         {% include 'components/tool_lead_cta.html.twig' %}
         {% include 'components/cta_ddwin.html.twig' %}

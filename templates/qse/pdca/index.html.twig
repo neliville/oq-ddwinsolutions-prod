@@ -1,0 +1,204 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Cockpit PDCA | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto space-y-6 px-4 py-6">
+    <header class="space-y-2">
+        <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Cockpit PDCA</h1>
+        <p class="text-muted-foreground text-sm sm:text-base m-0 max-w-3xl leading-relaxed">
+            Vue synthétique de votre activité qualité par phase du cycle Plan–Do–Check–Act. Les chiffres renvoient vers les modules concernés.
+        </p>
+    </header>
+
+    <twig:Alert variant="info" class="px-3 py-3 shadow-sm sm:px-4">
+        <twig:ux:icon name="lucide:info" class="size-4 shrink-0" aria-hidden="true" />
+        <twig:Alert:Title class="text-sm">Lecture rapide</twig:Alert:Title>
+        <twig:Alert:Description class="text-sm leading-relaxed">
+            Les compteurs reflètent vos données enregistrées sur la plateforme. Les libellés en couleur sont des liens vers l’outil ou la liste associée.
+        </twig:Alert:Description>
+    </twig:Alert>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 xl:items-stretch">
+        {# ── PLAN ───────────────────────────────────────────────────────────── #}
+        <twig:Card class="flex h-full flex-col border-border/80 border-l-[3px] border-l-primary shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-start gap-3 space-y-0 pb-2 pt-5 text-left sm:pt-6">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+                    <twig:ux:icon name="lucide:clipboard-list" class="size-5 shrink-0" />
+                </div>
+                <div class="min-w-0 space-y-0.5">
+                    <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary">Phase 1</p>
+                    <twig:Card:Title class="text-lg font-bold text-foreground">Plan</twig:Card:Title>
+                    <twig:Card:Description class="text-xs leading-snug sm:text-sm">Structurer l’analyse et la prévention.</twig:Card:Description>
+                </div>
+            </twig:Card:Header>
+            <twig:Card:Content class="flex flex-1 flex-col gap-2 px-5 pb-5 pt-0 sm:px-6">
+                <a href="{{ path('app_qqoqccp_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:messages-square" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">QQOQCCP</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ plan.qqoqccp }}</twig:Badge>
+                </a>
+                <a href="{{ path('app_amdec_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:table-2" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">AMDEC</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ plan.amdec }}</twig:Badge>
+                </a>
+                <div class="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:calendar-range" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        <span class="truncate">Programmes d’audit</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ plan.audit_plans }}</twig:Badge>
+                </div>
+                <a href="{{ path('app_qse_audit_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:layout-dashboard" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">Pilotage audits</span>
+                    </span>
+                    <twig:Badge variant="outline" class="shrink-0 text-xs font-medium">Ouvrir</twig:Badge>
+                </a>
+                <a href="{{ path('app_qse_risk_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:shield-alert" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">Risques</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ plan.risks }}</twig:Badge>
+                </a>
+            </twig:Card:Content>
+        </twig:Card>
+
+        {# ── DO ─────────────────────────────────────────────────────────────── #}
+        <twig:Card class="flex h-full flex-col border-border/80 border-l-[3px] border-l-primary shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-start gap-3 space-y-0 pb-2 pt-5 text-left sm:pt-6">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+                    <twig:ux:icon name="lucide:play-circle" class="size-5 shrink-0" />
+                </div>
+                <div class="min-w-0 space-y-0.5">
+                    <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary">Phase 2</p>
+                    <twig:Card:Title class="text-lg font-bold text-foreground">Do</twig:Card:Title>
+                    <twig:Card:Description class="text-xs leading-snug sm:text-sm">Mettre en œuvre les actions correctives.</twig:Card:Description>
+                </div>
+            </twig:Card:Header>
+            <twig:Card:Content class="flex flex-1 flex-col gap-2 px-5 pb-5 pt-0 sm:px-6">
+                <a href="{{ path('app_qse_capa_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:list-todo" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">CAPA ouvertes</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ do.capa_open }}</twig:Badge>
+                </a>
+                <div class="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:alarm-clock" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        <span class="truncate">CAPA en retard</span>
+                    </span>
+                    <twig:Badge variant="{{ cockpit.overdueOpenCapas > 0 ? 'destructive' : 'secondary' }}" class="shrink-0 tabular-nums">{{ cockpit.overdueOpenCapas }}</twig:Badge>
+                </div>
+                <div class="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5">
+                    <span class="flex min-w-0 flex-1 items-center gap-2.5 text-sm text-muted-foreground">
+                        <twig:ux:icon name="lucide:hourglass" class="size-4 shrink-0" aria-hidden="true" />
+                        <span class="leading-snug">En attente de vérification d’efficacité</span>
+                    </span>
+                    <twig:Badge variant="{{ cockpit.capasAwaitingVerification > 0 ? 'outline' : 'secondary' }}" class="shrink-0 tabular-nums {% if cockpit.capasAwaitingVerification > 0 %}border-amber-500/50 bg-amber-500/10 text-amber-950 dark:bg-amber-500/15 dark:text-amber-50{% endif %}">{{ cockpit.capasAwaitingVerification }}</twig:Badge>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
+
+        {# ── CHECK ───────────────────────────────────────────────────────────── #}
+        <twig:Card class="flex h-full flex-col border-border/80 border-l-[3px] border-l-primary shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-start gap-3 space-y-0 pb-2 pt-5 text-left sm:pt-6">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+                    <twig:ux:icon name="lucide:search-check" class="size-5 shrink-0" />
+                </div>
+                <div class="min-w-0 space-y-0.5">
+                    <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary">Phase 3</p>
+                    <twig:Card:Title class="text-lg font-bold text-foreground">Check</twig:Card:Title>
+                    <twig:Card:Description class="text-xs leading-snug sm:text-sm">Contrôler et mesurer les résultats.</twig:Card:Description>
+                </div>
+            </twig:Card:Header>
+            <twig:Card:Content class="flex flex-1 flex-col gap-2 px-5 pb-5 pt-0 sm:px-6">
+                <a href="{{ path('app_qse_audit_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:clipboard-list" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">Audits enregistrés</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ check.audits }}</twig:Badge>
+                </a>
+                {% if check.audits_by_standard is defined and check.audits_by_standard|length > 0 %}
+                <div class="rounded-lg border border-border/60 bg-muted/20 p-3">
+                    <p class="m-0 mb-2 text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">Répartition par norme</p>
+                    <div class="space-y-2.5">
+                        {% for row in check.audits_by_standard %}
+                        <div>
+                            <div class="mb-1 flex items-baseline justify-between gap-2 text-xs">
+                                <span class="min-w-0 truncate font-medium text-foreground" title="{{ row.label }} ({{ row.code }})">{{ row.label }}</span>
+                                <span class="shrink-0 tabular-nums text-muted-foreground"><span class="font-semibold text-foreground">{{ row.cnt }}</span>{% if check.audits > 0 %} · {{ (row.cnt * 100 / check.audits)|round }}%{% endif %}</span>
+                            </div>
+                            {% if check.audits > 0 %}
+                            <twig:Progress value="{{ (row.cnt * 100 / check.audits)|round(0, 'common') }}" class="h-1.5" />
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:calendar-clock" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        <span class="truncate">Plans d’audit en retard</span>
+                    </span>
+                    <twig:Badge variant="{{ cockpit.overdueAuditPlans > 0 ? 'destructive' : 'secondary' }}" class="shrink-0 tabular-nums">{{ cockpit.overdueAuditPlans }}</twig:Badge>
+                </div>
+                <a href="{{ path('app_pareto_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:chart-no-axes-column" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">Pareto</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ check.pareto }}</twig:Badge>
+                </a>
+            </twig:Card:Content>
+        </twig:Card>
+
+        {# ── ACT ─────────────────────────────────────────────────────────────── #}
+        <twig:Card class="flex h-full flex-col border-border/80 border-l-[3px] border-l-primary shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-start gap-3 space-y-0 pb-2 pt-5 text-left sm:pt-6">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden="true">
+                    <twig:ux:icon name="lucide:refresh-ccw" class="size-5 shrink-0" />
+                </div>
+                <div class="min-w-0 space-y-0.5">
+                    <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary">Phase 4</p>
+                    <twig:Card:Title class="text-lg font-bold text-foreground">Act</twig:Card:Title>
+                    <twig:Card:Description class="text-xs leading-snug sm:text-sm">Analyser les causes et agir durablement.</twig:Card:Description>
+                </div>
+            </twig:Card:Header>
+            <twig:Card:Content class="flex flex-1 flex-col gap-2 px-5 pb-5 pt-0 sm:px-6">
+                <a href="{{ path('app_ishikawa_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:git-branch" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">Ishikawa</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ act.ishikawa }}</twig:Badge>
+                </a>
+                <a href="{{ path('app_fivewhy_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:circle-help" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">5 Pourquoi</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ act.five_why }}</twig:Badge>
+                </a>
+                <a href="{{ path('app_eightd_index') }}" class="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/15 px-3 py-2.5 no-underline transition-colors hover:border-primary/30 hover:bg-primary/[0.06]">
+                    <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                        <twig:ux:icon name="lucide:package" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                        <span class="truncate">8D</span>
+                    </span>
+                    <twig:Badge variant="secondary" class="shrink-0 tabular-nums">{{ act.eight_d }}</twig:Badge>
+                </a>
+            </twig:Card:Content>
+        </twig:Card>
+    </div>
+</div>
+{% endblock %}

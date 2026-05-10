@@ -1,27 +1,17 @@
-<h1 style="font-family: 'Segoe UI', Roboto, sans-serif; color: #1f2937;">Réinitialisez votre mot de passe</h1>
+{% extends 'emails/base_transactional.html.twig' %}
 
-<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
-    Bonjour,
-</p>
+{% block email_html_title %}Réinitialisation du mot de passe{% endblock %}
 
-<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
-    Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte OUTILS-QUALITÉ. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe.
-</p>
+{% block email_body %}
+<p style="margin:0 0 20px 0;font-size:18px;font-weight:bold;color:#1a3a5c;">Bonjour,</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte <strong>{{ app_name|default('OUTILS-QUALITÉ') }}</strong>. Utilisez le bouton ci-dessous pour en définir un nouveau.</p>
+{% set _reset = url('app_reset_password', { token: resetToken.token }) %}
+{% include 'emails/_email_cta.html.twig' with { cta_href: _reset, cta_label: 'Réinitialiser mon mot de passe' } %}
+<p style="margin:16px 0 0 0;font-size:14px;line-height:1.65;color:#64748b;">Ce lien est valable {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}. Si vous n’êtes pas à l’origine de cette demande, ignorez cet email : votre mot de passe actuel reste inchangé.</p>
+{% endblock %}
 
-<p style="margin: 24px 0;">
-    <a href="{{ url('app_reset_password', { token: resetToken.token }) }}"
-       style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #ffffff; padding: 12px 28px; border-radius: 999px; font-family: 'Segoe UI', Roboto, sans-serif; font-weight: 600; text-decoration: none; display: inline-block;">
-        Réinitialiser mon mot de passe
-    </a>
-</p>
-
-<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #6b7280; font-size: 14px; line-height: 1.6;">
-    Ce lien est valide durant {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    Si vous n’êtes pas à l’origine de cette demande, ignorez simplement cet email : votre mot de passe actuel restera inchangé.
-</p>
-
-<p style="font-family: 'Segoe UI', Roboto, sans-serif; color: #475569; font-size: 15px; line-height: 1.6;">
-    À très vite,<br>
-    <strong>L’équipe OUTILS-QUALITÉ</strong><br>
-    <span style="color: #94a3b8;">{{ appEmail }}</span>
-</p>
+{% block email_signature %}
+<p style="margin:0 0 8px 0;font-size:14px;color:#374151;">À très vite,</p>
+<p style="margin:0 0 4px 0;font-size:15px;font-weight:bold;color:#1a3a5c;">L’équipe {{ app_name|default('OUTILS-QUALITÉ') }}</p>
+<p style="margin:0;font-size:13px;color:#64748b;"><a href="mailto:{{ app_email }}" style="color:#2563eb;text-decoration:underline;">{{ app_email }}</a></p>
+{% endblock %}

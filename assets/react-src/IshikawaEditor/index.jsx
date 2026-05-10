@@ -46,7 +46,7 @@ class IshikawaErrorBoundary extends Component {
   }
 }
 
-export default function IshikawaEditor({ recordId, apiBase, csrfToken }) {
+export default function IshikawaEditor({ recordId, apiBase, csrfToken, savedListEnabled }) {
   const initDefaultDiagram = useIshikawaStore((s) => s.initDefaultDiagram);
   const loadDiagram = useIshikawaStore((s) => s.loadDiagram);
   const setHostProps = useIshikawaStore((s) => s.setHostProps);
@@ -55,14 +55,17 @@ export default function IshikawaEditor({ recordId, apiBase, csrfToken }) {
     setHostProps({
       _apiBase: apiBase ?? '/api/ishikawa',
       _csrfToken: csrfToken ?? '',
+      showSavedList: Boolean(savedListEnabled),
     });
 
-    if (recordId) {
-      loadDiagram(recordId);
+    const rid =
+      recordId != null && String(recordId).trim() !== '' ? Number.parseInt(String(recordId), 10) : Number.NaN;
+    if (Number.isInteger(rid) && rid > 0) {
+      loadDiagram(rid);
     } else {
       initDefaultDiagram();
     }
-  }, [recordId, apiBase, csrfToken, initDefaultDiagram, loadDiagram, setHostProps]);
+  }, [recordId, apiBase, csrfToken, savedListEnabled, initDefaultDiagram, loadDiagram, setHostProps]);
 
   return (
     <IshikawaErrorBoundary>

@@ -60,6 +60,28 @@ class ApiIshikawaControllerTest extends WebTestCaseWithDatabase
         $this->assertArrayHasKey('data', $response);
     }
 
+    public function testApiIshikawaListAnonymousReturnsJson401(): void
+    {
+        $client = $this->client;
+        $client->request('GET', '/api/ishikawa/list');
+
+        $this->assertResponseStatusCodeSame(401);
+        $this->assertJson($client->getResponse()->getContent());
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertFalse($data['success'] ?? true);
+    }
+
+    public function testApiIshikawaGetAnonymousReturnsJson401(): void
+    {
+        $client = $this->client;
+        $client->request('GET', '/api/ishikawa/999999');
+
+        $this->assertResponseStatusCodeSame(401);
+        $this->assertJson($client->getResponse()->getContent());
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertFalse($data['success'] ?? true);
+    }
+
     public function testApiIshikawaGetWithAuthentication(): void
     {
         $user = $this->createTestUser();

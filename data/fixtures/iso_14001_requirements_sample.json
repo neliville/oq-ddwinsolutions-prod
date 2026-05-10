@@ -1,0 +1,21 @@
+[
+  {
+    "legacy_key": "iso14001_demo_4_1",
+    "chapter": "4. Contexte de l’organisation",
+    "sub_chapter": null,
+    "article": "4.1",
+    "requirement_text": "Exigence de démonstration ISO 14001 (jeu de test) — comprendre l’organisation et son contexte.",
+    "iso_comment": null,
+    "business_link": null,
+    "pdca_phase": "plan",
+    "display_order": 10
+  },
+  {
+    "legacy_key": "iso14001_demo_6_1",
+    "chapter": "6. Planification",
+    "article": "6.1.1",
+    "requirement_text": "Exigence de démonstration ISO 14001 — actions face aux risques et opportunités environnementaux.",
+    "pdca_phase": "plan",
+    "display_order": 20
+  }
+]

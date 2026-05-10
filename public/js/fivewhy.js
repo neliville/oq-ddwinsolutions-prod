@@ -191,11 +191,21 @@ function updateAddButtonVisibility() {
 
   if (addButton) {
     addButton.disabled = !canAddMore
-    addButton.classList.remove('btn-secondary', 'pulse-animation')
-    addButton.classList.add('btn-primary')
+    // Ne pas mélanger Bootstrap (.btn-primary sans .btn) avec les utilitaires Tailwind du gabarit :
+    // ça pouvait donner fond clair + texte clair (libellé invisible).
+    addButton.classList.remove('btn-primary', 'btn-secondary', 'pulse-animation')
     addButton.innerHTML = canAddMore
-      ? '<i class="fas fa-plus-circle me-2"></i> Ajouter un "Pourquoi"'
-      : `<i class="fas fa-ban me-2"></i> Limite atteinte (${MAX_WHY_STEPS} étapes max)`
+      ? '<i class="fas fa-plus mr-2" aria-hidden="true"></i>Générer le rapport'
+      : `<i class="fas fa-ban mr-2" aria-hidden="true"></i>Limite atteinte (${MAX_WHY_STEPS} étapes max)`
+    if (canAddMore) {
+      addButton.classList.remove('bg-muted', 'text-foreground', 'ring-1', 'ring-border')
+      addButton.classList.add('bg-sky-500', 'text-white', 'hover:opacity-90')
+    } else {
+      addButton.classList.remove('bg-sky-500', 'text-white')
+      addButton.classList.add('bg-muted', 'text-foreground', 'ring-1', 'ring-border')
+    }
+    addButton.classList.toggle('opacity-90', !canAddMore)
+    addButton.classList.toggle('cursor-not-allowed', !canAddMore)
   }
 
   const stepButtons = document.querySelectorAll('.why-add-btn')
@@ -512,9 +522,9 @@ function showConfirmationModalBootstrap(title, message, confirmText = 'Confirmer
 
     // Mettre à jour le message et les textes
     const messageElement = modalElement.querySelector('[data-confirmation-modal-target="message"]');
-    const titleElement = modalElement.querySelector('.modal-title');
+    const titleElement = modalElement.querySelector('[id$="-title"], h5.font-semibold');
     const confirmButton = modalElement.querySelector('button[data-action*="onConfirmed"]');
-    const cancelButton = modalElement.querySelector('button.btn-secondary');
+    const cancelButton = modalElement.querySelector('button[data-action*="onCancelled"]');
 
     if (messageElement) {
       messageElement.textContent = message;
@@ -529,7 +539,6 @@ function showConfirmationModalBootstrap(title, message, confirmText = 'Confirmer
     }
     if (confirmButton) {
       confirmButton.textContent = confirmText;
-      confirmButton.className = `btn ${confirmClass}`;
     }
     if (cancelButton) {
       cancelButton.textContent = cancelText;
@@ -546,20 +555,12 @@ function showConfirmationModalBootstrap(title, message, confirmText = 'Confirmer
     }
 
     // Ouvrir le modal
-    const modalController = window.Stimulus?.getControllerForElementAndIdentifier?.(modalElement, 'bootstrap-modal');
+    const modalController = window.Stimulus?.getControllerForElementAndIdentifier?.(modalElement, 'app-modal');
     if (modalController && typeof modalController.show === 'function') {
       modalController.show();
     } else {
-      // Fallback vers Bootstrap natif
-      const bootstrapLib = window.bootstrap;
-      if (bootstrapLib?.Modal) {
-        const modalInstance = new bootstrapLib.Modal(modalElement);
-        modalInstance.show();
-      } else {
-        // Dernier fallback vers confirm() natif
-        const result = window.confirm(message);
-        resolve(result);
-      }
+      const result = window.confirm(message);
+      resolve(result);
     }
   });
 }

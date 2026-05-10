@@ -1,0 +1,8 @@
+Bonjour{% if invitation.firstName %} {{ invitation.firstName }}{% endif %},
+
+{{ invitation.owner.email }} vous invite sur {{ app_name }} (rôle : {{ invitation.role.label() }}).
+
+Acceptez l’invitation : {{ accept_url }}
+
+— {{ app_name }}
+{{ app_url }}

@@ -180,16 +180,16 @@ body {
                                    rel="noopener noreferrer"
                                    class="inline-flex items-center gap-1 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline"
                                    aria-label="Partager sur LinkedIn">
-                                    <i data-lucide="linkedin" width="16" height="16" class="mr-1" aria-hidden="true"></i>
+                                    <i class="fa-brands fa-linkedin-in mr-1 text-[14px]" aria-hidden="true"></i>
                                     LinkedIn
                                 </a>
                                 <a href="https://twitter.com/intent/tweet?url={{ absolute_url(path('app_blog_article', {category: post.category.slug, slug: post.slug}))|url_encode }}&text={{ post.title|url_encode }}"
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    class="inline-flex items-center gap-1 border border-sky-500 text-sky-500 px-3 py-1.5 text-sm rounded-md hover:bg-sky-500/5 transition-colors no-underline"
-                                   aria-label="Partager sur Twitter">
-                                    <i data-lucide="twitter" width="16" height="16" class="mr-1" aria-hidden="true"></i>
-                                    Twitter
+                                   aria-label="Partager sur X (Twitter)">
+                                    <i class="fa-brands fa-x-twitter mr-1 text-[14px]" aria-hidden="true"></i>
+                                    X
                                 </a>
                                 <button class="inline-flex items-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" onclick="copyArticleLink()" aria-label="Copier le lien de l'article">
                                     <i data-lucide="link" width="16" height="16" class="mr-1" aria-hidden="true"></i>

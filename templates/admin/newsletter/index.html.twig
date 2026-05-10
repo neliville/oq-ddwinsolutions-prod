@@ -1,21 +1,9 @@
-{% extends 'base_with_sidebar.html.twig' %}
+{% extends 'layout/admin_base.html.twig' %}
 
 {% block title %}Gestion de la newsletter | Administration{% endblock %}
 
 {% block content %}
 <div class="w-full">
-    {% for message in app.flashes('success') %}
-        <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
-            <span class="flex-1 text-sm">{{ message }}</span>
-            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
-        </div>
-    {% endfor %}
-    {% for message in app.flashes('danger') %}
-        <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-            <span class="flex-1 text-sm">{{ message }}</span>
-            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
-        </div>
-    {% endfor %}
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>

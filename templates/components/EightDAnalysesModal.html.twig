@@ -9,7 +9,7 @@
     id: id ? id : 'eightDLoadModal',
     style: 'display: none;'
 }) }}
-    {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+    {{ stimulus_controller('app-modal', { autoShow: false }) }}
     data-turbo="false"
 >
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]" role="document">
@@ -18,11 +18,9 @@
                 <i data-lucide="folder-open" width="24" height="24" class="mr-2 shrink-0" aria-hidden="true"></i>
                 Mes analyses 8D
             </h5>
-            <button type="button"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+            <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer le dialogue" class="shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            </twig:Button>
         </div>
         <div class="px-6 py-4 overflow-y-auto flex-1">
             <ul class="flex flex-col gap-2" id="eightDAnalysesList">

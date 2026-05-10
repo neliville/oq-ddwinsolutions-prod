@@ -1,0 +1,21 @@
+{% if active_if is defined %}
+    {% set is_active = active_if %}
+{% else %}
+    {% set is_active = currentRoute starts with route_prefix %}
+{% endif %}
+<twig:HoverCard openDelay="160" closeDelay="120" class="block w-full max-w-full">
+    <a href="{{ href }}"
+       class="sidebar-subitem{{ is_active ? ' active' : '' }}"
+       {% if is_active %}aria-current="page"{% endif %}
+       data-slot="hover-card-trigger"
+       data-action="focus->hover-card#show blur->hover-card#hide"
+    >
+        {{ label }}
+    </a>
+    <twig:HoverCard:Content class="w-[min(15rem,calc(100vw-18rem))] max-w-[min(15rem,calc(100vw-18rem))] py-2 text-[11px]">
+        <span class="block font-semibold text-zinc-50">{{ hover_title }}</span>
+        {% if hover_text is defined and hover_text %}
+            <p class="mt-1 mb-0 font-normal leading-snug text-zinc-300">{{ hover_text }}</p>
+        {% endif %}
+    </twig:HoverCard:Content>
+</twig:HoverCard>

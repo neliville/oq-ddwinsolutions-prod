@@ -1,0 +1,39 @@
+{% set fw_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">Définissez d’abord le <strong class="font-semibold text-foreground">problème</strong> en une phrase claire, puis enchaînez les « Pourquoi » sans sauter d’étapes.</p>
+    <p class="mb-0">Vous pouvez ajouter jusqu’à <strong class="font-semibold text-foreground">7 étapes</strong> ; l’export et la sauvegarde sont disponibles une fois la chaîne cohérente.</p>
+</div>
+{% endset %}
+{% set fw_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li><strong class="font-semibold text-foreground">Pour quel type de problème :</strong> incident, non-conformité, panne, dérive processus</li>
+    <li>Idéal pour aller au-delà de la cause immédiate et éviter les récidives</li>
+    <li>Niveau requis : <strong class="font-semibold text-foreground">Débutant</strong></li>
+</ul>
+{% endset %}
+{% set fw_s3 %}
+<div class="rounded-lg border border-border bg-muted/50 p-3 text-sm leading-relaxed text-slate-700 dark:bg-muted/30 dark:text-slate-200">
+    <p class="mb-0">Résolution d'une non-conformité client en 5 étapes : Problème → Pourquoi #1 (retard livraison) → #2 (commande non préparée) → #3 (stock non mis à jour) → #4 (procédure non suivie) → #5 (formation insuffisante). Cause racine : plan de formation à revoir.</p>
+</div>
+{% endset %}
+{% set fw_s4 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0"><strong class="font-semibold text-foreground">Guide rapide :</strong> Définissez le problème, posez le 1<sup>er</sup> « Pourquoi », complétez les réponses jusqu’à la cause racine actionnable.</p>
+    <p class="mb-0 font-semibold text-foreground">Pièges à éviter</p>
+    <ul class="mb-0 list-disc pl-5 marker:text-primary">
+        <li>S'arrêter trop tôt (avant d'atteindre une cause actionnable)</li>
+        <li>Formuler des causes trop vagues ou des jugements</li>
+        <li>Mélanger plusieurs causes dans un même « Pourquoi »</li>
+        <li>Négliger de valider la cause racine avec des données ou le terrain</li>
+    </ul>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'fivewhy',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: fw_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: fw_s2|trim },
+        { title: "Exemple d'application", html: fw_s3|trim },
+        { title: 'Mini-guide', html: fw_s4|trim },
+    ],
+} only %}

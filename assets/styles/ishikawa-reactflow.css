@@ -622,3 +622,115 @@ svg.react-flow__connectionline {
 .react-flow__edge-text {
   fill: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
 }
+
+/* --- Ishikawa v2 : suppression discrète (visible au survol / focus dans le nœud) --- */
+.ishikawa-node--category .ishikawa-node-del--category {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.ishikawa-node--category:hover .ishikawa-node-del--category,
+.ishikawa-node--category:focus-within .ishikawa-node-del--category,
+.ishikawa-node--category .ishikawa-node-del--category:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ishikawa-node--category .ishikawa-node-del--category:hover {
+  background: rgba(254, 202, 202, 0.95) !important;
+  border-color: #f56565 !important;
+  color: #9b2c2c !important;
+}
+
+.ishikawa-node--cause .ishikawa-node-del--cause {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.ishikawa-node--cause:hover .ishikawa-node-del--cause,
+.ishikawa-node--cause:focus-within .ishikawa-node-del--cause,
+.ishikawa-node--cause .ishikawa-node-del--cause:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ishikawa-node--cause .ishikawa-node-del--cause:hover {
+  background: #fff5f5 !important;
+  border-color: #feb2b2 !important;
+  color: #c53030 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ishikawa-node--category .ishikawa-node-del--category,
+  .ishikawa-node--cause .ishikawa-node-del--cause {
+    transition: none;
+  }
+}
+
+/* --- Ishikawa v2 : zoom + minimap regroupés, contrastés (évite chevauchement des panels RF) --- */
+.ishikawa-flow-rail {
+  pointer-events: auto;
+}
+
+.ishikawa-flow-rail .react-flow__controls {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.22);
+  border: 1px solid #64748b;
+  background: #ffffff !important;
+  overflow: hidden;
+}
+
+.ishikawa-flow-rail .react-flow__controls-button {
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.ishikawa-flow-rail .react-flow__controls-button:hover {
+  background: #e2e8f0 !important;
+}
+
+.ishikawa-flow-rail .react-flow__controls-button:disabled svg {
+  fill-opacity: 0.35;
+}
+
+.ishikawa-flow-minimap-chrome {
+  padding: 6px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #64748b;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.22);
+  line-height: 0;
+}
+
+.ishikawa-flow-minimap-chrome .react-flow__minimap {
+  border-radius: 8px;
+  background-color: #e2e8f0 !important;
+}
+
+.ishikawa-flow-minimap-chrome .react-flow__minimap-mask {
+  fill: rgba(15, 23, 42, 0.22) !important;
+}
+
+.ishikawa-flow-minimap-chrome .react-flow__minimap-node {
+  fill: #475569 !important;
+  stroke: #334155 !important;
+  stroke-width: 1px !important;
+}
+
+/* Menu Exporter (Ishikawa v2) : lignes pleine largeur, séparateurs, focus visible */
+.ishikawa-export-dropdown button[role='menuitem'] + button[role='menuitem'] {
+  border-top: 1px solid #e2e8f0;
+}
+
+.ishikawa-export-dropdown button[role='menuitem']:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.ishikawa-export-trigger:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}

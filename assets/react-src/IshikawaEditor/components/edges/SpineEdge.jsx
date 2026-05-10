@@ -1,6 +1,7 @@
-import { BaseEdge, getBezierPath } from '@xyflow/react';
+import { BaseEdge } from '@xyflow/react';
 
-export default function SpineEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style }) {
-  const [edgePath] = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
-  return <BaseEdge id={id} path={edgePath} style={{ ...style, strokeWidth: 3, stroke: '#64748b' }} />;
+/** Arête principale horizontale (queue → tête). */
+export default function SpineEdge({ id, sourceX, sourceY, targetX, targetY, style }) {
+  const path = `M ${sourceX} ${sourceY} L ${targetX} ${targetY}`;
+  return <BaseEdge id={id} path={path} style={{ ...style, strokeWidth: 4, stroke: '#475569' }} />;
 }

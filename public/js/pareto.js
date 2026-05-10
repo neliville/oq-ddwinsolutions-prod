@@ -630,34 +630,34 @@
         }
     };
 
-    const getBootstrapLib = async () => {
-        if (window.bootstrap?.Modal) {
-            return window.bootstrap;
-        }
-        if (typeof window.bootstrapReady === 'function') {
-            return await window.bootstrapReady();
-        }
-        return window.bootstrap || null;
-    };
-
     const _openParetoModal = async (modalElement) => {
-        let ctrl = null;
-        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        const deadline = Date.now() + 3000;
+        while (Date.now() < deadline) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.show === 'function') {
+                ctrl.show();
+                return;
+            }
+            await new Promise((r) => setTimeout(r, 50));
         }
-        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
-        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
-        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
     };
 
     const _closeParetoModal = async (modalElement) => {
-        let ctrl = null;
-        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        const deadline = Date.now() + 3000;
+        while (Date.now() < deadline) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.hide === 'function') {
+                ctrl.hide();
+                return;
+            }
+            await new Promise((r) => setTimeout(r, 50));
         }
-        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
-        const bsLib = window.bootstrap;
-        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
     };
 
     const deleteParetoAnalysis = async (id, event) => {

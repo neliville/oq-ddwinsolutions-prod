@@ -418,13 +418,11 @@
                 const message = options.message || fallbackMessage;
                 const confirmText = options.confirmText || 'Confirmer';
                 const cancelText = options.cancelText || 'Annuler';
-                const confirmClass = options.type === 'danger' ? 'btn-danger' : options.type === 'warning' ? 'btn-warning' : 'btn-primary';
-
                 // Mettre à jour le modal
                 const messageElement = modalElement.querySelector('[data-confirmation-modal-target="message"]');
-                const titleElement = modalElement.querySelector('.modal-title');
+                const titleElement = modalElement.querySelector('[id$="-title"], h5.font-semibold');
                 const confirmButton = modalElement.querySelector('button[data-action*="onConfirmed"]');
-                const cancelButton = modalElement.querySelector('button.btn-secondary');
+                const cancelButton = modalElement.querySelector('button[data-action*="onCancelled"]');
 
                 if (messageElement) messageElement.textContent = message;
                 if (titleElement) {
@@ -435,7 +433,6 @@
                 }
                 if (confirmButton) {
                     confirmButton.textContent = confirmText;
-                    confirmButton.className = `btn ${confirmClass}`;
                 }
                 if (cancelButton) {
                     cancelButton.textContent = cancelText;
@@ -456,7 +453,7 @@
                         if (closeButton) {
                             closeButton.removeEventListener('click', onCancelClick);
                         }
-                        modalElement.removeEventListener('hidden.bs.modal', onHiddenModal);
+                        modalElement.removeEventListener('app-modal:hidden', onHiddenModal);
                         delete modalElement.dataset.confirmPromiseResolve;
                         delete window[resolveId];
                     };
@@ -471,19 +468,11 @@
                     };
 
                     const hideModal = () => {
-                        const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                        const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal');
                         if (modalController && typeof modalController.hide === 'function') {
                             modalController.hide();
                             return;
                         }
-
-                        const bootstrapLib = window.bootstrap;
-                        if (bootstrapLib?.Modal) {
-                            const modalInstance = bootstrapLib.Modal.getInstance(modalElement) || new bootstrapLib.Modal(modalElement);
-                            modalInstance.hide();
-                            return;
-                        }
-
                         modalElement.style.display = 'none';
                     };
 
@@ -503,7 +492,7 @@
                         settle(false);
                     };
 
-                    const closeButton = modalElement.querySelector('.btn-close');
+                    const closeButton = modalElement.querySelector('button[aria-label="Fermer le dialogue"]');
 
                     // Résolution principale via le contrôleur de modal, et fallback JS si non connecté.
                     window[resolveId] = settle;
@@ -518,7 +507,7 @@
                     if (closeButton) {
                         closeButton.addEventListener('click', onCancelClick);
                     }
-                    modalElement.addEventListener('hidden.bs.modal', onHiddenModal);
+                    modalElement.addEventListener('app-modal:hidden', onHiddenModal);
 
                     // Réinitialiser les icônes Lucide
                     if (typeof lucide !== 'undefined') {
@@ -526,17 +515,11 @@
                     }
 
                     // Ouvrir le modal
-                    const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal');
+                    const modalController = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal');
                     if (modalController && typeof modalController.show === 'function') {
                         modalController.show();
                     } else {
-                        const bootstrapLib = window.bootstrap;
-                        if (bootstrapLib?.Modal) {
-                            const modalInstance = new bootstrapLib.Modal(modalElement);
-                            modalInstance.show();
-                        } else {
-                            settle(window.confirm(message));
-                        }
+                        settle(window.confirm(message));
                     }
                 });
             } catch (error) {
@@ -1487,10 +1470,10 @@
             causeItem.innerHTML = `
                 <span class="cause-text">${causeText}</span>
                 <div class="cause-actions">
-                    <button class="btn btn-primary btn-icon btn-sm" onclick="window.ishikawaApp.editCause(${index})" aria-label="Éditer la cause">
+                    <button type="button" class="ishikawa-cause-row-btn ishikawa-cause-row-btn--edit" onclick="window.ishikawaApp.editCause(${index})" aria-label="Éditer la cause">
                         <i class="fas fa-pen" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-danger btn-icon btn-sm" onclick="window.ishikawaApp.deleteCause(${index})" aria-label="Supprimer la cause">
+                    <button type="button" class="ishikawa-cause-row-btn ishikawa-cause-row-btn--delete" onclick="window.ishikawaApp.deleteCause(${index})" aria-label="Supprimer la cause">
                         <i class="fas fa-trash" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -1505,7 +1488,7 @@
         const input = document.getElementById('causeDescriptionInput');
         const modal = document.getElementById('causeModal');
         
-        if (title) title.textContent = '➕ Ajouter une cause';
+        if (title) title.textContent = 'Ajouter une cause';
         if (input) input.value = '';
         if (modal) {
             modal.style.display = 'block';
@@ -1535,7 +1518,7 @@
         const input = document.getElementById('causeDescriptionInput');
         const modal = document.getElementById('causeModal');
         
-        if (title) title.textContent = '✏️ Éditer la cause';
+        if (title) title.textContent = 'Éditer la cause';
         if (input) input.value = causeText;
         if (modal) {
             modal.style.display = 'block';

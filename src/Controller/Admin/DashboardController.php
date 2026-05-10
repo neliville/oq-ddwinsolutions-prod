@@ -2,12 +2,19 @@
 
 namespace App\Controller\Admin;
 
+use App\Application\Analytics\TrackingEventType;
 use App\Repository\AdminLogRepository;
 use App\Repository\BlogPostRepository;
 use App\Repository\ContactMessageRepository;
+use App\Repository\AnalyticsRepository;
 use App\Repository\LeadRepository;
 use App\Repository\NewsletterSubscriberRepository;
 use App\Repository\PageViewRepository;
+use App\Repository\Qse\AuditRepository;
+use App\Repository\Qse\CAPAActionRepository;
+use App\Repository\Qse\RiskMatrixEntryRepository;
+use App\Repository\TrackingEventRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,6 +31,12 @@ final class DashboardController extends AbstractController
         private readonly BlogPostRepository $blogPostRepository,
         private readonly AdminLogRepository $adminLogRepository,
         private readonly LeadRepository $leadRepository,
+        private readonly TrackingEventRepository $trackingEventRepository,
+        private readonly UserRepository $userRepository,
+        private readonly CAPAActionRepository $capaActionRepository,
+        private readonly AuditRepository $auditRepository,
+        private readonly RiskMatrixEntryRepository $riskMatrixEntryRepository,
+        private readonly AnalyticsRepository $analyticsRepository,
     ) {
     }
 
@@ -35,6 +48,23 @@ final class DashboardController extends AbstractController
         $yesterdayStart = $todayStart->modify('-1 day');
         $lastWeekStart = $todayStart->modify('-7 days');
         $lastMonthStart = $todayStart->modify('-30 days');
+        $last7DaysStart = $todayStart->modify('-7 days');
+
+        $trackingUsers7d = $this->trackingEventRepository->countDistinctUsersBetween($last7DaysStart, $now);
+        $registrations7d = $this->userRepository->countCreatedBetween($last7DaysStart, $now);
+        $loginReturns7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::LOGIN_RETURN, $last7DaysStart, $now);
+        $dashboardOpens7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::DASHBOARD_OPENED, $last7DaysStart, $now);
+        $exports7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::EXPORT_TRIGGERED, $last7DaysStart, $now);
+        $capaEvents7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::CAPA_CREATED, $last7DaysStart, $now);
+        $auditEvents7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::AUDIT_CREATED, $last7DaysStart, $now);
+        $riskEvents7d = $this->trackingEventRepository->countByTypeBetween(TrackingEventType::RISK_CREATED, $last7DaysStart, $now);
+        $capaEntities7d = $this->capaActionRepository->countCreatedBetween($last7DaysStart, $now);
+        $auditEntities7d = $this->auditRepository->countCreatedBetween($last7DaysStart, $now);
+        $riskEntities7d = $this->riskMatrixEntryRepository->countCreatedBetween($last7DaysStart, $now);
+        $trackingByType7d = $this->trackingEventRepository->countGroupedByTypeBetween($last7DaysStart, $now);
+        $topToolsOpened7d = $this->trackingEventRepository->countTopToolsOpenedBetween($last7DaysStart, $now, 8);
+        $globalToolCreations = $this->analyticsRepository->getGlobalCreationCountsByTool();
+        $recentTrackingEvents = $this->trackingEventRepository->findRecent(15);
 
         // Statistiques des messages de contact
         $unreadMessagesCount = $this->contactMessageRepository->countUnread();
@@ -85,6 +115,21 @@ final class DashboardController extends AbstractController
             'leadsToday' => $leadsToday,
             'leadsLastWeek' => $leadsLastWeek,
             'recentLeads' => $recentLeads,
+            'trackingUsers7d' => $trackingUsers7d,
+            'registrations7d' => $registrations7d,
+            'loginReturns7d' => $loginReturns7d,
+            'dashboardOpens7d' => $dashboardOpens7d,
+            'exports7d' => $exports7d,
+            'capaEvents7d' => $capaEvents7d,
+            'auditEvents7d' => $auditEvents7d,
+            'riskEvents7d' => $riskEvents7d,
+            'capaEntities7d' => $capaEntities7d,
+            'auditEntities7d' => $auditEntities7d,
+            'riskEntities7d' => $riskEntities7d,
+            'trackingByType7d' => $trackingByType7d,
+            'topToolsOpened7d' => $topToolsOpened7d,
+            'globalToolCreations' => $globalToolCreations,
+            'recentTrackingEvents' => $recentTrackingEvents,
         ]);
     }
 }

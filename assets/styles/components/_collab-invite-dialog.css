@@ -1,0 +1,49 @@
+/**
+ * Modal « Inviter un collaborateur » : libellés longs, pied de page lisible.
+ * Le composant Button impose whitespace-nowrap — on le neutralise ici.
+ */
+.collab-invite-root footer.collab-invite-footer[data-slot="dialog-footer"] {
+  /* Évite le conflit flex-col / flex-col-reverse du footer générique */
+  flex-direction: column-reverse;
+}
+
+@media (min-width: 640px) {
+  .collab-invite-root footer.collab-invite-footer[data-slot="dialog-footer"] {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: flex-end;
+    column-gap: 0.75rem;
+    row-gap: 0.75rem;
+  }
+}
+
+.collab-invite-root [data-slot="dialog-footer"] .collab-invite-send,
+.collab-invite-root [data-slot="dialog-footer"] .collab-invite-copy,
+.collab-invite-root [data-slot="dialog-footer"] .collab-invite-dismiss {
+  white-space: normal;
+  text-align: center;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.collab-invite-root [data-slot="dialog-footer"] .collab-invite-dismiss {
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .collab-invite-root [data-slot="dialog-footer"] .collab-invite-dismiss {
+    text-align: left;
+  }
+}
+
+.collab-invite-root [data-slot="dialog-footer"] .collab-invite-send {
+  font-weight: 600;
+}
+
+/* Champs : zone de clic un peu plus haute */
+.collab-invite-root .collab-invite-firstname,
+.collab-invite-root .collab-invite-email,
+.collab-invite-root .collab-invite-role {
+  min-height: 2.75rem;
+}

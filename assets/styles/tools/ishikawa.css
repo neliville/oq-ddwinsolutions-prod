@@ -28,6 +28,20 @@
     max-width: 1280px;
 }
 
+/* En-tête allégé : le diagramme est remonté au-dessus du panneau d'aide accordéon */
+.ishikawa-page-header--compact {
+    margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+    padding-inline: clamp(var(--space-4), 3vw, var(--space-6));
+}
+
+/* Encart aide + accordéon : marges partagées — voir _tool_buttons.css (.tool-context-panel) */
+
+/* Encart CAPA sous le diagramme (remplace l’ancien bloc tout en bas de page) */
+.ishikawa-capa-toolbar {
+    margin-top: clamp(1rem, 3vw, 1.75rem);
+    margin-bottom: clamp(0.5rem, 2vw, 1rem);
+}
+
 .page-title {
     font-size: 2.25rem;
     font-weight: 700;
@@ -120,20 +134,6 @@
     padding: var(--space-6);
 }
 
-.controls-top {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    align-items: flex-start;
-}
-
-@media (min-width: 768px) {
-    .controls-top {
-        flex-direction: row;
-        align-items: center;
-    }
-}
-
 .controls-primary-btn {
     flex: 0 0 auto;
     min-height: 44px;
@@ -147,34 +147,6 @@
 
 .controls-primary-btn i {
     font-size: 0.95rem;
-}
-
-.controls-top .btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    border-radius: var(--radius-xl);
-    padding: var(--space-2) var(--space-4);
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
-}
-
-.interactions-card {
-    flex: 1 1 320px;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-xl);
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-}
-
-.interactions-card > .interactions-toggle {
-    align-self: flex-start;
 }
 
 .control-section {
@@ -200,7 +172,12 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-muted);
+    /* Contraste renforcé (WCAG) par rapport à --text-muted seul */
+    color: hsl(215 22% 38%);
+}
+
+.dark .ishikawa-page .control-section-title {
+    color: hsl(210 18% 82%);
 }
 
 .categories-add-btn {
@@ -217,56 +194,11 @@
     font-size: 0.9rem;
 }
 
+/* Pas de hauteur max : la grille de cartes doit s’afficher sans scroll interne */
 .categories-card .categories-wrapper {
-    max-height: 320px;
-    overflow-y: auto;
-    padding-right: var(--space-2);
-}
-
-.categories-card .categories-wrapper::-webkit-scrollbar {
-    width: 6px;
-}
-
-.categories-card .categories-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.4);
-    border-radius: 999px;
-}
-
-.interactions-reveal {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.interactions-toggle {
-    background: var(--bg-primary);
-    border-radius: 999px;
-    border: 1px solid rgba(79, 70, 229, 0.16);
-    padding: var(--space-2) var(--space-4);
-    font-weight: 600;
-    color: var(--primary);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-sm);
-}
-
-.interactions-toggle:hover,
-.interactions-toggle:focus {
-    border-color: var(--primary);
-    color: var(--primary);
-    box-shadow: var(--shadow-md);
-}
-
-.interactions-toggle:focus-visible {
-    outline: 3px solid rgba(79, 70, 229, 0.25);
-    outline-offset: 2px;
-}
-
-.is-hidden {
-    display: none !important;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
 }
 
 .section {
@@ -329,8 +261,8 @@
     flex-direction: column;
     gap: 16px;
     flex: 1;
-    overflow-y: auto;
-    padding-right: 4px;
+    overflow: visible;
+    padding-right: 0;
 }
 
 .ishikawa-page .btn-success.btn-block {
@@ -550,9 +482,18 @@
 }
 
 .ishikawa-page .ishikawa-category-actions .btn-primary {
-    background: var(--primary);
+    /* --primary peut être un triplet HSL (app.css) : hsl() requis ; fallback hex si hsl invalide */
+    background: #4f46e5;
+    background: hsl(var(--primary));
     color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
     box-shadow: var(--shadow-sm);
+}
+
+.ishikawa-page .ishikawa-category-actions .btn-primary i,
+.ishikawa-page .ishikawa-category-actions .btn-primary svg {
+    color: #fff;
+    opacity: 1;
 }
 
 .ishikawa-page .ishikawa-category-actions .btn-danger {
@@ -579,42 +520,6 @@
     padding: var(--space-5) var(--space-6);
     font-size: 0.95rem;
     line-height: 1.6;
-}
-
-.interactions-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 18px;
-}
-
-.interactions-column {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.interactions-column h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.interactions-column ul {
-    margin: 0;
-    padding-left: 18px;
-    display: grid;
-    gap: 6px;
-}
-
-.interactions-column.highlight {
-    background: transparent;
-    border-radius: 12px;
-    padding: 12px 14px;
-    border: none;
-    box-shadow: none;
 }
 
 .ishikawa-page .alert-icon {
@@ -940,6 +845,132 @@
     padding: 28px;
     overflow-y: auto;
     flex: 1;
+}
+
+/* Actions par ligne de cause (modal catégorie — voir _tool_buttons.css pour .tool-dialog). */
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    padding: 0;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn i {
+    font-size: 0.8125rem;
+    pointer-events: none;
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn--edit {
+    background: #4f46e5;
+    background: hsl(var(--primary));
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn--edit:hover {
+    filter: brightness(0.96);
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn--delete {
+    background: #fff;
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #b91c1c;
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn--delete:hover {
+    background: rgba(254, 226, 226, 0.7);
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn:focus-visible {
+    outline: 2px solid rgba(79, 70, 229, 0.45);
+    outline-offset: 2px;
+}
+
+.modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn--delete:focus-visible {
+    outline-color: rgba(220, 38, 38, 0.45);
+}
+
+/*
+ * Modale « Éditer la catégorie » (#categoryModal) :
+ * - .modal-content a overflow:hidden : le translateX des lignes rognait les boutons à droite (souvent invisibles sauf survol).
+ * - Renfort des couleurs pour rester lisibles face à Preflight / héritages.
+ */
+#categoryModal .modal-body {
+    overflow-x: visible;
+    overflow-y: auto;
+}
+
+#categoryModal .modal-body .cause-item,
+#categoryModal .modal-body .cause-item:hover,
+#categoryModal .modal-body .cause-item.selected {
+    transform: none;
+}
+
+#categoryModal .modal-body .cause-item:hover {
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+#categoryModal .modal-body .cause-actions {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#categoryModal .modal-body .ishikawa-cause-row-btn--edit {
+    background-color: hsl(var(--primary)) !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12) !important;
+}
+
+#categoryModal .modal-body .ishikawa-cause-row-btn--edit i {
+    color: #fff !important;
+    opacity: 1 !important;
+}
+
+#categoryModal .modal-body .ishikawa-cause-row-btn--edit:hover {
+    opacity: 1 !important;
+    filter: brightness(0.95);
+    background-color: hsl(var(--primary)) !important;
+}
+
+#categoryModal .modal-body .ishikawa-cause-row-btn--delete {
+    opacity: 1 !important;
+    background-color: #fff !important;
+    color: #b91c1c !important;
+    border: 1px solid rgba(239, 68, 68, 0.45) !important;
+}
+
+#categoryModal .modal-body .ishikawa-cause-row-btn--delete i {
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+/* Lignes causes : rendu proche d’un item de liste Shadcn (bordure, fond discret) */
+#categoryModal .modal-body .ishikawa-modal-causes .cause-item {
+    background: hsl(var(--muted) / 0.55);
+    border: 1px solid hsl(var(--border));
+    border-left-width: 3px;
+    border-left-color: hsl(var(--primary));
+    border-radius: calc(var(--radius) + 2px);
+}
+
+#categoryModal .modal-body .ishikawa-modal-causes .cause-item.selected {
+    background: hsl(var(--accent));
+    outline: 1px solid hsl(var(--ring) / 0.35);
+    outline-offset: 0;
 }
 
 .form-group {
@@ -1508,6 +1539,16 @@
         width: 12px;
         height: 12px;
     }
+
+    .modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn {
+        width: 2rem;
+        height: 2rem;
+        min-width: 2rem;
+    }
+
+    .modal-content.tool-dialog .modal-body .ishikawa-cause-row-btn i {
+        font-size: 0.75rem;
+    }
 }
 
 /* Tooltips */
@@ -1588,5 +1629,34 @@
 .canvas-actions .dropdown-menu .dropdown-item.text-danger:focus {
     background: rgba(220, 38, 38, 0.1);
     color: var(--danger-color);
+}
+
+/* Modale « Partager » : zone d’actions pleine largeur, pas de débordement (dialog en grid). */
+.ishikawa-share-dialog-root .ishikawa-share-actions {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Modale « Partager » : mêmes hauteurs / padding pour Copier, Web Share API et lien mail.
+   _mobile.css (≤768px) impose min 44px + gros padding sur tous les a, button — on réharmonise ici. */
+.ishikawa-share-dialog-root .ishikawa-share-actions > [data-slot="button"] {
+    min-height: 2.5rem;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+}
+
+@media (max-width: 768px) {
+    .ishikawa-share-dialog-root .ishikawa-share-actions > :is(a, button)[data-slot="button"] {
+        min-height: 2.5rem !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        padding: 0.5rem 0.875rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+    }
 }
 

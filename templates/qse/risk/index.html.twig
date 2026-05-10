@@ -1,0 +1,56 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Matrice des risques | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-5xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <h1 class="text-2xl font-bold m-0">Risques</h1>
+        <twig:Button as="a" href="{{ path('app_qse_risk_new') }}" variant="default" class="no-underline w-full sm:w-auto shrink-0">Nouveau risque</twig:Button>
+    </div>
+    {% if risks is empty %}
+        <twig:Empty>
+            <twig:Empty:Header>
+                <twig:Empty:Title>Aucune entrée</twig:Empty:Title>
+                <twig:Empty:Description>Enregistrez un risque pour alimenter votre matrice et le pilotage PDCA.</twig:Empty:Description>
+            </twig:Empty:Header>
+            <twig:Empty:Content>
+                <twig:Button as="a" href="{{ path('app_qse_risk_new') }}" variant="default" class="no-underline">Créer un risque</twig:Button>
+            </twig:Empty:Content>
+        </twig:Empty>
+    {% else %}
+        <twig:Card class="border-border/80 shadow-sm overflow-hidden">
+            <twig:Card:Content class="p-0 sm:p-0">
+                <twig:Table>
+                    <twig:Table:Header>
+                        <twig:Table:Row>
+                            <twig:Table:Head>Risque identifié</twig:Table:Head>
+                            <twig:Table:Head>Score</twig:Table:Head>
+                            <twig:Table:Head>Statut</twig:Table:Head>
+                            <twig:Table:Head class="text-end w-[1%] whitespace-nowrap">Voir</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
+                        {% for r in risks %}
+                            <twig:Table:Row>
+                                <twig:Table:Cell class="font-medium max-w-[min(28rem,55vw)]">
+                                    <a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link">{{ r.identifiedRisk }}</a>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <twig:Badge variant="outline">{{ r.criticalityScore|default('—') }}</twig:Badge>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <twig:Badge variant="secondary">{{ r.status.value|qse_status_label('risk') }}</twig:Badge>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-end">
+                                    <twig:Button as="a" href="{{ path('app_qse_risk_show', { id: r.id }) }}" variant="outline" size="sm" class="no-underline">Ouvrir</twig:Button>
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            </twig:Card:Content>
+        </twig:Card>
+    {% endif %}
+</div>
+{% endblock %}

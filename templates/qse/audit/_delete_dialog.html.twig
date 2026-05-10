@@ -1,0 +1,36 @@
+{# Dialogue natif + Stimulus qse-audit-delete (voir assets/controllers/qse_audit_delete_controller.js) #}
+<dialog
+    data-qse-audit-delete-target="dialog"
+    class="w-[min(28rem,calc(100%-2rem))] max-h-[min(90vh,32rem)] overflow-y-auto rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl backdrop:bg-black/50 open:backdrop:backdrop-blur-sm"
+    aria-labelledby="qse-audit-delete-title"
+    aria-describedby="qse-audit-delete-desc"
+>
+    <form method="post" data-turbo="false" data-qse-audit-delete-target="form" class="flex flex-col">
+        <input type="hidden" name="_token" value="" data-qse-audit-delete-target="token">
+        <div class="border-b border-border px-5 py-4">
+            <h2 id="qse-audit-delete-title" class="text-lg font-semibold m-0 flex items-start gap-2" data-qse-audit-delete-target="title">
+                Supprimer l’audit ?
+            </h2>
+        </div>
+        <div id="qse-audit-delete-desc" class="px-5 py-4 space-y-3 text-sm leading-relaxed">
+            <p class="m-0 text-muted-foreground" data-qse-audit-delete-target="lead"></p>
+            <div
+                role="alert"
+                class="rounded-lg border border-amber-300/80 bg-amber-50 px-3 py-2.5 text-amber-950 dark:border-amber-700 dark:bg-amber-950/35 dark:text-amber-50"
+                data-qse-audit-delete-target="capaWarning"
+                hidden
+            >
+                <p class="m-0 font-medium">
+                    <span data-qse-audit-delete-target="capaCount">0</span> action(s) CAPA liée(s) à cet audit
+                </p>
+                <p class="m-0 mt-1 text-xs opacity-90">
+                    Elles resteront dans votre liste CAPA, mais le lien vers l’audit sera perdu après suppression.
+                </p>
+            </div>
+        </div>
+        <div class="flex flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end">
+            <twig:Button type="button" variant="outline" class="w-full sm:w-auto" data-action="click->qse-audit-delete#close">Annuler</twig:Button>
+            <twig:Button type="submit" variant="destructive" class="w-full sm:w-auto">Supprimer définitivement</twig:Button>
+        </div>
+    </form>
+</dialog>

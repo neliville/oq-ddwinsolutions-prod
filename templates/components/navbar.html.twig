@@ -1,5 +1,8 @@
-<nav class="main-navbar fixed top-0 left-0 right-0" id="mainNav">
-    <div class="container">
+<nav class="main-navbar fixed top-0 left-0 right-0" id="mainNav" aria-label="Navigation principale">
+    {# Calque sous la barre : assombrit le contenu quand le menu mobile est ouvert #}
+    <div class="navbar-mobile-backdrop" data-navbar-backdrop aria-hidden="true"></div>
+
+    <div class="container main-navbar__bar">
 
         {# ── Brand ────────────────────────────────────────────────────────── #}
         <a class="main-navbar__brand flex items-center no-underline shrink-0"
@@ -27,10 +30,13 @@
         {% endif %}
 
         {# ── Hamburger (mobile) ──────────────────────────────────────────── #}
-        <button class="navbar-toggler ml-1" type="button"
+        <button class="navbar-toggler ml-auto shrink-0 inline-flex flex-row items-center justify-center main-navbar__toggler lg:ml-1" type="button"
                 data-navbar-toggler
                 aria-expanded="false" aria-label="Afficher le menu">
-            <i data-lucide="menu" width="20" height="20"></i>
+            <span class="navbar-toggler__icons" aria-hidden="true">
+                <span class="navbar-toggler__icon navbar-toggler__icon--menu"><i data-lucide="menu" width="20" height="20"></i></span>
+                <span class="navbar-toggler__icon navbar-toggler__icon--close"><i data-lucide="x" width="20" height="20"></i></span>
+            </span>
         </button>
 
         {# ── Collapse : liens de navigation + CTA mobile non connecté ────── #}
@@ -46,8 +52,8 @@
             </div>
 
             {% if not app.user %}
-            <div class="lg:hidden mt-2">
-                <a class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full" href="{{ path('app_login') }}">Connexion</a>
+            <div class="lg:hidden mt-6 pt-5 border-t border-slate-200/80">
+                <a class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full max-w-sm mx-auto" href="{{ path('app_login') }}">Connexion</a>
             </div>
             {% endif %}
         </div>
@@ -84,25 +90,25 @@
                     data-profile-dropdown-target="menu"
                     hidden>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between"
+                        <a class="dropdown-item"
                            href="{{ path('app_blog_index') }}">
+                            <i data-lucide="book-open" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Blog QSE</span>
-                            <i data-lucide="book-open" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between"
+                        <a class="dropdown-item"
                            href="{{ path('app_outils_index') }}">
+                            <i data-lucide="layers" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Tous les outils</span>
-                            <i data-lucide="layers" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between"
+                        <a class="dropdown-item"
                            href="{{ path('app_contact_index') }}">
+                            <i data-lucide="mail" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Nous contacter</span>
-                            <i data-lucide="mail" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                 </ul>
@@ -131,35 +137,35 @@
                         </div>
                     </li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between"
+                        <a class="dropdown-item"
                            href="{{ path('app_profile_index') }}" role="menuitem">
+                            <i data-lucide="user" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Mon profil</span>
-                            <i data-lucide="user" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between"
+                        <a class="dropdown-item"
                            href="{{ path('app_creations_index') }}" role="menuitem">
+                            <i data-lucide="file-text" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Mes créations</span>
-                            <i data-lucide="file-text" width="15" height="15" class="ml-4 text-muted-foreground"></i>
                         </a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between text-primary"
+                        <a class="dropdown-item text-primary"
                            href="{{ path('app_admin_dashboard_index') }}" role="menuitem">
+                            <i data-lucide="shield" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Administration</span>
-                            <i data-lucide="shield" width="15" height="15" class="ml-4"></i>
                         </a>
                     </li>
                     {% endif %}
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
-                        <a class="dropdown-item flex items-center justify-between text-destructive"
+                        <a class="dropdown-item text-destructive"
                            href="{{ path('app_logout') }}" role="menuitem">
+                            <i data-lucide="log-out" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                             <span>Déconnexion</span>
-                            <i data-lucide="log-out" width="15" height="15" class="ml-4"></i>
                         </a>
                     </li>
                 </ul>

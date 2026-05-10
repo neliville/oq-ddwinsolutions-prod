@@ -1,4 +1,4 @@
-{% extends 'base_with_sidebar.html.twig' %}
+{% extends 'layout/admin_base.html.twig' %}
 
 {% block title %}Modifier l'article | Administration{% endblock %}
 
@@ -140,12 +140,6 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
 
 {% block content %}
 <div class="w-full">
-    {% for message in app.flashes('danger') %}
-        <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-            <span class="flex-1 text-sm">{{ message }}</span>
-            <button type="button" class="shrink-0 -mr-1 p-1 ml-auto rounded opacity-60 hover:opacity-100 transition-opacity" data-bs-dismiss="alert" aria-label="Fermer"><i data-lucide="x" width="16" height="16"></i></button>
-        </div>
-    {% endfor %}
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -252,15 +246,15 @@ window.addEventListener('beforeunload', destroyEasyMDEEditor);
                     <div class="mb-4">
                         <div class="flex justify-between items-center mb-2">
                             {{ form_label(form.content, null, {'label_attr': {'class': 'form-label mb-0'}}) }}
-                            <button type="button" class="inline-flex items-center justify-center gap-2 border border-sky-500 text-sky-500 px-3 py-1.5 text-sm rounded-md font-medium hover:bg-sky-500/5 transition-colors no-underline" data-bs-toggle="collapse" data-bs-target="#markdownHelp">
+                            <button type="button" class="inline-flex items-center justify-center gap-2 border border-sky-500 text-sky-500 px-3 py-1.5 text-sm rounded-md font-medium hover:bg-sky-500/5 transition-colors no-underline" onclick="document.getElementById('markdownHelp')?.classList.toggle('hidden')">
                                 <i data-lucide="help-circle" width="14" height="14" class="mr-1"></i>
                                 Aide Markdown & Ancres
                             </button>
                         </div>
 
                         <!-- Aide Markdown -->
-                        <div class="collapse mb-4" id="markdownHelp">
-                            <div class="card card-body bg-muted">
+                        <div class="hidden mb-4 rounded-lg border border-border bg-muted/50 p-4" id="markdownHelp">
+                            <div>
                                 <h6 class="font-bold mb-2">💡 Sommaire automatique</h6>
                                 <p class="small mb-2">Insérez <code>[TOC]</code> ou <code>[[TOC]]</code> n'importe où dans votre article pour générer automatiquement un sommaire à partir de vos titres (h2-h6).</p>
 

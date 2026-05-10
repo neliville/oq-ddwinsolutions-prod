@@ -8,7 +8,8 @@
         executionOrder="random"
         failOnRisky="true"
         failOnWarning="true"
-        stopOnFailure="false">
+        stopOnFailure="false"
+        defaultTestSuite="unit,functional,integration,repository">
     <extensions>
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
@@ -46,6 +47,22 @@
         <!-- Tests d'intégration : interactions avec base de données -->
         <testsuite name="integration">
             <directory>tests/Integration</directory>
+        </testsuite>
+
+        <!-- Requêtes repository / agrégats (Kernel + schéma test) -->
+        <testsuite name="repository">
+            <directory>tests/Repository</directory>
+        </testsuite>
+
+        <!-- Smoke régression : sous-ensemble à forte valeur métier -->
+        <testsuite name="regression">
+            <file>tests/Unit/Qse/CapaWorkflowValidatorTest.php</file>
+            <file>tests/Functional/QseCockpitFunctionalTest.php</file>
+            <file>tests/Functional/CollaborationFunctionalTest.php</file>
+            <file>tests/Functional/QseCapaWorkflowFunctionalTest.php</file>
+            <file>tests/Functional/QseRiskFunctionalTest.php</file>
+            <file>tests/Functional/QseAuditIso45001FunctionalTest.php</file>
+            <file>tests/Repository/CriticalRepositoriesTest.php</file>
         </testsuite>
     </testsuites>
 

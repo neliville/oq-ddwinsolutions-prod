@@ -1,0 +1,38 @@
+{% set a_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">L’<strong class="font-semibold text-foreground">AMDEC</strong> (modes de défaillance, effets et criticité) vous aide à anticiper les risques. Pour chaque défaillance : <strong class="font-semibold text-foreground">G</strong> (gravité), <strong class="font-semibold text-foreground">O</strong> (occurrence), <strong class="font-semibold text-foreground">D</strong> (détection). Le produit <strong class="font-semibold text-foreground">NPR</strong> sert à prioriser les actions.</p>
+    <div class="grid gap-2 sm:grid-cols-3">
+        <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Gravité (G)</strong> — impact sur le client, le process ou la sécurité.</div>
+        <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Occurrence (O)</strong> — fréquence ou probabilité de survenue.</div>
+        <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Détection (D)</strong> — capacité à détecter avant impact client.</div>
+    </div>
+</div>
+{% endset %}
+{% set a_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li>Nouveau produit ou <strong class="font-semibold text-foreground">processus</strong>, revue de risques qualité</li>
+    <li>Préparation <strong class="font-semibold text-foreground">IATF / ISO</strong> ou réponse à une non-conformité majeure</li>
+    <li>Arbitrage entre plusieurs modes de défaillance sous contrainte de moyens</li>
+    <li>Niveau requis : <strong class="font-semibold text-foreground">Intermédiaire</strong></li>
+</ul>
+{% endset %}
+{% set a_s3 %}
+<div class="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">Les <strong class="font-semibold text-foreground">trois grilles de notation</strong> (gravité, occurrence, détection) sont affichées <strong class="font-semibold text-foreground">juste sous ce panneau</strong> sur la page : gardez-les ouvertes en parallèle pendant que vous renseignez les modes de défaillance.</p>
+</div>
+{% endset %}
+{% set a_s4 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0"><strong class="font-semibold text-foreground">Saisie :</strong> décrivez le processus ou produit, ajoutez des lignes de défaillance et renseignez G, O, D de façon cohérente avec vos grilles internes.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Interprétation NPR :</strong> les scores élevés appellent des actions en priorité ; recalculez après actions correctives (O/D en baisse).</p>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'amdec',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: a_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: a_s2|trim },
+        { title: 'Échelles G, O, D (rappel)', html: a_s3|trim },
+        { title: 'Mini-guide', html: a_s4|trim },
+    ],
+} only %}

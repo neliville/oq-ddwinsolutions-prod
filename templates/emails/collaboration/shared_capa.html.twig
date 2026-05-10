@@ -1,0 +1,18 @@
+{% extends 'emails/base_transactional.html.twig' %}
+
+{% block email_html_title %}CAPA partagée — {{ app_name }}{% endblock %}
+
+{% block email_body %}
+<p style="margin:0 0 20px 0;font-size:18px;font-weight:bold;color:#1a3a5c;">Bonjour,</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;"><strong style="color:#111827;">{{ share.owner.email }}</strong> vous a partagé une CAPA en <strong>lecture seule</strong> sur {{ app_name }}.</p>
+{% if capa %}
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;"><strong>{{ capa.title }}</strong></p>
+{% endif %}
+{% include 'emails/_email_cta.html.twig' with { cta_href: share_url, cta_label: 'Ouvrir la CAPA partagée' } %}
+<p style="margin:14px 0 0 0;font-size:13px;line-height:1.6;color:#64748b;">Lien direct : <a href="{{ share_url }}" style="color:#2563eb;word-break:break-all;">{{ share_url }}</a></p>
+{% endblock %}
+
+{% block email_footer %}
+<span style="color:#64748b;">Accès partagé lecture seule — {{ app_name }}.</span><br><br>
+{{ parent() }}
+{% endblock %}

@@ -157,7 +157,8 @@
   box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* Comme Pareto / AMDEC / barre _tool_buttons : groupe à gauche, pas d’écart type space-between */
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: var(--space-3);
   position: relative;

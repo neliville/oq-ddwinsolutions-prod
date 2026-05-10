@@ -1,0 +1,8 @@
+{# @block content The footer area, typically contains action buttons #}
+<footer
+    data-slot="dialog-footer"
+    class="{{ ('bg-background text-foreground flex flex-col-reverse gap-2 sm:flex-row sm:justify-end ' ~ attributes.render('class'))|tailwind_merge }}"
+    {{ attributes }}
+>
+    {%- block content %}{% endblock -%}
+</footer>

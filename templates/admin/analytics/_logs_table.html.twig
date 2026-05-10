@@ -55,9 +55,7 @@
                                 data-filters-panel-target="toggle"
                                 data-action="click->filters-panel#toggle"
                                 aria-expanded="false"
-                                aria-controls="logsFilters"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#logsFilters">
+                                aria-controls="logsFilters">
                             <i data-lucide="filter" width="16" height="16" class="mr-1"></i>Filtres
                         </button>
                     </div>
@@ -65,7 +63,7 @@
             </div>
 
             {# Section des filtres (collapsible) #}
-            <div class="collapse"
+            <div class="hidden"
                  id="logsFilters"
                  data-filters-panel-target="panel">
                 <div class="p-6 bg-muted/30 border-b border-border">

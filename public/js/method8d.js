@@ -389,7 +389,7 @@
                     : '';
 
                 return `
-                    <section class="eightd-discipline" data-discipline-wrapper="${discipline.id}">
+                    <section class="eightd-discipline" id="${discipline.id}" data-discipline-wrapper="${discipline.id}" tabindex="-1">
                         <div class="eightd-discipline__header">
                             <div class="eightd-discipline__badge">${discipline.code}</div>
                             <div class="eightd-discipline__title">
@@ -859,34 +859,34 @@
         }
     };
 
-    const getBootstrapLib = async () => {
-        if (window.bootstrap?.Modal) {
-            return window.bootstrap;
-        }
-        if (typeof window.bootstrapReady === 'function') {
-            return await window.bootstrapReady();
-        }
-        return window.bootstrap || null;
-    };
-
     const _openEightDModal = async (modalElement) => {
-        let ctrl = null;
-        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        const deadline = Date.now() + 3000;
+        while (Date.now() < deadline) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.show === 'function') {
+                ctrl.show();
+                return;
+            }
+            await new Promise((r) => setTimeout(r, 50));
         }
-        if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
-        const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
-        if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
     };
 
     const _closeEightDModal = async (modalElement) => {
-        let ctrl = null;
-        if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-            try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+        const deadline = Date.now() + 3000;
+        while (Date.now() < deadline) {
+            let ctrl = null;
+            if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
+            }
+            if (ctrl && typeof ctrl.hide === 'function') {
+                ctrl.hide();
+                return;
+            }
+            await new Promise((r) => setTimeout(r, 50));
         }
-        if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
-        const bsLib = window.bootstrap;
-        if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
     };
 
     const deleteEightDAnalysis = async (id, event) => {

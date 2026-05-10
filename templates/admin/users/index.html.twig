@@ -1,81 +1,72 @@
-{% extends 'base_with_sidebar.html.twig' %}
+{% extends 'layout/admin_base.html.twig' %}
 
 {% block title %}Gestion des utilisateurs | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Gestion des utilisateurs</h1>
-            <p class="text-muted-foreground mb-0">Gérer les utilisateurs et leurs rôles</p>
-        </div>
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold tracking-tight text-foreground mb-1">Gestion des utilisateurs</h1>
+        <p class="text-muted-foreground text-sm mb-0">Gérer les utilisateurs et leurs rôles</p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Total utilisateurs</h6>
-                        <h3 class="font-bold mb-0">{{ allCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Total utilisateurs</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ allCount }}</p>
                     </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="users" width="24" height="24" class="text-primary"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <i data-lucide="users" width="22" height="22" aria-hidden="true"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Administrateurs</h6>
-                        <h3 class="font-bold mb-0">{{ adminCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Administrateurs</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ adminCount }}</p>
                     </div>
-                    <div class="bg-red-100 rounded-full p-3">
-                        <i data-lucide="shield" width="24" height="24" class="text-destructive"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                        <i data-lucide="shield" width="22" height="22" aria-hidden="true"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Utilisateurs</h6>
-                        <h3 class="font-bold mb-0">{{ userCount }}</h3>
+                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Utilisateurs</p>
+                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ userCount }}</p>
                     </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="user" width="24" height="24" class="text-green-600"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                        <i data-lucide="user" width="22" height="22" aria-hidden="true"></i>
                     </div>
                 </div>
-            </div>
-        </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <!-- Filtres -->
-    <div class="rounded-lg bg-card shadow-sm mb-6">
-        <div class="p-6">
-            <div class="flex flex-wrap gap-1" role="group" aria-label="Filtres">
-                <a href="{{ path('app_admin_users_index', {filter: 'all'}) }}"
-                   class="{{ currentFilter == 'all' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="p-4 sm:p-5">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Filtres">
+                <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: 'all'}) }}" variant="{{ currentFilter == 'all' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Tous ({{ allCount }})
-                </a>
-                <a href="{{ path('app_admin_users_index', {filter: 'admin'}) }}"
-                   class="{{ currentFilter == 'admin' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: 'admin'}) }}" variant="{{ currentFilter == 'admin' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Administrateurs ({{ adminCount }})
-                </a>
-                <a href="{{ path('app_admin_users_index', {filter: 'user'}) }}"
-                   class="{{ currentFilter == 'user' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: 'user'}) }}" variant="{{ currentFilter == 'user' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Utilisateurs ({{ userCount }})
-                </a>
+                </twig:Button>
             </div>
-        </div>
-    </div>
+        </twig:Card:Content>
+    </twig:Card>
 
-    <!-- Liste des utilisateurs -->
     {% if users|length > 0 %}
     {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-users', list_caption: 'Comptes utilisateurs' } %}
         {% block list_table %}
@@ -84,236 +75,233 @@
                 <form id="bulk-users-form"
                       method="post"
                       action="{{ path('app_admin_users_bulk') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('bulk_users') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('bulk_users') }}">
 
-                <div class="p-4 border-b border-border bg-muted/30 flex flex-wrap items-center justify-between gap-2">
-                    <div class="text-sm text-muted-foreground">
-                        <strong data-users-bulk-actions-target="count">0</strong> utilisateur(s) sélectionné(s)
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-3 sm:px-5">
+                        <p class="text-sm text-muted-foreground m-0">
+                            <strong class="text-foreground tabular-nums" data-users-bulk-actions-target="count">0</strong>
+                            utilisateur(s) sélectionné(s)
+                        </p>
+                        <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-2">
+                            <twig:Select name="action"
+                                    class="min-h-10 min-w-0 sm:min-w-[16rem]"
+                                    data-users-bulk-actions-target="action"
+                                    data-action="change->users-bulk-actions#refresh">
+                                <option value="">Action groupée…</option>
+                                <option value="export_csv">Exporter en CSV</option>
+                                <option value="export_json">Exporter en JSON</option>
+                                <option value="export_emails_txt">Exporter les emails (.txt)</option>
+                                <option value="grant_admin">Ajouter le rôle admin</option>
+                                <option value="revoke_admin">Retirer le rôle admin</option>
+                            </twig:Select>
+                            <twig:Button type="submit"
+                                    variant="default"
+                                    size="sm"
+                                    class="shrink-0 disabled:opacity-50"
+                                    data-users-bulk-actions-target="submit"
+                                    disabled>
+                                Appliquer
+                            </twig:Button>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <select class="form-select form-select-sm"
-                                name="action"
-                                style="min-width: 240px;"
-                                data-users-bulk-actions-target="action"
-                                data-action="change->users-bulk-actions#refresh">
-                            <option value="">Action groupée…</option>
-                            <option value="export_csv">Exporter en CSV</option>
-                            <option value="export_json">Exporter en JSON</option>
-                            <option value="export_emails_txt">Exporter les emails (.txt)</option>
-                            <option value="grant_admin">Ajouter le rôle admin</option>
-                            <option value="revoke_admin">Retirer le rôle admin</option>
-                        </select>
-                        <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                                data-users-bulk-actions-target="submit"
-                                disabled>
-                            Appliquer
-                        </button>
-                    </div>
-                </div>
                 </form>
 
-                <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 48px;">
+                <twig:Table>
+                    <twig:Table:Header>
+                        <twig:Table:Row>
+                            <twig:Table:Head class="w-12 pr-0">
                                 <input type="checkbox"
-                                       class="form-check-input"
+                                       class="size-4 rounded border-input accent-primary"
                                        title="Tout sélectionner"
                                        data-checkbox-select-all-target="checkboxAll"
                                        data-action="change->users-bulk-actions#refresh">
-                            </th>
-                            <th>Email</th>
-                            <th>Rôles</th>
-                            <th>Création</th>
-                            <th>Dernière connexion</th>
-                            <th>Dernière activité</th>
-                            <th style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                            </twig:Table:Head>
+                            <twig:Table:Head class="min-w-[14rem]">Email</twig:Table:Head>
+                            <twig:Table:Head class="min-w-[8rem]">Rôles</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Création</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Dernière connexion</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Dernière activité</twig:Table:Head>
+                            <twig:Table:Head class="w-[1%] text-end whitespace-nowrap">Actions</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for user in users %}
-                        <tr>
-                            <td>
+                        <twig:Table:Row>
+                            <twig:Table:Cell class="pr-0">
                                 <input type="checkbox"
-                                       class="form-check-input"
+                                       class="size-4 rounded border-input accent-primary"
                                        name="selected_ids[]"
                                        value="{{ user.id }}"
                                        form="bulk-users-form"
                                        data-checkbox-select-all-target="checkbox"
                                        data-action="change->users-bulk-actions#refresh">
-                            </td>
-                            <td>
-                                <div class="flex items-center">
-                                    <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center mr-2" style="width: 32px; height: 32px;">
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="max-w-[min(22rem,42vw)] whitespace-normal">
+                                <div class="flex min-w-0 items-center gap-2">
+                                    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden="true">
                                         {{ user.email|slice(0, 1)|upper }}
                                     </div>
-                                    <div>
-                                        <strong>{{ user.email }}</strong>
-                                    </div>
+                                    <span class="truncate font-medium text-foreground">{{ user.email }}</span>
                                 </div>
-                            </td>
-                            <td>
-                                {% for role in user.roles %}
-                                {% if role == 'ROLE_ADMIN' %}
-                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold mr-1">
-                                    <i data-lucide="shield" width="12" height="12" class="mr-1"></i>
-                                    Admin
-                                </span>
-                                {% elseif role == 'ROLE_USER' %}
-                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold mr-1">User</span>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="whitespace-normal">
+                                <div class="flex flex-wrap gap-1">
+                                    {% for role in user.roles %}
+                                        {% if role == 'ROLE_ADMIN' %}
+                                            <twig:Badge variant="destructive" class="gap-1">
+                                                <i data-lucide="shield" width="12" height="12" aria-hidden="true"></i>
+                                                Admin
+                                            </twig:Badge>
+                                        {% elseif role == 'ROLE_USER' %}
+                                            <twig:Badge variant="secondary">User</twig:Badge>
+                                        {% else %}
+                                            <twig:Badge variant="outline">{{ role }}</twig:Badge>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                                {{ user.createdAt|date('d/m/Y H:i') }}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                                {% if user.lastLoginAt %}
+                                    {{ user.lastLoginAt|date('d/m/Y H:i') }}
                                 {% else %}
-                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold mr-1">{{ role }}</span>
+                                    —
                                 {% endif %}
-                                {% endfor %}
-                            </td>
-                            <td>
-                                <small>{{ user.createdAt|date('d/m/Y H:i') }}</small>
-                            </td>
-                            <td>
-                                <small class="text-muted-foreground">
-                                    {% if user.lastLoginAt %}
-                                        {{ user.lastLoginAt|date('d/m/Y H:i') }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </small>
-                            </td>
-                            <td>
-                                <small class="text-muted-foreground">
-                                    {% if user.lastActivityAt %}
-                                        {{ user.lastActivityAt|date('d/m/Y H:i') }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </small>
-                            </td>
-                            <td>
-                                <div class="flex gap-1" role="group">
-                                    <a href="{{ path('app_admin_users_show', {id: user.id}) }}"
-                                       class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-2 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors" title="Voir">
-                                        <i data-lucide="eye" width="14" height="14"></i>
-                                    </a>
-                                    <a href="{{ path('app_admin_users_edit', {id: user.id}) }}"
-                                       class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-2 py-1 text-sm rounded-md hover:bg-accent transition-colors" title="Modifier">
-                                        <i data-lucide="edit" width="14" height="14"></i>
-                                    </a>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                                {% if user.lastActivityAt %}
+                                    {{ user.lastActivityAt|date('d/m/Y H:i') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell class="text-end">
+                                <div class="inline-flex flex-nowrap items-center justify-end gap-1" role="group" aria-label="Actions pour {{ user.email|e('html_attr') }}">
+                                    <twig:Button as="a" href="{{ path('app_admin_users_show', {id: user.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Voir">
+                                        <twig:ux:icon name="lucide:eye" class="size-4" aria-hidden="true" />
+                                        <span class="sr-only">Voir {{ user.email }}</span>
+                                    </twig:Button>
+                                    <twig:Button as="a" href="{{ path('app_admin_users_edit', {id: user.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Modifier">
+                                        <twig:ux:icon name="lucide:pencil" class="size-4" aria-hidden="true" />
+                                        <span class="sr-only">Modifier {{ user.email }}</span>
+                                    </twig:Button>
                                     {% if user.id != app.user.id %}
-                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}"
-                                          class="inline"
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="inline-flex" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-2 border border-destructive text-destructive px-2 py-1 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
-                                            <i data-lucide="trash-2" width="14" height="14"></i>
-                                        </button>
+                                        <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive" title="Supprimer">
+                                            <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" />
+                                            <span class="sr-only">Supprimer {{ user.email }}</span>
+                                        </twig:Button>
                                     </form>
                                     {% endif %}
                                 </div>
-                            </td>
-                        </tr>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                         {% endfor %}
-                    </tbody>
-                </table>
-                </div>
+                    </twig:Table:Body>
+                </twig:Table>
             </div>
         {% endblock %}
         {% block list_cards %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {% for user in users %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                    <div class="p-6 flex flex-col">
-                        <div class="flex items-start gap-2 mb-2">
-                            <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center shrink-0" style="width: 40px; height: 40px;">
+                <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                    <twig:Card:Content class="flex flex-col gap-3 p-5 sm:p-6">
+                        <div class="flex items-start gap-3">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden="true">
                                 {{ user.email|slice(0, 1)|upper }}
                             </div>
                             <div class="min-w-0 flex-1">
-                                <h2 class="text-base font-semibold mb-1 break-all">{{ user.email }}</h2>
-                                <div class="flex flex-wrap gap-1 mb-2">
+                                <h2 class="text-base font-semibold leading-snug break-all text-foreground m-0">{{ user.email }}</h2>
+                                <div class="mt-2 flex flex-wrap gap-1">
                                     {% for role in user.roles %}
-                                    {% if role == 'ROLE_ADMIN' %}
-                                    <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold"><i data-lucide="shield" width="12" height="12" class="mr-1"></i>Admin</span>
-                                    {% elseif role == 'ROLE_USER' %}
-                                    <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">User</span>
-                                    {% else %}
-                                    <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ role }}</span>
-                                    {% endif %}
+                                        {% if role == 'ROLE_ADMIN' %}
+                                            <twig:Badge variant="destructive" class="gap-1">
+                                                <i data-lucide="shield" width="12" height="12" aria-hidden="true"></i>
+                                                Admin
+                                            </twig:Badge>
+                                        {% elseif role == 'ROLE_USER' %}
+                                            <twig:Badge variant="secondary">User</twig:Badge>
+                                        {% else %}
+                                            <twig:Badge variant="outline">{{ role }}</twig:Badge>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             </div>
                         </div>
-                        <dl class="grid grid-cols-2 text-sm gap-1 mb-0 flex-1">
+                        <dl class="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
                             <dt class="text-muted-foreground">Création</dt>
-                            <dd class="mb-0">{{ user.createdAt|date('d/m/Y H:i') }}</dd>
+                            <dd class="m-0 text-end tabular-nums text-foreground">{{ user.createdAt|date('d/m/Y H:i') }}</dd>
                             <dt class="text-muted-foreground">Connexion</dt>
-                            <dd class="mb-0">{{ user.lastLoginAt ? user.lastLoginAt|date('d/m/Y H:i') : '—' }}</dd>
+                            <dd class="m-0 text-end tabular-nums text-foreground">{{ user.lastLoginAt ? user.lastLoginAt|date('d/m/Y H:i') : '—' }}</dd>
                             <dt class="text-muted-foreground">Activité</dt>
-                            <dd class="mb-0">{{ user.lastActivityAt ? user.lastActivityAt|date('d/m/Y H:i') : '—' }}</dd>
+                            <dd class="m-0 text-end tabular-nums text-foreground">{{ user.lastActivityAt ? user.lastActivityAt|date('d/m/Y H:i') : '—' }}</dd>
                         </dl>
-                        <div class="flex flex-wrap gap-2 mt-4 pt-2 border-t border-border">
-                            <a href="{{ path('app_admin_users_show', {id: user.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors"><i data-lucide="eye" width="14" height="14" class="mr-1"></i>Voir</a>
-                            <a href="{{ path('app_admin_users_edit', {id: user.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
+                        <div class="mt-auto flex flex-wrap gap-2 border-t border-border pt-4">
+                            <twig:Button as="a" href="{{ path('app_admin_users_show', {id: user.id}) }}" variant="outline" size="sm" class="no-underline">
+                                <twig:ux:icon name="lucide:eye" class="size-4 shrink-0" aria-hidden="true" />
+                                Voir
+                            </twig:Button>
+                            <twig:Button as="a" href="{{ path('app_admin_users_edit', {id: user.id}) }}" variant="outline" size="sm" class="no-underline">
+                                <twig:ux:icon name="lucide:pencil" class="size-4 shrink-0" aria-hidden="true" />
+                                Modifier
+                            </twig:Button>
                             {% if user.id != app.user.id %}
-                            <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                            <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="inline-flex" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
+                                <twig:Button type="submit" variant="outline" size="sm" class="text-destructive hover:bg-destructive/10 hover:text-destructive">
+                                    <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" />
+                                    Supprimer
+                                </twig:Button>
                             </form>
                             {% endif %}
                         </div>
-                    </div>
-                </article>
+                    </twig:Card:Content>
+                </twig:Card>
                 {% endfor %}
             </div>
         {% endblock %}
         {% block list_footer %}
             {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-t border-border rounded-b">
-                <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
-                        {% if currentPage > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage - 1}) }}">
-                                <i data-lucide="chevron-left" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
+            <div class="border-t border-border bg-muted/20 px-4 py-4 sm:px-5">
+                <nav class="flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
+                    {% if currentPage > 1 %}
+                        <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage - 1}) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page précédente">
+                            <twig:ux:icon name="lucide:chevron-left" class="size-4" aria-hidden="true" />
+                        </twig:Button>
+                    {% endif %}
 
-                        {% for i in 1..totalPages %}
+                    {% for i in 1..totalPages %}
                         {% if i == currentPage %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ i }}</span>
-                        </li>
+                            <twig:Button type="button" variant="default" size="sm" class="min-w-9 pointer-events-none" disabled aria-current="page">{{ i }}</twig:Button>
                         {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
-                        </li>
+                            <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: currentFilter, page: i}) }}" variant="outline" size="sm" class="no-underline min-w-9">{{ i }}</twig:Button>
                         {% elseif i == 4 or i == totalPages - 3 %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
+                            <span class="px-2 text-sm text-muted-foreground" aria-hidden="true">…</span>
                         {% endif %}
-                        {% endfor %}
+                    {% endfor %}
 
-                        {% if currentPage < totalPages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage + 1}) }}">
-                                <i data-lucide="chevron-right" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
+                    {% if currentPage < totalPages %}
+                        <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: currentFilter, page: currentPage + 1}) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page suivante">
+                            <twig:ux:icon name="lucide:chevron-right" class="size-4" aria-hidden="true" />
+                        </twig:Button>
+                    {% endif %}
                 </nav>
             </div>
             {% endif %}
         {% endblock %}
     {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="users" width="48" height="48" class="text-muted-foreground mb-4"></i>
-            <p class="text-muted-foreground mb-0">Aucun utilisateur{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
-        </div>
-    </div>
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="flex flex-col items-center justify-center gap-3 py-14 text-center">
+            <div class="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <i data-lucide="users" width="28" height="28" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-muted-foreground m-0">Aucun utilisateur{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+        </twig:Card:Content>
+    </twig:Card>
     {% endif %}
 </div>
 
@@ -323,4 +311,3 @@ if (typeof lucide !== 'undefined') {
 }
 </script>
 {% endblock %}
-

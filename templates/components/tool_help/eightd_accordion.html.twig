@@ -1,0 +1,32 @@
+{% set d_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">La méthode <strong class="font-semibold text-foreground">8D</strong> (Eight Disciplines) structure la résolution autour d’une équipe, du <strong class="font-semibold text-foreground">containment</strong>, des causes racines et d’une <strong class="font-semibold text-foreground">capitalisation</strong>. Très utilisée en automobile (IATF 16949), aéronautique et manufacturing.</p>
+</div>
+{% endset %}
+{% set d_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li><strong class="font-semibold text-foreground">Réclamation client</strong>, non-conformité récurrente, incident majeur</li>
+    <li>Demande de résolution structurée (fournisseur, OEM, audit)</li>
+    <li>Niveau requis : <strong class="font-semibold text-foreground">Intermédiaire</strong></li>
+</ul>
+{% endset %}
+{% set d_s3 %}
+<div class="rounded-lg border border-border bg-muted/50 p-3 text-sm leading-relaxed text-slate-700 dark:bg-muted/30 dark:text-slate-200">
+    <p class="mb-0">Défaut de collage sur panneau porte : D0 préparation → D1 équipe 8D → D2 problème décrit → D3 containment → D4 causes racines → D5 actions correctives → D6 validation → D7 prévention → D8 félicitations et partage.</p>
+</div>
+{% endset %}
+{% set d_s4 %}
+<div class="flex flex-col gap-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0"><strong class="font-semibold text-foreground">Vue synthétique D0–D8 :</strong> Préparer → Équipe → Décrire → Contenir → Causes → Actions → Valider → Prévenir → Capitaliser.</p>
+    <p class="mb-0 text-muted-foreground">Les cartes récapitulatives et la navigation par étape suivent juste sous ce panneau.</p>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'eightd',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: d_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: d_s2|trim },
+        { title: "Exemple d'application", html: d_s3|trim },
+        { title: 'Mini-guide', html: d_s4|trim },
+    ],
+} only %}

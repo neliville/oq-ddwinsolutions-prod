@@ -1,0 +1,23 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Référentiels d’audit (admin){% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">Référentiels d’audit</h1>
+    <p class="text-sm text-muted-foreground mb-6"><a href="{{ path('app_admin_dashboard_index') }}" class="app-inline-link">← Administration</a></p>
+    <ul class="space-y-2">
+        {% for s in standards %}
+            <li class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-3">
+                <div>
+                    <strong>{{ s.name }}</strong>
+                    <span class="text-muted-foreground text-sm">({{ s.code }})</span>
+                    {% if not s.active %}<span class="text-xs text-destructive">inactif</span>{% endif %}
+                    {% if not s.visible %}<span class="text-xs text-muted-foreground">masqué</span>{% endif %}
+                </div>
+                <a href="{{ path('app_admin_qse_audit_standards_edit', { id: s.id }) }}" class="text-sm app-inline-link">Modifier</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

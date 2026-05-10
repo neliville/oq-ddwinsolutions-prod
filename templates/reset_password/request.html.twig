@@ -29,13 +29,6 @@
                         <p class="auth-card__subtitle">Saisissez l’adresse email associée à votre compte. Nous vous enverrons un lien de réinitialisation valable 1 heure.</p>
                     </header>
 
-                    {% for flash_error in app.flashes('reset_password_error') %}
-                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
-                            <div class="grow">{{ flash_error }}</div>
-                        </div>
-                    {% endfor %}
-
                     {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
                         <div>
                             {{ form_label(requestForm.email) }}

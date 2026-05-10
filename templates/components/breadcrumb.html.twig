@@ -1,4 +1,4 @@
-{# Composant breadcrumb réutilisable avec Schema.org #}
+{# Fil d'Ariane : structure UX Toolkit (Breadcrumb) + JSON-LD Schema.org inchangé pour le SEO #}
 {# Usage:
     {% include 'components/breadcrumb.html.twig' with {
         items: [
@@ -9,23 +9,22 @@
     } %}
 #}
 {% if items is defined and items|length > 0 %}
-<nav aria-label="Fil d'Ariane">
-    <ol class="flex flex-wrap items-center gap-1 text-sm text-muted-foreground list-none p-0 m-0">
+<twig:Breadcrumb aria-label="Fil d'Ariane">
+    <twig:Breadcrumb:List>
         {% for item in items %}
-            <li class="flex items-center gap-1 {% if loop.last %}text-foreground font-medium{% endif %}"
-                {% if loop.last %}aria-current="page"{% endif %}>
-                {% if not loop.first %}
-                    <i data-lucide="chevron-right" width="14" height="14" class="shrink-0" aria-hidden="true"></i>
-                {% endif %}
+            {% if not loop.first %}
+                <twig:Breadcrumb:Separator />
+            {% endif %}
+            <twig:Breadcrumb:Item>
                 {% if not loop.last and item.url is defined %}
-                    <a href="{{ item.url }}" class="hover:text-foreground transition-colors no-underline">{{ item.label }}</a>
+                    <twig:Breadcrumb:Link href="{{ item.url }}">{{ item.label }}</twig:Breadcrumb:Link>
                 {% else %}
-                    {{ item.label }}
+                    <twig:Breadcrumb:Page>{{ item.label }}</twig:Breadcrumb:Page>
                 {% endif %}
-            </li>
+            </twig:Breadcrumb:Item>
         {% endfor %}
-    </ol>
-</nav>
+    </twig:Breadcrumb:List>
+</twig:Breadcrumb>
 
 {# Schema.org BreadcrumbList pour SEO #}
 <script type="application/ld+json">

@@ -43,7 +43,7 @@ class ResetPasswordControllerTest extends WebTestCaseWithDatabase
 
         self::assertEmailAddressContains($email, 'from', 'test@outils-qualite.com');
         self::assertEmailAddressContains($email, 'to', 'me@example.com');
-        self::assertEmailTextBodyContains($email, 'Ce lien est valide');
+        self::assertEmailTextBodyContains($email, 'Ce lien est valable');
 
         self::assertResponseRedirects('/reset-password/check-email');
 

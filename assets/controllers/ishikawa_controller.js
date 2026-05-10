@@ -271,39 +271,41 @@ export default class extends Controller {
         }
         
         if (this.categoryModalHiddenHandler) {
-            modalElement.removeEventListener('hidden.bs.modal', this.categoryModalHiddenHandler);
+            modalElement.removeEventListener('app-modal:hidden', this.categoryModalHiddenHandler);
         }
         if (this.categoryModalShownHandler) {
-            modalElement.removeEventListener('shown.bs.modal', this.categoryModalShownHandler);
+            modalElement.removeEventListener('app-modal:shown', this.categoryModalShownHandler);
         }
-        
+
         this.populateCategoryModal();
-        
-        if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-            const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-            
-            this.categoryModalHiddenHandler = () => {
-                this.resetCategoryModal();
-            };
-            modalElement.addEventListener('hidden.bs.modal', this.categoryModalHiddenHandler, { once: true });
-            
-            this.categoryModalShownHandler = () => {
-                setTimeout(() => {
-                    this.populateCategoryModal();
-                }, 150);
-            };
-            modalElement.addEventListener('shown.bs.modal', this.categoryModalShownHandler, { once: true });
-            
-            modal.show();
+
+        const modalCtrl = this.application.getControllerForElementAndIdentifier(modalElement, 'app-modal');
+        if (!modalCtrl || typeof modalCtrl.show !== 'function') {
+            console.error('Contrôleur app-modal introuvable sur categoryModal');
+            return;
         }
+
+        this.categoryModalHiddenHandler = () => {
+            this.resetCategoryModal();
+        };
+        modalElement.addEventListener('app-modal:hidden', this.categoryModalHiddenHandler, { once: true });
+
+        this.categoryModalShownHandler = () => {
+            setTimeout(() => {
+                this.populateCategoryModal();
+            }, 150);
+        };
+        modalElement.addEventListener('app-modal:shown', this.categoryModalShownHandler, { once: true });
+
+        modalCtrl.show();
     }
 
     closeCategoryModal() {
         const modalElement = this.hasCategoryModalTarget ? this.categoryModalTarget : document.getElementById('categoryModal');
-        if (modalElement && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-            const modal = window.bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
+        if (modalElement) {
+            const modalCtrl = this.application.getControllerForElementAndIdentifier(modalElement, 'app-modal');
+            if (modalCtrl && typeof modalCtrl.hide === 'function') {
+                modalCtrl.hide();
             }
         }
         this.resetCategoryModal();
@@ -313,11 +315,11 @@ export default class extends Controller {
         const modalElement = this.hasCategoryModalTarget ? this.categoryModalTarget : document.getElementById('categoryModal');
         if (modalElement) {
             if (this.categoryModalHiddenHandler) {
-                modalElement.removeEventListener('hidden.bs.modal', this.categoryModalHiddenHandler);
+                modalElement.removeEventListener('app-modal:hidden', this.categoryModalHiddenHandler);
                 this.categoryModalHiddenHandler = null;
             }
             if (this.categoryModalShownHandler) {
-                modalElement.removeEventListener('shown.bs.modal', this.categoryModalShownHandler);
+                modalElement.removeEventListener('app-modal:shown', this.categoryModalShownHandler);
                 this.categoryModalShownHandler = null;
             }
         }
@@ -444,71 +446,70 @@ export default class extends Controller {
             this.causeNameTarget.value = '';
         }
         
-        if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-            const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-            
-            modalElement.addEventListener('hidden.bs.modal', () => {
-                this.resetCauseModal();
-            }, { once: true });
-            
-            modal.show();
-            
-            modalElement.addEventListener('shown.bs.modal', () => {
-                if (this.currentCauseIndex !== null && this.hasCauseNameTarget) {
-                    const causeText = this.getCauseText(this.currentCategoryId, this.currentCauseIndex);
-                    if (causeText) {
-                        this.causeNameTarget.value = causeText;
-                        setTimeout(() => {
-                            this.causeNameTarget.focus();
-                            this.causeNameTarget.select();
-                        }, 100);
-                    }
-                } else if (this.hasCauseNameTarget) {
-                    this.causeNameTarget.value = '';
+        const modalCtrl = this.application.getControllerForElementAndIdentifier(modalElement, 'app-modal');
+        if (!modalCtrl || typeof modalCtrl.show !== 'function') {
+            console.error('Contrôleur app-modal introuvable sur causeModal');
+            return;
+        }
+
+        modalElement.addEventListener('app-modal:hidden', () => {
+            this.resetCauseModal();
+        }, { once: true });
+
+        modalCtrl.show();
+
+        modalElement.addEventListener('app-modal:shown', () => {
+            if (this.currentCauseIndex !== null && this.hasCauseNameTarget) {
+                const causeText = this.getCauseText(this.currentCategoryId, this.currentCauseIndex);
+                if (causeText) {
+                    this.causeNameTarget.value = causeText;
                     setTimeout(() => {
-                        if (this.hasCauseNameTarget) {
-                            this.causeNameTarget.focus();
-                        }
+                        this.causeNameTarget.focus();
+                        this.causeNameTarget.select();
                     }, 100);
                 }
-            }, { once: true });
-        }
+            } else if (this.hasCauseNameTarget) {
+                this.causeNameTarget.value = '';
+                setTimeout(() => {
+                    if (this.hasCauseNameTarget) {
+                        this.causeNameTarget.focus();
+                    }
+                }, 100);
+            }
+        }, { once: true });
     }
 
     closeCauseModal() {
         const modalElement = this.hasCauseModalTarget ? this.causeModalTarget : document.getElementById('causeModal');
-        if (modalElement && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-            const modal = window.bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
+        if (modalElement) {
+            const modalCtrl = this.application.getControllerForElementAndIdentifier(modalElement, 'app-modal');
+            if (modalCtrl && typeof modalCtrl.hide === 'function') {
+                modalCtrl.hide();
             }
         }
         this.resetCauseModal();
     }
-    
+
     closeAllModals() {
-        if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-            const categoryModal = this.hasCategoryModalTarget ? this.categoryModalTarget : document.getElementById('categoryModal');
-            if (categoryModal) {
-                const modalInstance = window.bootstrap.Modal.getInstance(categoryModal);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
+        const categoryModal = this.hasCategoryModalTarget ? this.categoryModalTarget : document.getElementById('categoryModal');
+        if (categoryModal) {
+            const c = this.application.getControllerForElementAndIdentifier(categoryModal, 'app-modal');
+            if (c && typeof c.hide === 'function') {
+                c.hide();
             }
-            
-            const causeModal = this.hasCauseModalTarget ? this.causeModalTarget : document.getElementById('causeModal');
-            if (causeModal) {
-                const modalInstance = window.bootstrap.Modal.getInstance(causeModal);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            }
-            
-            document.body.classList.remove('modal-open');
-            const backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(backdrop => backdrop.remove());
         }
-        
+
+        const causeModal = this.hasCauseModalTarget ? this.causeModalTarget : document.getElementById('causeModal');
+        if (causeModal) {
+            const c = this.application.getControllerForElementAndIdentifier(causeModal, 'app-modal');
+            if (c && typeof c.hide === 'function') {
+                c.hide();
+            }
+        }
+
+        document.body.classList.remove('modal-open');
+        document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.remove());
+
         this.resetCategoryModal();
         this.resetCauseModal();
     }

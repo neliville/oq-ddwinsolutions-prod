@@ -1,4 +1,5 @@
-footer {
+/* Pied marketing (hors espace connecté minimal) */
+footer:not(.site-footer--minimal-app) {
   background: var(--dark) !important;
   color: #fff;
   padding: 60px 0 30px;

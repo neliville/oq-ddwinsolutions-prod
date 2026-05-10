@@ -16,8 +16,8 @@
         <div class="flex justify-center">
             <div class="w-full max-w-2xl">
                 <!-- Profile Card -->
-                <div class="rounded-lg bg-card shadow-lg mb-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="p-6">
+                <twig:Card class="shadow-lg mb-6 border-border/80" data-aos="fade-up" data-aos-delay="100">
+                    <twig:Card:Content class="p-6">
                         <!-- Avatar Section -->
                         <div class="text-center mb-6">
                             <div class="bg-primary text-white rounded-full inline-flex items-center justify-center mb-3" style="width: 100px; height: 100px; font-size: 2.5rem; font-weight: 600;">
@@ -37,18 +37,10 @@
                             Modifier mes informations
                         </h5>
 
-                        {% for message in app.flashes('profile_success') %}
-                            <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-4" role="alert">
-                                <i class="fas fa-check-circle mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span class="flex-1">{{ message }}</span>
-                                <button type="button" class="inline-flex items-center justify-center p-1 rounded opacity-60 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer" onclick="this.closest('[role=alert]').remove()" aria-label="Fermer"><i class="fas fa-times text-sm"></i></button>
-                            </div>
-                        {% endfor %}
-
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                            <div class="mb-3">
-                                {{ form_label(form.email, null, {'label_attr': {'class': 'block font-semibold mb-1'}}) }}
-                                {{ form_widget(form.email, {'attr': {'class': 'w-full px-3 py-2 text-base border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring'}}) }}
+                        {{ form_start(form, {'attr': {'class': 'needs-validation space-y-4', 'novalidate': 'novalidate'}}) }}
+                            <div class="space-y-2">
+                                {{ form_label(form.email, null, {'label_attr': {'class': 'text-sm font-medium leading-none'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'}}) }}
                                 {{ form_errors(form.email) }}
                                 <div class="text-sm text-muted-foreground mt-1">
                                     <i class="fas fa-info-circle mr-1"></i>
@@ -57,20 +49,16 @@
                             </div>
 
                             <div class="flex flex-col md:flex-row gap-2 justify-end mt-6">
-                                <a href="{{ path('app_home_index') }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline">
-                                    <i class="fas fa-times mr-2"></i>Annuler
-                                </a>
-                                <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity">
-                                    <i class="fas fa-save mr-2"></i>Enregistrer les modifications
-                                </button>
+                                <twig:Button as="a" href="{{ path('app_home_index') }}" variant="outline" class="no-underline w-full md:w-auto justify-center">Annuler</twig:Button>
+                                <twig:Button type="submit" variant="default" class="w-full md:w-auto justify-center">Enregistrer les modifications</twig:Button>
                             </div>
                         {{ form_end(form) }}
-                    </div>
-                </div>
+                    </twig:Card:Content>
+                </twig:Card>
 
                 <!-- Account Info Card -->
-                <div class="rounded-lg bg-card shadow-sm" data-aos="fade-up" data-aos-delay="200">
-                    <div class="p-6">
+                <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="200">
+                    <twig:Card:Content class="p-6">
                         <h5 class="font-semibold mb-3">
                             <i class="fas fa-info-circle mr-2 text-sky-600"></i>
                             Informations du compte
@@ -92,18 +80,18 @@
                             <div class="col-span-12">
                                 <div class="flex justify-between items-center py-2">
                                     <span class="text-muted-foreground">Rôle</span>
-                                    <span class="inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-semibold">
+                                    <twig:Badge variant="secondary" class="text-xs font-semibold">
                                         {% if is_granted('ROLE_ADMIN') %}
                                             Administrateur
                                         {% else %}
                                             Utilisateur
                                         {% endif %}
-                                    </span>
+                                    </twig:Badge>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </twig:Card:Content>
+                </twig:Card>
             </div>
         </div>
     </div>

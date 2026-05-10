@@ -1,0 +1,40 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Import exigences (admin){% endblock %}
+
+{% block content %}
+<div class="w-full max-w-xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-2">Import d’exigences</h1>
+    <p class="text-sm text-muted-foreground mb-6">
+        <a href="{{ path('app_admin_dashboard_index') }}" class="app-inline-link">← Administration</a>
+        · <a href="{{ path('app_admin_qse_audit_requirements_index') }}" class="app-inline-link">Liste</a>
+    </p>
+    <p class="text-sm mb-4">Étape 1 : envoi du fichier → <strong>prévisualisation</strong> des différences → validation avant application en base.</p>
+    <p class="text-xs text-muted-foreground mb-4 rounded-md border border-border bg-muted/40 px-3 py-2">
+        Fichier <strong>Exigences ISO 9001v2015__en_cours.xlsx</strong> avec les trois onglets <strong>9001</strong>, <strong>14001</strong> et <strong>45001</strong>&nbsp;:
+        choisissez le référentiel correspondant ; l’onglet adapté est lu automatiquement (clés <code class="text-xs">legacy_key</code> générées).
+        En SSH vous pouvez aussi lancer <code class="text-xs">./scripts/import-audit-exigences-workbook.sh</code> ou
+        <code class="text-xs">php bin/console app:qse:import-audit-exigences-workbook</code>.
+    </p>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_qse_req_import_upload') }}">
+        <div>
+            <label class="block text-sm font-medium mb-1" for="standard_id">Référentiel</label>
+            <select id="standard_id" name="standard_id" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
+                {% for s in standards %}
+                    <option value="{{ s.id }}">{{ s.name }} ({{ s.code }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="source_version">Version source (optionnel)</label>
+            <input id="source_version" name="source_version" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="ex. Excel 2026-01">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="import_file">Fichier (.json, .xlsx)</label>
+            <input id="import_file" name="import_file" type="file" accept=".json,.xlsx,.xls" class="w-full text-sm" required>
+        </div>
+        <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold">Prévisualiser</button>
+    </form>
+</div>
+{% endblock %}

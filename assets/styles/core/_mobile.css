@@ -74,7 +74,7 @@
     align-items: center;
   }
 
-  footer a {
+  footer:not(.site-footer--minimal-app) a {
     min-height: 44px;
     padding: 0.5rem 0;
     display: inline-block;

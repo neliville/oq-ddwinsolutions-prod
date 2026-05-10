@@ -1,0 +1,57 @@
+{# Métadonnées outil (niveau + tags) avec tooltips — même logique que la page Ishikawa classique.
+   @param tool_slug string Clé passée à tool_meta()
+   @param hint_id_prefix string Préfixe unique pour les id Tooltip (ex. fivewhy, pareto-v1)
+   @param meta_intro string|null Texte d’aide au-dessus des pastilles (défaut : survol + encadré aide)
+   @param level_tooltip string|null Surcharge du texte du tooltip « Niveau »
+   @param tag_hints array<string, string>|null Assoc tag libellé => texte tooltip
+#}
+{% set meta = tool_meta(tool_slug) %}
+{% if meta %}
+    {% set lvl_tip = level_tooltip|default(
+        meta.level == 'Intermédiaire'
+            ? 'Niveau intermédiaire : méthode structurée ; pertinent dès que vous pilotez risques, actions ou dossiers clients.'
+            : 'Niveau indiqué pour l\'apprentissage de la méthode ; l\'outil reste pertinent pour toute équipe QSE.'
+    ) %}
+    {% set intro = meta_intro|default('Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; l’outil suit.') %}
+    <p id="{{ hint_id_prefix }}-meta-hint" class="mb-2 max-w-3xl text-sm leading-relaxed text-slate-700 dark:text-slate-200">{{ intro }}</p>
+    <ul class="m-0 mb-3 flex list-none flex-wrap gap-2 p-0" aria-describedby="{{ hint_id_prefix }}-meta-hint">
+        <li class="max-w-full">
+            <twig:Tooltip id="{{ hint_id_prefix }}-meta-level" delayDuration="200">
+                <twig:Badge
+                    as="button"
+                    type="button"
+                    variant="secondary"
+                    class="max-w-full cursor-help whitespace-normal text-left leading-snug"
+                    id="{{ hint_id_prefix }}-meta-level_trigger"
+                    aria-describedby="{{ hint_id_prefix }}-meta-level_content"
+                    data-slot="tooltip-trigger"
+                    data-tooltip-target="trigger"
+                    data-action="mouseenter->tooltip#show mouseleave->tooltip#hide focus->tooltip#show blur->tooltip#hide"
+                >Niveau : {{ meta.level }}</twig:Badge>
+                <twig:Tooltip:Content side="top" sideOffset="6" class="max-w-xs text-pretty">
+                    {{ lvl_tip }}
+                </twig:Tooltip:Content>
+            </twig:Tooltip>
+        </li>
+        {% for tag in meta.tags %}
+            <li class="max-w-full">
+                <twig:Tooltip id="{{ hint_id_prefix }}-meta-tag-{{ loop.index }}" delayDuration="200">
+                    <twig:Badge
+                        as="button"
+                        type="button"
+                        variant="secondary"
+                        class="max-w-full cursor-help whitespace-normal text-left leading-snug"
+                        id="{{ hint_id_prefix }}-meta-tag-{{ loop.index }}_trigger"
+                        aria-describedby="{{ hint_id_prefix }}-meta-tag-{{ loop.index }}_content"
+                        data-slot="tooltip-trigger"
+                        data-tooltip-target="trigger"
+                        data-action="mouseenter->tooltip#show mouseleave->tooltip#hide focus->tooltip#show blur->tooltip#hide"
+                    >{{ tag }}</twig:Badge>
+                    <twig:Tooltip:Content side="top" sideOffset="6" class="max-w-xs text-pretty">
+                        {{ (tag_hints|default({}))[tag]|default('Thématique liée à cet outil dans votre système de management qualité.') }}
+                    </twig:Tooltip:Content>
+                </twig:Tooltip>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

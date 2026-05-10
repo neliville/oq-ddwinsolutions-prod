@@ -1,0 +1,34 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Éditer {{ standard.name }}{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-2">Référentiel</h1>
+    <p class="text-sm text-muted-foreground mb-6">Code système : <code>{{ standard.code }}</code> (non modifiable)</p>
+    <form method="post" class="space-y-4">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_qse_audit_standard_edit') }}">
+        <div>
+            <label class="block text-sm font-medium mb-1" for="name">Nom affiché</label>
+            <input id="name" name="name" type="text" value="{{ standard.name }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="version">Version</label>
+            <input id="version" name="version" type="text" value="{{ standard.version|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="description">Description</label>
+            <textarea id="description" name="description" rows="3" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">{{ standard.description|default('') }}</textarea>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="displayOrder">Ordre d’affichage</label>
+            <input id="displayOrder" name="displayOrder" type="number" value="{{ standard.displayOrder }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+        </div>
+        <div class="flex gap-4">
+            <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="active" value="1" {% if standard.active %}checked{% endif %}> Actif</label>
+            <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="visible" value="1" {% if standard.visible %}checked{% endif %}> Visible (choix utilisateur)</label>
+        </div>
+        <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

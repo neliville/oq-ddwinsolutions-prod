@@ -1,6 +1,9 @@
 /* ─── Tailwind v4 — full import (Preflight + utilities) ─────────────── */
 @import "tailwindcss";
 
+/* Variante dark pour les composants UX Toolkit / shadcn (classe .dark sur un ancêtre) */
+@custom-variant dark (&:is(.dark *));
+
 /* ─── Design tokens & reset ──────────────────────────────────────────── */
 @import "./core/_variables.css";
 @import "./layout/_reset.css";
@@ -16,6 +19,23 @@
 @import "./layout/_navbar.css";
 @import "./layout/_footer.css";
 
+/* Modales : le pied de page du site cible `footer` — rétablir le fond pour les <footer> des dialogs UX */
+dialog footer[data-slot="dialog-footer"],
+[role="dialog"] footer[data-slot="dialog-footer"] {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+dialog footer[data-slot="dialog-footer"] a,
+[role="dialog"] footer[data-slot="dialog-footer"] a {
+  color: inherit;
+}
+
+dialog footer[data-slot="dialog-footer"] a:hover,
+[role="dialog"] footer[data-slot="dialog-footer"] a:hover {
+  color: inherit;
+}
+
 /* ─── Components ──────────────────────────────────────────────────────── */
 @import "./components/_buttons.css";
 @import "./components/_cards.css";
@@ -25,6 +45,7 @@
 @import "./components/_mautic-form-newsletter.css";
 @import "./components/_sidebar.css";
 @import "./components/_confirmation_modal.css";
+@import "./components/_collab-invite-dialog.css";
 @import "./components/_tool_buttons.css";
 @import "./components/_tool_lead_cta.css";
 @import "./components/_cta_ddwin.css";
@@ -35,10 +56,12 @@
 
 /* ─── Site ────────────────────────────────────────────────────────────── */
 @import "./site/home.css";
+@import "./site/contact.css";
 @import "./site/outils.css";
 @import "./site/_mautic-form-download.css";
 @import "./site/_legal-prose.css";
 @import "./site/dashboard.css";
+@import "./site/_inline-links.css";
 @import "./site/_auth.css";
 
 /* ─── Admin ───────────────────────────────────────────────────────────── */
@@ -270,9 +293,17 @@ body.sidebar-collapsed .admin-sidebar {
     }
 }
 
+/* Tableau de bord / outils connectés — téléphones : moins de padding-top doublonné, marges latérales serrées */
+@media (max-width: 576px) {
+    body.layout-dashboard .main-content.dashboard-layout {
+        padding-top: calc(72px + 0.5rem) !important;
+        padding-inline: 0.75rem !important;
+        padding-bottom: 3rem !important;
+    }
+}
+
 /*
- * Mes créations — filtres KPI : Bootstrap (injecté après app.css via importmap) peut rendre le texte
- * des <button> illisible. Ces règles hors @layer passent après les feuilles en cascade et corrigent le contraste.
+ * Mes créations — filtres KPI : contraste des boutons (couche hors @layer si besoin de priorité).
  */
 .creations-page .creations-stats button.creations-stat-card--interactive,
 .creations-page .creations-stats button.creations-stat-card--interactive .creations-stat-card__value {
@@ -281,4 +312,149 @@ body.sidebar-collapsed .admin-sidebar {
 
 .creations-page .creations-stats button.creations-stat-card--interactive .creations-stat-card__label {
     color: #475569 !important;
+}
+
+/*
+ * Outils en mode connecté : ne pas cumuler le padding-top du shell (.qqoqccp-page, etc.) avec
+ * celui de .dashboard-layout (~110px) — sinon double « réserve » pour une navbar publique absente ici.
+ */
+body.layout-dashboard .main-content.dashboard-layout .qqoqccp-page:not(.qqoqccp-page--guest),
+body.layout-dashboard .main-content.dashboard-layout .pareto-page:not(.pareto-page--guest),
+body.layout-dashboard .main-content.dashboard-layout .amdec-page:not(.amdec-page--guest),
+body.layout-dashboard .main-content.dashboard-layout .eightd-page:not(.eightd-page--guest),
+body.layout-dashboard .main-content.dashboard-layout .five-why-main:not(.five-why-main--guest),
+body.layout-dashboard .main-content.dashboard-layout .ishikawa-page {
+    padding-top: clamp(0.5rem, 1.25vw, 1rem);
+}
+
+/*
+ * Même colonne : .dashboard-layout imposait ~110px de padding-top pour la topbar fixe, alors que
+ * .dashboard-topbar__inner fait 72px — d’où ~40px de blanc inutile. On aligne sur la hauteur réelle
+ * (+ petite marge). !important : bat .main-content { padding-top: 100px } en ≤1200px.
+ */
+body.layout-dashboard .main-content.dashboard-layout:has(
+    .qqoqccp-page:not(.qqoqccp-page--guest),
+    .pareto-page:not(.pareto-page--guest),
+    .amdec-page:not(.amdec-page--guest),
+    .eightd-page:not(.eightd-page--guest),
+    .five-why-main:not(.five-why-main--guest),
+    .ishikawa-page
+) {
+    padding-top: calc(72px + 0.75rem) !important;
+}
+
+@media (max-width: 768px) {
+    body.layout-dashboard .main-content.dashboard-layout:has(
+        .qqoqccp-page:not(.qqoqccp-page--guest),
+        .pareto-page:not(.pareto-page--guest),
+        .amdec-page:not(.amdec-page--guest),
+        .eightd-page:not(.eightd-page--guest),
+        .five-why-main:not(.five-why-main--guest),
+        .ishikawa-page
+    ) {
+        padding-top: calc(72px + 0.5rem) !important;
+    }
+}
+
+/*
+ * Outils en mode connecté (sidebar) : utiliser toute la largeur utile entre la barre latérale
+ * et le bord droit — évite la triple contrainte (padding dashboard + padding page + max-width 1100px).
+ */
+@media (min-width: 1201px) {
+    body.layout-dashboard .main-content.dashboard-layout:has(
+        .qqoqccp-page:not(.qqoqccp-page--guest),
+        .pareto-page:not(.pareto-page--guest),
+        .amdec-page:not(.amdec-page--guest),
+        .eightd-page:not(.eightd-page--guest),
+        .five-why-main:not(.five-why-main--guest),
+        .ishikawa-page
+    ) {
+        padding-inline: clamp(0.75rem, 0.9vw + 0.35rem, 1.25rem);
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .qqoqccp-page:not(.qqoqccp-page--guest),
+    body.layout-dashboard .main-content.dashboard-layout .pareto-page:not(.pareto-page--guest),
+    body.layout-dashboard .main-content.dashboard-layout .amdec-page:not(.amdec-page--guest),
+    body.layout-dashboard .main-content.dashboard-layout .eightd-page:not(.eightd-page--guest),
+    body.layout-dashboard .main-content.dashboard-layout .five-why-main:not(.five-why-main--guest),
+    body.layout-dashboard .main-content.dashboard-layout .ishikawa-page {
+        padding-left: clamp(0.5rem, 1vw, 1rem);
+        padding-right: clamp(0.5rem, 1vw, 1rem);
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .qqoqccp-page:not(.qqoqccp-page--guest) .container,
+    body.layout-dashboard .main-content.dashboard-layout .pareto-page:not(.pareto-page--guest) .container,
+    body.layout-dashboard .main-content.dashboard-layout .amdec-page:not(.amdec-page--guest) .container,
+    body.layout-dashboard .main-content.dashboard-layout .eightd-page:not(.eightd-page--guest) .container {
+        max-width: none;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .five-why-main:not(.five-why-main--guest) .container {
+        width: 100%;
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .ishikawa-page .container {
+        max-width: none;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .ishikawa-page .page-header {
+        max-width: none;
+        width: 100%;
+    }
+
+    body.layout-dashboard .main-content.dashboard-layout .ishikawa-page .container-fluid,
+    body.layout-dashboard .main-content.dashboard-layout .ishikawa-page .ishikawa-content {
+        width: 100%;
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/*
+ * Messages flash (#main-content > .flash-messages-global) — tableau de bord connecté
+ * (outils, CAPA, audits, risques, PDCA…) :
+ * 1) Dégager la .dashboard-topbar fixe (sinon seul le bas de l’alerte restait visible).
+ * 2) En ≥1201px, aligner la zone sur la colonne de contenu (même marge que .main-content),
+ *    pas sous la sidebar (largeur 280px — _sidebar.css / app.css).
+ * 3) Sidebar repliée : reprendre toute la largeur utile.
+ */
+body.layout-dashboard #main-content > .flash-messages-global:has([data-slot="alert"]) {
+    position: relative;
+    z-index: 1100;
+    box-sizing: border-box;
+    padding-top: calc(72px + 0.75rem) !important;
+}
+
+@media (min-width: 1201px) {
+    body.layout-dashboard #main-content > .flash-messages-global:has([data-slot="alert"]) {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+        max-width: none;
+        margin-right: 0;
+        padding-left: clamp(1.25rem, 1.8vw + 0.75rem, 2.5rem);
+        padding-right: clamp(1.25rem, 1.8vw + 0.75rem, 2.5rem);
+    }
+
+    body.layout-dashboard.sidebar-collapsed #main-content > .flash-messages-global:has([data-slot="alert"]) {
+        margin-left: 0;
+        width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body.layout-dashboard #main-content > .flash-messages-global:has([data-slot="alert"]) {
+        padding-top: calc(72px + 0.5rem) !important;
+    }
 }

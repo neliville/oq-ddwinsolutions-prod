@@ -5,6 +5,8 @@ namespace App\Tests\Fixtures;
 use App\Entity\BlogPost;
 use App\Entity\Category;
 use App\Entity\CmsPage;
+use App\Qse\Service\AuditStandardBootstrap;
+use App\Qse\Service\CapaSystemOriginSeeder;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class TestDataSeeder
@@ -13,6 +15,8 @@ final class TestDataSeeder
     {
         self::ensureCmsPages($entityManager);
         self::ensureBlogContent($entityManager);
+        (new CapaSystemOriginSeeder())->seed($entityManager);
+        (new AuditStandardBootstrap())->ensure($entityManager);
     }
 
     private static function ensureCmsPages(EntityManagerInterface $entityManager): void

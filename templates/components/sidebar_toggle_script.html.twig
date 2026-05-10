@@ -1,0 +1,225 @@
+{# Script partagé : toggle sidebar + overlay (même logique que admin-sidebar.html.twig). #}
+<script>
+function initSidebar() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const collapseTriggers = document.querySelectorAll('.sidebar-collapse-trigger');
+    collapseTriggers.forEach((trigger) => {
+        if (trigger.dataset.sidebarListenerAttached === 'true') return;
+        trigger.dataset.sidebarListenerAttached = 'true';
+
+        trigger.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const targetSelector = this.dataset.sidebarTarget;
+            if (!targetSelector) return;
+
+            const target = document.querySelector(targetSelector);
+            if (!target) return;
+
+            const isShown = target.classList.contains('show');
+            target.classList.toggle('show');
+
+            const chevron = this.querySelector('.sidebar-chevron');
+            if (chevron) {
+                chevron.style.transform = isShown ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+
+            this.setAttribute('aria-expanded', (!isShown).toString());
+        });
+    });
+
+    const sidebarPrimaryToggle = document.getElementById('sidebarToggle');
+    const sidebarMobileToggle = document.getElementById('sidebarToggleMobile');
+    const sidebar = document.querySelector('.admin-sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarToggleButtons = [sidebarPrimaryToggle, sidebarMobileToggle].filter(Boolean);
+
+    if (sidebar && sidebarToggleButtons.length) {
+        const isDesktop = () => window.innerWidth > 1200;
+
+        const hideOverlay = () => {
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.remove('show');
+                sidebarOverlay.style.display = 'none';
+                sidebarOverlay.setAttribute('aria-hidden', 'true');
+            }
+        };
+
+        const showOverlay = () => {
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.add('show');
+                sidebarOverlay.style.display = 'block';
+                sidebarOverlay.setAttribute('aria-hidden', 'false');
+            }
+        };
+
+        const getState = () => {
+            const collapsed = document.body.classList.contains('sidebar-collapsed');
+            const open = sidebar.classList.contains('show') && !collapsed;
+            const desktop = isDesktop();
+            return { collapsed, open, desktop };
+        };
+
+        const updateToggleVisual = () => {
+            const { collapsed, open, desktop } = getState();
+
+            sidebarToggleButtons.forEach((button) => {
+                const labelElement = button.querySelector('.sidebar-toggle-label');
+                const iconElement = button.querySelector('i[data-lucide]');
+                const labelText = desktop
+                    ? (collapsed ? 'Afficher la navigation' : 'Masquer la navigation')
+                    : (open ? 'Fermer la navigation' : 'Afficher la navigation');
+
+                button.setAttribute('aria-expanded', open ? 'true' : 'false');
+                button.setAttribute('aria-label', labelText);
+
+                if (labelElement) labelElement.textContent = labelText;
+
+                if (iconElement && typeof lucide !== 'undefined') {
+                    const iconName = desktop
+                        ? (collapsed ? 'panel-right-open' : 'panel-left')
+                        : (open ? 'x' : 'menu');
+                    iconElement.setAttribute('data-lucide', iconName);
+                }
+            });
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+
+        const collapseSidebar = () => {
+            document.body.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('show');
+            hideOverlay();
+            updateToggleVisual();
+        };
+
+        const expandSidebar = () => {
+            document.body.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('show');
+            hideOverlay();
+            updateToggleVisual();
+        };
+
+        const openSidebar = () => {
+            document.body.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('show');
+            if (isDesktop()) hideOverlay(); else showOverlay();
+            updateToggleVisual();
+            if (!isDesktop()) {
+                const firstLink = sidebar.querySelector('.sidebar-nav a.sidebar-item[href], .sidebar-nav a[href].cockpit-nav-link');
+                if (firstLink && typeof firstLink.focus === 'function') {
+                    requestAnimationFrame(() => firstLink.focus());
+                }
+            }
+        };
+
+        const closeSidebar = () => {
+            const wasMobileOpen = !isDesktop() && sidebar.classList.contains('show');
+            const toggleToFocus = document.getElementById('sidebarToggleMobile') || document.getElementById('sidebarToggle');
+            sidebar.classList.remove('show');
+            hideOverlay();
+            updateToggleVisual();
+            if (wasMobileOpen && toggleToFocus && document.contains(toggleToFocus)) {
+                requestAnimationFrame(() => toggleToFocus.focus());
+            }
+        };
+
+        if (!document.body.dataset.dashboardSidebarEscapeBound) {
+            document.body.dataset.dashboardSidebarEscapeBound = '1';
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Escape' || window.innerWidth > 1200) return;
+                if (!sidebar.classList.contains('show')) return;
+                event.preventDefault();
+                closeSidebar();
+            });
+        }
+
+        const bindToggleButton = (button) => {
+            if (!button || button.dataset.listenerAttached === 'true') return;
+            button.dataset.listenerAttached = 'true';
+
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const { desktop, collapsed, open } = getState();
+
+                if (desktop) {
+                    if (collapsed) expandSidebar(); else collapseSidebar();
+                } else {
+                    if (open) closeSidebar(); else openSidebar();
+                }
+            });
+        };
+
+        sidebarToggleButtons.forEach(bindToggleButton);
+
+        if (sidebarOverlay && sidebarOverlay.dataset.listenerAttached !== 'true') {
+            sidebarOverlay.dataset.listenerAttached = 'true';
+            sidebarOverlay.addEventListener('click', () => closeSidebar());
+        }
+
+        if (!sidebar.dataset.linksListenerAttached) {
+            sidebar.dataset.linksListenerAttached = 'true';
+            const sidebarLinks = sidebar.querySelectorAll('a[href]:not([href^="#"]):not(.sidebar-collapse-trigger)');
+            sidebarLinks.forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (!isDesktop()) closeSidebar();
+                });
+            });
+        }
+
+        let resizeTimer;
+        const handleResize = () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (isDesktop()) {
+                    if (document.body.classList.contains('sidebar-collapsed')) {
+                        sidebar.classList.remove('show');
+                    } else {
+                        sidebar.classList.add('show');
+                    }
+                    hideOverlay();
+                } else {
+                    if (!sidebar.classList.contains('show')) hideOverlay();
+                }
+                updateToggleVisual();
+            }, 200);
+        };
+
+        if (window.__sidebarHandleResize) {
+            window.removeEventListener('resize', window.__sidebarHandleResize);
+        }
+        window.__sidebarHandleResize = handleResize;
+        window.addEventListener('resize', handleResize);
+
+        if (isDesktop()) {
+            if (document.body.classList.contains('sidebar-collapsed')) {
+                sidebar.classList.remove('show');
+            } else {
+                sidebar.classList.add('show');
+            }
+            hideOverlay();
+        } else {
+            sidebar.classList.remove('show');
+            hideOverlay();
+        }
+
+        updateToggleVisual();
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSidebar);
+} else {
+    initSidebar();
+}
+
+if (typeof window.Turbo !== 'undefined') {
+    document.addEventListener('turbo:load', initSidebar);
+    document.addEventListener('turbo:frame-load', initSidebar);
+}
+</script>

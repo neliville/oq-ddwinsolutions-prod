@@ -172,14 +172,20 @@ export default class extends Controller {
     }
 
     showNotification(message, type = 'info') {
-        // Créer une notification (à implémenter selon votre système de notification)
+        const palette =
+            type === 'success'
+                ? 'border-green-200 bg-green-50 text-green-800'
+                : type === 'danger' || type === 'error'
+                  ? 'border-red-200 bg-red-50 text-red-800'
+                  : 'border-sky-200 bg-sky-50 text-sky-900';
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-        notification.style.zIndex = '9999';
+        notification.setAttribute('role', 'alert');
+        notification.className = `fixed top-4 left-1/2 z-[9999] flex max-w-lg -translate-x-1/2 items-start gap-2 rounded-lg border px-4 py-3 text-sm shadow-lg ${palette}`;
         notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <span class="flex-1">${message}</span>
+            <button type="button" class="shrink-0 rounded p-1 opacity-70 hover:opacity-100" aria-label="Fermer">&times;</button>
         `;
+        notification.querySelector('button')?.addEventListener('click', () => notification.remove());
         document.body.appendChild(notification);
 
         setTimeout(() => {

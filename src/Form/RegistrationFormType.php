@@ -7,7 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
@@ -69,12 +68,6 @@ class RegistrationFormType extends AbstractType
                         'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
                         'message' => 'Votre mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre.',
                     ]),
-                ],
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Créer mon compte',
-                'attr' => [
-                    'class' => 'btn btn-primary w-100',
                 ],
             ]);
     }

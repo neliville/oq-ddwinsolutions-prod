@@ -9,6 +9,8 @@ export const createMetaSlice = (set) => ({
     lastSavedAt: null,
     _apiBase: '/api/ishikawa',
     _csrfToken: '',
+    /** Défini par la page hôte (Twig) : afficher « Mes analyses » dans la barre React */
+    showSavedList: false,
   },
 
   updateMeta: (partial) => {

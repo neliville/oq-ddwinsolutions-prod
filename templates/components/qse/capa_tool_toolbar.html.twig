@@ -1,0 +1,102 @@
+{# CAPA : carte « passer à l’action » (utilisateur connecté). Paramètres : tool, entity_input_id ; optionnels : tool_label, lead_modifier (fragment HTML pour la description). #}
+{% if app.user %}
+{% set capa_tool_default_labels = {
+    'ishikawa': 'votre diagramme d’Ishikawa',
+    'five_why': 'votre analyse 5 Pourquoi',
+    'qqoqccp': 'votre analyse QQOQCCP',
+    'amdec': 'votre analyse AMDEC',
+    'pareto': 'votre diagramme de Pareto',
+    'eight_d': 'votre démarche 8D',
+    'risk': 'cette fiche risque',
+} %}
+{% set _label = tool_label|default(capa_tool_default_labels[tool]|default('cette analyse')) %}
+{% set _lead = lead_modifier|default('à partir de cette analyse lorsqu’elle est <strong class="font-semibold text-foreground">enregistrée</strong>') %}
+<div class="container qse-capa-tool-toolbar max-w-[min(1600px,100%)] px-4 sm:px-6 mb-4"
+     data-qse-capa-soft-cta
+     data-tool="{{ tool|e('html_attr') }}">
+    <twig:Card class="border-primary/25 bg-card shadow-md ring-1 ring-primary/10">
+        <twig:Card:Header class="gap-1 border-b border-border/60 p-4 sm:p-5 sm:pb-3">
+            <twig:Card:Title class="text-base sm:text-lg">Passer à l’action qualité (CAPA)</twig:Card:Title>
+            <twig:Card:Description class="text-pretty text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                Après analyse des causes, formalisez une action dans votre espace QSE. Les liens ci-dessous créent un <strong class="font-semibold text-foreground">brouillon</strong> prérempli {{ _lead|raw }}.
+            </twig:Card:Description>
+        </twig:Card:Header>
+        <twig:Card:Content class="flex flex-col gap-4 p-4 sm:p-5 sm:pt-4">
+            <twig:Alert variant="info" class="px-3 py-3 shadow-sm sm:px-4">
+                <twig:ux:icon name="lucide:lightbulb" class="size-5 shrink-0 text-sky-700 dark:text-sky-300" aria-hidden="true" />
+                <twig:Alert:Title class="text-slate-900 dark:text-slate-50">Cause identifiée ?</twig:Alert:Title>
+                <twig:Alert:Description class="text-sm leading-relaxed text-slate-800 dark:text-slate-100">
+                    Enregistrez d’abord votre analyse, puis ouvrez une CAPA pour lier l’origine et suivre les actions correctives, préventives ou de maîtrise.
+                </twig:Alert:Description>
+            </twig:Alert>
+
+            <div class="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <p class="m-0 text-sm font-medium text-foreground">Créer un brouillon CAPA lié</p>
+                <div class="flex flex-wrap gap-2">
+                    <twig:Button as="a" href="{{ path('app_qse_capa_prefill', { tool: tool, kind: 'corrective' }) }}" variant="default" size="sm" class="qse-capa-prefill-link min-h-10 justify-center no-underline">Corrective</twig:Button>
+                    <twig:Button as="a" href="{{ path('app_qse_capa_prefill', { tool: tool, kind: 'preventive' }) }}" variant="outline" size="sm" class="qse-capa-prefill-link min-h-10 justify-center no-underline">Préventive</twig:Button>
+                    <twig:Button as="a" href="{{ path('app_qse_capa_prefill', { tool: tool, kind: 'maitrise' }) }}" variant="outline" size="sm" class="qse-capa-prefill-link min-h-10 justify-center no-underline">Maîtrise</twig:Button>
+                </div>
+            </div>
+
+            <twig:Dialog id="qse-capa-guide-{{ tool|replace({'_': '-'}) }}">
+                <twig:Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    class="self-start text-primary hover:text-primary/90"
+                    data-action="click->ux-dialog#open"
+                    data-ux-dialog-target="trigger"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                >
+                    <twig:ux:icon name="lucide:help-circle" data-icon="inline-start" aria-hidden="true" />
+                    Quand créer une CAPA ?
+                </twig:Button>
+                <twig:Dialog:Content>
+                    <twig:Dialog:Header>
+                        <twig:Dialog:Title>Créer une CAPA après {{ _label }}</twig:Dialog:Title>
+                        <twig:Dialog:Description class="text-left text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                            Lorsque vous avez identifié des causes plausibles ou une cause racine, il est pertinent d’ouvrir une fiche CAPA pour structurer la réponse (actions, responsables, échéances) et conserver la traçabilité avec l’outil source.
+                        </twig:Dialog:Description>
+                    </twig:Dialog:Header>
+                    <div class="mt-2 flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                        <p class="m-0"><strong class="text-foreground">1.</strong> Enregistrez l’analyse (bouton « Sauvegarder ») pour obtenir un identifiant.</p>
+                        <p class="m-0"><strong class="text-foreground">2.</strong> Choisissez le type d’action : corrective, préventive ou maîtrise.</p>
+                        <p class="m-0"><strong class="text-foreground">3.</strong> Complétez le brouillon dans l’espace QSE (description, origine, pièces jointes).</p>
+                    </div>
+                    <twig:Dialog:Footer class="mt-4 border-t border-border/60 pt-4">
+                        <twig:Button type="button" variant="default" data-action="click->ux-dialog#close">J’ai compris</twig:Button>
+                    </twig:Dialog:Footer>
+                </twig:Dialog:Content>
+            </twig:Dialog>
+        </twig:Card:Content>
+    </twig:Card>
+</div>
+
+<script>
+(function () {
+    var root = document.querySelector('[data-qse-capa-soft-cta][data-tool="{{ tool|e('js') }}"]');
+    if (!root) return;
+    var idElId = {{ entity_input_id|json_encode|raw }};
+    if (!idElId) return;
+    function patchLinks() {
+        var el = document.getElementById(idElId);
+        if (!el || !el.value) return;
+        var id = parseInt(el.value, 10);
+        if (!id) return;
+        root.querySelectorAll('a.qse-capa-prefill-link').forEach(function (a) {
+            var u = new URL(a.href, window.location.origin);
+            u.searchParams.set('entity', String(id));
+            a.href = u.pathname + u.search;
+        });
+    }
+    document.addEventListener('turbo:load', patchLinks);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', patchLinks);
+    } else {
+        patchLinks();
+    }
+})();
+</script>
+{% endif %}

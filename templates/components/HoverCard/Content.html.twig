@@ -1,0 +1,11 @@
+{# Panneau à droite du déclencheur (sidebar gauche), style proche d’un libellé Miro. #}
+{# @block content The content revealed on hover #}
+<span
+    role="tooltip"
+    class="{{ ('pointer-events-none invisible absolute left-full top-1/2 z-[1080] ml-2 mt-0 w-[min(17rem,calc(100vw-20rem))] max-w-[min(17rem,calc(100vw-20rem))] -translate-y-1/2 translate-x-0 rounded-lg border border-zinc-600/90 bg-zinc-900 px-3 py-2.5 text-left text-xs text-zinc-50 opacity-0 shadow-xl outline-none transition-opacity duration-150 in-data-[state=open]:pointer-events-auto in-data-[state=open]:visible in-data-[state=open]:opacity-100 ' ~ attributes.render('class'))|tailwind_merge }}"
+    {{ attributes.defaults({
+        'data-slot': 'hover-card-content',
+    }) }}
+>
+    {%- block content %}{% endblock -%}
+</span>

@@ -1,0 +1,48 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Prévisualisation import{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-2">Prévisualisation</h1>
+    <p class="text-sm text-muted-foreground mb-4">
+        Référentiel : <strong>{{ standard.name }}</strong>
+        · {{ rowCount }} ligne(s)
+        {% if filename %}· {{ filename }}{% endif %}
+    </p>
+    <p class="text-sm mb-2">Nouvelles : <strong>{{ preview.new|length }}</strong> · Modifiées : <strong>{{ preview.modified|length }}</strong> · Inchangées : <strong>{{ preview.unchanged }}</strong></p>
+    {% if preview.errors|length > 0 %}
+        <div class="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm mb-4">
+            <strong>Erreurs</strong>
+            <ul class="list-disc pl-5 mt-1">
+                {% for e in preview.errors %}
+                    <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if preview.new|length > 0 %}
+        <h2 class="font-semibold mt-4 mb-2">Nouvelles</h2>
+        <ul class="text-sm space-y-1 mb-4">
+            {% for n in preview.new %}
+                <li><code>{{ n.legacy_key }}</code> — {{ n.chapter }} / {{ n.article }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if preview.modified|length > 0 %}
+        <h2 class="font-semibold mt-4 mb-2">Modifiées</h2>
+        <ul class="text-sm space-y-1 mb-6">
+            {% for m in preview.modified %}
+                <li><code>{{ m.legacy_key }}</code> — {{ m.summary }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="flex flex-wrap gap-3">
+        <form method="post" action="{{ path('app_admin_qse_req_import_apply', { token: token }) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_qse_req_import_apply') }}">
+            <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold" {% if preview.errors|length > 0 %}disabled{% endif %}>Appliquer en base</button>
+        </form>
+        <a href="{{ path('app_admin_qse_req_import_index') }}" class="inline-flex items-center border border-border px-4 py-2 rounded-lg text-sm">Annuler</a>
+    </div>
+</div>
+{% endblock %}

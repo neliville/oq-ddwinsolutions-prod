@@ -75,7 +75,7 @@ export default class extends Controller {
         const modal = this.element.closest('.modal');
         const modalId = modal ? modal.id : null;
         const triggerButton = modalId
-            ? document.querySelector(`[data-bs-target="#${modalId}"]`)
+            ? document.querySelector(`[data-modal-open="${modalId}"]`)
             : null;
         const cardToRemove = triggerButton
             ? triggerButton.closest('.creation-card, .card, .list-group-item, article')
@@ -95,12 +95,9 @@ export default class extends Controller {
             if (response.ok && data.success) {
                 // Fermer le modal immédiatement
                 if (modal) {
-                    const modalController = this.application.getControllerForElementAndIdentifier(modal, 'bootstrap-modal');
+                    const modalController = this.application.getControllerForElementAndIdentifier(modal, 'app-modal');
                     if (modalController && typeof modalController.hide === 'function') {
                         modalController.hide();
-                    } else if (window.bootstrap) {
-                        const bsModal = window.bootstrap.Modal.getInstance(modal);
-                        if (bsModal) bsModal.hide();
                     }
                 }
 

@@ -1,0 +1,2172 @@
+{
+    "4. Contexte": [
+        {
+            "id": "exig_1",
+            "numero": 1,
+            "article": "4.1",
+            "exigence": "Déterminer les enjeux externes et internes",
+            "commentaire": "Analysez l'environnement externe (marché, réglementation, concurrence) et interne (culture, processus, ressources) qui peuvent affecter votre SMQ."
+        },
+        {
+            "id": "exig_2",
+            "numero": 2,
+            "article": "4.1",
+            "exigence": "Surveiller et passer en revue les informations sur les enjeux",
+            "commentaire": "Analysez l'environnement externe (marché, réglementation, concurrence) et interne (culture, processus, ressources) qui peuvent affecter votre SMQ."
+        },
+        {
+            "id": "exig_3",
+            "numero": 3,
+            "article": "4.2 a",
+            "exigence": "Identifier les parties intéressées",
+            "commentaire": "\"Il n'y a qu'une seule définition valable de la finalité de l'entreprise : créer un client. Peter Drucker\". Liste des parties intéressées pertinentes"
+        },
+        {
+            "id": "exig_4",
+            "numero": 4,
+            "article": "4.2 b",
+            "exigence": "Clarifier les exigences des parties intéressées",
+            "commentaire": "Chaque besoin et attente est unique. Viser un partenariat sur le long terme. Y compris exigences légales"
+        },
+        {
+            "id": "exig_5",
+            "numero": 5,
+            "article": "4.2",
+            "exigence": "Surveiller et passer en revue les informations sur les parties intéressées et leurs exigences",
+            "commentaire": "Identifiez toutes les parties intéressées pertinentes (clients, fournisseurs, autorités) et leurs attentes vis-à-vis de votre SMQ."
+        },
+        {
+            "id": "exig_6",
+            "numero": 6,
+            "article": "4.3",
+            "exigence": "Définir le domaine d'application du SMQ",
+            "commentaire": "Définissez précisément le périmètre du SMQ : activités, produits, services et sites couverts."
+        },
+        {
+            "id": "exig_7",
+            "numero": 7,
+            "article": "4.3 a",
+            "exigence": "Prendre en compte les enjeux externes et internes",
+            "commentaire": "Cf. § 4.1"
+        },
+        {
+            "id": "exig_8",
+            "numero": 8,
+            "article": "4.3 b",
+            "exigence": "Prendre en compte les exigences des parties intéressées",
+            "commentaire": "Cf. § 4.2"
+        },
+        {
+            "id": "exig_9",
+            "numero": 9,
+            "article": "4.3 c",
+            "exigence": "Prendre en compte les produits et services",
+            "commentaire": "Tous les produits et services proposés par l'entreprise sans exception"
+        },
+        {
+            "id": "exig_10",
+            "numero": 10,
+            "article": "4.3",
+            "exigence": "Appliquer toute exigence de la norme ISO 9001 entrant dans le domaine d'application",
+            "commentaire": "Définissez précisément le périmètre du SMQ : activités, produits, services et sites couverts."
+        },
+        {
+            "id": "exig_11",
+            "numero": 11,
+            "article": "4.3",
+            "exigence": "Tenir à jour une information documentée sur le domaine d'application du SMQ",
+            "commentaire": "Définissez précisément le périmètre du SMQ : activités, produits, services et sites couverts."
+        },
+        {
+            "id": "exig_12",
+            "numero": 12,
+            "article": "4.3",
+            "exigence": "Inclure dans le domaine d'application du SMQ une justification pour toute exigence qui ne peut être appliquée",
+            "commentaire": "Définissez précisément le périmètre du SMQ : activités, produits, services et sites couverts."
+        },
+        {
+            "id": "exig_13",
+            "numero": 13,
+            "article": "4.4.1",
+            "exigence": "Établir, mettre en place, tenir à jour et améliorer un SMQ basé sur les processus",
+            "commentaire": "L'entreprise est libre de décider comment appliquer le SMQ sans oublier les enjeux (cf. § 4.1) et les exigences (cf. § 4.2)"
+        },
+        {
+            "id": "exig_14",
+            "numero": 14,
+            "article": "4.4.1",
+            "exigence": "Déterminer les processus nécessaires et leur application",
+            "commentaire": "\"Si vous ne pouvez pas décrire ce que vous faites en tant que processus, vous ne savez pas ce que vous faites. Edwards Deming\". Cartographie des processus"
+        },
+        {
+            "id": "exig_15",
+            "numero": 15,
+            "article": "4.4.1 a",
+            "exigence": "Déterminer les éléments d'entrée et de sortie des processus",
+            "commentaire": "Fiche de processus"
+        },
+        {
+            "id": "exig_17",
+            "numero": 17,
+            "article": "4.4.1 c",
+            "exigence": "Déterminer les critères et méthodes pour la maîtrise des processus",
+            "commentaire": "Outils du responsable qualité. Cf. §§ 8.1 et 8.2"
+        },
+        {
+            "id": "exig_18",
+            "numero": 18,
+            "article": "4.4.1 d",
+            "exigence": "Déterminer et assurer les ressources",
+            "commentaire": "Nécessaires pour soutenir les processus. Cf. § 7.1"
+        },
+        {
+            "id": "exig_19",
+            "numero": 19,
+            "article": "4.4.1 e",
+            "exigence": "Attribuer les responsabilités et autorités des processus",
+            "commentaire": "Description de fonction du pilote de processus. Cf. § 5.3"
+        },
+        {
+            "id": "exig_20",
+            "numero": 20,
+            "article": "4.4.1 f",
+            "exigence": "Prendre en compte les risques et opportunités pour chaque processus",
+            "commentaire": "Planifier et mettre en place des actions face à ces risques, cf. § 6.1"
+        },
+        {
+            "id": "exig_21",
+            "numero": 21,
+            "article": "4.4.1 g",
+            "exigence": "Évaluer les processus et les modifier si nécessaire",
+            "commentaire": "Déterminer les méthodes pour surveiller, mesurer, évaluer et modifier les processus. Cf. § 9.1.1"
+        },
+        {
+            "id": "exig_22",
+            "numero": 22,
+            "article": "4.4.1 h",
+            "exigence": "Déterminer les opportunités d'amélioration des processus et du SMQ",
+            "commentaire": "Cf. §§ 9.2 et 10.1"
+        },
+        {
+            "id": "exig_23",
+            "numero": 23,
+            "article": "4.4.2",
+            "exigence": "Tenir à jour une information documentée sur le fonctionnement des processus",
+            "commentaire": "Cf. § 7.5. Le strict nécessaire est suffisant. Utiliser la cartographie des processus"
+        },
+        {
+            "id": "exig_24",
+            "numero": 24,
+            "article": "4.4.2",
+            "exigence": "Conserver des informations documentées sur le fonctionnement des processus",
+            "commentaire": "Cf. § 7.5. Le but est de s'assurer que les résultats des processus sont ceux que l'on a prévus"
+        }
+    ],
+    "5. Leadership": [
+        {
+            "id": "exig_25",
+            "numero": 25,
+            "article": "5.1.1 a",
+            "exigence": "Assumer la responsabilité de l'efficacité du SMQ",
+            "commentaire": "\"Un escalier se balaie en commençant par le haut. Proverbe roumain\". La direction fait preuve de leadership (assume sa responsabilité et son engagement). Orientation sur la qualité et les clients"
+        },
+        {
+            "id": "exig_26",
+            "numero": 26,
+            "article": "5.1.1 b",
+            "exigence": "Établir une politique qualité et des objectifs qualité",
+            "commentaire": "La politique et les objectifs sont compatibles avec l'orientation stratégique et le contexte de l'entreprise"
+        },
+        {
+            "id": "exig_27",
+            "numero": 27,
+            "article": "5.1.1 c",
+            "exigence": "Intégrer les exigences du SMQ dans les exigences internes des processus",
+            "commentaire": "Cf. §§ 4.4 et 7.1.4"
+        },
+        {
+            "id": "exig_28",
+            "numero": 28,
+            "article": "5.1.1 d",
+            "exigence": "Sensibiliser à l'approche processus et l'approche par les risques",
+            "commentaire": "Cf. le § 0.3 de l'introduction et le § 6.1"
+        },
+        {
+            "id": "exig_29",
+            "numero": 29,
+            "article": "5.1.1 e",
+            "exigence": "Fournir les ressources nécessaires au SMQ",
+            "commentaire": "Cf. § 7.1"
+        },
+        {
+            "id": "exig_30",
+            "numero": 30,
+            "article": "5.1.1 f",
+            "exigence": "Sensibiliser sur l'importance d'un SMQ efficace et conforme",
+            "commentaire": "Troisième principe de management de la qualité (implication du personnel)"
+        },
+        {
+            "id": "exig_31",
+            "numero": 31,
+            "article": "5.1.1 g",
+            "exigence": "Garantir l'atteinte des résultats escomptés du SMQ",
+            "commentaire": "Engagement essentiel de la direction"
+        },
+        {
+            "id": "exig_32",
+            "numero": 32,
+            "article": "5.1.1 h",
+            "exigence": "Soutenir la contribution du personnel à l'efficacité du SMQ",
+            "commentaire": "\"Les employés d'abord, les clients ensuite. Vineet Nayar\""
+        },
+        {
+            "id": "exig_33",
+            "numero": 33,
+            "article": "5.1.1 i",
+            "exigence": "Promouvoir l'amélioration continue",
+            "commentaire": "Cf. § 10.3"
+        },
+        {
+            "id": "exig_34",
+            "numero": 34,
+            "article": "5.1.1 j",
+            "exigence": "Soutenir le leadership des managers",
+            "commentaire": "La responsabilité et l'autorité des managers sont épaulées à tout instant par la direction"
+        },
+        {
+            "id": "exig_35",
+            "numero": 35,
+            "article": "5.1.2 a",
+            "exigence": "Déterminer et satisfaire aux exigences du client, légales et réglementaires",
+            "commentaire": "La direction fait preuve de leadership (assume sa responsabilité et son engagement) en permanence. Cf. § 8.2"
+        },
+        {
+            "id": "exig_36",
+            "numero": 36,
+            "article": "5.1.2 b",
+            "exigence": "Déterminer et traiter les risques et opportunités potentiels",
+            "commentaire": "Tout risque et opportunité pouvant influencer sur la conformité des produits et services et la satisfaction du client. Préserver l'objectif de toujours fournir des produits et services conformes"
+        },
+        {
+            "id": "exig_37",
+            "numero": 37,
+            "article": "5.1.2 c",
+            "exigence": "Maintenir l'objectif de satisfaire toujours mieux le client",
+            "commentaire": "Premier principe de management de la qualité (orientation client), cf. § 9.1.2"
+        },
+        {
+            "id": "exig_38",
+            "numero": 38,
+            "article": "5.2.1 a",
+            "exigence": "Établir, mettre en place et tenir à jour une politique qualité adéquate",
+            "commentaire": "La direction applique une politique adaptée à la raison d'être, à l'orientation stratégique, à la culture et au contexte de l'entreprise, cf. § 7.5"
+        },
+        {
+            "id": "exig_39",
+            "numero": 39,
+            "article": "5.2.1 b",
+            "exigence": "Fournir un cadre afin de définir et passer en revue les objectifs qualité",
+            "commentaire": "Cf. § 6.2"
+        },
+        {
+            "id": "exig_40",
+            "numero": 40,
+            "article": "5.2.1 c",
+            "exigence": "Inclure la satisfaction aux exigences applicables",
+            "commentaire": "Cf. § 9.1.3"
+        },
+        {
+            "id": "exig_41",
+            "numero": 41,
+            "article": "5.2.1 d",
+            "exigence": "Inclure l'engagement d'améliorer en continu le SMQ",
+            "commentaire": "Cf. § 10.3"
+        },
+        {
+            "id": "exig_42",
+            "numero": 42,
+            "article": "5.2.2 a",
+            "exigence": "Tenir à jour la politique qualité comme information documentée",
+            "commentaire": "Et la rendre disponible en interne. Cf. § 7.5"
+        },
+        {
+            "id": "exig_43",
+            "numero": 43,
+            "article": "5.2.2 b",
+            "exigence": "Communiquer la politique qualité",
+            "commentaire": "Pour quelle soit comprise et appliquée, cf. § 7.4"
+        },
+        {
+            "id": "exig_44",
+            "numero": 44,
+            "article": "5.2.2 c",
+            "exigence": "Tenir disponible la politique qualité",
+            "commentaire": "La politique qualité ne peut être un document confidentiel, elle est disponible pour les parties intéressées pertinentes"
+        },
+        {
+            "id": "exig_45",
+            "numero": 45,
+            "article": "5.3",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "Définir clairement les rôles, responsabilités et autorités dans l'organisation."
+        },
+        {
+            "id": "exig_46",
+            "numero": 46,
+            "article": "5.3 a",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "La direction attribue tous les rôles pertinents conformément aux exigences de la norme ISO 9001"
+        },
+        {
+            "id": "exig_47",
+            "numero": 47,
+            "article": "5.3 b",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "La direction attribue tous les rôles pertinents afin que les processus produisent les résultats attendus, cf. § 8.5.1"
+        },
+        {
+            "id": "exig_48",
+            "numero": 48,
+            "article": "5.3 c",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "La direction attribue tous les rôles pertinents afin de rendre compte de la performance du SMQ et des opportunités d'amélioration, cf. § 10.1"
+        },
+        {
+            "id": "exig_49",
+            "numero": 49,
+            "article": "5.3 d",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "La direction attribue tous les rôles pertinents afin de promouvoir l'orientation client comme premier principe de management de la qualité, cf. §§ 5.1 et 7.3"
+        },
+        {
+            "id": "exig_50",
+            "numero": 50,
+            "article": "5.3 e",
+            "exigence": "Définir et communiquer les responsabilités et autorités",
+            "commentaire": "La direction attribue tous les rôles pertinents afin de s'assurer que les modifications appliquées n'affectent pas l'intégrité du SMQ"
+        }
+    ],
+    "6. Planification": [
+        {
+            "id": "exig_51",
+            "numero": 51,
+            "article": "6.1.1 a",
+            "exigence": "Prendre en compte les risques et opportunités",
+            "commentaire": "Afin de s'assurer que le SMQ peut atteindre les résultats escomptés, cf. §§ 4.1 (contexte) et 4.2 (parties intéressées). \"Toute décision comporte un risque. Peter Barge.\""
+        },
+        {
+            "id": "exig_52",
+            "numero": 52,
+            "article": "6.1.1 b",
+            "exigence": "Prendre en compte les opportunités",
+            "commentaire": "Afin d'augmenter les effets souhaitables (impact bénéfique)"
+        },
+        {
+            "id": "exig_53",
+            "numero": 53,
+            "article": "6.1.1 c",
+            "exigence": "Prendre en compte les risques",
+            "commentaire": "Afin de diminuer les effets indésirables (impacts négatif)"
+        },
+        {
+            "id": "exig_54",
+            "numero": 54,
+            "article": "6.1.1 d",
+            "exigence": "Prendre en compte les risques et opportunités",
+            "commentaire": "Afin de confirmer l'approche d'amélioration continue, cf. § 10.3"
+        },
+        {
+            "id": "exig_55",
+            "numero": 55,
+            "article": "6.1.2 a",
+            "exigence": "Planifier les actions face aux risques et opportunités",
+            "commentaire": "Prendre en compte les risques dans chaque processus"
+        },
+        {
+            "id": "exig_56",
+            "numero": 56,
+            "article": "6.1.2 b 1",
+            "exigence": "Planifier la manière de mettre en place les actions",
+            "commentaire": "Définir comment intégrer les actions dans les processus du SMQ, cf. § 4.4"
+        },
+        {
+            "id": "exig_57",
+            "numero": 57,
+            "article": "6.1.2 b 2",
+            "exigence": "Planifier la manière d'évaluer les actions",
+            "commentaire": "Suivre les résultats de chaque action, cf. § 9.2"
+        },
+        {
+            "id": "exig_58",
+            "numero": 58,
+            "article": "6.1.2",
+            "exigence": "Adapter les actions face aux risques et opportunités",
+            "commentaire": "Par rapport à l'impact potentiel sur la conformité des produits et services, cf. § 7.1.4"
+        },
+        {
+            "id": "exig_59",
+            "numero": 59,
+            "article": "6.2.1",
+            "exigence": "Établir des objectifs qualité pour les processus",
+            "commentaire": "\"Celui qui n'a pas d'objectifs ne risque pas de les atteindre. Sun Tzu\""
+        },
+        {
+            "id": "exig_60",
+            "numero": 60,
+            "article": "6.2.1 a",
+            "exigence": "Choisir des objectifs qualité",
+            "commentaire": "Clarifier les critères pour fixer des objectifs cohérents avec la politique qualité"
+        },
+        {
+            "id": "exig_61",
+            "numero": 61,
+            "article": "6.2.1 b",
+            "exigence": "Utiliser des objectifs mesurables",
+            "commentaire": "Et réalistes"
+        },
+        {
+            "id": "exig_62",
+            "numero": 62,
+            "article": "6.2.1 c",
+            "exigence": "Prendre en compte les exigences applicables",
+            "commentaire": "Cf. § 4.2"
+        },
+        {
+            "id": "exig_63",
+            "numero": 63,
+            "article": "6.2.1 d",
+            "exigence": "Adopter des objectifs pertinents",
+            "commentaire": "Afin d'assurer la conformité des produits et services et l'amélioration de la satisfaction des clients"
+        },
+        {
+            "id": "exig_64",
+            "numero": 64,
+            "article": "6.2.1 e",
+            "exigence": "Surveiller les objectifs",
+            "commentaire": "Régulièrement"
+        },
+        {
+            "id": "exig_65",
+            "numero": 65,
+            "article": "6.2.1 f",
+            "exigence": "Communiquer sur les objectifs",
+            "commentaire": "À tous les niveaux"
+        },
+        {
+            "id": "exig_66",
+            "numero": 66,
+            "article": "6.2.1 g",
+            "exigence": "Tenir à jour les objectifs",
+            "commentaire": "Pendant la revue de direction, cf. § 9.3"
+        },
+        {
+            "id": "exig_67",
+            "numero": 67,
+            "article": "6.2.1",
+            "exigence": "Tenir à jour des informations documentées sur les objectifs qualité",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_68",
+            "numero": 68,
+            "article": "6.2.2 a",
+            "exigence": "Planifier comment faire",
+            "commentaire": "Afin d'atteindre les objectifs qualité, cf. § 4.4"
+        },
+        {
+            "id": "exig_69",
+            "numero": 69,
+            "article": "6.2.2 b",
+            "exigence": "Planifier les ressources nécessaires",
+            "commentaire": "Afin d'atteindre les objectifs qualité"
+        },
+        {
+            "id": "exig_70",
+            "numero": 70,
+            "article": "6.2.2 c",
+            "exigence": "Planifier les responsabilités",
+            "commentaire": "Afin d'atteindre les objectifs qualité, cf. § 5.3"
+        },
+        {
+            "id": "exig_71",
+            "numero": 71,
+            "article": "6.2.2 d",
+            "exigence": "Planifier les délais à respecter",
+            "commentaire": "Afin d'atteindre les objectifs qualité"
+        },
+        {
+            "id": "exig_72",
+            "numero": 72,
+            "article": "6.2.2 e",
+            "exigence": "Planifier comment évaluer les résultats",
+            "commentaire": "Afin d'atteindre les objectifs qualité"
+        },
+        {
+            "id": "exig_73",
+            "numero": 73,
+            "article": "6.3",
+            "exigence": "Planifier le besoin de modifications du SMQ",
+            "commentaire": "Planifier et maîtriser les modifications du SMQ pour maintenir son intégrité."
+        },
+        {
+            "id": "exig_74",
+            "numero": 74,
+            "article": "6.3 a",
+            "exigence": "Planifier les modifications",
+            "commentaire": "En prenant en compte l'objectif de la modification et les possibles conséquences, cf. § 6.1"
+        },
+        {
+            "id": "exig_75",
+            "numero": 75,
+            "article": "6.3 b",
+            "exigence": "Planifier les modifications",
+            "commentaire": "En prenant en compte le maintien de l'intégralité du SMQ"
+        },
+        {
+            "id": "exig_76",
+            "numero": 76,
+            "article": "6.3 c",
+            "exigence": "Planifier les modifications",
+            "commentaire": "En prenant en compte les ressources disponibles, cf. § 7.1"
+        },
+        {
+            "id": "exig_77",
+            "numero": 77,
+            "article": "6.3 d",
+            "exigence": "Planifier les modifications",
+            "commentaire": "En prenant en compte les responsabilités et autorités attribuées, cf. 5.3"
+        }
+    ],
+    "7. Support": [
+        {
+            "id": "exig_78",
+            "numero": 78,
+            "article": "7.1.1",
+            "exigence": "Fournir les ressources nécessaires",
+            "commentaire": "Afin de soutenir le SMQ, cf. § 9.3"
+        },
+        {
+            "id": "exig_79",
+            "numero": 79,
+            "article": "7.1.1 a",
+            "exigence": "Prendre en compte les ressources existantes",
+            "commentaire": "Et leurs capacités et limites, cf. § 7.1.2"
+        },
+        {
+            "id": "exig_80",
+            "numero": 80,
+            "article": "7.1.1 b",
+            "exigence": "Prendre en compte la nécessité de prestataires externes",
+            "commentaire": "Afin de se procurer les prestations nécessaires non disponibles en interne"
+        },
+        {
+            "id": "exig_81",
+            "numero": 81,
+            "article": "7.1.2",
+            "exigence": "Fournir le personnel approprié pour le fonctionnement efficace du SMQ et de ses processus",
+            "commentaire": "\"Mais dans le long terme - et j'insiste sur ce point - peu importe combien vous avez réussi ou vous êtes pointu ou intelligent ou rusé, votre entreprise et son avenir sont dans les mains des gens que vous embauchez. Akio Morita\""
+        },
+        {
+            "id": "exig_82",
+            "numero": 82,
+            "article": "7.1.3",
+            "exigence": "Fournir et maintenir l'infrastructure nécessaire au fonctionnement des processus",
+            "commentaire": "Afin d'obtenir des produits et services conformes. Exemples : bâtiments, équipements, moyens de transport, matériels informatiques, logiciels"
+        },
+        {
+            "id": "exig_83",
+            "numero": 83,
+            "article": "7.1.4",
+            "exigence": "Fournir et maintenir l'environnement approprié nécessaire au fonctionnement des processus",
+            "commentaire": "Afin d'obtenir des produits et services conformes, cf. § 8.5.1. Exemples : culture d'entreprise, climat de travail, température, ergonomie"
+        },
+        {
+            "id": "exig_84",
+            "numero": 84,
+            "article": "7.1.5.1",
+            "exigence": "Fournir les ressources de surveillance et de mesure appropriées",
+            "commentaire": "Afin d'obtenir des résultats d'inspection attendus"
+        },
+        {
+            "id": "exig_85",
+            "numero": 85,
+            "article": "7.1.5.1 a",
+            "exigence": "Fournir des ressources adaptées aux inspections spécifiques",
+            "commentaire": "Inspecter c'est surveiller et mesurer. Cf. § 7.2"
+        },
+        {
+            "id": "exig_86",
+            "numero": 86,
+            "article": "7.1.5.1 b",
+            "exigence": "Maintenir les ressources",
+            "commentaire": "Afin d'assurer l'adéquation de leur finalité"
+        },
+        {
+            "id": "exig_87",
+            "numero": 87,
+            "article": "7.1.5.1",
+            "exigence": "Conserver les informations documentées sur l'adéquation des ressources d'inspection",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_88",
+            "numero": 88,
+            "article": "7.1.5.2 a",
+            "exigence": "Vérifier ou étalonner régulièrement les instruments de mesure",
+            "commentaire": "Afin d'avoir confiance dans les résultats de mesure. Quand des étalons n'existent pas conserver des informations documentées sur la référence utilisée, cf. § 7.5"
+        },
+        {
+            "id": "exig_89",
+            "numero": 89,
+            "article": "7.1.5.2 b",
+            "exigence": "Identifier les instruments de mesure",
+            "commentaire": "Afin de pouvoir surveiller la validité de leur étalonnage (ou vérification)"
+        },
+        {
+            "id": "exig_90",
+            "numero": 90,
+            "article": "7.1.5.2 c",
+            "exigence": "Protéger les instruments de mesure",
+            "commentaire": "Contre des activités qui peuvent invalider les résultats de mesure (réglages ou détérioration)"
+        },
+        {
+            "id": "exig_91",
+            "numero": 91,
+            "article": "7.1.5.2",
+            "exigence": "Mener une action corrective sur les résultats de mesure antérieurs",
+            "commentaire": "Quand la vérification ou l'étalonnage d'un instrument de mesure est non conforme, cf. § 8.7"
+        },
+        {
+            "id": "exig_92",
+            "numero": 92,
+            "article": "7.1.6",
+            "exigence": "Déterminer les connaissances nécessaires",
+            "commentaire": "Afin de maîtriser les processus et la conformité des produits et services. Descriptions de fonction"
+        },
+        {
+            "id": "exig_93",
+            "numero": 93,
+            "article": "7.1.6",
+            "exigence": "Acquérir, tenir à jour et mettre à disposition autant que nécessaire ces connaissances organisationnelles",
+            "commentaire": "Afin de maintenir la performance du SMQ, cf. § 7.2"
+        },
+        {
+            "id": "exig_94",
+            "numero": 94,
+            "article": "7.1.6",
+            "exigence": "Prendre en compte le besoin de connaissances supplémentaires",
+            "commentaire": "Quand des besoins et tendances ont changé"
+        },
+        {
+            "id": "exig_95",
+            "numero": 95,
+            "article": "7.2 a",
+            "exigence": "Déterminer les compétences nécessaires",
+            "commentaire": "Clarifier les exigences de compétences de la qualité, cf. § 8.5.1. Identifier les personnes ayant une influence sur les performances liées à la qualité"
+        },
+        {
+            "id": "exig_96",
+            "numero": 96,
+            "article": "7.2 b",
+            "exigence": "Garantir ces compétences",
+            "commentaire": "Qui sont basées sur des formations ou expériences appropriées"
+        },
+        {
+            "id": "exig_97",
+            "numero": 97,
+            "article": "7.2 c",
+            "exigence": "Réaliser des activités pour acquérir les compétences nécessaires et évaluer l'efficacité de ces activités",
+            "commentaire": "Formation, accompagnement, prestataires externes"
+        },
+        {
+            "id": "exig_98",
+            "numero": 98,
+            "article": "7.2 d",
+            "exigence": "Conserver des informations documentées sur les compétences du personnel",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_99",
+            "numero": 99,
+            "article": "7.3 a",
+            "exigence": "Sensibiliser le personnel à la politique qualité",
+            "commentaire": "Y compris les personnes qui effectuent un travail sous le contrôle de l'entreprise.Cf. § 5.2"
+        },
+        {
+            "id": "exig_100",
+            "numero": 100,
+            "article": "7.3 b",
+            "exigence": "Sensibiliser le personnel aux objectifs qualité",
+            "commentaire": "Cf. § 6.2"
+        },
+        {
+            "id": "exig_101",
+            "numero": 101,
+            "article": "7.3 c",
+            "exigence": "Sensibiliser le personnel à la contribution de chacun",
+            "commentaire": "Afin d'améliorer la performance du SMQ, cf. § 7.2"
+        },
+        {
+            "id": "exig_102",
+            "numero": 102,
+            "article": "7.3 d",
+            "exigence": "Sensibiliser le personnel aux impacts négatifs",
+            "commentaire": "Si les exigences du SMQ ne sont pas respectées, cf. § 8.7"
+        },
+        {
+            "id": "exig_103",
+            "numero": 103,
+            "article": "7.4 a",
+            "exigence": "Définir sur quels sujets communiquer",
+            "commentaire": "En interne et en externe. \"Les bonnes nouvelles marchent, les mauvaises courent. Proverbe suédois\""
+        },
+        {
+            "id": "exig_104",
+            "numero": 104,
+            "article": "7.4 b",
+            "exigence": "Définir quand communiquer",
+            "commentaire": "Pour les réclamations répondre au plus vite"
+        },
+        {
+            "id": "exig_105",
+            "numero": 105,
+            "article": "7.4 c",
+            "exigence": "Définir avec qui communiquer",
+            "commentaire": "La communication est dans les deux sens"
+        },
+        {
+            "id": "exig_106",
+            "numero": 106,
+            "article": "7.4 d",
+            "exigence": "Définir comment communiquer",
+            "commentaire": "Par oral, par écrit ; Internet, vidéo"
+        },
+        {
+            "id": "exig_107",
+            "numero": 107,
+            "article": "7.4 e",
+            "exigence": "Attribuer qui va communiquer",
+            "commentaire": "Celui qui est au plus près du sujet"
+        },
+        {
+            "id": "exig_108",
+            "numero": 108,
+            "article": "7.5.1 a",
+            "exigence": "Inclure les informations documentées exigées par la norme ISO 9001",
+            "commentaire": "Informations documentées à tenir à jour (procédures documentées) :"
+        },
+        {
+            "id": "exig_109",
+            "numero": 109,
+            "article": "7.5.1 b",
+            "exigence": "Choisir les informations documentées jugées nécessaires pour l'efficacité du SMQ",
+            "commentaire": "\"Les paroles s'envolent, les écrits restent. Proverbe latin\""
+        },
+        {
+            "id": "exig_110",
+            "numero": 110,
+            "article": "7.5.2 a",
+            "exigence": "Créer, identifier et décrire les informations documentées",
+            "commentaire": "Codification, titre, auteur, sujet, produit"
+        },
+        {
+            "id": "exig_111",
+            "numero": 111,
+            "article": "7.5.2 b",
+            "exigence": "Choisir le format et le support des informations documentées",
+            "commentaire": "Langue, figure ; papier, électronique"
+        },
+        {
+            "id": "exig_112",
+            "numero": 112,
+            "article": "7.5.2 c",
+            "exigence": "Passer en revue et approuver la pertinence des informations documentées",
+            "commentaire": "Qui écrit, codifie, qui approuve"
+        },
+        {
+            "id": "exig_113",
+            "numero": 113,
+            "article": "7.5.3.1 a",
+            "exigence": "Maîtriser la disponibilité des informations documentées",
+            "commentaire": "Où et quand c'est nécessaire sous une forme qui convient à l'utilisation"
+        },
+        {
+            "id": "exig_114",
+            "numero": 114,
+            "article": "7.5.3.1 b",
+            "exigence": "Maîtriser la protection des informations documentées",
+            "commentaire": "Perte de confidentialité, perte d'intégrité, utilisation inappropriée"
+        },
+        {
+            "id": "exig_115",
+            "numero": 115,
+            "article": "7.5.3.2 a",
+            "exigence": "Maîtriser la distribution, l'accès et l'utilisation des informations documentées",
+            "commentaire": "Qui est responsable, méthode à utiliser, règle à respecter"
+        },
+        {
+            "id": "exig_116",
+            "numero": 116,
+            "article": "7.5.3.2 b",
+            "exigence": "Maîtriser le stockage des informations documentées",
+            "commentaire": "Y compris la préservation, la protection et la lisibilité"
+        },
+        {
+            "id": "exig_117",
+            "numero": 117,
+            "article": "7.5.3.2 c",
+            "exigence": "Maîtriser les modifications des informations documentées",
+            "commentaire": "Utilisation des versions à jour, accès restreint des versions obsolètes"
+        },
+        {
+            "id": "exig_118",
+            "numero": 118,
+            "article": "7.5.3.2 d",
+            "exigence": "Maîtriser la conservation et l'élimination des informations documentées",
+            "commentaire": "Délai de conservation, méthode d'élimination"
+        },
+        {
+            "id": "exig_119",
+            "numero": 119,
+            "article": "7.5.3.2",
+            "exigence": "Maîtriser les informations documentées d'origine externe",
+            "commentaire": "Codification unique, accès, protection"
+        },
+        {
+            "id": "exig_120",
+            "numero": 120,
+            "article": "7.5.3.2",
+            "exigence": "Protéger les informations documentées",
+            "commentaire": "Qui a le droit de lire, qui a le droit de modifier"
+        }
+    ],
+    "8. Réalisation": [
+        {
+            "id": "exig_121",
+            "numero": 121,
+            "article": "8.1 a",
+            "exigence": "Planifier et déterminer les exigences relatives aux produits et services",
+            "commentaire": "En maîtrisant les processus. Cf. §§ 4.4 et 6.1"
+        },
+        {
+            "id": "exig_122",
+            "numero": 122,
+            "article": "8.1 b 1",
+            "exigence": "Établir les critères",
+            "commentaire": "Critères liés aux processus"
+        },
+        {
+            "id": "exig_123",
+            "numero": 123,
+            "article": "8.1 b 2",
+            "exigence": "Établir les critères",
+            "commentaire": "Critères liés à l'acceptation des produits et services conformes, cf. § 8.5.1"
+        },
+        {
+            "id": "exig_124",
+            "numero": 124,
+            "article": "8.1 c",
+            "exigence": "Déterminer les ressources nécessaires",
+            "commentaire": "Ressources pour obtenir la conformité des produits et services, cf. § 7.1"
+        },
+        {
+            "id": "exig_125",
+            "numero": 125,
+            "article": "8.1 d",
+            "exigence": "Maîtriser les processus",
+            "commentaire": "En conformité aux critères des §§ 8.1 b 1 et 8.1 b 2"
+        },
+        {
+            "id": "exig_126",
+            "numero": 126,
+            "article": "8.1 e 1",
+            "exigence": "Déterminer, tenir à jour et conserver les informations documentées de la maîtrise des processus",
+            "commentaire": "Pour s'assurer que les résultats des processus sont conformes aux prévisions. Cf. § 7.5"
+        },
+        {
+            "id": "exig_127",
+            "numero": 127,
+            "article": "8.1 e 2",
+            "exigence": "Déterminer et conserver les informations documentées de la maîtrise de la conformité des produits et services",
+            "commentaire": "Respect des exigences applicables. Cf. § 7.5"
+        },
+        {
+            "id": "exig_128",
+            "numero": 128,
+            "article": "8.1",
+            "exigence": "Maîtriser les modifications prévues et imprévues",
+            "commentaire": "Planifier, mettre en œuvre et maîtriser les processus de réalisation."
+        },
+        {
+            "id": "exig_129",
+            "numero": 129,
+            "article": "8.1",
+            "exigence": "Maîtriser les processus externalisés",
+            "commentaire": "Planifier, mettre en œuvre et maîtriser les processus de réalisation."
+        },
+        {
+            "id": "exig_130",
+            "numero": 130,
+            "article": "8.2.1 a",
+            "exigence": "Fournir aux clients des informations",
+            "commentaire": "Concernant les produits et services. Cf. § 7.4"
+        },
+        {
+            "id": "exig_131",
+            "numero": 131,
+            "article": "8.2.1 b",
+            "exigence": "Maîtriser la communication avec les clients",
+            "commentaire": "Concernant les contrats, commandes, avenants et consultations"
+        },
+        {
+            "id": "exig_132",
+            "numero": 132,
+            "article": "8.2.1 c",
+            "exigence": "Maîtriser la communication avec les clients",
+            "commentaire": "Concernant la perception, les avis, les réclamations et recommandations. \"La chose la plus importante en communication, c'est d'entendre ce qui n'est pas dit. Peter Drucker\""
+        },
+        {
+            "id": "exig_133",
+            "numero": 133,
+            "article": "8.2.1 d",
+            "exigence": "Maîtriser la communication avec les clients",
+            "commentaire": "Concernant leur propriété. Cf. § 8.5.3"
+        },
+        {
+            "id": "exig_134",
+            "numero": 134,
+            "article": "8.2.1 e",
+            "exigence": "Maîtriser la communication avec les clients",
+            "commentaire": "Concernant les exigences spécifiques des actions d'urgence"
+        },
+        {
+            "id": "exig_135",
+            "numero": 135,
+            "article": "8.2.2 a 1",
+            "exigence": "Mettre en place des activités spécifiques relatives aux produits et services",
+            "commentaire": "Afin de clarifier les exigences légales et réglementaires"
+        },
+        {
+            "id": "exig_136",
+            "numero": 136,
+            "article": "8.2.2 a 2",
+            "exigence": "Définir les exigences internes",
+            "commentaire": "Relatives aux processus, produits et services. Et vérifier que les exigences peuvent être respectées"
+        },
+        {
+            "id": "exig_137",
+            "numero": 137,
+            "article": "8.2.2 b",
+            "exigence": "Pouvoir répondre aux réclamations",
+            "commentaire": "De manière pertinente (avec des faits)"
+        },
+        {
+            "id": "exig_138",
+            "numero": 138,
+            "article": "8.2.3.1",
+            "exigence": "Pouvoir répondre au client",
+            "commentaire": "En relation avec les exigences relatives aux produits et services proposés"
+        },
+        {
+            "id": "exig_139",
+            "numero": 139,
+            "article": "8.2.3.1 a",
+            "exigence": "Passer en revue les exigences explicites du client",
+            "commentaire": "Avant d'accepter une commande. Y compris les exigences de livraison et activités après livraison"
+        },
+        {
+            "id": "exig_140",
+            "numero": 140,
+            "article": "8.2.3.1 b",
+            "exigence": "Passer en revue les exigences implicites du client",
+            "commentaire": "Avant d'accepter une commande. Exigences non formulées mais nécessaires pour l'usage spécifié ou celui prévu par le client"
+        },
+        {
+            "id": "exig_141",
+            "numero": 141,
+            "article": "8.2.3.1 c",
+            "exigence": "Passer en revue les exigences internes",
+            "commentaire": "Contraintes de nos capacités"
+        },
+        {
+            "id": "exig_142",
+            "numero": 142,
+            "article": "8.2.3.1 d",
+            "exigence": "Passer en revue les exigences légales et réglementaires",
+            "commentaire": "Exigences applicables aux produits et services"
+        },
+        {
+            "id": "exig_143",
+            "numero": 143,
+            "article": "8.2.3.1 e",
+            "exigence": "Passer en revue les écarts",
+            "commentaire": "Entre exigences d'une commande (ou contrat) et celles précédemment exprimées"
+        },
+        {
+            "id": "exig_144",
+            "numero": 144,
+            "article": "8.2.3.1",
+            "exigence": "Résoudre les écarts",
+            "commentaire": "Avant d'accepter une commande et de s'engager à fournir des produits et services"
+        },
+        {
+            "id": "exig_145",
+            "numero": 145,
+            "article": "8.2.3.1",
+            "exigence": "Confirmer les exigences avant d'accepter une commande",
+            "commentaire": "Quand les exigences ne sont pas sous forme de document"
+        },
+        {
+            "id": "exig_146",
+            "numero": 146,
+            "article": "8.2.3.2 a",
+            "exigence": "Conserver des informations documentées sur les résultats des revues des exigences",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_147",
+            "numero": 147,
+            "article": "8.2.3.2 b",
+            "exigence": "Conserver des informations documentées sur toute exigence nouvelle ou modifiée des produits et services",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_148",
+            "numero": 148,
+            "article": "8.2.4",
+            "exigence": "Communiquer les modifications aux personnes concernées",
+            "commentaire": "Après avoir modifié les exigences dans les informations documentées, cf §§ 7.4 et 7.5"
+        },
+        {
+            "id": "exig_149",
+            "numero": 149,
+            "article": "8.3.1",
+            "exigence": "Établir, mettre en place et tenir à jour un processus de conception et développement",
+            "commentaire": "Quand les exigences du produit ou service ne sont pas encore définies. \"Je n'ai pas échoué. J'ai juste trouvé 10.000 moyens qui ne fonctionnent pas. Thomas Edison\""
+        },
+        {
+            "id": "exig_150",
+            "numero": 150,
+            "article": "8.3.2 a",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte la spécificité des activités de conception et de développement"
+        },
+        {
+            "id": "exig_151",
+            "numero": 151,
+            "article": "8.3.2 b",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les exigences du processus et les revues applicables"
+        },
+        {
+            "id": "exig_152",
+            "numero": 152,
+            "article": "8.3.2 c",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les activités de vérification et de validation"
+        },
+        {
+            "id": "exig_153",
+            "numero": 153,
+            "article": "8.3.2 d",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les responsabilités et autorités nécessaires"
+        },
+        {
+            "id": "exig_154",
+            "numero": 154,
+            "article": "8.3.2 e",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les besoins en ressources internes et externes"
+        },
+        {
+            "id": "exig_155",
+            "numero": 155,
+            "article": "8.3.2 f",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les relations entre les participants de la conception et du développement"
+        },
+        {
+            "id": "exig_156",
+            "numero": 156,
+            "article": "8.3.2 g",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte besoin d'impliquer des clients et des utilisateurs"
+        },
+        {
+            "id": "exig_157",
+            "numero": 157,
+            "article": "8.3.2 h",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les exigences des produits et services ultérieurs"
+        },
+        {
+            "id": "exig_158",
+            "numero": 158,
+            "article": "8.3.2 i",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte le niveau de maîtrise attendu par les parties intéressées"
+        },
+        {
+            "id": "exig_159",
+            "numero": 159,
+            "article": "8.3.2 j",
+            "exigence": "Planifier les étapes de la conception et du développement",
+            "commentaire": "En prenant en compte les informations documentées de satisfaction aux exigences de la conception et du développement. Cf. §§ 8.3.3, 8.3.5 et 8.3.6"
+        },
+        {
+            "id": "exig_160",
+            "numero": 160,
+            "article": "8.3.3",
+            "exigence": "Déterminer les exigences essentielles",
+            "commentaire": "Concernant les types spécifiques de produits et services de la conception et du développement. Liste exhaustive"
+        },
+        {
+            "id": "exig_161",
+            "numero": 161,
+            "article": "8.3.3 a",
+            "exigence": "Déterminer les exigences fonctionnelles",
+            "commentaire": "En prenant en compte aussi les exigences de performance. Liste exhaustive"
+        },
+        {
+            "id": "exig_162",
+            "numero": 162,
+            "article": "8.3.3 b",
+            "exigence": "Clarifier les éléments d'entrée",
+            "commentaire": "En prenant en compte les informations d'activités similaires"
+        },
+        {
+            "id": "exig_163",
+            "numero": 163,
+            "article": "8.3.3 c",
+            "exigence": "Clarifier les éléments d'entrée",
+            "commentaire": "En prenant en compte les exigences légales et réglementaires"
+        },
+        {
+            "id": "exig_164",
+            "numero": 164,
+            "article": "8.3.3 d",
+            "exigence": "Clarifier les éléments d'entrée",
+            "commentaire": "En prenant en compte la culture d'entreprise, les règles de l'art internes"
+        },
+        {
+            "id": "exig_165",
+            "numero": 165,
+            "article": "8.3.3 e",
+            "exigence": "Clarifier les éléments d'entrée",
+            "commentaire": "En prenant en compte les conséquences possibles d'une défaillance du produit ou service (risque de ne pas satisfaire un élément de sortie. Outil à utiliser AMDEC)"
+        },
+        {
+            "id": "exig_166",
+            "numero": 166,
+            "article": "8.3.3",
+            "exigence": "Vérifier que les éléments d'entrée sont complets et non ambigus",
+            "commentaire": "Afin de réaliser un processus de conception et de développement approprié"
+        },
+        {
+            "id": "exig_167",
+            "numero": 167,
+            "article": "8.3.3",
+            "exigence": "Résoudre les conflits potentiels entre les éléments d'entrée",
+            "commentaire": "Afin d'obtenir des éléments d'entrée complets et non ambigus"
+        },
+        {
+            "id": "exig_168",
+            "numero": 168,
+            "article": "8.3.3",
+            "exigence": "Conserver des informations documentées sur les éléments d'entrée de la conception et du développement",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_169",
+            "numero": 169,
+            "article": "8.3.4 a",
+            "exigence": "Définir clairement les résultats attendus",
+            "commentaire": "Performance concernant les processus, produits et services"
+        },
+        {
+            "id": "exig_170",
+            "numero": 170,
+            "article": "8.3.4 b",
+            "exigence": "Mener des revues comme planifié",
+            "commentaire": "Problèmes, situation par rapport au planning (cf. § 8.3.2)"
+        },
+        {
+            "id": "exig_171",
+            "numero": 171,
+            "article": "8.3.4 c",
+            "exigence": "Vérifier que les éléments de sortie satisfont aux exigences d'entrée",
+            "commentaire": "Cf. § 8.3.5"
+        },
+        {
+            "id": "exig_172",
+            "numero": 172,
+            "article": "8.3.4 d",
+            "exigence": "Valider les produits et services",
+            "commentaire": "Pour s'assurer que les exigences d'application spécifiée ou l'usage prévu sont respectées"
+        },
+        {
+            "id": "exig_173",
+            "numero": 173,
+            "article": "8.3.4 e",
+            "exigence": "Entreprendre les actions suite aux problèmes identifiés",
+            "commentaire": "Pendant les revues, les vérifications et validations"
+        },
+        {
+            "id": "exig_174",
+            "numero": 174,
+            "article": "8.3.4 f",
+            "exigence": "S'assurer que les informations documentées sont conservées",
+            "commentaire": "Cf. § 7.5. Cf. § 8.3.3, 8.3.5 et 8.3.6"
+        },
+        {
+            "id": "exig_175",
+            "numero": 175,
+            "article": "8.3.5 a",
+            "exigence": "S'assurer que les éléments de sortie satisfont aux exigences d'entrée",
+            "commentaire": "Cf. § 8.3.3"
+        },
+        {
+            "id": "exig_176",
+            "numero": 176,
+            "article": "8.3.5 b",
+            "exigence": "S'assurer que les éléments de sortie sont en adéquation avec les processus ultérieurs",
+            "commentaire": "Concernant les produits et services"
+        },
+        {
+            "id": "exig_177",
+            "numero": 177,
+            "article": "8.3.5 c",
+            "exigence": "S'assurer que les éléments de sortie incluent des exigences de surveillance et de mesure",
+            "commentaire": "Y compris des critères d'acceptation"
+        },
+        {
+            "id": "exig_178",
+            "numero": 178,
+            "article": "8.3.5 d",
+            "exigence": "S'assurer que les éléments de sortie sont adaptés à l'usage prévu",
+            "commentaire": "Utilisation appropriée ou prévue par le client en toute sécurité"
+        },
+        {
+            "id": "exig_179",
+            "numero": 179,
+            "article": "8.3.5",
+            "exigence": "Conserver les informations documentées sur les éléments de sortie",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_180",
+            "numero": 180,
+            "article": "8.3.6",
+            "exigence": "Identifier, passer en revue et maîtriser les modifications effectuées sur les éléments d'entrée et de sortie",
+            "commentaire": "Afin de s'assurer que les modifications n'ont pas d'impact sur le respect des exigences"
+        },
+        {
+            "id": "exig_181",
+            "numero": 181,
+            "article": "8.3.6 a",
+            "exigence": "Conserver les informations documentées sur les modifications",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_182",
+            "numero": 182,
+            "article": "8.3.6 b",
+            "exigence": "Conserver les informations documentées sur les résultats des revues",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_183",
+            "numero": 183,
+            "article": "8.3.6 c",
+            "exigence": "Conserver les informations documentées sur l'autorisation des modifications",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_184",
+            "numero": 184,
+            "article": "8.3.6 d",
+            "exigence": "Conserver les informations documentées sur les actions",
+            "commentaire": "Afin de prévenir les impacts négatifs. Cf. § 7.5"
+        },
+        {
+            "id": "exig_185",
+            "numero": 185,
+            "article": "8.4.1",
+            "exigence": "S'assurer que la fourniture des prestataires externes respecte les exigences spécifiées",
+            "commentaire": "\"Vous pouvez externaliser l'activité, mais vous ne pouvez pas externaliser le risque. Michael Gallagher\""
+        },
+        {
+            "id": "exig_186",
+            "numero": 186,
+            "article": "8.4.1 a",
+            "exigence": "Appliquer les exigences pour la maîtrise des produits et services fournis par les prestataires externes",
+            "commentaire": "Quand les produits et services sont intégrés en interne"
+        },
+        {
+            "id": "exig_187",
+            "numero": 187,
+            "article": "8.4.1 b",
+            "exigence": "Appliquer les exigences pour la maîtrise des produits et services",
+            "commentaire": "Quand les produits et services sont directement fournis aux clients par les prestataires externes pour le compte de l'entreprise"
+        },
+        {
+            "id": "exig_188",
+            "numero": 188,
+            "article": "8.4.1 c",
+            "exigence": "Appliquer les exigences pour la maîtrise d'un processus réalisé par un prestataire externe",
+            "commentaire": "Quand une décision a été prise pour externaliser le processus"
+        },
+        {
+            "id": "exig_189",
+            "numero": 189,
+            "article": "8.4.1",
+            "exigence": "Établir et appliquer des critères d'évaluation et de sélection des prestataires externes et surveiller leur performance",
+            "commentaire": "Y compris la réévaluation régulière"
+        },
+        {
+            "id": "exig_190",
+            "numero": 190,
+            "article": "8.4.1",
+            "exigence": "Conserver les informations documentées sur les résultats des évaluations et de la surveillance",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_191",
+            "numero": 191,
+            "article": "8.4.2",
+            "exigence": "S'assurer du niveau de maîtrise des prestataires externes sur la satisfaction aux exigences",
+            "commentaire": "Afin que la fourniture des prestataires externes n'influence pas sur la conformité des produits et services livrés au client"
+        },
+        {
+            "id": "exig_192",
+            "numero": 192,
+            "article": "8.4.2 a",
+            "exigence": "S'assurer que les processus du prestataire externe sont maîtrisés",
+            "commentaire": "En conformité avec le SMQ du prestataire externe. Tout processus externalisé entre dans le domaine d'application du SMQ"
+        },
+        {
+            "id": "exig_193",
+            "numero": 193,
+            "article": "8.4.2 b",
+            "exigence": "Définir comment maîtriser le prestataire externe et les éléments de sortie de son processus",
+            "commentaire": "Le niveau de maîtrise (ou d'influence) d'un prestataire externe est un domaine parfois très délicat. Rester attentif et bienveillant !"
+        },
+        {
+            "id": "exig_194",
+            "numero": 194,
+            "article": "8.4.2 c 1",
+            "exigence": "Prendre en compte l'impact potentiel des éléments de sortie du prestataire externe",
+            "commentaire": "Sur le respect des exigences des produits et services livrés au client et sur les exigences légales et réglementaires"
+        },
+        {
+            "id": "exig_195",
+            "numero": 195,
+            "article": "8.4.2 c 2",
+            "exigence": "Prendre en compte la maîtrise du prestataire externe",
+            "commentaire": "Et l'efficacité de cette maîtrise"
+        },
+        {
+            "id": "exig_196",
+            "numero": 196,
+            "article": "8.4.2 d",
+            "exigence": "Définir comment maîtriser les éléments de sortie du processus externalisé",
+            "commentaire": "Vérifications et autres activités nécessaires afin de s'assurer que la fourniture des prestataires externes n'influe pas sur la conformité des produits et services livrés au client"
+        },
+        {
+            "id": "exig_197",
+            "numero": 197,
+            "article": "8.4.3",
+            "exigence": "Vérifier l'adéquation des exigences",
+            "commentaire": "Et seulement après les communiquer au prestataire externe"
+        },
+        {
+            "id": "exig_198",
+            "numero": 198,
+            "article": "8.4.3 a",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant les processus, produits et services à fournir"
+        },
+        {
+            "id": "exig_199",
+            "numero": 199,
+            "article": "8.4.3 b 1",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant l'approbation des produits et services"
+        },
+        {
+            "id": "exig_200",
+            "numero": 200,
+            "article": "8.4.3 b 2",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant l'approbation des méthodes, processus et équipements"
+        },
+        {
+            "id": "exig_201",
+            "numero": 201,
+            "article": "8.4.3 b 3",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant l'approbation de la libération des produits et services"
+        },
+        {
+            "id": "exig_202",
+            "numero": 202,
+            "article": "8.4.3 c",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant les compétences (y compris les qualifications requises)"
+        },
+        {
+            "id": "exig_203",
+            "numero": 203,
+            "article": "8.4.3 d",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant les relations avec le prestataire externe et l'entreprise"
+        },
+        {
+            "id": "exig_204",
+            "numero": 204,
+            "article": "8.4.3 e",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant la maîtrise et la surveillance de la performance du prestataire externe"
+        },
+        {
+            "id": "exig_205",
+            "numero": 205,
+            "article": "8.4.3 f",
+            "exigence": "Communiquer aux prestataires externes les exigences applicables",
+            "commentaire": "Concernant les activités de vérification ou de validation que l'entreprise ou son client veulent réaliser dans les locaux du prestataire externe"
+        },
+        {
+            "id": "exig_206",
+            "numero": 206,
+            "article": "8.5.1",
+            "exigence": "Appliquer des conditions maîtrisées de production et de prestation de service",
+            "commentaire": "Y compris la livraison et les activités après livraison"
+        },
+        {
+            "id": "exig_207",
+            "numero": 207,
+            "article": "8.5.1 a 1",
+            "exigence": "Sauvegarder des informations documentées des spécifications des produits et services et des activités attendues",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_208",
+            "numero": 208,
+            "article": "8.5.1 a 2",
+            "exigence": "Sauvegarder des informations documentées des résultats attendus",
+            "commentaire": "Cf. § 7.5. \"Une maîtrise de la qualité qui ne montre pas de résultats n'est aucune maîtrise. Kaoru Ishikawa\""
+        },
+        {
+            "id": "exig_209",
+            "numero": 209,
+            "article": "8.5.1 b",
+            "exigence": "Inclure dans les conditions maîtrisées les ressources d'inspection",
+            "commentaire": "Cf. § 7.1.5"
+        },
+        {
+            "id": "exig_210",
+            "numero": 210,
+            "article": "8.5.1 c",
+            "exigence": "Inclure dans les conditions maîtrisées les activités d'inspection",
+            "commentaire": "Afin de vérifier aux étapes appropriées que les éléments de sortie des processus satisfont les critères"
+        },
+        {
+            "id": "exig_211",
+            "numero": 211,
+            "article": "8.5.1 d",
+            "exigence": "Inclure dans les conditions maîtrisées l'infrastructure et l'environnement appropriés",
+            "commentaire": "Cf. §§ 7.1.3 et 7.1.4"
+        },
+        {
+            "id": "exig_212",
+            "numero": 212,
+            "article": "8.5.1 e",
+            "exigence": "Inclure dans les conditions maîtrisées les compétences du personnel",
+            "commentaire": "Y compris la qualification nécessaire, cf. § 7.2"
+        },
+        {
+            "id": "exig_213",
+            "numero": 213,
+            "article": "8.5.1 f",
+            "exigence": "Inclure dans les conditions maîtrisées la validation de l'aptitude d'un processus à obtenir les résultats attendus",
+            "commentaire": "Seulement dans le cas quand les éléments de sortie ne peuvent pas être vérifiés à posteriori"
+        },
+        {
+            "id": "exig_214",
+            "numero": 214,
+            "article": "8.5.1 g",
+            "exigence": "Inclure dans les conditions maîtrisées les actions à prévenir l'erreur humaine",
+            "commentaire": "Utiliser des outils comme le Poka-Yoké"
+        },
+        {
+            "id": "exig_215",
+            "numero": 215,
+            "article": "8.5.1 h",
+            "exigence": "Inclure dans les conditions maîtrisées les activités de libération, de livraison et de service après livraison",
+            "commentaire": "Cf. §§ 8.6 et 8.5.5"
+        },
+        {
+            "id": "exig_216",
+            "numero": 216,
+            "article": "8.5.2",
+            "exigence": "Utiliser des moyens appropriés pour maîtriser l'identification unique des éléments de sortie des processus",
+            "commentaire": "Afin d'assurer la conformité des produits et services quand cela est nécessaire, cf. § 8.5.1"
+        },
+        {
+            "id": "exig_217",
+            "numero": 217,
+            "article": "8.5.2",
+            "exigence": "Inspecter les processus tout au long de la production et de la prestation de service",
+            "commentaire": "Afin d'identifier l'état des éléments de sortie des processus, cf. § 8.2.2"
+        },
+        {
+            "id": "exig_218",
+            "numero": 218,
+            "article": "8.5.2",
+            "exigence": "Maîtriser la traçabilité des éléments de sortie des processus",
+            "commentaire": "Quand la traçabilité est une exigence, l'identification unique est utilisée"
+        },
+        {
+            "id": "exig_219",
+            "numero": 219,
+            "article": "8.5.2",
+            "exigence": "Conserver les informations documentées sur la traçabilité",
+            "commentaire": "Cf. § 7.5. Quand la traçabilité est une exigence, l'identification unique des éléments de sortie est utilisée"
+        },
+        {
+            "id": "exig_220",
+            "numero": 220,
+            "article": "8.5.3",
+            "exigence": "Respecter la propriété du client ou du prestataire externe",
+            "commentaire": "Lors de son utilisation ou de sa protection"
+        },
+        {
+            "id": "exig_221",
+            "numero": 221,
+            "article": "8.5.3",
+            "exigence": "Identifier, vérifier, protéger, surveiller et sauvegarder la propriété du client ou du prestataire externe",
+            "commentaire": "Quand elle est utilisée ou incorporée avec des étiquettes à jour"
+        },
+        {
+            "id": "exig_222",
+            "numero": 222,
+            "article": "8.5.3",
+            "exigence": "Notifier le client ou le prestataire externe quand sa propriété a été endommagée ou perdue et conserver des informations documentées sur la situation",
+            "commentaire": "Suite à une utilisation incorrecte ou impropre. Cf. § 7.5."
+        },
+        {
+            "id": "exig_223",
+            "numero": 223,
+            "article": "8.5.4",
+            "exigence": "Préserver les éléments de sortie des processus tout au long des activités de production et de prestation de service",
+            "commentaire": "Quelques exemples de méthodes de préservation : identification, conditionnement, manutention, stockage, transport, protection"
+        },
+        {
+            "id": "exig_224",
+            "numero": 224,
+            "article": "8.5.5",
+            "exigence": "Satisfaire aux exigences relatives aux activités après livraison",
+            "commentaire": "Exemples d'activités après livraison : échange de produit neuf, maintenance, recyclage, élimination finale"
+        },
+        {
+            "id": "exig_225",
+            "numero": 225,
+            "article": "8.5.5 a",
+            "exigence": "Prendre en compte les exigences légales et réglementaires",
+            "commentaire": "Cf. § 4.2"
+        },
+        {
+            "id": "exig_226",
+            "numero": 226,
+            "article": "8.5.5 b",
+            "exigence": "Prendre en compte les impacts négatifs liés aux produits et services",
+            "commentaire": "Ce sont les conséquences des risques potentiels, cf. § 8.7"
+        },
+        {
+            "id": "exig_227",
+            "numero": 227,
+            "article": "8.5.5 c",
+            "exigence": "Prendre en compte la nature, l'utilisation prévue et le cycle de vie des produits et services",
+            "commentaire": "Quand  l'étendue des activités après livraison est clarifiée"
+        },
+        {
+            "id": "exig_228",
+            "numero": 228,
+            "article": "8.5.5 d",
+            "exigence": "Prendre en compte les exigences des parties intéressées",
+            "commentaire": "Et surtout des clients, cf. § 8.2.2"
+        },
+        {
+            "id": "exig_229",
+            "numero": 229,
+            "article": "8.5.5 e",
+            "exigence": "Prendre en compte les retours d'information",
+            "commentaire": "Des parties intéressées, quand  l'étendue des activités après livraison est clarifiée, cf. § 8.2.1"
+        },
+        {
+            "id": "exig_230",
+            "numero": 230,
+            "article": "8.5.6",
+            "exigence": "Passer en revue et maîtriser les modifications non planifiées",
+            "commentaire": "Cf. § 6.3 (modifications planifiées)"
+        },
+        {
+            "id": "exig_231",
+            "numero": 231,
+            "article": "8.5.6",
+            "exigence": "Conserver les informations documentées sur les modifications non planifiées",
+            "commentaire": "Cf. § 7.5. Inclure les résultats des revues, l'autorisation des modifications et les actions mises en place"
+        },
+        {
+            "id": "exig_232",
+            "numero": 232,
+            "article": "8.6",
+            "exigence": "Vérifier les produits et services avec des activités aux étapes appropriées",
+            "commentaire": "Vérifier la conformité des produits\/services par rapport aux exigences spécifiées."
+        },
+        {
+            "id": "exig_233",
+            "numero": 233,
+            "article": "8.6",
+            "exigence": "Libérer les produits et services après vérification de la conformité",
+            "commentaire": "Vérifier la conformité des produits\/services par rapport aux exigences spécifiées."
+        },
+        {
+            "id": "exig_234",
+            "numero": 234,
+            "article": "8.6",
+            "exigence": "Conserver les informations documentées sur la libération des produits et services",
+            "commentaire": "Vérifier la conformité des produits\/services par rapport aux exigences spécifiées."
+        },
+        {
+            "id": "exig_235",
+            "numero": 235,
+            "article": "8.6 a",
+            "exigence": "Inclure dans les informations documentées des preuves de conformité",
+            "commentaire": "Ce sont les résultats des inspections par rapport aux critères d'acceptation"
+        },
+        {
+            "id": "exig_236",
+            "numero": 236,
+            "article": "8.6 b",
+            "exigence": "Inclure dans les informations documentées la traçabilité des produits et services",
+            "commentaire": "Y compris la personne ayant autorisé la libération"
+        },
+        {
+            "id": "exig_237",
+            "numero": 237,
+            "article": "8.7.1",
+            "exigence": "Identifier et traiter les éléments de sortie des processus, produits et services non conformes",
+            "commentaire": "Marquage et isolation pour empêcher leur utilisation non intentionnelle ou le mélange avec des éléments de sortie conformes"
+        },
+        {
+            "id": "exig_238",
+            "numero": 238,
+            "article": "8.7.1",
+            "exigence": "Mener des actions correctives proportionnelles aux impacts",
+            "commentaire": "Y compris après livraison. Cf. § 10.2"
+        },
+        {
+            "id": "exig_239",
+            "numero": 239,
+            "article": "8.7.1",
+            "exigence": "Mener des actions correctives sur des activités après livraison",
+            "commentaire": "Cf. § 8.5.5"
+        },
+        {
+            "id": "exig_240",
+            "numero": 240,
+            "article": "8.7.1 a",
+            "exigence": "Traiter les éléments de sortie non conformes avec des corrections",
+            "commentaire": "Reprise, retouche, réparation, recyclage"
+        },
+        {
+            "id": "exig_241",
+            "numero": 241,
+            "article": "8.7.1 b",
+            "exigence": "Traiter les éléments de sortie non conformes par isolement",
+            "commentaire": "Y compris les retours client ou les produits et services non libérés"
+        },
+        {
+            "id": "exig_242",
+            "numero": 242,
+            "article": "8.7.1 c",
+            "exigence": "Informer le client",
+            "commentaire": "Cf. § 7.4"
+        },
+        {
+            "id": "exig_243",
+            "numero": 243,
+            "article": "8.7.1 d",
+            "exigence": "Traiter les éléments de sortie non conformes en demandant une autorisation",
+            "commentaire": "D'utiliser en l'état (acceptation par dérogation"
+        },
+        {
+            "id": "exig_244",
+            "numero": 244,
+            "article": "8.7.1",
+            "exigence": "Vérifier la conformité après toute correction",
+            "commentaire": "Après toute correction passer par le flux normal"
+        },
+        {
+            "id": "exig_245",
+            "numero": 245,
+            "article": "8.7.2 a",
+            "exigence": "Conserver les informations documentées sur la description des non-conformités",
+            "commentaire": "Cf. § 7.5."
+        },
+        {
+            "id": "exig_246",
+            "numero": 246,
+            "article": "8.7.2 b",
+            "exigence": "Conserver les informations documentées sur les actions entreprises",
+            "commentaire": "Cf. § 7.5."
+        },
+        {
+            "id": "exig_247",
+            "numero": 247,
+            "article": "8.7.2 c",
+            "exigence": "Conserver les informations documentées sur les dérogations confirmées",
+            "commentaire": "Cf. § 7.5."
+        },
+        {
+            "id": "exig_248",
+            "numero": 248,
+            "article": "8.7.2 d",
+            "exigence": "Conserver les informations documentées sur la personne ayant décidé le traitement des non-conformités",
+            "commentaire": "Cf. § 7.5"
+        }
+    ],
+    "9. Évaluation": [
+        {
+            "id": "exig_249",
+            "numero": 249,
+            "article": "9.1.1 a",
+            "exigence": "Déterminer ce qui est nécessaire d'inspecter",
+            "commentaire": "\"Si vous ne pouvez le mesurer, vous ne pouvez le maîtriser. Peter Drucker\""
+        },
+        {
+            "id": "exig_250",
+            "numero": 250,
+            "article": "9.1.1 b",
+            "exigence": "Déterminer les méthodes d'inspection, d'analyse et d'évaluation",
+            "commentaire": "Afin d'assurer la validité des résultats"
+        },
+        {
+            "id": "exig_251",
+            "numero": 251,
+            "article": "9.1.1 c",
+            "exigence": "Déterminer quand inspecter",
+            "commentaire": "Aux étapes clés (essentielles) ou sur demande du client"
+        },
+        {
+            "id": "exig_252",
+            "numero": 252,
+            "article": "9.1.1 d",
+            "exigence": "Déterminer quand analyser et évaluer les résultats de l'inspection",
+            "commentaire": "Quand cela apporte de la valeur ajoutée"
+        },
+        {
+            "id": "exig_253",
+            "numero": 253,
+            "article": "9.1.1",
+            "exigence": "Évaluer la performance et l'efficacité du SMQ",
+            "commentaire": "Afin de s'assurer du respect des exigences spécifiées"
+        },
+        {
+            "id": "exig_254",
+            "numero": 254,
+            "article": "9.1.1",
+            "exigence": "Conserver les informations documentées des résultats d'inspection",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_255",
+            "numero": 255,
+            "article": "9.1.2",
+            "exigence": "Surveiller régulièrement la perception du client sur le niveau de sa satisfaction",
+            "commentaire": "\"La seule mesure de la qualité est la satisfaction du client\""
+        },
+        {
+            "id": "exig_256",
+            "numero": 256,
+            "article": "9.1.2",
+            "exigence": "Déterminer les méthodes d'obtention et d'utilisation des informations du client",
+            "commentaire": "Enquêtes de satisfaction, réclamations, retours client, recommandations, cf. § 9.1.3"
+        },
+        {
+            "id": "exig_257",
+            "numero": 257,
+            "article": "9.1.3",
+            "exigence": "Analyser et évaluer les données de l'inspection",
+            "commentaire": "\"Obtenez les faits, analysez les et ensuite faites ce qui semble correct. Robert Waterman\""
+        },
+        {
+            "id": "exig_258",
+            "numero": 258,
+            "article": "9.1.3 a",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer le respect des exigences. Cf. § 4.2"
+        },
+        {
+            "id": "exig_259",
+            "numero": 259,
+            "article": "9.1.3 b",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer le niveau de satisfaction du client. Cf. § 9.1.2"
+        },
+        {
+            "id": "exig_260",
+            "numero": 260,
+            "article": "9.1.3 c",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer la performance et l'efficacité du SMQ"
+        },
+        {
+            "id": "exig_261",
+            "numero": 261,
+            "article": "9.1.3 d",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer l'efficacité de la planification. Cf. § 8.1"
+        },
+        {
+            "id": "exig_262",
+            "numero": 262,
+            "article": "9.1.3 e",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer l'efficacité des actions face aux risques et opportunités. Cf. § 6.1"
+        },
+        {
+            "id": "exig_263",
+            "numero": 263,
+            "article": "9.1.3 f",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer la performance des prestataires externes. Cf. § 8.4"
+        },
+        {
+            "id": "exig_264",
+            "numero": 264,
+            "article": "9.1.3 g",
+            "exigence": "Utiliser les éléments de sortie de l'analyse",
+            "commentaire": "Afin d'évaluer les opportunités d'amélioration du SMQ. Cf. § 10.3"
+        },
+        {
+            "id": "exig_265",
+            "numero": 265,
+            "article": "9.2.1 a 1",
+            "exigence": "Réaliser régulièrement des audits internes planifiés",
+            "commentaire": "Afin de déterminer si le SMQ respecte les exigences internes de l'entreprise. Cf. l'ISO 19011"
+        },
+        {
+            "id": "exig_266",
+            "numero": 266,
+            "article": "9.2.1 a 2",
+            "exigence": "Réaliser régulièrement des audits internes planifiés",
+            "commentaire": "Afin de déterminer si le SMQ respecte les exigences de la norme ISO 9001"
+        },
+        {
+            "id": "exig_267",
+            "numero": 267,
+            "article": "9.2.1 b",
+            "exigence": "Réaliser régulièrement des audits internes planifiés",
+            "commentaire": "Afin de déterminer si le SMQ est efficace et tenu à jour"
+        },
+        {
+            "id": "exig_268",
+            "numero": 268,
+            "article": "9.2.2 a",
+            "exigence": "Planifier, établir, mettre en place et tenir à jour un programme d'audit",
+            "commentaire": "Inclure la fréquence, les méthodes, les responsabilités, les exigences de planification (programme d'audit) et les exigences de compte rendu (rapport d'audit)"
+        },
+        {
+            "id": "exig_269",
+            "numero": 269,
+            "article": "9.2.2 a",
+            "exigence": "Prendre en compte dans le programme d'audit des points essentiels",
+            "commentaire": "Points essentiels :"
+        },
+        {
+            "id": "exig_270",
+            "numero": 270,
+            "article": "9.2.2 b",
+            "exigence": "Définir le périmètre et les critères d'audit",
+            "commentaire": "Limiter le domaine à auditer ; utiliser des critères précis et connus de l'audité"
+        },
+        {
+            "id": "exig_271",
+            "numero": 271,
+            "article": "9.2.2 c",
+            "exigence": "Sélectionner les auditeurs",
+            "commentaire": "Ne pas auditer son département. \"Nul ne peut être à la fois juge et partie. Proverbe latin\""
+        },
+        {
+            "id": "exig_272",
+            "numero": 272,
+            "article": "9.2.2 d",
+            "exigence": "Communiquer les résultats d'audit à la direction concernée",
+            "commentaire": "Cf. § 7.4"
+        },
+        {
+            "id": "exig_273",
+            "numero": 273,
+            "article": "9.2.2 e",
+            "exigence": "Entreprendre une correction rapidement et des actions correctives si nécessaire",
+            "commentaire": "Cf. § 10.2"
+        },
+        {
+            "id": "exig_274",
+            "numero": 274,
+            "article": "9.2.2 f",
+            "exigence": "Conserver les informations documentées sur le programme d'audit et les rapports d'audit",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_275",
+            "numero": 275,
+            "article": "9.3.1",
+            "exigence": "Procéder au moins une fois par an à la revue du SMQ",
+            "commentaire": "Afin de confirmer qu'il est toujours pertinent, adapté et efficace. \"Aucun système n'est parfait\""
+        },
+        {
+            "id": "exig_276",
+            "numero": 276,
+            "article": "9.3.2 a",
+            "exigence": "Planifier la revue de direction et réaliser la revue de direction",
+            "commentaire": "En considérant l'état des actions de la revue précédente"
+        },
+        {
+            "id": "exig_277",
+            "numero": 277,
+            "article": "9.3.2 b",
+            "exigence": "Réaliser la revue de direction en considérant les modifications des enjeux externes et internes pour le SMQ",
+            "commentaire": "Y compris l'orientation stratégique"
+        },
+        {
+            "id": "exig_278",
+            "numero": 278,
+            "article": "9.3.2 c 1",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "Satisfaction client , retours d'information. Cf. §§ 8.7 et 10.2"
+        },
+        {
+            "id": "exig_279",
+            "numero": 279,
+            "article": "9.3.2 c 2",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "L'atteinte des objectifs qualité, cf. § 6.2"
+        },
+        {
+            "id": "exig_280",
+            "numero": 280,
+            "article": "9.3.2 c 3",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "La performance des processus et la conformité des éléments de sortie. Cf. § 9.1"
+        },
+        {
+            "id": "exig_281",
+            "numero": 281,
+            "article": "9.3.2 c 4",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "Les non-conformités  et actions correctives. Cf. § 10.2"
+        },
+        {
+            "id": "exig_282",
+            "numero": 282,
+            "article": "9.3.2 c 5",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "Les résultats de l'inspection. Cf. § 9.1"
+        },
+        {
+            "id": "exig_283",
+            "numero": 283,
+            "article": "9.3.2 c 6",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "Les résultats d'audit. Cf. § 9.2"
+        },
+        {
+            "id": "exig_284",
+            "numero": 284,
+            "article": "9.3.2 c 7",
+            "exigence": "Prendre en compte les informations sur la performance du SMQ et les tendances",
+            "commentaire": "La performance des prestataires externes. Cf. § 8.4"
+        },
+        {
+            "id": "exig_285",
+            "numero": 285,
+            "article": "9.3.2 d",
+            "exigence": "Prendre en compte les ressources",
+            "commentaire": "Disponibilité des ressources. Cf. § 7.1"
+        },
+        {
+            "id": "exig_286",
+            "numero": 286,
+            "article": "9.3.2 e",
+            "exigence": "Prendre en compte l'efficacité des actions",
+            "commentaire": "Face aux risques et opportunités. Cf. § 6.1"
+        },
+        {
+            "id": "exig_287",
+            "numero": 287,
+            "article": "9.3.2 f",
+            "exigence": "Prendre en compte les opportunités d'amélioration",
+            "commentaire": "Amélioration continue. Cf. § 10.3"
+        },
+        {
+            "id": "exig_288",
+            "numero": 288,
+            "article": "9.3.3 a",
+            "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions relatives aux opportunités d'amélioration continue",
+            "commentaire": "Cf. § 10.3"
+        },
+        {
+            "id": "exig_289",
+            "numero": 289,
+            "article": "9.3.3 b",
+            "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions relatives aux éventuelles modifications du SMQ",
+            "commentaire": "Cf. § 6.3"
+        },
+        {
+            "id": "exig_290",
+            "numero": 290,
+            "article": "9.3.3 c",
+            "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions relatives aux nouveaux besoins en ressources",
+            "commentaire": "Cf. § 7.1"
+        },
+        {
+            "id": "exig_291",
+            "numero": 291,
+            "article": "9.3.3",
+            "exigence": "Conserver des informations documentées des éléments de sortie de la revue de direction",
+            "commentaire": "Cf. § 7.5"
+        }
+    ],
+    "10. Amélioration": [
+        {
+            "id": "exig_292",
+            "numero": 292,
+            "article": "10.1",
+            "exigence": "Trouver les opportunités d'amélioration et mener des actions nécessaires",
+            "commentaire": "Améliorer en continu la pertinence, l'adéquation et l'efficacité du SMQ."
+        },
+        {
+            "id": "exig_293",
+            "numero": 293,
+            "article": "10.1 a",
+            "exigence": "Améliorer les produits et services",
+            "commentaire": "Soutenir l'innovation. Afin de mieux répondre aux exigences actuelles et anticiper les exigences futures"
+        },
+        {
+            "id": "exig_294",
+            "numero": 294,
+            "article": "10.1 b",
+            "exigence": "Réduire les impacts négatifs",
+            "commentaire": "En menant des actions correctives et de la prévention globale (SMQ efficace)"
+        },
+        {
+            "id": "exig_295",
+            "numero": 295,
+            "article": "10.1 c",
+            "exigence": "Améliorer les résultats du SMQ",
+            "commentaire": "Afin d'atteindre les objectifs du SMQ en matière de performance"
+        },
+        {
+            "id": "exig_296",
+            "numero": 296,
+            "article": "10.2.1 a 1",
+            "exigence": "Réagir à la non-conformité",
+            "commentaire": "Afin de diminuer les coûts. Y compris pour toute réclamation par traitement, maîtrise, correction. \"L'une des meilleures façons de mesurer la qualité est de calculer le prix de la non-conformité. Philip Crosby\""
+        },
+        {
+            "id": "exig_297",
+            "numero": 297,
+            "article": "10.2.1 a 2",
+            "exigence": "Prendre en compte les conséquences",
+            "commentaire": "Penser approche par les risques"
+        },
+        {
+            "id": "exig_298",
+            "numero": 298,
+            "article": "10.2.1 b 1",
+            "exigence": "Examiner la non-conformité",
+            "commentaire": "Et si nécessaire décider de mener une action corrective"
+        },
+        {
+            "id": "exig_299",
+            "numero": 299,
+            "article": "10.2.1 b 2",
+            "exigence": "Rechercher les causes premières",
+            "commentaire": "Afin que la non-conformité ne se reproduise pas"
+        },
+        {
+            "id": "exig_300",
+            "numero": 300,
+            "article": "10.2.1 b 3",
+            "exigence": "Rechercher des non-conformités similaires",
+            "commentaire": "Afin d'appliquer la même recette (pourquoi réinventer la roue ?)"
+        },
+        {
+            "id": "exig_301",
+            "numero": 301,
+            "article": "10.2.1 c",
+            "exigence": "Mettre en place les actions correctives nécessaires",
+            "commentaire": "Afin de traiter la non-conformité"
+        },
+        {
+            "id": "exig_302",
+            "numero": 302,
+            "article": "10.2.1 d",
+            "exigence": "Passer en revue l'efficacité de toute l'action corrective",
+            "commentaire": "Afin de vérifier si l'action est finalisée"
+        },
+        {
+            "id": "exig_303",
+            "numero": 303,
+            "article": "10.2.1 e",
+            "exigence": "Mettre à jour les risques et opportunités",
+            "commentaire": "Si nécessaire"
+        },
+        {
+            "id": "exig_304",
+            "numero": 304,
+            "article": "10.2.1 f",
+            "exigence": "Modifier le SMQ",
+            "commentaire": "Si nécessaire"
+        },
+        {
+            "id": "exig_305",
+            "numero": 305,
+            "article": "10.2.1",
+            "exigence": "Réagir proportionnellement aux conséquences des non-conformités",
+            "commentaire": "Ne pas faire de la sur qualité"
+        },
+        {
+            "id": "exig_306",
+            "numero": 306,
+            "article": "10.2.2 a",
+            "exigence": "Conserver les informations documentées sur la nature des non-conformités",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_307",
+            "numero": 307,
+            "article": "10.2.2 a",
+            "exigence": "Conserver les informations documentées sur les résultats des actions entreprises",
+            "commentaire": "Cf. § 7.5"
+        },
+        {
+            "id": "exig_308",
+            "numero": 308,
+            "article": "10.3",
+            "exigence": "Améliorer en continu la performance du SMQ",
+            "commentaire": "Identifier les opportunités d'amélioration et mettre en œuvre les actions nécessaires."
+        },
+        {
+            "id": "exig_309",
+            "numero": 309,
+            "article": "10.3",
+            "exigence": "Prendre en compte les éléments de sortie de l'analyse, de l'évaluation et de la revue de direction",
+            "commentaire": "Identifier les opportunités d'amélioration et mettre en œuvre les actions nécessaires."
+        }
+    ]
+}

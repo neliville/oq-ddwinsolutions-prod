@@ -11,7 +11,7 @@
     {% endcomponent %}
 #}
 <div {{ attributes.defaults({
-    class: 'fixed inset-0 z-[1050] flex items-center justify-center p-4',
+    class: 'fixed inset-0 z-[1300] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]',
     tabindex: '-1',
     'aria-hidden': 'true',
     'aria-modal': 'true',
@@ -20,7 +20,7 @@
     id: id ? id : false,
     style: 'display: none;'
 }) }}
-    {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+    {{ stimulus_controller('app-modal', { autoShow: false }) }}
     {{ stimulus_controller('confirmation-modal', {
         confirmCallback: 'window.confirmCallback',
         cancelCallback: 'window.cancelCallback'
@@ -33,11 +33,9 @@
                 <i data-lucide="alert-circle" width="24" height="24" class="text-sky-500 mr-2 shrink-0" aria-hidden="true"></i>
                 {{ title }}
             </h5>
-            <button type="button"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                    data-action="bootstrap-modal#hide" aria-label="Fermer le dialogue">
+            <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer le dialogue" class="shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            </twig:Button>
         </div>
         <div class="px-6 py-4">
             <p data-confirmation-modal-target="message">
@@ -45,19 +43,12 @@
             </p>
         </div>
         <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
-            <button type="button"
-                    class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"
-                    data-action="click->confirmation-modal#onCancelled bootstrap-modal#hide">
+            <twig:Button variant="outline" type="button" data-action="click->confirmation-modal#onCancelled app-modal#hide">
                 {{ cancelText }}
-            </button>
-            <button
-                type="button"
-                class="inline-flex items-center justify-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity"
-                data-action="click->confirmation-modal#onConfirmed"
-                data-confirmation-modal-confirm-callback-value=""
-            >
+            </twig:Button>
+            <twig:Button variant="default" type="button" data-action="click->confirmation-modal#onConfirmed" data-confirmation-modal-confirm-callback-value="">
                 {{ confirmText }}
-            </button>
+            </twig:Button>
         </div>
     </div>
 </div>

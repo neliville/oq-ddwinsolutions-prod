@@ -2,6 +2,9 @@
 
 namespace App\Tools\Api;
 
+use App\Application\Analytics\TrackingEventRecorder;
+use App\Application\Analytics\TrackingEventType;
+use App\Entity\User;
 use App\Service\Analytics\ExportLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,8 +15,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/analytics', name: 'analytics_')]
 class ExportTrackingController extends AbstractController
 {
-    public function __construct(private readonly ExportLogger $exportLogger)
-    {
+    public function __construct(
+        private readonly ExportLogger $exportLogger,
+        private readonly TrackingEventRecorder $trackingEventRecorder,
+    ) {
     }
 
     #[Route('/track-export', name: 'track_export', methods: ['POST'])]
@@ -41,6 +46,19 @@ class ExportTrackingController extends AbstractController
         }
 
         $this->exportLogger->log($tool, $format, $request, is_array($metadata) ? $metadata : []);
+
+        $user = $this->getUser();
+        $this->trackingEventRecorder->record(
+            TrackingEventType::EXPORT_TRIGGERED,
+            array_merge(
+                ['format' => $format],
+                is_array($metadata) ? $metadata : [],
+            ),
+            $user instanceof User ? $user : null,
+            \is_string($tool) ? $tool : null,
+            'export',
+            'api',
+        );
 
         return new JsonResponse(['status' => 'ok']);
     }

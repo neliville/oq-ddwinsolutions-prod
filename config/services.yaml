@@ -4,7 +4,15 @@
 # Put parameters here that don't change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Fuseau PHP / Twig (sauvegardes `new \DateTimeImmutable()`, filtres date). Surcharge : APP_TIMEZONE dans .env.local
+    env(APP_TIMEZONE): 'Europe/Paris'
+    app.default_timezone: '%env(string:APP_TIMEZONE)%'
+    app.collaboration.invitation_ttl_days: 14
+    app.collaboration.share_ttl_days_default: 7
     app.name: 'OUTILS-QUALITÉ'
+    # Version affichée dans le footer (espace connecté) ; surcharge possible via APP_VERSION dans .env.local
+    env(APP_VERSION): '1.0.0'
+    app.version: '%env(string:APP_VERSION)%'
     # Aligner avec le compte SMTP (obligatoire sur beaucoup d’hébergeurs, ex. o2switch)
     app.email: '%env(APP_EMAIL)%'
     blog_images_directory: '%kernel.project_dir%/public/uploads/blog'
@@ -41,6 +49,12 @@ services:
         arguments:
             $appName: '%app.name%'
             $appEmail: '%app.email%'
+            $appUrl: '%env(APP_URL)%'
+
+    App\Service\PasswordResetRequestProcessor:
+        arguments:
+            $appEmail: '%app.email%'
+            $appName: '%app.name%'
             $appUrl: '%env(APP_URL)%'
 
     # Newsletter Service

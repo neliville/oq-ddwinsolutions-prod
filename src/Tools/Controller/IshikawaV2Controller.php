@@ -18,11 +18,14 @@ final class IshikawaV2Controller extends AbstractController
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $recordId = $request->query->getInt('record', 0) ?: null;
+        // `record` (v2) et `load` (liens hérités de la page /ishikawa) ouvrent le même enregistrement.
+        $recordId = $request->query->getInt('record', 0)
+            ?: $request->query->getInt('load', 0)
+            ?: null;
 
         return $this->render('ishikawa_v2/index.html.twig', [
             'record_id' => $recordId,
-            'page_title' => 'Diagramme Ishikawa (Nouvelle version)',
+            'page_title' => 'Diagramme Ishikawa (nouvelle interface)',
         ]);
     }
 }

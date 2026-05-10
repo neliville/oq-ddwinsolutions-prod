@@ -42,10 +42,21 @@
         } %}
         <input type="hidden" id="paretoAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <header class="pareto-header" data-aos="fade-up">
-            <h1>Diagramme de Pareto</h1>
+        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+            <h1 class="page-title">Diagramme de Pareto</h1>
             <p class="lead">Identifiez les causes les plus impactantes (Principe 80/20) et concentrez vos efforts d'amélioration là où ils comptent le plus.</p>
-        </header>
+            {% include 'components/tool_meta_hints.html.twig' with {
+                tool_slug: 'pareto',
+                hint_id_prefix: 'pareto',
+                meta_intro: 'Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; le graphique et la saisie suivent.',
+                tag_hints: {
+                    'Priorisation': 'Classer les causes ou dysfonctionnements avant d’allouer des moyens.',
+                    'Reporting': 'Support visuel pour revues, comités et suivi d’indicateurs.',
+                    'Lean': 'Complément des démarches 5S, flux et élimination des gaspillages.',
+                    '80/20': 'Rappel heuristique : concentrez-vous sur les quelques causes dominantes.',
+                },
+            } %}
+        </div>
 
         {% if not app.user %}
         <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
@@ -55,16 +66,13 @@
         </div>
         {% endif %}
 
-        <section class="pareto-intro" data-aos="fade-up" data-aos-delay="60">
-            <h2>📘 Rappel sur le principe de Pareto</h2>
-            <p>Le diagramme de Pareto illustre que 80% des effets proviennent d'environ 20% des causes. Cet outil vous permet d'identifier les leviers prioritaires pour maximiser l'impact de vos plans d'action.</p>
-        </section>
+        {% include 'components/tool_help/pareto_accordion.html.twig' %}
 
         <section class="pareto-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
             <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newParetoAnalysis()" aria-label="Initialiser une nouvelle analyse Pareto">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
-            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateParetoChart()" aria-label="Générer le diagramme de Pareto">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateParetoChart()" aria-label="Générer le diagramme de Pareto">
                 <i class="fas fa-chart-line mr-2"></i>Générer le diagramme
             </button>
             <button class="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="resetParetoForm()" aria-label="Réinitialiser le formulaire Pareto">
@@ -77,16 +85,14 @@
             <button class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openParetoSaved()" aria-label="Charger une analyse Pareto">
                 <i class="fas fa-folder-open mr-2"></i>Mes analyses
             </button>
-            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
-                <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="paretoExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                    <i class="fas fa-download mr-2"></i>Exporter
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="paretoExportDropdown" data-dropdown-basic-target="menu" hidden>
-                    <li><button class="dropdown-item" type="button" onclick="exportPareto('png')">Exporter en PNG</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="exportPareto('pdf')">Exporter en PDF</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="exportPareto('json')">Exporter en JSON</button></li>
-                </ul>
-            </div>
+            {% include 'components/tool_export_dropdown.html.twig' with {
+                button_id: 'paretoExportDropdown',
+                items: [
+                    { icon: 'fas fa-image', label: 'Exporter en PNG', onclick: 'exportPareto("png")' },
+                    { icon: 'fas fa-file-pdf', label: 'Exporter en PDF', onclick: 'exportPareto("pdf")' },
+                    { icon: 'fas fa-file-code', label: 'Exporter en JSON', onclick: 'exportPareto("json")' },
+                ],
+            } %}
             {% else %}
             {% include 'components/tool_actions_login.html.twig' %}
             {% endif %}
@@ -140,6 +146,8 @@
 
             <div class="pareto-insights" id="paretoInsights"></div>
         </section>
+
+        {% include 'components/qse/capa_soft_cta.html.twig' with { tool: 'pareto' } %}
 
         {% include 'components/cta_ddwin.html.twig' %}
 

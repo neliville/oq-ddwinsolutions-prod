@@ -37,22 +37,6 @@
                         </p>
                     </header>
 
-                    {% for flash_error in app.flashes('error') %}
-                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 text-red-800 px-4 py-3 mb-3" role="alert">
-                            <i data-lucide="alert-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
-                            <div class="grow">{{ flash_error }}</div>
-                            <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
-                        </div>
-                    {% endfor %}
-
-                    {% for flash_success in app.flashes('success') %}
-                        <div class="auth-alert flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-3" role="alert">
-                            <i data-lucide="check-circle" width="20" height="20" class="mt-1 shrink-0" aria-hidden="true"></i>
-                            <div class="grow">{{ flash_success }}</div>
-                            <button onclick="this.closest('[role=alert]').remove()" class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity" aria-label="Fermer le message"><i data-lucide="x" width="16" height="16"></i></button>
-                        </div>
-                    {% endfor %}
-
                     {{ form_start(registrationForm, {
                         'attr': {
                             'class': 'auth-form needs-validation',

@@ -1,0 +1,43 @@
+{% set q_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">Le <strong class="font-semibold text-foreground">QQOQCCP</strong> (5W2H) est un questionnement systématique pour clarifier une situation, identifier les parties prenantes et préparer un plan d’action. Sept questions : <strong class="font-semibold text-foreground">Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi</strong>.</p>
+    <p class="mb-0 font-semibold text-foreground">Exemples par secteur</p>
+    <ul class="mb-0 list-disc pl-5 marker:text-primary">
+        <li><strong>Industrie / production :</strong> panne, non-conformité produit, retard fournisseur</li>
+        <li><strong>Services / logistique :</strong> retards clients, erreurs de facturation, litiges</li>
+        <li><strong>Qualité / audit :</strong> préparation d’audit, rapport d’écart, revue de processus</li>
+    </ul>
+</div>
+{% endset %}
+{% set q_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li><strong class="font-semibold text-foreground">Audit</strong>, investigation, collecte d’informations structurée</li>
+    <li>Préparation de <strong class="font-semibold text-foreground">procédure</strong> ou de comité de pilotage</li>
+    <li>Niveau requis : <strong class="font-semibold text-foreground">Débutant</strong></li>
+</ul>
+{% endset %}
+{% set q_s3 %}
+<div class="rounded-lg border border-border bg-muted/50 p-3 text-sm leading-relaxed text-slate-700 dark:bg-muted/30 dark:text-slate-200">
+    <p class="mb-0">Retards de livraison : <strong>Qui</strong> — logistique, clients ; <strong>Quoi</strong> — retards répétés ; <strong>Où</strong> — entrepôt Nord ; <strong>Quand</strong> — depuis 2 mois ; <strong>Comment</strong> — picking ; <strong>Combien</strong> — 15 % des commandes ; <strong>Pourquoi</strong> — effectifs, formation.</p>
+</div>
+{% endset %}
+{% set q_s4 %}
+<div class="grid gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200 sm:grid-cols-2">
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Qui ?</strong> Acteurs, responsables, parties prenantes.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Quoi ?</strong> Sujet, événement ou problème.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Où ?</strong> Lieu, service, processus.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Quand ?</strong> Période, fréquence, échéances.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Comment ?</strong> Moyens, méthodes, processus.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 dark:bg-muted/20"><strong class="text-foreground">Combien ?</strong> Volumes, coûts, ressources.</div>
+    <div class="rounded-md border border-border/80 bg-muted/40 p-2 sm:col-span-2 dark:bg-muted/20"><strong class="text-foreground">Pourquoi ?</strong> Objectifs, causes, finalité.</div>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'qqoqccp',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: q_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: q_s2|trim },
+        { title: "Exemple d'application", html: q_s3|trim },
+        { title: 'Mini-guide (7 questions)', html: q_s4|trim },
+    ],
+} only %}

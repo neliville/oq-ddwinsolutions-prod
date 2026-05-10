@@ -6,6 +6,7 @@ use App\Domain\Analytics\LeadConvertedEvent;
 use App\Domain\Analytics\ToolUsedEvent;
 use App\Entity\PageView;
 use App\Repository\PageViewRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -16,6 +17,8 @@ class TrackingService
     public function __construct(
         private readonly PageViewRepository $pageViewRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -34,6 +37,19 @@ class TrackingService
 
         $this->entityManager->persist($pageView);
         $this->entityManager->flush();
+
+        $toolUser = null;
+        if ($event->userId !== null) {
+            $toolUser = $this->userRepository->find($event->userId);
+        }
+        $this->trackingEventRecorder->record(
+            TrackingEventType::TOOL_OPENED,
+            ['user_agent_snippet' => $event->userAgent !== null ? substr($event->userAgent, 0, 120) : null],
+            $toolUser,
+            $event->tool,
+            null,
+            'web',
+        );
     }
 
     /**

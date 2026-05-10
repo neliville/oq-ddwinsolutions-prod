@@ -1,0 +1,48 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Risque #{{ risk.id }} | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto px-4 py-6">
+    <a href="{{ path('app_qse_risk_index') }}" class="text-sm app-inline-link app-inline-link--muted">← Risques</a>
+    <h1 class="text-2xl font-bold mt-2">{{ risk.identifiedRisk }}</h1>
+    <p class="text-sm text-muted-foreground mt-2">Score criticité : {{ risk.criticalityScore|default('—') }} · {{ risk.status.value|qse_status_label('risk') }}</p>
+    {% if requiresCapa %}
+        <p class="text-sm text-amber-800 dark:text-amber-200 mt-2 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/50 p-2">Risque critique sans CAPA liée — liez au moins une action.</p>
+    {% endif %}
+    <div class="mt-3">
+        {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_risk_' ~ risk.id, source: 'risk', trigger_label: 'Inviter un collaborateur' } %}
+    </div>
+    {% if risk.description %}
+        <p class="mt-4 text-sm">{{ risk.description }}</p>
+    {% endif %}
+
+    <h2 class="text-lg font-semibold mt-8 mb-2">CAPA liées</h2>
+    <ul class="text-sm space-y-1 mb-6">
+        {% for c in risk.linkedCapas %}
+            <li><a href="{{ path('app_qse_capa_show', { id: c.id }) }}" class="app-inline-link">{{ c.title }}</a></li>
+        {% else %}
+            <li class="text-muted-foreground">Aucune</li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" class="space-y-3">
+        <input type="hidden" name="_token" value="{{ csrf_token('qse_risk_edit') }}">
+        <label class="block text-sm font-medium">Lier une CAPA existante</label>
+        <select name="link_capa_id" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+            <option value="">—</option>
+            {% for c in capas %}
+                <option value="{{ c.id }}">{{ c.title }} ({{ c.status.value|qse_status_label('capa') }})</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold">Associer</button>
+    </form>
+
+    {% if app.user %}
+        <input type="hidden" id="riskMatrixEntryId" value="{{ risk.id }}">
+        <div class="mt-8">
+            {% include 'components/qse/capa_soft_cta.html.twig' with { tool: 'risk' } %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

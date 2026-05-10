@@ -1,0 +1,26 @@
+{% extends 'base_with_sidebar.html.twig' %}
+
+{% block title %}Choisir le référentiel | Audit QSE{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 py-6">
+    <a href="{{ path('app_qse_audit_index') }}" class="text-sm app-inline-link app-inline-link--muted">← Audits</a>
+    <h1 class="text-2xl font-bold mt-2 mb-2">Choisir le référentiel</h1>
+    <p class="text-muted-foreground text-sm mb-8">Un même moteur d’audit pour toutes les normes. Les exigences affichées dépendent du référentiel choisi.</p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for s in standards %}
+            <a href="{{ path('app_qse_audit_new', { standard: s.id }) }}" class="block rounded-lg border border-border bg-card p-5 hover:bg-muted/40 no-underline text-foreground">
+                <h2 class="font-semibold text-lg mb-1">{{ s.name }}</h2>
+                <p class="text-xs text-muted-foreground mb-2">Code : {{ s.code }}{% if s.version %} · version {{ s.version }}{% endif %}</p>
+                {% if s.description %}
+                    <p class="text-sm mt-2">{{ s.description }}</p>
+                {% endif %}
+                <span class="inline-block mt-4 text-sm font-medium text-primary">Créer un audit →</span>
+            </a>
+        {% else %}
+            <p class="text-muted-foreground col-span-full">Aucun référentiel visible. Contactez l’administrateur.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

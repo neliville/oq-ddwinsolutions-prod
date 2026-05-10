@@ -336,7 +336,7 @@ composer require symfony/ux-toolkit
 php bin/console ux:toolkit:install shadcn
 ```
 
-> Cette commande copie les composants Twig dans `templates/components/ui/` et les classes PHP dans `src/Twig/Components/Ui/`.
+> **Note (versions / chemins)** : selon la version du Toolkit, l’installateur peut proposer `templates/components/ui/` et `src/Twig/Components/Ui/`. **Sur ce dépôt**, les composants shadcn (Button, Card, Dialog, Alert, …) sont présents directement sous `templates/components/` (fichiers `Button.html.twig`, `Alert.html.twig`, etc.), et les composants **métier** applicatifs restent dans `src/Twig/Components/` (ex. `ConfirmationModal`, `BootstrapModal`). Ne pas « déplacer » sans besoin : les deux conventions coexistent.
 
 ### 7.3 Vérifier l'import CSS
 
@@ -351,24 +351,65 @@ Progress, RadioGroup, Select, Skeleton, Spinner, Switch, Table,
 Tabs, Textarea, Toggle, Tooltip, Typography, …
 ```
 
+### 7.5 État réel sur ce projet (audit)
+
+| Élément | Statut |
+|---------|--------|
+| Dépendance `symfony/ux-toolkit` | Présente (`composer.json`) |
+| Bundle `UXToolkitBundle` | Enregistré (`config/bundles.php`) |
+| Composants shadcn (Twig) | Présents sous `templates/components/` (Button, Alert, Dialog, Table, …) |
+| Tokens CSS shadcn (`:root` HSL) | Déjà dans `assets/styles/app.css` (aligné Phase 2) |
+| Commande `ux:toolkit:install` | À relancer uniquement si mise à jour majeure du kit ou réparation ; **ne pas écraser** `app.css` sans sauvegarde |
+
+**Phase 7 considérée comme satisfaite** pour l’objectif « toolkit + kit disponible ». La suite est de l’**adoption progressive** (Phase 8), pas une réinstallation systématique.
+
 ---
 
 ## Phase 8 — Remplacer les composants custom par shadcn
 
-Mapper les composants existants vers leurs équivalents shadcn :
+### 8.0 Stratégie incrémentale (recommandée)
 
-| Composant actuel | Composant shadcn |
+1. **Ne pas tout remplacer d’un coup** : risque de régressions Stimulus / Live Component / SEO.
+2. **Prioriser** : zones partagées à fort impact visuel, sans changer la logique métier (boutons, liens, `data-action` inchangés).
+3. **Reporter** toute fusion qui impose de **revalider** le comportement (modales = `app-modal`, formulaires Live, JSON-LD breadcrumb).
+
+### 8.0.1 Décisions produit (réalisées)
+
+| Sujet | Décision |
+|-------|----------|
+| `Alert` / flash | **Extension** du composant `Alert.html.twig` : variantes `success`, `warning`, `info` (+ `destructive` / `default` affinés). `flash_messages.html.twig` compose `<twig:Alert>` + `<twig:Button>` pour fermer. |
+| `breadcrumb.html.twig` | **Composition** : markup `<twig:Breadcrumb>` (liste, liens, page courante) + **conservation** du bloc `<script type="application/ld+json">` identique pour le SEO. Séparateur : `lucide:chevron-right` (aligné Pagination). |
+| `DeleteConfirmationModal` | **Toolkit** : `<twig:Button variant="destructive">` (design system shadcn), Annuler / Fermer en `outline` / `ghost`. |
+| Modales outils (Ishikawa Live, etc.) | Inchangé : migration `<twig:Dialog>` = chantier dédié. |
+
+### 8.0.2 Périmètre déjà avancé (pilotage)
+
+- **Modal de confirmation globale** (`ConfirmationModal.html.twig`) : **`<twig:Button>`** (Annuler / Confirmer / Fermer).
+- **Modal suppression** (`DeleteConfirmationModal.html.twig`) : **`<twig:Button>`** (destructive / outline / ghost).
+- **Flash** (`flash_messages.html.twig`) : **`<twig:Alert>`** + variantes étendues + fermeture **`<twig:Button>`**.
+- **Fil d’Ariane** (`breadcrumb.html.twig`) : **`<twig:Breadcrumb>`** + JSON-LD inchangé ; séparateur **Lucide** (`Breadcrumb/Separator.html.twig`).
+- **Modales listes d’analyses** (Ishikawa, 5 Pourquoi, 8D, Pareto, AMDEC, QQOQCCP) : fermeture **`<twig:Button variant="ghost" size="icon">`**.
+- **`delete-confirmation-modal.html.twig`** (`<dialog>` natif) : fermer / Annuler / Supprimer en **`<twig:Button>`** (mêmes `data-action` `dialog#close` / `delete-confirmation`).
+- **`save_guest_modal.html.twig`** : fermer, **Envoyer** (`type="submit"`), CTA **`<twig:Button as="a">`**, **Plus tard**.
+- **`post_save_cta_modal.html.twig`** : fermer, liens **`<twig:Button as="a">`**, **Continuer à éditer** (`variant="link"`).
+- **`onboarding_profile_dialog.html.twig`** : onboarding profil QHSE (**`twig:Dialog`** + Stimulus `onboarding-wizard`), POST `/preferences/onboarding/step`.
+- **`BootstrapModal.html.twig`** : exemple d’usage dans les commentaires mis à jour (**`<twig:Button>`**).
+- **Flash globaux** : `base.html.twig` inclut **`flash_messages`** en tête de `<main>` (avant `{% block body %}`) ; types étendus (`contact_success`, `profile_success`, `reset_password_error`) ; **suppression** des boucles `app.flashes` locales redondantes (contact, inscription, profil, reset password, bienvenue, admin blog/newsletter).
+
+Mapper les composants existants vers leurs équivalents shadcn (référence long terme) :
+
+| Composant actuel | Composant shadcn (Twig UX — ce dépôt) |
 |---|---|
-| `components/flash_messages.html.twig` | `<twig:Ui:Alert>` |
-| `components/breadcrumb.html.twig` | `<twig:Ui:Breadcrumb>` |
-| Boutons | `<twig:Ui:Button>` |
-| Cards | `<twig:Ui:Card>` |
-| Modals | `<twig:Ui:Dialog>` |
-| Inputs/forms | `<twig:Ui:Input>`, `<twig:Ui:Field>` |
-| Badges | `<twig:Ui:Badge>` |
-| Pagination | `<twig:Ui:Pagination>` |
-| Tables | `<twig:Ui:Table>` |
-| Tabs | `<twig:Ui:Tabs>` |
+| `components/flash_messages.html.twig` | `<twig:Alert>` (voir § 8.0.1 — variantes) |
+| `components/breadcrumb.html.twig` | `<twig:Breadcrumb>` (voir § 8.0.1 — SEO) |
+| Boutons | `<twig:Button>` |
+| Cards | `<twig:Card>` |
+| Modals | `<twig:Dialog>` (+ chantier Stimulus / `app-modal`) |
+| Inputs/forms | `<twig:Input>`, `<twig:Field>` |
+| Badges | `<twig:Badge>` |
+| Pagination | `<twig:Pagination>` |
+| Tables | `<twig:Table>` |
+| Tabs | `<twig:Tabs>` |
 
 ---
 
@@ -400,8 +441,8 @@ symfony server:log
 - [ ] Phase 4 : `base.html.twig` et `base_with_sidebar.html.twig` migrés
 - [ ] Phase 5 : 138 templates de pages migrés (auth, légal, public, dashboard, outils, admin)
 - [ ] Phase 6 : `twbs/bootstrap` et `symfonycasts/sass-bundle` supprimés, SCSS supprimé
-- [ ] Phase 7 : `symfony/ux-toolkit` installé, kit shadcn initialisé
-- [ ] Phase 8 : Composants custom remplacés par les composants shadcn
+- [x] Phase 7 : `symfony/ux-toolkit` installé, kit shadcn présent (`templates/components/` — voir § 7.5)
+- [ ] Phase 8 : Remplacement progressif (voir § 8.0 — pilote : `ConfirmationModal` → `<twig:Button>` ; reste layouts / flash / breadcrumbs / modales métier selon décisions § 8.0.1)
 - [ ] Validation finale : build prod sans erreur, tests visuels sur tous les outils qualité
 
 ---

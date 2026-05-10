@@ -36,57 +36,29 @@
             tool_seo_route: 'app_tool_seo_ishikawa'
         } %}
     </div>
-    <!-- Page Header -->
-    <div class="page-header">
+    {# En-tête compact : le diagramme suit immédiatement pour limiter le scroll avant l'outil #}
+    <div class="page-header ishikawa-page-header--compact">
         <h1 class="page-title">Visualisez toutes les causes possibles d'un problème — méthode Ishikawa (5M)</h1>
-        {% set meta = tool_meta('ishikawa') %}
-        {% if meta %}
-        <div class="flex flex-wrap gap-2 mb-3" role="list">
-            <span class="inline-flex items-center rounded-full bg-secondary/20 text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold" role="listitem">Niveau : {{ meta.level }}</span>
-            {% for tag in meta.tags %}
-            <span class="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold" role="listitem">{{ tag }}</span>
-            {% endfor %}
-        </div>
-        {% endif %}
-        <div class="info-banner">
-            <p class="info-text">
-                Certaines catégories et causes sont déjà pré-chargées pour vous aider à démarrer. Vous pouvez déplacer librement chaque catégorie pour ajuster sa position. Pour une expérience complète, utilisez un grand écran!
-            </p>
-            <p class="info-text">
-                Vider les causes pour commencer une nouvelle analyse.
-            </p>
-        </div>
+        {% include 'components/tool_meta_hints.html.twig' with {
+            tool_slug: 'ishikawa',
+            hint_id_prefix: 'ishikawa',
+            meta_intro: 'Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; le diagramme suit.',
+            tag_hints: {
+                'Analyse des causes': 'Structurer les pistes causes-effet avant de figer un plan d\'actions.',
+                'Non-conformité': 'Utile après constat d\'écart, réclamation ou écart audit.',
+                'ISO 9001': 'Appui documenté pour revues, audits et démarche qualité.',
+                'Amélioration continue': 'Idéal en complément de PDCA ou de revue de direction.',
+            },
+        } %}
     </div>
 
-    <div class="container">
-        <section class="mb-4" aria-labelledby="ishikawa-when-heading">
-            <h2 id="ishikawa-when-heading" class="h5 font-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
-            <ul class="mb-0">
-                <li>Analyse de <strong>non-conformité</strong> ou de réclamation client</li>
-                <li>Recherche des <strong>causes racines</strong> avant mise en place d'actions correctives</li>
-                <li>Revue de processus, <strong>audit interne</strong> ou préparation certification</li>
-                <li>Niveau recommandé : <strong>Débutant</strong> à Intermédiaire</li>
-            </ul>
-        </section>
-        <section class="mb-4 p-3 bg-secondary rounded" aria-labelledby="ishikawa-example-heading">
-            <h2 id="ishikawa-example-heading" class="h6 font-bold mb-2">Exemple d'application</h2>
-            <p class="mb-1"><strong>Problème :</strong> Erreur de production augmentée de 12 % sur la ligne 3.</p>
-            <p class="mb-0"><strong>Causes possibles (5M) :</strong> Main-d'œuvre (formation), Machine (réglage), Milieu (température), Matière (fournisseur), Méthode (instruction). Le diagramme permet de visualiser et prioriser les pistes.</p>
-        </section>
-        <section class="mb-4" aria-labelledby="ishikawa-guide-heading">
-            <h2 id="ishikawa-guide-heading" class="h5 font-bold mb-2">Mini-guide</h2>
-            <p class="mb-1"><strong>Comment remplir un diagramme :</strong> Inscrivez le problème dans l'encadré à droite, puis répartissez les causes par catégorie (5M ou 6M). Une cause peut apparaître dans plusieurs branches.</p>
-            <p class="mb-1"><strong>Erreurs fréquentes :</strong> Trop de causes vagues, mélanger causes et solutions, s'arrêter aux causes immédiates.</p>
-            <p class="mb-0"><strong>Conseil d'expert :</strong> Validez les causes avec des données (mesures, retours terrain) avant de lancer les actions.</p>
-        </section>
-        <div class="ishikawa-template-download-cta">
-            <a href="{{ path('app_telechargement_modele_5m') }}" class="inline-flex items-center justify-center gap-1.5 border border-primary text-primary px-3 py-1.5 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">Téléchargez un modèle prêt à l'emploi (.xlsx / PDF) + astuces d'analyse 5M</a>
-        </div>
-    </div>
+    {% include 'components/ishikawa_help_panel.html.twig' %}
 
     <div class="ishikawa-content">
         {{ include('components/ishikawa_canvas.html.twig', { diagramId: diagramId }) }}
     </div>
+
+    {% include 'components/qse/capa_ishikawa_toolbar.html.twig' %}
 
     <div class="container ishikawa-lower-stack">
         {% include 'components/tool_lead_cta.html.twig' %}
@@ -113,6 +85,49 @@
         id: 'ishikawaLoadModal'
     } %}
     {% endcomponent %}
+
+    <twig:Dialog id="ishikawa-share" class="ishikawa-share-dialog-root">
+        <button
+            type="button"
+            id="ishikawaShareDialogOpenStub"
+            class="sr-only"
+            tabindex="-1"
+            data-action="click->ux-dialog#open"
+            data-ux-dialog-target="trigger"
+        >Ouvrir la fenêtre de partage</button>
+        <twig:Dialog:Content class="w-[calc(100%-2rem)] max-w-[min(100%,36rem)] sm:max-w-xl">
+            <twig:Dialog:Header>
+                <twig:Dialog:Title>Partager le diagramme</twig:Dialog:Title>
+                <twig:Dialog:Description class="text-left text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                    Ce lien ouvre une <strong class="font-medium text-foreground">vue publique en lecture seule</strong> de votre diagramme. Il reste valable environ <strong class="font-medium text-foreground">un mois</strong>.
+                    <span id="ishikawaShareExpiresLine" class="mt-2 block text-foreground"></span>
+                </twig:Dialog:Description>
+            </twig:Dialog:Header>
+            <div class="mt-2 flex min-w-0 flex-col gap-3">
+                <twig:Label for="ishikawaShareUrlInput" class="text-sm font-medium text-foreground">Adresse du lien</twig:Label>
+                <twig:Input
+                    id="ishikawaShareUrlInput"
+                    type="url"
+                    name="ishikawa-share-url"
+                    readonly
+                    value=""
+                    autocomplete="off"
+                    title="Cliquez pour copier le lien dans le presse-papiers"
+                    class="min-w-0 max-w-full font-mono text-sm cursor-pointer transition-shadow hover:ring-2 hover:ring-primary/35 focus-visible:ring-2 focus-visible:ring-primary/45"
+                />
+                {# Pile verticale : une ligne flex + libellés longs dépassait max-w-lg et provoquait chevauchement. #}
+                <div class="ishikawa-share-actions flex w-full min-w-0 flex-col gap-3">
+                    <twig:Button type="button" id="ishikawaShareCopyBtn" variant="default" size="default" class="w-full max-w-full justify-center whitespace-normal">Copier le lien</twig:Button>
+                    <twig:Button type="button" id="ishikawaShareNativeBtn" variant="outline" size="default" class="w-full max-w-full justify-center whitespace-normal font-semibold text-foreground shadow-sm hover:bg-muted/80" hidden>Partager via le système…</twig:Button>
+                    <twig:Button as="a" id="ishikawaShareMailBtn" href="#" variant="outline" size="default" class="no-underline w-full max-w-full justify-center whitespace-normal text-center font-semibold text-foreground shadow-sm hover:bg-muted/80">Ouvrir dans le courriel</twig:Button>
+                </div>
+                <p id="ishikawaShareCopyFeedback" class="min-h-5 hidden text-sm font-medium text-primary" role="status" aria-live="polite"></p>
+            </div>
+            <twig:Dialog:Footer class="mt-4 border-t border-border/60 pt-4">
+                <twig:Button type="button" variant="secondary" data-action="click->ux-dialog#close">Fermer</twig:Button>
+            </twig:Dialog:Footer>
+        </twig:Dialog:Content>
+    </twig:Dialog>
     {% else %}
     {% include 'components/save_guest_modal.html.twig' with { tool: 'ishikawa' } %}
     {% endif %}
@@ -142,9 +157,15 @@
     <script>
         document.addEventListener('show-save-guest-modal', function () {
             var el = document.getElementById('saveGuestModal');
-            if (el && typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-                window.bootstrap.Modal.getOrCreateInstance(el).show();
+            if (!el || !window.Stimulus || typeof window.Stimulus.getControllerForElementAndIdentifier !== 'function') {
+                return;
             }
+            try {
+                var c = window.Stimulus.getControllerForElementAndIdentifier(el, 'app-modal');
+                if (c && typeof c.show === 'function') {
+                    c.show();
+                }
+            } catch (e) {}
         });
     </script>
     {% endif %}
@@ -241,6 +262,119 @@
             }
         }
 
+        function ishikawaOpenShareDialog(shareUrl, expiration) {
+            var urlInput = document.getElementById('ishikawaShareUrlInput');
+            var expiresLine = document.getElementById('ishikawaShareExpiresLine');
+            var mailBtn = document.getElementById('ishikawaShareMailBtn');
+            var nativeBtn = document.getElementById('ishikawaShareNativeBtn');
+            var feedback = document.getElementById('ishikawaShareCopyFeedback');
+            var stub = document.getElementById('ishikawaShareDialogOpenStub');
+            var dlg = document.getElementById('dialog-ishikawa-share');
+
+            if (!urlInput || !stub || !dlg) {
+                window.prompt('Copiez ce lien pour partager votre diagramme :', shareUrl);
+                return;
+            }
+
+            urlInput.value = shareUrl;
+            if (expiresLine) {
+                if (expiration && !isNaN(expiration.getTime())) {
+                    expiresLine.textContent = 'Valide jusqu’au ' + expiration.toLocaleDateString('fr-FR') + ' (fuseau local).';
+                } else {
+                    expiresLine.textContent = '';
+                }
+            }
+            if (mailBtn) {
+                var subject = encodeURIComponent('Diagramme Ishikawa partagé');
+                mailBtn.href = 'mailto:?subject=' + subject + '&body=' + encodeURIComponent(shareUrl);
+            }
+            if (feedback) {
+                feedback.textContent = '';
+                feedback.classList.add('hidden');
+            }
+
+            if (nativeBtn) {
+                nativeBtn.replaceWith(nativeBtn.cloneNode(true));
+                nativeBtn = document.getElementById('ishikawaShareNativeBtn');
+                if (typeof navigator.share === 'function') {
+                    nativeBtn.hidden = false;
+                    nativeBtn.addEventListener('click', function () {
+                        navigator.share({
+                            title: 'Diagramme Ishikawa',
+                            text: 'Consultez ce diagramme en lecture seule :',
+                            url: shareUrl,
+                        }).catch(function () {});
+                    });
+                } else {
+                    nativeBtn.hidden = true;
+                }
+            }
+
+            stub.click();
+            requestAnimationFrame(function () {
+                urlInput.focus();
+                urlInput.select();
+            });
+        }
+
+        async function ishikawaShareDialogCopy() {
+            var urlInput = document.getElementById('ishikawaShareUrlInput');
+            var feedback = document.getElementById('ishikawaShareCopyFeedback');
+            var url = urlInput ? urlInput.value : '';
+            if (!url || !feedback) return;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(url);
+                } else {
+                    urlInput.focus();
+                    urlInput.select();
+                    document.execCommand('copy');
+                }
+                feedback.classList.add('hidden');
+                if (window.Toastify) {
+                    window.Toastify({
+                        text: 'Lien copié dans le presse-papiers.',
+                        duration: 2500,
+                        close: true,
+                        gravity: 'top',
+                        position: 'right',
+                        backgroundColor: 'linear-gradient(to right, #6366f1, #4f46e5)',
+                    }).showToast();
+                } else {
+                    feedback.textContent = 'Copié dans le presse-papiers.';
+                    feedback.classList.remove('hidden');
+                    window.setTimeout(function () {
+                        feedback.classList.add('hidden');
+                    }, 2800);
+                }
+                if (urlInput) {
+                    urlInput.focus();
+                    urlInput.select();
+                }
+            } catch (e) {
+                feedback.textContent = 'Copie impossible : sélectionnez le lien puis Ctrl+C (ou Cmd+C).';
+                feedback.classList.remove('hidden');
+                if (window.Toastify) {
+                    window.Toastify({
+                        text: 'Copie impossible. Sélectionnez le lien puis Ctrl+C (ou Cmd+C).',
+                        duration: 4000,
+                        close: true,
+                        gravity: 'top',
+                        position: 'right',
+                        backgroundColor: 'linear-gradient(to right, #f97316, #ea580c)',
+                    }).showToast();
+                }
+            }
+        }
+
+        document.getElementById('ishikawaShareCopyBtn')?.addEventListener('click', function () {
+            ishikawaShareDialogCopy();
+        });
+
+        document.getElementById('ishikawaShareUrlInput')?.addEventListener('click', function () {
+            ishikawaShareDialogCopy();
+        });
+
         async function shareIshikawa() {
             const Toastify = window.Toastify;
             const shareBtn = document.getElementById('shareIshikawaBtn');
@@ -282,19 +416,7 @@
                 const shareUrl = data.data.url;
                 const expiration = data.data.expiresAt ? new Date(data.data.expiresAt) : null;
 
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(shareUrl);
-                    Toastify({
-                        text: `Lien copié dans le presse-papiers ! Ce lien public reste valide pendant un mois${expiration ? ', jusqu\'au ' + expiration.toLocaleDateString('fr-FR') : ''}.`,
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #14b8a6, #0ea5e9)",
-                    }).showToast();
-                } else {
-                    prompt("Copiez ce lien pour partager votre diagramme :", shareUrl);
-                }
+                ishikawaOpenShareDialog(shareUrl, expiration);
             } catch (error) {
                 console.error('Erreur lors du partage:', error);
                 Toastify({
@@ -319,21 +441,29 @@
         async function _openIshikawaModal(modalElement) {
             let ctrl = null;
             if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
             }
             if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
-            const bsLib = window.bootstrap || await new Promise(r => { if (window.bootstrap) r(window.bootstrap); else setTimeout(() => r(window.bootstrap), 100); });
-            if (bsLib?.Modal) new bsLib.Modal(modalElement).show();
+            var deadline = Date.now() + 3000;
+            while (Date.now() < deadline) {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) { ctrl = null; }
+                if (ctrl && typeof ctrl.show === 'function') { ctrl.show(); return; }
+                await new Promise(function (r) { setTimeout(r, 50); });
+            }
         }
 
         async function _closeIshikawaModal(modalElement) {
             let ctrl = null;
             if (window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
-                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'bootstrap-modal'); } catch (e) {}
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) {}
             }
             if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
-            const bsLib = window.bootstrap;
-            if (bsLib?.Modal?.getInstance) bsLib.Modal.getInstance(modalElement)?.hide();
+            var deadline = Date.now() + 3000;
+            while (Date.now() < deadline) {
+                try { ctrl = window.Stimulus.getControllerForElementAndIdentifier(modalElement, 'app-modal'); } catch (e) { ctrl = null; }
+                if (ctrl && typeof ctrl.hide === 'function') { ctrl.hide(); return; }
+                await new Promise(function (r) { setTimeout(r, 50); });
+            }
         }
 
         async function deleteIshikawaAnalysis(id, event) {
@@ -377,6 +507,13 @@
             if (modalElement) await _closeIshikawaModal(modalElement);
         }
 
+        function ishikawaEscHtml(s) {
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        }
+        function ishikawaEscAttr(s) {
+            return String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        }
+
         async function openIshikawaSaved() {
             if (!{{ app.user ? 'true' : 'false' }}) {
                 _showIshikawaToast('Connectez-vous pour accéder à vos analyses.', 'linear-gradient(to right, #f97316, #ea580c)');
@@ -402,38 +539,53 @@
 
                 if (!analyses.length) {
                     listContainer.innerHTML = `
-                        <div class="text-center py-3 text-muted">
-                            <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
-                            <p class="mb-2">Aucune analyse sauvegardée.</p>
-                            <button type="button" class="btn btn-primary btn-sm" onclick="newIshikawaAnalysis()">
-                                <i class="fas fa-plus mr-1"></i>Créer une nouvelle analyse
+                        <li class="rounded-lg border border-dashed border-border bg-muted/50 px-4 py-8 text-center">
+                            <p class="m-0 mb-3 text-base font-medium text-foreground">Aucune analyse sauvegardée.</p>
+                            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" onclick="newIshikawaAnalysis()">
+                                <i class="fas fa-plus" aria-hidden="true"></i>Créer une nouvelle analyse
                             </button>
-                        </div>`;
+                        </li>`;
                 } else {
-                    const deleteBaseUrl = '{{ path('app_tool_ishikawa_delete', {id: 0}) }}';
-                    listContainer.innerHTML = analyses.map((analysis) => `
-                        <div class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2" style="cursor:pointer;" data-analysis-id="${analysis.id}">
-                            <div class="flex-grow-1 min-w-0" onclick="window.location.href='{{ path('app_ishikawa_index') }}?load=${analysis.id}'">
-                                <div class="d-flex justify-content-between align-items-center min-w-0">
-                                    <h6 class="mb-0 text-truncate">${analysis.title || 'Sans titre'}</h6>
-                                    <small class="text-muted ml-2 flex-shrink-0">${analysis.updatedAt ? new Date(analysis.updatedAt).toLocaleDateString('fr-FR') : new Date(analysis.createdAt).toLocaleDateString('fr-FR')}</small>
-                                </div>
-                                <p class="mb-0 text-muted small text-truncate">${analysis.problem || 'Diagramme Ishikawa'}</p>
+                    const baseLoadUrl = {{ path('app_ishikawa_index')|json_encode|raw }};
+                    listContainer.innerHTML = analyses.map((analysis) => {
+                        const id = parseInt(analysis.id, 10);
+                        const title = ishikawaEscHtml(analysis.title || 'Sans titre');
+                        const problem = ishikawaEscHtml(analysis.problem || 'Diagramme Ishikawa');
+                        const rawDate = analysis.updatedAt || analysis.createdAt;
+                        const d = rawDate ? new Date(rawDate) : null;
+                        const dateLabel = d && !isNaN(d.getTime()) ? d.toLocaleDateString('fr-FR') : '—';
+                        const dateIso = d && !isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : '';
+                        const href = baseLoadUrl + (baseLoadUrl.indexOf('?') >= 0 ? '&' : '?') + 'load=' + id;
+                        const delLabel = ishikawaEscAttr((analysis.title || 'Sans titre').slice(0, 80));
+                        const dateAttr = dateIso ? ' datetime="' + dateIso + '"' : '';
+                        return `
+                        <li class="rounded-lg border border-border bg-muted/40 shadow-sm transition-colors hover:border-primary/40 hover:bg-muted/70">
+                            <div class="flex items-stretch gap-2 p-3 sm:p-4">
+                                <a href="${href}" class="flex min-w-0 flex-1 flex-col gap-1 rounded-md no-underline text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                                    <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                                        <span class="truncate text-base font-semibold leading-snug text-foreground">${title}</span>
+                                        <time class="shrink-0 text-sm font-semibold tabular-nums text-slate-800 dark:text-slate-200"${dateAttr}>${ishikawaEscHtml(dateLabel)}</time>
+                                    </div>
+                                    <span class="line-clamp-2 text-sm leading-snug text-slate-800 dark:text-slate-200">${problem}</span>
+                                </a>
+                                <button type="button" class="inline-flex shrink-0 items-center justify-center rounded-md border border-destructive/40 bg-background px-3 py-2 text-destructive shadow-sm hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2" title="Supprimer cette analyse" aria-label="Supprimer l’analyse « ${delLabel} »" onclick="deleteIshikawaAnalysis(${id}, event)">
+                                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Supprimer" onclick="deleteIshikawaAnalysis(${analysis.id}, event)" aria-label="Supprimer cette analyse">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    `).join('');
+                        </li>`;
+                    }).join('');
                 }
 
-                // Ajouter un footer "Nouvelle analyse" si pas déjà présent
+                // Ajouter un footer "Nouvelle analyse" si pas déjà présent (structure LiveComponent / Tailwind : pas de .modal-content)
                 let modalFooter = modalElement.querySelector('.modal-footer');
                 if (!modalFooter) {
                     modalFooter = document.createElement('div');
-                    modalFooter.className = 'modal-footer';
-                    modalFooter.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="newIshikawaAnalysis()"><i class="fas fa-plus mr-2"></i>Nouvelle analyse</button>`;
-                    modalElement.querySelector('.modal-content').appendChild(modalFooter);
+                    modalFooter.className = 'modal-footer px-6 py-3 border-t border-border shrink-0 flex justify-end';
+                    modalFooter.innerHTML = `<button type="button" class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" onclick="newIshikawaAnalysis()"><i class="fas fa-plus mr-2" aria-hidden="true"></i>Nouvelle analyse</button>`;
+                    const appendTarget = modalElement.querySelector('[role="document"]') || modalElement.firstElementChild;
+                    if (appendTarget) {
+                        appendTarget.appendChild(modalFooter);
+                    }
                 }
 
                 if (typeof lucide !== 'undefined') lucide.createIcons();

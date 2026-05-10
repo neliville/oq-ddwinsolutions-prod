@@ -438,27 +438,21 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
                     </div>
                 </div>
                 <div class="testimonials-grid">
-                    <article class="testimonial-card is-open">
-                        <div class="testimonial-card__body">
+                    <article class="testimonial-card">
+                        <blockquote class="testimonial-card__quote">
                             <p class="testimonial-text">«&nbsp;Gain de temps énorme pour nos analyses causes racines. Les exports PDF vont directement dans nos dossiers d'audit.&nbsp;»</p>
-                        </div>
-                        <button class="testimonial-card__trigger" type="button" aria-expanded="true">
-                            <span class="testimonial-author">Responsable QSE, industrie</span>
-                            <span class="testimonial-chevron" aria-hidden="true">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                        </button>
+                        </blockquote>
+                        <footer class="testimonial-card__meta">
+                            <cite class="testimonial-author">Responsable QSE, industrie</cite>
+                        </footer>
                     </article>
                     <article class="testimonial-card">
-                        <div class="testimonial-card__body">
+                        <blockquote class="testimonial-card__quote">
                             <p class="testimonial-text">«&nbsp;Simple, clair, sans fioritures. Exactement ce qu'il nous fallait pour structurer nos réunions d'amélioration continue.&nbsp;»</p>
-                        </div>
-                        <button class="testimonial-card__trigger" type="button" aria-expanded="false">
-                            <span class="testimonial-author">Chef de projet, PME services</span>
-                            <span class="testimonial-chevron" aria-hidden="true">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                            </span>
-                        </button>
+                        </blockquote>
+                        <footer class="testimonial-card__meta">
+                            <cite class="testimonial-author">Chef de projet, PME services</cite>
+                        </footer>
                     </article>
                 </div>
             </div>
@@ -484,51 +478,60 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, amélioration c
         </section>
 
         <!-- Expertise -->
-        <section id="expertise" class="expertise-section">
+        <section id="expertise" class="expertise-section" aria-labelledby="expertise-heading">
             <div class="container">
                 <div class="expertise-content">
                     <div class="expertise-text">
-                        <span class="section-badge">Notre expertise</span>
-                        <h2>Votre partenaire digital QSE</h2>
-                        <p class="lead">
-                            Ces outils sont proposés par <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer">DDWin Solutions</a>, spécialiste de la digitalisation des démarches QSE pour les entreprises.
-                        </p>
+                        <header class="expertise-section__intro">
+                            <span class="section-badge">Notre expertise</span>
+                            <h2 id="expertise-heading">Votre partenaire digital QSE</h2>
+                            <p class="lead">
+                                Ces outils sont proposés par <a href="https://ddwinsolutions.fr" target="_blank" rel="noopener noreferrer">DDWin Solutions</a>, spécialiste de la digitalisation des démarches QSE pour les entreprises.
+                            </p>
+                        </header>
 
-                        <div class="expertise-grid">
-                            <div class="expertise-card">
-                                <div class="expertise-card-icon">🔧</div>
-                                <div>
-                                    <h3 class="h5">Digitalisation des processus QSE</h3>
+                        <div class="expertise-grid" role="list">
+                            <article class="expertise-card" role="listitem">
+                                <div class="expertise-card__icon expertise-card__icon--indigo" aria-hidden="true">
+                                    <i data-lucide="wrench"></i>
+                                </div>
+                                <div class="expertise-card__body">
+                                    <h3 class="expertise-card__title">Digitalisation des processus QSE</h3>
                                     <p>Transformation digitale de vos démarches qualité, sécurité et environnement.</p>
                                 </div>
-                            </div>
-                            <div class="expertise-card">
-                                <div class="expertise-card-icon">💻</div>
-                                <div>
-                                    <h3 class="h5">Solutions informatiques sur mesure</h3>
+                            </article>
+                            <article class="expertise-card" role="listitem">
+                                <div class="expertise-card__icon expertise-card__icon--sky" aria-hidden="true">
+                                    <i data-lucide="monitor"></i>
+                                </div>
+                                <div class="expertise-card__body">
+                                    <h3 class="expertise-card__title">Solutions informatiques sur mesure</h3>
                                     <p>Développement d'applications métier adaptées à vos besoins spécifiques.</p>
                                 </div>
-                            </div>
-                            <div class="expertise-card">
-                                <div class="expertise-card-icon">📋</div>
-                                <div>
-                                    <h3 class="h5">Conseil en systèmes de management</h3>
+                            </article>
+                            <article class="expertise-card" role="listitem">
+                                <div class="expertise-card__icon expertise-card__icon--violet" aria-hidden="true">
+                                    <i data-lucide="clipboard-list"></i>
+                                </div>
+                                <div class="expertise-card__body">
+                                    <h3 class="expertise-card__title">Conseil en systèmes de management</h3>
                                     <p>Expertise ISO 9001, 14001, 45001, 55001 et amélioration continue.</p>
                                 </div>
-                            </div>
-                            <div class="expertise-card">
-                                <div class="expertise-card-icon">🚀</div>
-                                <div>
-                                    <h3 class="h5">Lean Manufacturing & excellence opérationnelle</h3>
+                            </article>
+                            <article class="expertise-card" role="listitem">
+                                <div class="expertise-card__icon expertise-card__icon--rose" aria-hidden="true">
+                                    <i data-lucide="rocket"></i>
+                                </div>
+                                <div class="expertise-card__body">
+                                    <h3 class="expertise-card__title">Lean Manufacturing &amp; excellence opérationnelle</h3>
                                     <p>Outils et méthodes pour l'amélioration continue de vos processus.</p>
                                 </div>
-                            </div>
+                            </article>
                         </div>
 
-                        <p class="mt-4 text-sm text-gray-500">
+                        <p class="expertise-section__footnote">
                             Découvrez aussi
-                            <a href="https://duerpilot.fr" target="_blank" rel="noopener"
-                               class="text-blue-600 hover:underline">DUERPilot</a>,
+                            <a href="https://duerpilot.fr" target="_blank" rel="noopener noreferrer">DUERPilot</a>,
                             notre solution SaaS dédiée au DUERP pour les TPE/PME françaises.
                         </p>
 

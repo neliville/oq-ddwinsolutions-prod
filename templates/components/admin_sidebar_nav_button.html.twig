@@ -1,0 +1,19 @@
+{# Bouton d’accordéon (sous-menu admin) avec aperçu au survol. #}
+<twig:HoverCard openDelay="160" closeDelay="120" class="block w-full max-w-full">
+    <button type="button"
+            class="sidebar-item sidebar-collapse-trigger{{ is_active ? ' active' : '' }}"
+            data-sidebar-target="{{ target|e('html_attr') }}"
+            aria-expanded="{{ expanded ? 'true' : 'false' }}"
+            aria-controls="{{ controls|e('html_attr') }}"
+            data-slot="hover-card-trigger"
+            data-action="focus->hover-card#show blur->hover-card#hide"
+    >
+        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon"></i>
+        <span>{{ label }}</span>
+        <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+    </button>
+    <twig:HoverCard:Content>
+        <span class="block font-semibold leading-tight text-zinc-50">{{ hover_title }}</span>
+        <p class="mt-1.5 mb-0 text-[11px] leading-snug font-normal text-zinc-300">{{ hover_text }}</p>
+    </twig:HoverCard:Content>
+</twig:HoverCard>

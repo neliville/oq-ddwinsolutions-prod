@@ -1,0 +1,18 @@
+[
+  {
+    "legacy_key": "iso45001_demo_5_1",
+    "chapter": "5. Leadership et participation des travailleurs",
+    "article": "5.1",
+    "requirement_text": "Exigence de démonstration ISO 45001 (jeu de test) — leadership et engagement pour la SST.",
+    "pdca_phase": "plan",
+    "display_order": 10
+  },
+  {
+    "legacy_key": "iso45001_demo_8_1",
+    "chapter": "8. Exploitation",
+    "article": "8.1",
+    "requirement_text": "Exigence de démonstration ISO 45001 — planification et maîtrise opérationnelles.",
+    "pdca_phase": "do",
+    "display_order": 20
+  }
+]

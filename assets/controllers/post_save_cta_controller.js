@@ -21,8 +21,11 @@ export default class extends Controller {
     _onBeforeCache() {
         const modal = this.element.querySelector('#postSaveCtaModal');
         if (!modal) return;
+        /* Ne pas utiliser style.display = '' : cela retire le display:none inline du Twig et le div
+         * repasse en display:block par défaut → flash visible au turbo:before-cache (ex. en quittant /amdec). */
         modal.classList.remove('show');
-        modal.style.display = '';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.style.display = 'none';
         const backdrop = document.querySelector('.tw-backdrop');
         if (backdrop) backdrop.remove();
         document.body.style.removeProperty('overflow');

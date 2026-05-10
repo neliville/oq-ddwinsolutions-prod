@@ -2,10 +2,15 @@
 
 namespace App\EventListener;
 
+use App\Application\Analytics\TrackingEventRecorder;
+use App\Application\Analytics\TrackingEventType;
+use App\Collaboration\CollaborationSession;
+use App\Collaboration\UserInvitationService;
 use App\Entity\User;
 use App\Service\UserActivityTracker;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
@@ -14,6 +19,9 @@ class LoginSuccessListener implements EventSubscriberInterface
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly UserActivityTracker $userActivityTracker,
+        private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly UserInvitationService $userInvitationService,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -34,9 +42,23 @@ class LoginSuccessListener implements EventSubscriberInterface
             $this->userActivityTracker->recordSuccessfulLogin($user);
         }
 
-        if ($isFirstLogin) {
-            $event->getRequest()->getSession()->set('_onboarding', true);
+        if ($user instanceof User && !$isFirstLogin) {
+            $this->trackingEventRecorder->record(TrackingEventType::LOGIN_RETURN, [], $user);
         }
+
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request !== null && $user instanceof User && $request->hasSession()) {
+            $session = $request->getSession();
+            $plain = $session->get(CollaborationSession::INVITATION_PLAIN_TOKEN);
+            if (\is_string($plain) && $plain !== '') {
+                if ($this->userInvitationService->tryAccept($user, $plain)) {
+                    $session->getFlashBag()->add('success', 'Invitation acceptée.');
+                }
+                $session->remove(CollaborationSession::INVITATION_PLAIN_TOKEN);
+            }
+        }
+
+        // Onboarding : piloté par UserPreferences::profileOnboardingCompleted (dashboard), pas par un flag session.
 
         // Rediriger selon le rôle
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {

@@ -1,4 +1,4 @@
-{% extends 'base_with_sidebar.html.twig' %}
+{% extends 'layout/admin_base.html.twig' %}
 
 {% block title %}Tableau de bord Administration | OUTILS-QUALITÉ{% endblock %}
 
@@ -17,6 +17,131 @@
                 <i data-lucide="check-circle" width="14" height="14" class="mr-1"></i>
                 Système opérationnel
             </span>
+        </div>
+    </div>
+
+    <div class="rounded-lg border border-border bg-muted/30 p-4 mb-6">
+        <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+            <i data-lucide="radar" width="20" height="20"></i>
+            Pilotage produit (7 derniers jours)
+        </h2>
+        <div class="grid gap-4 mb-4" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));">
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Utilisateurs actifs (événements)</div>
+                <div class="text-2xl font-bold">{{ trackingUsers7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Inscriptions</div>
+                <div class="text-2xl font-bold">{{ registrations7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Retours connexion</div>
+                <div class="text-2xl font-bold">{{ loginReturns7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Ouvertures dashboard</div>
+                <div class="text-2xl font-bold">{{ dashboardOpens7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Exports déclenchés</div>
+                <div class="text-2xl font-bold">{{ exports7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">CAPA créées (métier)</div>
+                <div class="text-2xl font-bold">{{ capaEntities7d }}</div>
+                <div class="text-xs text-muted-foreground">Événements TE : {{ capaEvents7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Audits créés</div>
+                <div class="text-2xl font-bold">{{ auditEntities7d }}</div>
+                <div class="text-xs text-muted-foreground">Événements TE : {{ auditEvents7d }}</div>
+            </div>
+            <div class="rounded-md bg-card p-3 border border-border">
+                <div class="text-xs text-muted-foreground uppercase">Risques créés</div>
+                <div class="text-2xl font-bold">{{ riskEntities7d }}</div>
+                <div class="text-xs text-muted-foreground">Événements TE : {{ riskEvents7d }}</div>
+            </div>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div>
+                <h3 class="text-sm font-semibold mb-2">Événements par type (TE)</h3>
+                {% if trackingByType7d|length > 0 %}
+                    <ul class="text-sm space-y-1 list-none p-0 m-0">
+                        {% for row in trackingByType7d %}
+                            <li class="flex justify-between gap-2 border-b border-border/60 py-1">
+                                <code>{{ row.event_type }}</code>
+                                <span class="font-medium">{{ row.cnt }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-sm text-muted-foreground mb-0">Aucun événement sur cette période.</p>
+                {% endif %}
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold mb-2">Top outils ouverts (TE)</h3>
+                {% if topToolsOpened7d|length > 0 %}
+                    <ul class="text-sm space-y-1 list-none p-0 m-0">
+                        {% for row in topToolsOpened7d %}
+                            <li class="flex justify-between gap-2 border-b border-border/60 py-1">
+                                <span>{{ row.tool }}</span>
+                                <span class="font-medium">{{ row.cnt }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-sm text-muted-foreground mb-0">Pas encore de <code>tool_opened</code> sur 7 jours.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold mb-2">Créations enregistrées par outil (tous utilisateurs)</h3>
+            {% if globalToolCreations|length > 0 %}
+                <div class="flex flex-wrap gap-2">
+                    {% for t in globalToolCreations|slice(0, 6) %}
+                        <span class="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs">{{ t.label }} : {{ t.count }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-muted-foreground mb-0">Aucune donnée agrégée.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="rounded-lg bg-card shadow-sm border border-border mb-6">
+        <div class="px-6 py-4 border-b border-border">
+            <h2 class="text-base font-semibold mb-0 flex items-center gap-2">
+                <i data-lucide="list-tree" width="18" height="18"></i>
+                Derniers événements métier (TrackingEvent)
+            </h2>
+        </div>
+        <div class="p-6 overflow-x-auto">
+            {% if recentTrackingEvents|length > 0 %}
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Utilisateur</th>
+                            <th>Outil</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ev in recentTrackingEvents %}
+                            <tr>
+                                <td>{{ ev.createdAt|date('d/m/Y H:i') }}</td>
+                                <td><code>{{ ev.eventType.value }}</code></td>
+                                <td>{% if ev.user %}{{ ev.user.email }}{% else %}—{% endif %}</td>
+                                <td>{{ ev.tool|default('—') }}</td>
+                                <td>{{ ev.source|default('—') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted-foreground mb-0 text-sm">Aucun événement enregistré pour l’instant.</p>
+            {% endif %}
         </div>
     </div>
 
@@ -219,6 +344,15 @@
                 </div>
                 {% endif %}
             </div>
+        </div>
+    </div>
+
+    <div class="rounded-lg border border-border bg-card p-4 mb-6">
+        <h5 class="font-semibold mb-2">QSE — référentiels d’audit</h5>
+        <div class="flex flex-wrap gap-3 text-sm">
+            <a href="{{ path('app_admin_qse_audit_standards_index') }}" class="app-inline-link">Référentiels</a>
+            <a href="{{ path('app_admin_qse_audit_requirements_index') }}" class="app-inline-link">Exigences</a>
+            <a href="{{ path('app_admin_qse_req_import_index') }}" class="app-inline-link">Import (prévisualisation)</a>
         </div>
     </div>
 

@@ -2,8 +2,15 @@
 
 namespace App\Controller;
 
+use App\Application\Analytics\TrackingEventRecorder;
+use App\Application\Analytics\TrackingEventType;
+use App\Collaboration\CollaborationSession;
+use App\Collaboration\CollaborationToken;
+use App\Collaboration\InvitationStatus;
+use App\Collaboration\UserInvitationService;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\UserInvitationRepository;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -20,6 +27,9 @@ class RegistrationController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly MailerService $mailerService,
         private readonly LoggerInterface $logger,
+        private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly UserInvitationRepository $userInvitationRepository,
+        private readonly UserInvitationService $userInvitationService,
     ) {
     }
 
@@ -32,6 +42,20 @@ class RegistrationController extends AbstractController
         }
 
         $user = new User();
+        if ($request->isMethod('GET')) {
+            $plain = $request->query->getString('invitation');
+            if ($plain !== '') {
+                $inv = $this->userInvitationRepository->findByTokenHash(CollaborationToken::hashPlain($plain));
+                if ($inv !== null
+                    && $inv->getStatus() === InvitationStatus::ENVOYEE
+                    && $inv->getExpiresAt() >= new \DateTimeImmutable()) {
+                    if ($request->hasSession()) {
+                        $request->getSession()->set(CollaborationSession::INVITATION_PLAIN_TOKEN, $plain);
+                    }
+                    $user->setEmail($inv->getEmail());
+                }
+            }
+        }
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -44,6 +68,26 @@ class RegistrationController extends AbstractController
             // Sauvegarder l'utilisateur
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
+            if ($request->hasSession()) {
+                $session = $request->getSession();
+                $invitePlain = $session->get(CollaborationSession::INVITATION_PLAIN_TOKEN);
+                if (\is_string($invitePlain) && $invitePlain !== '') {
+                    $this->userInvitationService->tryAccept($user, $invitePlain);
+                    $session->remove(CollaborationSession::INVITATION_PLAIN_TOKEN);
+                }
+            }
+
+            $email = $user->getEmail();
+            $domain = \is_string($email) && str_contains($email, '@') ? substr(strrchr($email, '@'), 1) : null;
+            $this->trackingEventRecorder->record(
+                TrackingEventType::ACCOUNT_CREATED,
+                $domain !== null && $domain !== '' ? ['email_domain' => substr($domain, 0, 120)] : [],
+                $user,
+                null,
+                null,
+                'web',
+            );
 
             // Envoyer l'email de bienvenue
             try {

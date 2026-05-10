@@ -1,0 +1,71 @@
+{# Layout HTML transactionnel — fond #f4f6f9, carte 600px, en-tête #1a3a5c (modèle OUTILS-QUALITÉ). Pas de lien de désinscription. #}
+{% set _brand = app_name|default('OUTILS-QUALITÉ') %}
+{% set _site = app_url|default('') %}
+{% set _support = app_email|default('contact@outils-qualite.com') %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block email_html_title %}{{ _brand }}{% endblock %}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f4f6f9" role="presentation">
+<tr>
+<td align="center" style="padding:30px 10px;">
+<table width="600" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="max-width:600px;width:100%;" role="presentation">
+{# —— HEADER —— #}
+<tr>
+<td bgcolor="#1a3a5c" style="padding:28px 36px;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+<tr>
+<td align="left">
+<p style="margin:0;font-size:22px;font-weight:bold;color:#ffffff;">{{ _brand }}</p>
+<p style="margin:6px 0 0 0;font-size:11px;line-height:1.5;color:#cbd5e1;">ISO 9001 &nbsp;·&nbsp; RGPD &nbsp;·&nbsp; Outils gratuits &nbsp;·&nbsp; Sans installation</p>
+</td>
+<td align="right" valign="top" width="40" style="font-size:22px;line-height:1;color:#ffffff;">&#128204;</td>
+</tr>
+</table>
+</td>
+</tr>
+{# —— BODY —— #}
+<tr>
+<td style="padding:36px 40px;">
+{% block email_body %}{% endblock %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+<tr>
+<td style="border-top:1px solid #e5e7eb;padding-top:22px;">
+{% block email_signature %}
+<p style="margin:0 0 8px 0;font-size:14px;color:#374151;">Cordialement,</p>
+<p style="margin:0;font-size:15px;font-weight:bold;color:#1a3a5c;">L’équipe {{ _brand }}</p>
+{% endblock %}
+</td>
+</tr>
+</table>
+</td>
+</tr>
+{# —— FOOTER —— #}
+<tr>
+<td bgcolor="#f8fafc" style="padding:18px 24px;text-align:center;">
+<div style="margin:0;font-size:11px;line-height:1.65;color:#9ca3af;">
+{% block email_footer %}
+{% if footer_reason is defined and footer_reason %}
+<div style="margin:0 0 12px 0;color:#64748b;">{{ footer_reason }}</div>
+{% endif %}
+<div style="margin:0;">
+&copy; {{ "now"|date("Y") }} {{ _brand }}.
+{% if _site %}
+<br><a href="{{ _site }}" style="color:#64748b;text-decoration:underline;">{{ _site }}</a>
+{% endif %}
+<br><a href="mailto:{{ _support }}" style="color:#64748b;text-decoration:underline;">{{ _support }}</a>
+</div>
+{% endblock %}
+</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends 'emails/base_transactional.html.twig' %}
+
+{% block email_html_title %}Invitation acceptée — {{ app_name }}{% endblock %}
+
+{% block email_body %}
+<p style="margin:0 0 20px 0;font-size:18px;font-weight:bold;color:#1a3a5c;">Bonjour,</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">La personne suivante a <strong>accepté</strong> votre invitation à collaborer sur <strong>{{ app_name }}</strong> :</p>
+<p style="margin:0 0 22px 0;font-size:16px;font-weight:bold;color:#1a3a5c;">{{ invitation.email }}</p>
+{% include 'emails/_email_cta.html.twig' with { cta_href: dashboard_url, cta_label: 'Accéder au tableau de bord' } %}
+{% endblock %}
+
+{% block email_footer %}
+<span style="color:#64748b;">Notification de collaboration — {{ app_name }}.</span><br><br>
+{{ parent() }}
+{% endblock %}

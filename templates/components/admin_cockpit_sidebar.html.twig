@@ -1,0 +1,148 @@
+{% set currentRoute = app.request.get('_route') %}
+
+<aside id="app-dashboard-sidebar" class="admin-sidebar admin-cockpit-sidebar" aria-label="Navigation administration">
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Cockpit</div>
+            <a href="{{ path('app_admin_dashboard_index') }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_dashboard_index' ? 'active' : '' }}">
+                <i data-lucide="layout-dashboard" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Dashboard global</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Utilisateurs</div>
+            <a href="{{ path('app_admin_users_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_users' ? 'active' : '' }}">
+                <i data-lucide="users" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Comptes</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Outils &amp; usage</div>
+            <a href="{{ path('app_admin_tool_usage_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_tool_usage' ? 'active' : '' }}">
+                <i data-lucide="wrench" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Créations par outil</span>
+            </a>
+            <a href="{{ path('app_admin_leads_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_leads' ? 'active' : '' }}">
+                <i data-lucide="user-plus" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Leads</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">CAPA</div>
+            <a href="{{ path('app_admin_coming_soon', { topic: 'capa' }) }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_coming_soon' and app.request.attributes.get('topic') == 'capa' ? 'active' : '' }}">
+                <i data-lucide="target" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Pilotage CAPA</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Audits</div>
+            <a href="{{ path('app_admin_qse_audit_standards_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_qse_audit_standards' ? 'active' : '' }}">
+                <i data-lucide="book-marked" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Référentiels (standards)</span>
+            </a>
+            <a href="{{ path('app_admin_qse_audit_requirements_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_qse_audit_requirements' ? 'active' : '' }}">
+                <i data-lucide="list-checks" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Exigences</span>
+            </a>
+            <a href="{{ path('app_admin_qse_req_import_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_qse_req_import' ? 'active' : '' }}">
+                <i data-lucide="upload" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Import CSV exigences</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Risques</div>
+            <a href="{{ path('app_admin_coming_soon', { topic: 'risques' }) }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_coming_soon' and app.request.attributes.get('topic') == 'risques' ? 'active' : '' }}">
+                <i data-lucide="shield-alert" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Matrice des risques</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Contenus</div>
+            <a href="{{ path('app_admin_blog_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_blog' ? 'active' : '' }}">
+                <i data-lucide="file-text" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Articles blog</span>
+            </a>
+            <a href="{{ path('app_admin_categories_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_categories' ? 'active' : '' }}">
+                <i data-lucide="folder" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Catégories</span>
+            </a>
+            <a href="{{ path('app_admin_tags_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_tags' ? 'active' : '' }}">
+                <i data-lucide="tag" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Tags</span>
+            </a>
+            <a href="{{ path('app_admin_cms_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_cms' ? 'active' : '' }}">
+                <i data-lucide="file-cog" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>CMS pages légales</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Analytics &amp; conversion</div>
+            <a href="{{ path('app_admin_analytics_index') }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_analytics_index' ? 'active' : '' }}">
+                <i data-lucide="pie-chart" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Synthèse</span>
+            </a>
+            <a href="{{ path('app_admin_analytics_traffic') }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_analytics_traffic' ? 'active' : '' }}">
+                <i data-lucide="activity" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Trafic</span>
+            </a>
+            <a href="{{ path('app_admin_analytics_sharing') }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_analytics_sharing' ? 'active' : '' }}">
+                <i data-lucide="share-2" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Partages Ishikawa</span>
+            </a>
+            <a href="{{ path('app_admin_export_analytics_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_export_analytics' ? 'active' : '' }}">
+                <i data-lucide="download" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Exports fichiers</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Messages &amp; paramètres</div>
+            <a href="{{ path('app_admin_contact_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_contact' ? 'active' : '' }}">
+                <i data-lucide="mail" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Contact</span>
+            </a>
+            <a href="{{ path('app_admin_newsletter_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_newsletter' ? 'active' : '' }}">
+                <i data-lucide="inbox" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Newsletter</span>
+            </a>
+            <a href="{{ path('app_admin_logs_index') }}"
+               class="sidebar-item {{ currentRoute == 'app_admin_logs_index' ? 'active' : '' }}">
+                <i data-lucide="scroll-text" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Logs admin</span>
+            </a>
+            <a href="{{ path('app_logout') }}"
+               class="sidebar-item text-destructive">
+                <i data-lucide="log-out" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </nav>
+</aside>
+
+{% include 'components/sidebar_toggle_script.html.twig' %}

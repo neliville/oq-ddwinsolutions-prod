@@ -23,16 +23,16 @@ class ContactFormType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control contact-honeypot',
+                    'class' => 'contact-form__input contact-honeypot',
                     'autocomplete' => 'off',
                     'tabindex' => '-1',
                     'aria-hidden' => 'true',
                 ],
             ])
             ->add('name', TextType::class, [
-                'label' => 'Prénom *',
+                'label' => 'Prénom',
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'contact-form__input',
                     'placeholder' => 'Votre prénom',
                 ],
                 'constraints' => [
@@ -42,9 +42,9 @@ class ContactFormType extends AbstractType
                 ],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email *',
+                'label' => 'Email',
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'contact-form__input',
                     'placeholder' => 'votre.email@exemple.com',
                 ],
                 'constraints' => [
@@ -57,9 +57,9 @@ class ContactFormType extends AbstractType
                 ],
             ])
             ->add('subject', ChoiceType::class, [
-                'label' => 'Sujet *',
+                'label' => 'Sujet',
+                'placeholder' => 'Choisissez un sujet',
                 'choices' => [
-                    'Choisissez un sujet' => '',
                     'Support technique' => 'support',
                     'Suggestion d\'amélioration' => 'suggestion',
                     'Signaler un bug' => 'bug',
@@ -68,7 +68,7 @@ class ContactFormType extends AbstractType
                     'Autre' => 'autre',
                 ],
                 'attr' => [
-                    'class' => 'form-select',
+                    'class' => 'contact-form__select',
                 ],
                 'constraints' => [
                     new NotBlank([
@@ -77,9 +77,9 @@ class ContactFormType extends AbstractType
                 ],
             ])
             ->add('message', TextareaType::class, [
-                'label' => 'Message *',
+                'label' => 'Message',
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'contact-form__input contact-form__input--textarea',
                     'rows' => 5,
                     'placeholder' => 'Décrivez votre demande en détail...',
                 ],

@@ -1,0 +1,168 @@
+{# @param dialog_id string #}
+{# @param source string dashboard|audit|capa|risk #}
+{# @param audit_id int|null #}
+{# @param capa_id int|null #}
+{# @param trigger_label string #}
+{# @param trigger_variant string #}
+
+<twig:Dialog id="{{ dialog_id }}" class="collab-invite-root">
+    <twig:Button
+        type="button"
+        variant="{{ trigger_variant|default('outline') }}"
+        size="sm"
+        class="gap-1.5 shrink-0"
+        data-action="click->ux-dialog#open"
+        data-ux-dialog-target="trigger"
+        aria-haspopup="dialog"
+    >
+        <i data-lucide="user-plus" width="16" height="16" class="shrink-0" aria-hidden="true"></i>
+        {{ trigger_label|default('Inviter un collaborateur') }}
+    </twig:Button>
+    <twig:Dialog:Content class="w-[calc(100%-2rem)] max-w-lg p-5 sm:p-7 gap-0 sm:gap-1">
+        <twig:Dialog:Header class="gap-2 pb-1">
+            <twig:Dialog:Title>Inviter un collaborateur</twig:Dialog:Title>
+            <twig:Dialog:Description class="text-left text-sm text-muted-foreground leading-relaxed mt-0.5">
+                Invitez une personne à consulter ou contribuer à votre pilotage QHSE. Elle recevra un e-mail avec un lien sécurisé.
+            </twig:Dialog:Description>
+        </twig:Dialog:Header>
+        <div class="space-y-4 mt-4">
+            <div class="space-y-1.5">
+                <twig:Label for="{{ dialog_id }}-firstname">Prénom (optionnel)</twig:Label>
+                <twig:Input id="{{ dialog_id }}-firstname" type="text" autocomplete="given-name" class="collab-invite-firstname" />
+            </div>
+            <div class="space-y-1.5">
+                <twig:Label for="{{ dialog_id }}-email">E-mail</twig:Label>
+                <twig:Input id="{{ dialog_id }}-email" type="email" required autocomplete="email" class="collab-invite-email" />
+            </div>
+            <div class="space-y-1.5">
+                <twig:Label for="{{ dialog_id }}-role">Rôle</twig:Label>
+                <twig:Select id="{{ dialog_id }}-role" class="collab-invite-role">
+                    <option value="lecteur">Lecteur</option>
+                    <option value="contributeur">Contributeur</option>
+                    <option value="responsable">Responsable</option>
+                </twig:Select>
+            </div>
+            <p id="{{ dialog_id }}-msg" class="text-sm hidden m-0 min-h-[1.25rem]" role="status"></p>
+        </div>
+        <twig:Dialog:Footer class="collab-invite-footer mt-6 gap-3 border-t border-border pt-5 sm:pt-6 bg-transparent">
+            <twig:Button type="button" variant="ghost" data-action="click->ux-dialog#close" class="collab-invite-dismiss w-full shrink-0 justify-center sm:w-auto sm:justify-start h-auto min-h-10 py-2 text-muted-foreground hover:text-foreground">
+                Ignorer pour le moment
+            </twig:Button>
+            <div class="flex w-full flex-col gap-2 sm:min-w-0 sm:flex-1 sm:flex-row sm:justify-end sm:gap-3">
+                <twig:Button type="button" variant="outline" class="collab-invite-copy w-full justify-center border-2 shadow-sm sm:min-w-[11rem] sm:flex-1 sm:max-w-[calc(50%-0.375rem)]">
+                    Copier le lien sécurisé
+                </twig:Button>
+                <twig:Button type="button" variant="default" class="collab-invite-send w-full justify-center shadow-sm sm:min-w-[11rem] sm:flex-1 sm:max-w-[calc(50%-0.375rem)]">
+                    Envoyer l’invitation
+                </twig:Button>
+            </div>
+        </twig:Dialog:Footer>
+    </twig:Dialog:Content>
+</twig:Dialog>
+
+<script>
+(function () {
+  {# L’id réel du <dialog> est « dialog- » + id (voir templates/components/Dialog.html.twig). #}
+  const dialogEl = document.getElementById('dialog-' + {{ dialog_id|json_encode|raw }});
+  if (!dialogEl || dialogEl.dataset.collabInviteBound) return;
+  dialogEl.dataset.collabInviteBound = '1';
+  const csrf = {{ csrf_token('collaboration')|json_encode|raw }};
+  const source = {{ source|json_encode|raw }};
+  const auditId = {{ audit_id|default(null)|json_encode|raw }};
+  const capaId = {{ capa_id|default(null)|json_encode|raw }};
+
+  function showMsg(text, ok) {
+    const el = dialogEl.querySelector('[id$="-msg"]');
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove('hidden', 'text-destructive', 'text-primary', 'text-muted-foreground');
+    el.classList.add(ok ? 'text-primary' : 'text-destructive');
+    el.classList.remove('hidden');
+  }
+
+  function setBusy(btn, busy) {
+    if (!btn) return;
+    btn.disabled = busy;
+    btn.setAttribute('aria-busy', busy ? 'true' : 'false');
+  }
+
+  async function postInvite(sendEmail) {
+    const email = dialogEl.querySelector('.collab-invite-email')?.value?.trim() || '';
+    const firstName = dialogEl.querySelector('.collab-invite-firstname')?.value?.trim() || '';
+    const role = dialogEl.querySelector('.collab-invite-role')?.value || 'lecteur';
+    const body = { email, firstName, role, source, sendEmail, csrf_token: csrf };
+    if (auditId) body.auditId = auditId;
+    if (capaId) body.capaId = capaId;
+    try {
+      const res = await fetch('{{ path('app_api_collaboration_invite') }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf },
+        body: JSON.stringify(body),
+        credentials: 'same-origin',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        if (data.error === 'csrf') {
+          showMsg('Session expirée : rechargez la page puis réessayez.', false);
+        } else {
+          showMsg(
+            data.error === 'self_invite'
+              ? 'Vous ne pouvez pas vous inviter vous-même.'
+              : data.error === 'invalid_email'
+                ? 'Indiquez une adresse e-mail valide.'
+                : 'Action impossible pour le moment. Réessayez.',
+            false
+          );
+        }
+        return null;
+      }
+      return data;
+    } catch (e) {
+      showMsg('Connexion impossible. Vérifiez le réseau et réessayez.', false);
+      return null;
+    }
+  }
+
+  const sendBtn = dialogEl.querySelector('.collab-invite-send');
+  const copyBtn = dialogEl.querySelector('.collab-invite-copy');
+
+  sendBtn?.addEventListener('click', async function () {
+    setBusy(sendBtn, true);
+    setBusy(copyBtn, true);
+    try {
+      const data = await postInvite(true);
+      if (data) {
+        showMsg('Invitation envoyée.', true);
+        dialogEl.querySelector('[data-action="click->ux-dialog#close"]')?.click();
+      }
+    } finally {
+      setBusy(sendBtn, false);
+      setBusy(copyBtn, false);
+    }
+  });
+
+  copyBtn?.addEventListener('click', async function () {
+    setBusy(sendBtn, true);
+    setBusy(copyBtn, true);
+    try {
+      const data = await postInvite(false);
+      if (!data || !data.acceptUrl) {
+        return;
+      }
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(data.acceptUrl);
+          showMsg('Lien copié dans le presse-papiers.', true);
+        } catch (e) {
+          showMsg('Copie refusée par le navigateur. Copiez ce lien : ' + data.acceptUrl, true);
+        }
+      } else {
+        showMsg('Copiez ce lien : ' + data.acceptUrl, true);
+      }
+    } finally {
+      setBusy(sendBtn, false);
+      setBusy(copyBtn, false);
+    }
+  });
+})();
+</script>

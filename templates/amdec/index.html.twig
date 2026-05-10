@@ -37,6 +37,7 @@
 {% block content %}
 <main class="amdec-page{% if not app.user %} amdec-page--guest{% endif %}">
     <div class="container">
+        {% include 'components/tool_breadcrumb.html.twig' with { tool_name: 'Analyse AMDEC' } %}
         {% include 'components/tool_page_header.html.twig' with {
             tool_icon: 'alert-triangle',
             tool_name: 'Analyse AMDEC',
@@ -46,10 +47,21 @@
         } %}
         <input type="hidden" id="amdecAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <header class="amdec-header" data-aos="fade-up">
-            <h1>Analyse AMDEC</h1>
+        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+            <h1 class="page-title">Analyse AMDEC</h1>
             <p class="lead">Identifiez les modes de défaillance, mesurez leur criticité (NPR) et priorisez vos actions pour sécuriser vos process.</p>
-        </header>
+            {% include 'components/tool_meta_hints.html.twig' with {
+                tool_slug: 'amdec',
+                hint_id_prefix: 'amdec',
+                meta_intro: 'Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; les grilles de notation et la saisie suivent.',
+                tag_hints: {
+                    'Risques': 'Anticiper les défaillances avant qu’elles n’impactent le client ou la conformité.',
+                    'Prévention': 'Prioriser les actions préventives sur les modes les plus critiques.',
+                    'Criticité': 'Le NPR synthétise gravité, occurrence et détection.',
+                    'Qualité': 'Appui pour dossiers qualité, revues et exigences ISO / IATF.',
+                },
+            } %}
+        </div>
 
         {% if not app.user %}
         <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
@@ -59,30 +71,13 @@
         </div>
         {% endif %}
 
-        <section class="amdec-guide-card" data-aos="fade-up" data-aos-delay="60">
-            <div class="amdec-guide-card__title">🧠 Guide express AMDEC</div>
-            <p>La méthode AMDEC (Analyse des Modes de Défaillance, de leurs Effets et de leur Criticité) vous aide à anticiper les risques d'un produit ou d'un process. Renseignez pour chaque défaillance : la gravité (G), l'occurrence (O) et la détection (D). Le produit de ces trois valeurs donne l'indice NPR.</p>
-            <div class="amdec-guide-card__grid">
-                <div class="amdec-guide-card__item">
-                    <h3>⚠️ Gravité (G)</h3>
-                    <p>Impact de la défaillance sur le client, le process ou la sécurité. Plus la conséquence est grave, plus la valeur est élevée.</p>
-                </div>
-                <div class="amdec-guide-card__item">
-                    <h3>🔁 Occurrence (O)</h3>
-                    <p>Fréquence de survenue de la défaillance. Évaluez la probabilité que le problème se produise.</p>
-                </div>
-                <div class="amdec-guide-card__item">
-                    <h3>🔍 Détection (D)</h3>
-                    <p>Capacité à détecter la défaillance avant qu'elle n'affecte le client. Plus la détection est difficile, plus la note est élevée.</p>
-                </div>
-            </div>
-        </section>
+        {% include 'components/tool_help/amdec_accordion.html.twig' %}
 
         <section class="amdec-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
             <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newAmdecAnalysis()" aria-label="Initialiser une nouvelle analyse AMDEC">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
-            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateAmdecReport()" aria-label="Calculer l'analyse AMDEC">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateAmdecReport()" aria-label="Calculer l'analyse AMDEC">
                 <i class="fas fa-chart-bar mr-2"></i>Générer l'analyse
             </button>
             <button class="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="resetAmdecForm()" aria-label="Réinitialiser le formulaire AMDEC">
@@ -95,16 +90,14 @@
             <button class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openAmdecSaved()" aria-label="Charger une analyse AMDEC">
                 <i class="fas fa-folder-open mr-2"></i>Mes analyses
             </button>
-            <div class="dropdown export-dropdown" data-controller="dropdown-basic">
-                <button class="inline-flex items-center justify-center gap-1.5 bg-sky-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" id="amdecExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                    <i class="fas fa-download mr-2"></i>Exporter
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="amdecExportDropdown" data-dropdown-basic-target="menu" hidden>
-                    <li><button class="dropdown-item" type="button" onclick="exportAmdec('png')">Exporter en PNG</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="exportAmdec('pdf')">Exporter en PDF</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="exportAmdec('json')">Exporter en JSON</button></li>
-                </ul>
-            </div>
+            {% include 'components/tool_export_dropdown.html.twig' with {
+                button_id: 'amdecExportDropdown',
+                items: [
+                    { icon: 'fas fa-image', label: 'Exporter en PNG', onclick: 'exportAmdec("png")' },
+                    { icon: 'fas fa-file-pdf', label: 'Exporter en PDF', onclick: 'exportAmdec("pdf")' },
+                    { icon: 'fas fa-file-code', label: 'Exporter en JSON', onclick: 'exportAmdec("json")' },
+                ],
+            } %}
             {% else %}
             {% include 'components/tool_actions_login.html.twig' %}
             {% endif %}
@@ -197,6 +190,8 @@
 
             <div class="amdec-insights" id="amdecInsights"></div>
         </section>
+
+        {% include 'components/qse/capa_soft_cta.html.twig' with { tool: 'amdec' } %}
 
         {% include 'components/tool_lead_cta.html.twig' %}
         {% include 'components/cta_ddwin.html.twig' %}

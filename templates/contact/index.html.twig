@@ -11,194 +11,186 @@
 {% block og_description %}Contactez-nous pour toute question sur nos outils qualité. Support technique, suggestions d'amélioration et partenariats.{% endblock %}
 
 {% block body %}
-<!-- Hero Section -->
-<section class="py-12 bg-gradient-primary text-black" style="margin-top: 76px;">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            <div class="lg:col-span-8" data-aos="fade-right">
-                <h1 class="text-5xl font-bold mb-6">Contactez-nous</h1>
-                <p class="text-lg mb-6">
-                    Une question ? Une suggestion ? Notre équipe est là pour vous aider.
-                </p>
-            </div>
-            <div class="lg:col-span-4" data-aos="fade-left">
-                <figure>
-                    {% include 'components/media/responsive_picture.html.twig' with {
-                        path: 'img/markus-winkler-contact-unsplash.webp',
-                        alt: 'Image de contact',
-                        width: 900,
-                        height: 600
-                    } %}
-                    <figcaption><small>Source: Unsplash | Markus Winkler.</small></figcaption>
-                </figure>
+<div class="contact-page">
+    <section class="contact-hero">
+        <div class="container">
+            <div class="contact-hero__grid">
+                <div>
+                    <h1 class="contact-hero__title">Contactez-nous</h1>
+                    <p class="contact-hero__lead">
+                        Une question ? Une suggestion ? Notre équipe est là pour vous aider.
+                    </p>
+                </div>
+                <div>
+                    <figure class="contact-hero__figure">
+                        {% include 'components/media/responsive_picture.html.twig' with {
+                            path: 'img/markus-winkler-contact-unsplash.webp',
+                            alt: 'Image de contact',
+                            width: 900,
+                            height: 600,
+                            class: 'w-full h-auto'
+                        } %}
+                        <figcaption><small>Source&nbsp;: Unsplash · Markus Winkler.</small></figcaption>
+                    </figure>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Contact Form Section -->
-<section class="py-12">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex justify-center">
-            <div class="w-full max-w-2xl">
-                <div class="rounded-lg bg-card shadow-lg" data-aos="fade-up">
-                    <div class="p-6">
-                        <h2 class="text-center mb-6">Envoyez-nous un message</h2>
+    <section class="contact-section">
+        <div class="container">
+            <div class="flex justify-center">
+                <div class="w-full max-w-2xl">
+                    <div class="contact-card">
+                        <div class="contact-card__inner">
+                            <h2 class="contact-card__title">Envoyez-nous un message</h2>
 
-                        {% for message in app.flashes('contact_success') %}
-                            <div class="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 mb-4" role="alert">
-                                <i data-lucide="check-circle" width="20" height="20" class="mt-0.5 shrink-0 mr-2" aria-hidden="true"></i>
-                                <div class="grow">{{ message }}</div>
-                                <button type="button"
-                                        class="shrink-0 p-1 rounded opacity-60 hover:opacity-100 transition-opacity"
-                                        onclick="this.closest('[role=alert]').remove()"
-                                        aria-label="Fermer">
-                                    <i data-lucide="x" width="16" height="16"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
-
-                        {{ form_start(form, {'attr': {'class': 'contact-form', 'id': 'contactForm', 'data-turbo': 'false'}}) }}
-                            {# Honeypot anti-spam : champ invisible (ne pas remplir) #}
-                            <div class="visually-hidden-honeypot" aria-hidden="true">
-                                {{ form_row(form.website, {'attr': {'tabindex': '-1', 'autocomplete': 'off'}}) }}
-                            </div>
-                            <div class="grid gap-3">
-                                <div class="col-span-12">
-                                    {{ form_row(form.name) }}
+                            {{ form_start(form, {'attr': {'class': 'contact-form', 'id': 'contactForm', 'data-turbo': 'false'}}) }}
+                                <div class="visually-hidden-honeypot" aria-hidden="true">
+                                    {{ form_widget(form.website, {'attr': {'tabindex': '-1', 'autocomplete': 'off'}}) }}
                                 </div>
-                            </div>
 
-                            <div class="grid gap-3 mt-2">
-                                <div class="col-span-12">
-                                    {{ form_row(form.email) }}
+                                <div class="contact-form__field">
+                                    {{ form_label(form.name, null, {'label_attr': {'class': 'contact-form__label'}}) }}
+                                    {{ form_widget(form.name, {'attr': {
+                                        'class': 'contact-form__input' ~ (form.name.vars.errors|length ? ' is-invalid' : ''),
+                                        'placeholder': 'Votre prénom'
+                                    }}) }}
+                                    {{ form_errors(form.name) }}
                                 </div>
-                            </div>
 
-                            <div class="mt-3">
-                                {{ form_row(form.subject) }}
-                            </div>
+                                <div class="contact-form__field">
+                                    {{ form_label(form.email, null, {'label_attr': {'class': 'contact-form__label'}}) }}
+                                    {{ form_widget(form.email, {'attr': {
+                                        'class': 'contact-form__input' ~ (form.email.vars.errors|length ? ' is-invalid' : ''),
+                                        'placeholder': 'votre.email@exemple.com'
+                                    }}) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
 
-                            <div class="mt-3">
-                                {{ form_row(form.message, {'attr': {'rows': 5}}) }}
-                            </div>
+                                <div class="contact-form__field">
+                                    {{ form_label(form.subject, null, {'label_attr': {'class': 'contact-form__label'}}) }}
+                                    {{ form_widget(form.subject, {'attr': {
+                                        'class': 'contact-form__select' ~ (form.subject.vars.errors|length ? ' is-invalid' : '')
+                                    }}) }}
+                                    {{ form_errors(form.subject) }}
+                                </div>
 
-                            <div class="text-center mt-6">
-                                <small class="block mt-2 text-muted-foreground">
-                                    En soumettant ce formulaire, vous acceptez notre <a
-                                        href="{{ path('app_legal_politique_confidentialite') }}"
-                                        class="underline">politique de confidentialité</a>.
-                                </small>
-                                <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity mt-3">
-                                    <i data-lucide="send" width="20" height="20" class="mr-2" aria-hidden="true"></i>Envoyer le message
-                                </button>
-                            </div>
-                        {{ form_end(form) }}
+                                <div class="contact-form__field">
+                                    {{ form_label(form.message, null, {'label_attr': {'class': 'contact-form__label'}}) }}
+                                    {{ form_widget(form.message, {'attr': {
+                                        'class': 'contact-form__input contact-form__input--textarea' ~ (form.message.vars.errors|length ? ' is-invalid' : ''),
+                                        'rows': 5,
+                                        'placeholder': 'Décrivez votre demande en détail…'
+                                    }}) }}
+                                    {{ form_errors(form.message) }}
+                                </div>
+
+                                <div class="contact-form__actions">
+                                    <p class="contact-form__legal mb-0">
+                                        En soumettant ce formulaire, vous acceptez notre
+                                        <a href="{{ path('app_legal_politique_confidentialite') }}">politique de confidentialité</a>.
+                                    </p>
+                                    <button type="submit" class="contact-form__submit">
+                                        <i data-lucide="send" width="20" height="20" aria-hidden="true"></i>
+                                        Envoyer le message
+                                    </button>
+                                </div>
+                            {{ form_end(form) }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Contact Info Section -->
-<section class="py-12 bg-muted">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div data-aos="fade-up" data-aos-delay="100">
-                <div class="text-center">
-                    <div class="feature-icon bg-primary/10 text-primary rounded-xl p-3 inline-flex mb-3">
-                        <i data-lucide="mail" width="32" height="32" aria-hidden="true"></i>
+    <section class="contact-info">
+        <div class="container">
+            <div class="contact-info__grid">
+                <div class="contact-info__item">
+                    <div class="contact-info__icon" aria-hidden="true">
+                        <i data-lucide="mail" width="28" height="28"></i>
                     </div>
-                    <h4 class="font-semibold mb-3">Email</h4>
-                    <p class="text-muted-foreground">contact@outils-qualite.com</p>
+                    <h3 class="contact-info__title">Email</h3>
+                    <p class="contact-info__text">contact@outils-qualite.com</p>
                 </div>
-            </div>
 
-            <div data-aos="fade-up" data-aos-delay="200">
-                <div class="text-center">
-                    <div class="feature-icon bg-green-100 text-green-600 rounded-xl p-3 inline-flex mb-3">
-                        <i data-lucide="clock" width="32" height="32" aria-hidden="true"></i>
+                <div class="contact-info__item">
+                    <div class="contact-info__icon contact-info__icon--green" aria-hidden="true">
+                        <i data-lucide="clock" width="28" height="28"></i>
                     </div>
-                    <h4 class="font-semibold mb-3">Support</h4>
-                    <p class="text-muted-foreground">Lun-Ven : 9h00-18h00</p>
+                    <h3 class="contact-info__title">Support</h3>
+                    <p class="contact-info__text">Lun–Ven&nbsp;: 9h00–18h00</p>
                 </div>
-            </div>
 
-            <div data-aos="fade-up" data-aos-delay="300">
-                <div class="text-center">
-                    <div class="feature-icon bg-sky-100 text-sky-600 rounded-xl p-3 inline-flex mb-3">
-                        <i data-lucide="reply" width="32" height="32" aria-hidden="true"></i>
+                <div class="contact-info__item">
+                    <div class="contact-info__icon contact-info__icon--sky" aria-hidden="true">
+                        <i data-lucide="reply" width="28" height="28"></i>
                     </div>
-                    <h4 class="font-semibold mb-3">Réponse</h4>
-                    <p class="text-muted-foreground">Sous 24h en moyenne</p>
+                    <h3 class="contact-info__title">Réponse</h3>
+                    <p class="contact-info__text">Sous 24&nbsp;h en moyenne</p>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- FAQ Section -->
-<section class="py-12">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center mb-12" data-aos="fade-up">
-            <h2 class="text-4xl font-bold mb-3">Questions fréquentes</h2>
-            <p class="text-lg text-muted-foreground">Trouvez rapidement les réponses à vos questions</p>
-        </div>
+    <section class="contact-faq">
+        <div class="container">
+            <div class="contact-faq__header">
+                <h2 class="contact-faq__title">Questions fréquentes</h2>
+                <p class="contact-faq__lead">Trouvez rapidement les réponses à vos questions</p>
+            </div>
 
-        <div class="flex justify-center">
-            <div class="w-full max-w-2xl" data-aos="fade-up">
-
-                <details class="group border border-border rounded-lg mb-2 overflow-hidden" open>
-                    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground select-none list-none hover:bg-accent transition-colors">
-                        Les outils sont-ils vraiment gratuits ?
-                        <svg class="shrink-0 ml-4 w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <div class="contact-faq__list">
+                <details class="group" open>
+                    <summary>
+                        <span>Les outils sont-ils vraiment gratuits&nbsp;?</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
-                    <div class="px-5 pb-4 text-muted-foreground">
-                        Oui, absolument ! Tous nos outils sont 100% gratuits, sans limitation d'usage,
+                    <div class="contact-faq__answer">
+                        Oui, absolument&nbsp;! Tous nos outils sont 100&nbsp;% gratuits, sans limitation d’usage,
                         sans inscription obligatoire et sans publicité intrusive. Notre mission est de
-                        démocratiser l'accès aux outils d'amélioration continue.
+                        démocratiser l’accès aux outils d’amélioration continue.
                     </div>
                 </details>
 
-                <details class="group border border-border rounded-lg mb-2 overflow-hidden">
-                    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground select-none list-none hover:bg-accent transition-colors">
-                        Puis-je utiliser les outils pour un usage commercial ?
-                        <svg class="shrink-0 ml-4 w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <details class="group">
+                    <summary>
+                        <span>Puis-je utiliser les outils pour un usage commercial&nbsp;?</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
-                    <div class="px-5 pb-4 text-muted-foreground">
+                    <div class="contact-faq__answer">
                         Oui, vous pouvez utiliser nos outils dans un cadre professionnel et commercial.
                         Les analyses et rapports générés vous appartiennent entièrement. Nous demandons
                         simplement de mentionner la source lors de présentations publiques.
                     </div>
                 </details>
 
-                <details class="group border border-border rounded-lg mb-2 overflow-hidden">
-                    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground select-none list-none hover:bg-accent transition-colors">
-                        Mes données sont-elles sauvegardées ?
-                        <svg class="shrink-0 ml-4 w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <details class="group">
+                    <summary>
+                        <span>Mes données sont-elles sauvegardées&nbsp;?</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
-                    <div class="px-5 pb-4 text-muted-foreground">
-                        Nos outils fonctionnent entièrement dans votre navigateur. Aucune donnée n'est
+                    <div class="contact-faq__answer">
+                        Nos outils fonctionnent entièrement dans votre navigateur. Aucune donnée n’est
                         envoyée sur nos serveurs, garantissant ainsi la confidentialité totale de vos
                         analyses. Pensez à exporter vos travaux pour les sauvegarder.
                     </div>
                 </details>
 
-                <details class="group border border-border rounded-lg overflow-hidden">
-                    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer font-medium text-foreground select-none list-none hover:bg-accent transition-colors">
-                        Proposez-vous des formations ?
-                        <svg class="shrink-0 ml-4 w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <details class="group">
+                    <summary>
+                        <span>Proposez-vous des formations&nbsp;?</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
-                    <div class="px-5 pb-4 text-muted-foreground">
+                    <div class="contact-faq__answer">
                         Actuellement, nous proposons des guides et articles sur notre blog. Nous étudions
                         la possibilité de proposer des formations en ligne. Contactez-nous si vous êtes
                         intéressé par ce type de service.
                     </div>
                 </details>
-
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 {% endblock %}

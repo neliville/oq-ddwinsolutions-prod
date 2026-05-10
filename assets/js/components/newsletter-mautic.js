@@ -7,6 +7,27 @@
  */
 const VIEWPORT_SEL = '.newsletter-mautic-embed__viewport';
 
+/**
+ * --primary / --primary-foreground peuvent être un triplet HSL (shadcn) ou un hex (_variables legacy).
+ * @param {string} raw
+ * @param {string} fallbackHex
+ * @returns {string}
+ */
+function resolveTokenToCssColor(raw, fallbackHex) {
+  const v = (raw || '').trim();
+  if (!v) {
+    return fallbackHex;
+  }
+  if (v.startsWith('#')) {
+    return v;
+  }
+  /* Triplet type "243 75% 59%" */
+  if (/^\d/.test(v)) {
+    return `hsl(${v})`;
+  }
+  return fallbackHex;
+}
+
 /** @param {HTMLElement} root */
 function applyNewsletterMauticContrastFix(root) {
   try {
@@ -19,8 +40,8 @@ function applyNewsletterMauticContrastFix(root) {
       return;
     }
     const pf = cs.getPropertyValue('--primary-foreground').trim();
-    const bg = `hsl(${p})`;
-    const fg = pf ? `hsl(${pf})` : '#fff';
+    const bg = resolveTokenToCssColor(p, '#4f46e5');
+    const fg = resolveTokenToCssColor(pf, '#ffffff');
     const q = [
       'button[type="submit"]',
       'input[type="submit"]',
@@ -30,6 +51,8 @@ function applyNewsletterMauticContrastFix(root) {
       '.mauticform-button-wrapper a',
       'button[class*="mauticform"]',
       '.mauticform_wrapper button[type="submit"]',
+      '.mauticform_wrapper a.mauticform-button',
+      '.mauticform_wrapper button.mauticform-button',
       '#mautic-newsletter-container a.btn',
       '#mautic-newsletter-container button.btn',
     ].join(',');

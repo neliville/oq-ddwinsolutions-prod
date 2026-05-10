@@ -13,7 +13,9 @@
     padding: 0.35rem 0.85rem;
     border-radius: 999px;
     background: rgba(79, 70, 229, 0.1);
-    color: var(--primary);
+    /* --primary est un triplet HSL (shadcn) : var(--primary) seul est invalide pour color */
+    color: #4f46e5;
+    color: hsl(var(--primary));
     font-weight: 600;
     margin-bottom: 1rem;
   }
@@ -36,7 +38,16 @@
     color: var(--text-muted);
 
     a {
-      color: var(--primary);
+      color: #4f46e5;
+      color: hsl(var(--primary));
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+      font-weight: 600;
+    }
+
+    a:hover {
+      color: #4338ca;
+      color: hsl(var(--primary) / 0.88);
     }
   }
 }

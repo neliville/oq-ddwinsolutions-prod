@@ -47,19 +47,21 @@
         } %}
         <input type="hidden" id="eightdAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <header class="eightd-header" data-aos="fade-up">
-            <h1>Méthode 8D</h1>
+        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+            <h1 class="page-title">Méthode 8D</h1>
             <p class="lead">Structurez votre résolution de problème de façon professionnelle et collaborative : équipe, containment, causes racines, plan d'actions et capitalisation.</p>
-            {% set meta = tool_meta('eightd') %}
-            {% if meta %}
-            <div class="flex flex-wrap gap-2 mb-3" role="list">
-                <span class="inline-flex items-center rounded-full bg-secondary/20 text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold" role="listitem">Niveau : {{ meta.level }}</span>
-                {% for tag in meta.tags %}
-                <span class="inline-flex items-center rounded-md bg-muted text-muted-foreground px-2 py-0.5 text-xs" role="listitem">{{ tag }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </header>
+            {% include 'components/tool_meta_hints.html.twig' with {
+                tool_slug: 'eightd',
+                hint_id_prefix: 'eightd',
+                meta_intro: 'Survolez ou mettez le focus sur une pastille pour un court descriptif. L’aide détaillée est dans l’encadré juste en dessous ; le formulaire 8D suit.',
+                tag_hints: {
+                    'Résolution de problèmes': 'Cadre éprouvé pour traiter les dossiers clients ou internes jusqu’à la preuve d’efficacité.',
+                    "Plan d'action": 'Relier chaque discipline à des actions datées et responsabilisées.',
+                    'IATF 16949': 'Attendu fréquent en automotive pour les dossiers de réclamation et sécurisation des livraisons.',
+                    'Amélioration continue': 'Capitalisation en D8 pour éviter la récidive et enrichir le système qualité.',
+                },
+            } %}
+        </div>
 
         {% if not app.user %}
         <div class="flex items-center justify-center gap-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 mb-4 text-center" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
@@ -69,105 +71,66 @@
         </div>
         {% endif %}
 
-        <section class="eightd-notice" data-aos="fade-up" data-aos-delay="60">
-            <h2>🛠️ Pourquoi utiliser la méthode 8D ?</h2>
-            <p>La méthode 8D (Eight Disciplines) est la démarche standard industrialisée par Ford pour éradiquer un problème à la source. Elle structure la résolution autour d'une équipe pluridisciplinaire, des actions de containment, de l'analyse des causes racines et d'une capitalisation finale. Elle est très utilisée dans l'automobile (IATF 16949), l'aéronautique, le manufacturing et tout environnement orienté client.</p>
-        </section>
+        {% include 'components/tool_help/eightd_accordion.html.twig' %}
 
-        <section class="mb-6" aria-labelledby="eightd-when-heading" data-aos="fade-up" data-aos-delay="65">
-            <h2 id="eightd-when-heading" class="text-xl font-bold mb-2">Quand utiliser cette méthode en QSE ?</h2>
-            <ul class="mb-0">
-                <li><strong>Pour quel type de problème :</strong> réclamation client, non-conformité récurrente, incident majeur, demande de résolution structurée (IATF, aéronautique)</li>
-                <li>Niveau requis : <strong>Intermédiaire</strong></li>
-            </ul>
-        </section>
-        <section class="mb-6 p-4 bg-muted rounded-lg" aria-labelledby="eightd-example-heading" data-aos="fade-up" data-aos-delay="68">
-            <h2 id="eightd-example-heading" class="text-sm font-bold mb-2">Exemple concret</h2>
-            <p class="mb-0">Défaut de collage sur panneau porte : D0 préparation → D1 équipe 8D constituée → D2 problème décrit (quoi, où, quand, combien) → D3 containment client/process → D4 causes racines (5M, 5P) → D5 actions correctives → D6 validation → D7 prévention → D8 félicitations et partage. Plan d'action généré et suivi dans l'outil.</p>
-        </section>
-
-        <section class="eightd-overview" data-aos="fade-up" data-aos-delay="70">
-            {% set steps = {
-                'D0': 'Préparer',
-                'D1': 'Former l’équipe',
-                'D2': 'Décrire le problème',
-                'D3': 'Contenir',
-                'D4': 'Analyser les causes',
-                'D5': 'Définir les actions',
-                'D6': 'Valider l’efficacité',
-                'D7': 'Prévenir la récidive',
-                'D8': 'Féliciter & capitaliser'
-            } %}
-            {% for code, label in steps %}
-            <article class="eightd-overview__card" aria-label="Discipline {{ loop.index0 }}">
-                <h3>{{ code }}</h3>
-                <p>{{ label }}</p>
-            </article>
-            {% endfor %}
-        </section>
-
-        <nav class="eightd-step-nav flex flex-wrap gap-2 mb-6" aria-label="Navigation par étapes 8D" data-aos="fade-up" data-aos-delay="72">
-            <span class="mr-2 self-center text-sm text-muted-foreground">Aller à l'étape :</span>
-            <a href="#d0" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D0</a>
-            <a href="#d1" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D1</a>
-            <a href="#d2" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D2</a>
-            <a href="#d3" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D3</a>
-            <a href="#d4" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D4</a>
-            <a href="#d5" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D5</a>
-            <a href="#d6" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D6</a>
-            <a href="#d7" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D7</a>
-            <a href="#d8" class="inline-flex items-center justify-center border border-primary text-primary px-2.5 py-1 text-sm rounded-md hover:bg-primary/5 transition-colors no-underline">D8</a>
-        </nav>
-
-        <section class="eightd-timeline-visual mb-6 p-4 bg-muted rounded-lg text-sm" aria-hidden="true" data-aos="fade-up" data-aos-delay="74">
-            <div class="flex flex-wrap items-center gap-1 md:gap-2">
-                <span class="font-bold">D0</span><span class="text-muted-foreground">Préparer</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D1</span><span class="text-muted-foreground">Équipe</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D2</span><span class="text-muted-foreground">Problème</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D3</span><span class="text-muted-foreground">Contenir</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D4</span><span class="text-muted-foreground">Causes</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D5</span><span class="text-muted-foreground">Actions</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D6</span><span class="text-muted-foreground">Valider</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D7</span><span class="text-muted-foreground">Prévenir</span>
-                <span aria-hidden="true">→</span>
-                <span class="font-bold">D8</span><span class="text-muted-foreground">Capitaliser</span>
+        {% set eightd_journey = [
+            { code: 'D0', slug: 'd0', short: 'Préparer', title: 'Contexte et lancement' },
+            { code: 'D1', slug: 'd1', short: 'Équipe', title: 'Équipe pluridisciplinaire' },
+            { code: 'D2', slug: 'd2', short: 'Problème', title: 'Description factuelle' },
+            { code: 'D3', slug: 'd3', short: 'Contenir', title: 'Protection client' },
+            { code: 'D4', slug: 'd4', short: 'Causes', title: 'Causes racines' },
+            { code: 'D5', slug: 'd5', short: 'Actions', title: 'Actions correctives' },
+            { code: 'D6', slug: 'd6', short: 'Valider', title: 'Efficacité' },
+            { code: 'D7', slug: 'd7', short: 'Prévenir', title: 'Standardisation' },
+            { code: 'D8', slug: 'd8', short: 'Capitaliser', title: 'Clôture & leçons' },
+        ] %}
+        <section class="eightd-journey" data-aos="fade-up" data-aos-delay="70" aria-labelledby="eightd-journey-title">
+            <div class="eightd-journey__intro">
+                <h2 id="eightd-journey-title" class="eightd-journey__title">Parcours des disciplines</h2>
+                <p class="eightd-journey__lede">Neuf étapes de <strong>D0</strong> à <strong>D8</strong> — une seule navigation : choisissez l’étape à remplir, le formulaire correspondant se trouve plus bas.</p>
+            </div>
+            <div class="eightd-journey__rail" role="navigation" aria-label="Aller à une discipline 8D">
+                <ol class="eightd-journey__list">
+                    {% for step in eightd_journey %}
+                        <li class="eightd-journey__item">
+                            {% if not loop.first %}
+                                <span class="eightd-journey__connector" aria-hidden="true"></span>
+                            {% endif %}
+                            <a href="#{{ step.slug }}" class="eightd-journey__step" aria-label="{{ step.code }} {{ step.short }} — {{ step.title }}">
+                                <span class="eightd-journey__code" aria-hidden="true">{{ step.code }}</span>
+                                <span class="eightd-journey__short" aria-hidden="true">{{ step.short }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ol>
             </div>
         </section>
 
         <section class="eightd-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-4" data-aos="fade-up" data-aos-delay="100" role="toolbar" aria-label="Actions disponibles">
-            <button class="inline-flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="newEightDAnalysis()" aria-label="Initialiser un exemple de rapport 8D">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newEightDAnalysis()" aria-label="Initialiser un exemple de rapport 8D">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
-            <button class="inline-flex items-center gap-1 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="generateEightDReport()" aria-label="Générer le rapport 8D">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="generateEightDReport()" aria-label="Générer le rapport 8D">
                 <i class="fas fa-clipboard-check mr-2"></i>Générer le rapport
             </button>
-            <button class="inline-flex items-center gap-1 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" type="button" onclick="resetEightDForm()" aria-label="Réinitialiser le formulaire 8D">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-destructive text-destructive-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="resetEightDForm()" aria-label="Réinitialiser le formulaire 8D">
                 <i class="fas fa-eraser mr-2"></i>Réinitialiser
             </button>
             {% if app.user %}
-            <button class="inline-flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" onclick="saveEightD()" aria-label="Sauvegarder l'analyse 8D">
+            <button class="inline-flex items-center justify-center gap-1.5 bg-green-600 text-white px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="saveEightD()" aria-label="Sauvegarder l'analyse 8D">
                 <i class="fas fa-save mr-2"></i>Sauvegarder
             </button>
-            <button class="inline-flex items-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openEightDSaved()" aria-label="Charger une analyse 8D sauvegardée">
+            <button class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" type="button" onclick="openEightDSaved()" aria-label="Charger une analyse 8D sauvegardée">
                 <i class="fas fa-folder-open mr-2"></i>Mes analyses
             </button>
-            <div class="relative export-dropdown" data-controller="dropdown-basic">
-                <button class="inline-flex items-center gap-1 bg-sky-500 text-white px-3 py-1.5 text-sm rounded-md hover:opacity-90 transition-opacity" type="button" id="eightdExportDropdown" data-dropdown-basic-target="button" data-action="click->dropdown-basic#toggle keydown.enter->dropdown-basic#toggle keydown.space->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard keydown.arrow-up->dropdown-basic#openWithKeyboard" aria-haspopup="true" aria-expanded="false" aria-label="Options d'export">
-                    <i class="fas fa-download mr-2"></i>Exporter <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                </button>
-                <ul class="absolute right-0 mt-1 py-1 bg-popover border border-border rounded-md shadow-md z-50 min-w-[160px]" aria-labelledby="eightdExportDropdown" data-dropdown-basic-target="menu" hidden>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportEightD('png')">Exporter en PNG</button></li>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportEightD('pdf')">Exporter en PDF</button></li>
-                    <li><button class="flex items-center w-full px-4 py-2 text-sm hover:bg-accent transition-colors cursor-pointer bg-transparent border-none text-left" type="button" onclick="exportEightD('json')">Exporter en JSON</button></li>
-                </ul>
-            </div>
+            {% include 'components/tool_export_dropdown.html.twig' with {
+                button_id: 'eightdExportDropdown',
+                items: [
+                    { icon: 'fas fa-image', label: 'Exporter en PNG', onclick: 'exportEightD("png")' },
+                    { icon: 'fas fa-file-pdf', label: 'Exporter en PDF', onclick: 'exportEightD("pdf")' },
+                    { icon: 'fas fa-file-code', label: 'Exporter en JSON', onclick: 'exportEightD("json")' },
+                ],
+            } %}
             {% else %}
             {% include 'components/tool_actions_login.html.twig' %}
             {% endif %}
@@ -220,6 +183,8 @@
                 <ul id="eightdSummaryList"></ul>
             </div>
         </section>
+
+        {% include 'components/qse/capa_soft_cta.html.twig' with { tool: 'eight_d' } %}
 
         {% include 'components/tool_lead_cta.html.twig' %}
         {% include 'components/cta_ddwin.html.twig' %}

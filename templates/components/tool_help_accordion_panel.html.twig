@@ -1,0 +1,53 @@
+{# Panneau « Aide & ressources » (Card + Accordéon), fermé par défaut — même structure que Ishikawa.
+   @param panel_id string Identifiant unique (préfixe Accordion + titres aria)
+   @param sections array<int, { title: string, html: string }> Corps HTML par section (contrôlé côté templates)
+   @param card_title string|null Titre de la carte (défaut : Aide & ressources)
+   @param card_description string|null Sous-titre sous le titre
+   @param download array|null { href, label, aria_label?, footer_title?, footer_text? } — si null, pas de pied de carte
+#}
+{% set accordion_trigger_class = 'min-h-12 py-2.5 text-sm font-medium text-foreground hover:no-underline hover:bg-muted/60 sm:min-h-0 sm:py-2' %}
+{% set _panel_id = panel_id|default('tool') %}
+{% set _card_title = card_title|default('Aide & ressources') %}
+{% set _card_description = card_description|default('Sections repliables — tout reste fermé par défaut. Ouvrez uniquement ce qui vous sert, l’outil est juste sous cette encarte.') %}
+<div class="container tool-context-panel">
+    <section aria-labelledby="{{ _panel_id }}-help-card-title">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-col gap-1 p-4 sm:p-5 sm:pb-3">
+                <h2 id="{{ _panel_id }}-help-card-title" class="m-0 text-base font-semibold leading-none tracking-tight text-foreground sm:text-lg">{{ _card_title }}</h2>
+                <twig:Card:Description class="text-pretty leading-relaxed text-slate-700 dark:text-slate-200">
+                    {{ _card_description }}
+                </twig:Card:Description>
+            </twig:Card:Header>
+            <twig:Card:Content class="border-t border-border/60 p-0">
+                <twig:Accordion id="{{ _panel_id }}-context" class="w-full border-0 bg-transparent px-2 pb-2 shadow-none sm:px-3">
+                    {% for section in sections %}
+                        <twig:Accordion:Item value="{{ _panel_id }}-acc-{{ loop.index }}">
+                            <twig:Accordion:Trigger class="{{ accordion_trigger_class }}">{{ section.title }}</twig:Accordion:Trigger>
+                            <twig:Accordion:Content>
+                                {{ section.html|raw }}
+                            </twig:Accordion:Content>
+                        </twig:Accordion:Item>
+                    {% endfor %}
+                </twig:Accordion>
+            </twig:Card:Content>
+            {% if download is defined and download.href is defined %}
+                <twig:Card:Footer class="flex flex-col items-stretch gap-3 border-t border-border/80 bg-muted/30 p-4 sm:p-5 sm:pt-4">
+                    <div class="flex flex-col gap-1">
+                        <h3 id="{{ _panel_id }}-download-heading" class="m-0 text-sm font-semibold text-foreground">{{ download.footer_title|default('Modèles et téléchargements') }}</h3>
+                        <p class="m-0 max-w-2xl text-sm leading-relaxed text-slate-700 dark:text-slate-200">{{ download.footer_text|default('Ressources prêtes à l’emploi pour structurer votre démarche hors ligne.') }}</p>
+                    </div>
+                    <div class="tool-template-download-cta mb-0 text-left">
+                        <twig:Button as="a" href="{{ download.href }}" variant="default" size="lg" class="no-underline min-h-12 w-full justify-center sm:w-auto" aria-label="{{ download.aria_label|default(download.label) }}">
+                            {% if download.icon is defined and download.icon %}
+                                <twig:ux:icon name="{{ download.icon }}" data-icon="inline-start" aria-hidden="true" />
+                            {% else %}
+                                <twig:ux:icon name="lucide:download" data-icon="inline-start" aria-hidden="true" />
+                            {% endif %}
+                            {{ download.label }}
+                        </twig:Button>
+                    </div>
+                </twig:Card:Footer>
+            {% endif %}
+        </twig:Card>
+    </section>
+</div>

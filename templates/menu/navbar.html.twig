@@ -1,4 +1,4 @@
-<ul class="nav-menu ml-auto">
+<ul class="nav-menu ml-0 lg:ml-auto w-full lg:w-auto">
     {% for item in item.children %}
         <li class="{{ item.extras.class|default('nav-item') }}{{ item is knp_menu_current or item is knp_menu_ancestor ? ' active' : '' }}">
             <a class="{{ item.linkAttributes.class|default('nav-link') }}" href="{{ item.uri }}">

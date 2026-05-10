@@ -9,6 +9,8 @@ use App\Entity\IshikawaAnalysis;
 use App\Entity\ParetoAnalysis;
 use App\Entity\QqoqccpAnalysis;
 use App\Entity\User;
+use App\Entity\UserPreferences;
+use App\Repository\UserPreferencesRepository;
 use App\Tests\TestCase\WebTestCaseWithDatabase;
 
 class DashboardControllerTest extends WebTestCaseWithDatabase
@@ -89,11 +91,47 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
 
         $this->entityManager->flush();
 
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+
         $this->client->loginUser($user);
         $this->client->request('GET', '/dashboard');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Tableau de bord');
+        $this->assertSelectorTextContains('body', 'Qu’est-ce qui nécessite mon attention aujourd’hui');
+        $this->assertSelectorTextContains('body', 'CAPA en retard');
+        $this->assertSelectorExists('[data-feature="ai-placeholder"]#dashboard-ai-suggestions-slot');
+        $this->assertGreaterThan(0, $this->client->getCrawler()->filter('[data-slot="button"]')->count(), 'Au moins un bouton toolkit (ex. Nouvelle analyse)');
+        $this->assertGreaterThan(5, $this->client->getCrawler()->filter('.rounded-lg.border.bg-card.text-card-foreground')->count(), 'Cartes cockpit / KPI en composant Card');
+        $this->assertSelectorTextContains('body', 'Pilotage :');
+    }
+
+    public function testDashboardHidesCapaBlockWhenPreferenceDisabled(): void
+    {
+        $uniqueEmail = 'test-dashboard-capa-' . uniqid() . '@example.com';
+        $user = new User();
+        $user->setEmail($uniqueEmail);
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'Test123456!'));
+        $user->setRoles(['ROLE_USER']);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $prefs->setDashboardVisibility(['capa' => false]);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString('2. CAPA (vue synthétique)', $this->client->getResponse()->getContent());
     }
 }
 

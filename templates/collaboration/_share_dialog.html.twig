@@ -1,0 +1,121 @@
+{# @param dialog_id string #}
+{# @param target_type string audit|capa #}
+{# @param target_id int #}
+
+<twig:Dialog id="{{ dialog_id }}" class="collab-share-root">
+    <twig:Button
+        type="button"
+        variant="outline"
+        size="sm"
+        class="gap-1.5 shrink-0"
+        data-action="click->ux-dialog#open"
+        data-ux-dialog-target="trigger"
+        aria-haspopup="dialog"
+    >
+        <i data-lucide="share-2" width="16" height="16" class="shrink-0" aria-hidden="true"></i>
+        Partager
+    </twig:Button>
+    <twig:Dialog:Content class="w-[calc(100%-2rem)] max-w-[min(100%,28rem)] sm:max-w-md">
+        <twig:Dialog:Header>
+            <twig:Dialog:Title>Partager</twig:Dialog:Title>
+            <twig:Dialog:Description class="text-left text-sm text-muted-foreground">
+                Partage par e-mail ou lien sécurisé. <strong class="text-foreground">Lecture seule</strong> en V1 (niveaux commentaire / contribution enregistrés pour plus tard).
+            </twig:Dialog:Description>
+        </twig:Dialog:Header>
+        <div class="space-y-3 mt-2">
+            <div class="space-y-1">
+                <twig:Label for="{{ dialog_id }}-email">E-mail du destinataire (optionnel)</twig:Label>
+                <twig:Input id="{{ dialog_id }}-email" type="email" autocomplete="email" class="collab-share-email" placeholder="laisser vide pour lien seul" />
+            </div>
+            <div class="space-y-1">
+                <twig:Label for="{{ dialog_id }}-level">Niveau d’accès</twig:Label>
+                <twig:Select id="{{ dialog_id }}-level" class="collab-share-level">
+                    <option value="lecture_seule">Lecture seule</option>
+                    <option value="commentaire">Commentaire (bientôt)</option>
+                    <option value="contribution_legere">Contribution légère (bientôt)</option>
+                </twig:Select>
+            </div>
+            <div class="space-y-1">
+                <twig:Label for="{{ dialog_id }}-ttl">Durée du lien</twig:Label>
+                <twig:Select id="{{ dialog_id }}-ttl" class="collab-share-ttl">
+                    <option value="7">7 jours</option>
+                    <option value="30">30 jours</option>
+                </twig:Select>
+            </div>
+            <p id="{{ dialog_id }}-msg" class="text-sm hidden m-0" role="status"></p>
+        </div>
+        <twig:Dialog:Footer class="mt-4 flex flex-col-reverse sm:flex-row gap-2 sm:justify-end border-t border-border/60 pt-4">
+            <twig:Button type="button" variant="ghost" data-action="click->ux-dialog#close">Fermer</twig:Button>
+            <twig:Button type="button" variant="secondary" class="collab-share-copy">Copier le lien sécurisé</twig:Button>
+            <twig:Button type="button" variant="default" class="collab-share-send">Envoyer par e-mail</twig:Button>
+        </twig:Dialog:Footer>
+    </twig:Dialog:Content>
+</twig:Dialog>
+
+<script>
+(function () {
+  const root = document.getElementById({{ dialog_id|json_encode|raw }});
+  if (!root || root.dataset.collabShareBound) return;
+  root.dataset.collabShareBound = '1';
+  const csrf = {{ csrf_token('collaboration')|json_encode|raw }};
+  const targetType = {{ target_type|json_encode|raw }};
+  const targetId = {{ target_id|json_encode|raw }};
+
+  function showMsg(text, ok) {
+    const el = document.getElementById({{ (dialog_id ~ '-msg')|json_encode|raw }});
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove('hidden', 'text-destructive', 'text-primary');
+    el.classList.add(ok ? 'text-primary' : 'text-destructive');
+    el.classList.remove('hidden');
+  }
+
+  async function postShare(sendEmail) {
+    const invitedEmail = root.querySelector('.collab-share-email')?.value?.trim() || '';
+    const accessLevel = root.querySelector('.collab-share-level')?.value || 'lecture_seule';
+    const ttlDays = parseInt(root.querySelector('.collab-share-ttl')?.value || '7', 10);
+    const body = {
+      targetType,
+      targetId,
+      accessLevel,
+      ttlDays,
+      invitedEmail: invitedEmail || null,
+      sendEmail,
+      csrf_token: csrf,
+    };
+    const res = await fetch('{{ path('app_api_collaboration_share') }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) {
+      showMsg('Impossible de créer le partage (vérifiez d’être propriétaire de la ressource).', false);
+      return null;
+    }
+    return data;
+  }
+
+  root.querySelector('.collab-share-send')?.addEventListener('click', async function () {
+    const email = root.querySelector('.collab-share-email')?.value?.trim() || '';
+    if (!email) {
+      showMsg('Indiquez un e-mail pour l’envoi.', false);
+      return;
+    }
+    const data = await postShare(true);
+    if (data) {
+      showMsg('E-mail de partage envoyé.', true);
+      root.querySelector('[data-action="click->ux-dialog#close"]')?.click();
+    }
+  });
+  root.querySelector('.collab-share-copy')?.addEventListener('click', async function () {
+    const data = await postShare(false);
+    if (data && data.shareUrl && navigator.clipboard) {
+      await navigator.clipboard.writeText(data.shareUrl);
+      showMsg('Lien copié.', true);
+    } else if (data && data.shareUrl) {
+      showMsg(data.shareUrl, true);
+    }
+  });
+})();
+</script>

@@ -1,0 +1,55 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Exigence {{ requirement.legacyKey }}{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto px-4 py-6">
+    <p class="text-sm mb-4"><a href="{{ path('app_admin_qse_audit_requirements_index', { standard: standard.id }) }}" class="app-inline-link">← Liste</a></p>
+    <h1 class="text-2xl font-bold mb-2">Exigence</h1>
+    <p class="text-sm text-muted-foreground mb-6">Clé stable : <code>{{ requirement.legacyKey }}</code></p>
+    <form method="post" class="space-y-4">
+        <input type="hidden" name="_token" value="{{ csrf_token('admin_qse_audit_requirement_edit') }}">
+        <div>
+            <label class="block text-sm font-medium mb-1" for="chapter">Chapitre</label>
+            <input id="chapter" name="chapter" type="text" value="{{ requirement.chapter }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="subChapter">Sous-chapitre</label>
+            <input id="subChapter" name="subChapter" type="text" value="{{ requirement.subChapter|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="isoArticle">Article</label>
+            <input id="isoArticle" name="isoArticle" type="text" value="{{ requirement.isoArticle }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="requirementText">Texte d’exigence</label>
+            <textarea id="requirementText" name="requirementText" rows="5" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>{{ requirement.requirementText }}</textarea>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="isoComment">Commentaire</label>
+            <textarea id="isoComment" name="isoComment" rows="2" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">{{ requirement.isoComment|default('') }}</textarea>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="businessLink">Lien métier (URL)</label>
+            <input id="businessLink" name="businessLink" type="url" value="{{ requirement.businessLink|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="pdcaPhase">Phase PDCA</label>
+            <select id="pdcaPhase" name="pdcaPhase" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                <option value="">—</option>
+                {% for p in pdcaPhases %}
+                    <option value="{{ p.value }}" {% if requirement.pdcaPhase == p %}selected{% endif %}>{{ p.value|upper }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1" for="displayOrder">Ordre</label>
+            <input id="displayOrder" name="displayOrder" type="number" value="{{ requirement.displayOrder }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+        </div>
+        <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="active" value="1" {% if requirement.active %}checked{% endif %}> Actif</label>
+        <div>
+            <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold">Enregistrer</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

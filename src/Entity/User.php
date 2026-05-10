@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $lastActivityAt = null;
 
+    #[ORM\OneToOne(targetEntity: UserPreferences::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private ?UserPreferences $preferences = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -214,6 +217,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastActivityAt(?\DateTimeImmutable $lastActivityAt): static
     {
         $this->lastActivityAt = $lastActivityAt;
+
+        return $this;
+    }
+
+    public function getPreferences(): ?UserPreferences
+    {
+        return $this->preferences;
+    }
+
+    public function setPreferences(?UserPreferences $preferences): static
+    {
+        $this->preferences = $preferences;
+        if ($preferences !== null) {
+            $preferences->setUser($this);
+        }
 
         return $this;
     }

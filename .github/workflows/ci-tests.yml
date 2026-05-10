@@ -18,13 +18,13 @@ on:
 
 jobs:
   tests:
-    name: Tests PHPUnit (unit/functional/integration)
+    name: Tests PHPUnit (unit/functional/integration/repository)
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
         php-version: ['8.3']
-        test-suite: ['unit', 'functional', 'integration']
+        test-suite: ['unit', 'functional', 'integration', 'repository']
     
     steps:
       - name: Checkout

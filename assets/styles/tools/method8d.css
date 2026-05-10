@@ -72,37 +72,120 @@
   }
 }
 
-.eightd-overview {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-3);
+/* Parcours unique D0–D8 (remplace grille + nav + frise redondantes) */
+.eightd-journey {
   margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-lg);
+}
 
-  &__card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(129, 140, 248, 0.95));
-    color: #fff;
-    border-radius: var(--radius-xl);
-    padding: var(--space-4);
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    text-align: center;
+.eightd-journey__intro {
+  margin-bottom: var(--space-4);
+}
 
-    h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin: 0;
-    }
+.eightd-journey__title {
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  font-weight: 800;
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
 
-    p {
-      margin: 0;
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-  }
+.eightd-journey__lede {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 52rem;
+}
+
+.eightd-journey__rail {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  margin: 0 calc(-1 * var(--space-2));
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+}
+
+.eightd-journey__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  min-width: min-content;
+}
+
+.eightd-journey__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.eightd-journey__connector {
+  width: 10px;
+  height: 2px;
+  margin: 0 2px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(129, 140, 248, 0.35), rgba(99, 102, 241, 0.65));
+}
+
+.eightd-journey__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 4.5rem;
+  padding: 0.65rem 0.5rem 0.55rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.92) 100%);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.15;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, background 0.2s ease;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.eightd-journey__step:hover {
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 6px 20px -10px rgba(79, 70, 229, 0.45);
+  transform: translateY(-1px);
+}
+
+.eightd-journey__step:focus-visible {
+  outline: 3px solid rgba(129, 140, 248, 0.45);
+  outline-offset: 2px;
+}
+
+.eightd-journey__code {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+}
+
+.eightd-journey__short {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
 }
 
 .eightd-controls {
@@ -276,6 +359,7 @@
   margin-bottom: var(--space-5);
   position: relative;
   overflow: hidden;
+  scroll-margin-top: max(5.5rem, calc(var(--space-6) + 3rem));
 
   &__header {
     display: flex;
@@ -556,10 +640,6 @@
 
   .eightd-controls .btn {
     width: 100%;
-  }
-
-  .eightd-overview__card {
-    text-align: left;
   }
 
   .eightd-timeline {

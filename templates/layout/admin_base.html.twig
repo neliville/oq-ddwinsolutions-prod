@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% set show_public_navbar = false %}
+{% set show_sidebar_toggle = true %}
+
+{% block body_attributes %} class="layout-dashboard layout-admin"{% endblock %}
+
+{% block body %}
+<header>
+    {% include 'components/admin_topbar.html.twig' %}
+</header>
+<div class="flex">
+    <div class="sidebar-overlay" id="sidebarOverlay" style="display: none;" aria-hidden="true"></div>
+    {% include 'components/admin_cockpit_sidebar.html.twig' %}
+    <div class="main-content grow dashboard-layout layout-admin__content" tabindex="-1" role="region" aria-label="Administration">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

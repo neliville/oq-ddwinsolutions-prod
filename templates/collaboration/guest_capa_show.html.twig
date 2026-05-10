@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CAPA partagée (lecture seule) | OUTILS-QUALITÉ{% endblock %}
+{% block meta_description %}Vue lecture seule d’une CAPA partagée — OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto px-4 py-8 space-y-4">
+    <twig:Alert variant="info">
+        <twig:Alert:Title>Vue invitée — lecture seule</twig:Alert:Title>
+        <twig:Alert:Description class="text-sm">Ce lien ne permet pas de modifier la CAPA.</twig:Alert:Description>
+    </twig:Alert>
+    <twig:Card>
+        <twig:Card:Header class="p-5 pb-2">
+            <twig:Card:Title>{{ capa.title }}</twig:Card:Title>
+            <p class="text-xs text-muted-foreground m-0">Statut : {{ capa.status.value|qse_status_label('capa') }}</p>
+        </twig:Card:Header>
+        <twig:Card:Content class="p-5 pt-0 space-y-2 text-sm">
+            {% if capa.description %}<p class="m-0 whitespace-pre-wrap">{{ capa.description }}</p>{% endif %}
+            {% if capa.responsible %}<p class="m-0"><span class="text-muted-foreground">Responsable :</span> {{ capa.responsible }}</p>{% endif %}
+            {% if capa.dueAt %}<p class="m-0"><span class="text-muted-foreground">Échéance :</span> {{ capa.dueAt|date('d/m/Y') }}</p>{% endif %}
+        </twig:Card:Content>
+    </twig:Card>
+</div>
+{% endblock %}

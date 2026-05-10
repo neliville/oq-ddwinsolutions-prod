@@ -7,15 +7,13 @@
          aria-modal="true"
          role="dialog"
          style="display: none;"
-         {{ stimulus_controller('bootstrap-modal', { autoShow: false }) }}
+         {{ stimulus_controller('app-modal', { autoShow: false }) }}
          data-turbo="false">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md" role="document">
             <div class="flex justify-end px-4 pt-4">
-                <button type="button"
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                        data-action="bootstrap-modal#hide" aria-label="Fermer">
+                <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer" class="shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+                </twig:Button>
             </div>
             <div class="text-center px-6 pb-2">
                 <div class="inline-flex items-center justify-center bg-green-100 text-green-600 rounded-xl p-3 mb-3">
@@ -25,19 +23,17 @@
                 <p class="text-muted-foreground text-sm mb-0" data-post-save-cta-analysis-name></p>
             </div>
             <div class="flex flex-col gap-2 px-6 pb-6 pt-4">
-                <a href="{{ path('app_creations_index') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full">
-                    <i data-lucide="folder-open" width="15" height="15" class="mr-1"></i>
+                <twig:Button as="a" href="{{ path('app_creations_index') }}" variant="default" class="no-underline w-full px-4 py-2 font-medium">
+                    <i data-lucide="folder-open" width="15" height="15" class="mr-1" aria-hidden="true"></i>
                     Voir toutes mes analyses
-                </a>
-                <a href="{{ path('app_ressources_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors no-underline w-full">
-                    <i data-lucide="package-open" width="15" height="15" class="mr-1"></i>
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_ressources_index') }}" variant="outline" class="no-underline w-full px-4 py-2 font-medium">
+                    <i data-lucide="package-open" width="15" height="15" class="mr-1" aria-hidden="true"></i>
                     Découvrir les ressources QSE
-                </a>
-                <button type="button"
-                        class="text-sm text-muted-foreground p-0 bg-transparent border-none cursor-pointer hover:text-foreground transition-colors mt-1"
-                        data-action="bootstrap-modal#hide">
+                </twig:Button>
+                <twig:Button variant="link" type="button" data-action="app-modal#hide" class="mt-1 text-sm text-muted-foreground h-auto p-0 py-1">
                     Continuer à éditer
-                </button>
+                </twig:Button>
             </div>
         </div>
     </div>

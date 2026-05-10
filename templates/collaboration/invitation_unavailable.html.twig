@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Invitation indisponible | OUTILS-QUALITÉ{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-lg mx-auto px-4 py-12 text-center space-y-4">
+    <h1 class="text-2xl font-bold">Invitation indisponible</h1>
+    <p class="text-muted-foreground text-sm">Ce lien a déjà été utilisé ou a été annulé.</p>
+    <twig:Button as="a" href="{{ path('app_home_index') }}" variant="secondary" class="no-underline">Accueil</twig:Button>
+</div>
+{% endblock %}

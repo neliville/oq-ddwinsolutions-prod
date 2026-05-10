@@ -1,121 +1,24 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue sur {{ app_name }} !</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .email-container {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-        }
-        .content {
-            padding: 30px;
-        }
-        .button {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 14px 30px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-        .footer {
-            background: #f8f9fa;
-            padding: 25px 30px;
-            font-size: 12px;
-            color: #666;
-            border-top: 1px solid #e9ecef;
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .footer p {
-            margin: 8px 0;
-        }
-        .gdpr-section {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 11px;
-            color: #856404;
-        }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="header">
-            <h1>Bienvenue sur {{ app_name }} !</h1>
-        </div>
-        
-        <div class="content">
-            <p>Bonjour,</p>
-            
-            <p>Nous sommes ravis de vous accueillir sur <strong>{{ app_name }}</strong> !</p>
-            
-            <p>Votre compte a été créé avec succès. Vous pouvez désormais :</p>
-            
-            <ul>
-                <li>Accéder à tous nos outils d'analyse qualité (Ishikawa, 5 Pourquoi, etc.)</li>
-                <li>Sauvegarder vos analyses et y accéder depuis votre espace personnel</li>
-                <li>Recevoir nos derniers articles et actualités</li>
-                <li>Profiter de fonctionnalités exclusives réservées aux membres</li>
-            </ul>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="{{ login_url }}" class="button">Accéder à mon compte</a>
-            </div>
-            
-            <p>Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter.</p>
-            
-            <p>Bien cordialement,<br>
-            L'équipe {{ app_name }}</p>
-        </div>
-        
-        <div class="footer">
-            <p><strong>{{ app_name }}</strong> | Outils d'analyse qualité gratuits</p>
-            <p>Cet email a été envoyé à <strong>{{ user.email }}</strong></p>
-            
-            <div class="gdpr-section">
-                <p><strong>Conformité RGPD :</strong></p>
-                <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données vous concernant.</p>
-                <p>Pour exercer ces droits ou pour toute question relative à vos données personnelles, vous pouvez nous contacter à l'adresse : <a href="mailto:contact@outils-qualite.com">contact@outils-qualite.com</a></p>
-                <p>Pour consulter notre politique de confidentialité : <a href="{{ app_url }}/politique-de-confidentialite">Politique de confidentialité</a></p>
-            </div>
-            
-            <p style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #dee2e6;">
-                <strong>Mentions légales :</strong><br>
-                {{ app_name }}<br>
-                Email : contact@outils-qualite.com<br>
-                Site web : <a href="{{ app_url }}">{{ app_url }}</a>
-            </p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'emails/base_transactional.html.twig' %}
 
+{% block email_html_title %}Bienvenue sur {{ app_name }} !{% endblock %}
+
+{% block email_body %}
+<p style="margin:0 0 20px 0;font-size:18px;font-weight:bold;color:#1a3a5c;">Bonjour,</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">Nous sommes ravis de vous accueillir sur <strong style="color:#111827;">{{ app_name }}</strong>.</p>
+<p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#374151;">Votre compte a été créé avec succès. Vous pouvez désormais :</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:22px;" role="presentation">
+<tr><td style="padding:6px 0;font-size:14px;color:#111827;">&#10003; Accéder à tous nos outils d’analyse qualité (Ishikawa, 5 Pourquoi, QQOQCCP, etc.)</td></tr>
+<tr><td style="padding:6px 0;font-size:14px;color:#111827;">&#10003; Sauvegarder vos analyses dans votre espace personnel</td></tr>
+<tr><td style="padding:6px 0;font-size:14px;color:#111827;">&#10003; Suivre votre pilotage QHSE depuis le tableau de bord</td></tr>
+</table>
+<p style="margin:0 0 8px 0;font-size:15px;font-weight:bold;color:#1a3a5c;">Accéder à votre compte</p>
+{% include 'emails/_email_cta.html.twig' with { cta_href: login_url, cta_label: 'Accéder à mon compte' } %}
+<p style="margin:16px 0 0 0;font-size:14px;line-height:1.65;color:#374151;">Une question ? Répondez à cet email ou écrivez-nous à <a href="mailto:{{ app_email|default('contact@outils-qualite.com') }}" style="color:#2563eb;text-decoration:underline;">{{ app_email|default('contact@outils-qualite.com') }}</a>.</p>
+<div style="margin:22px 0 0 0;padding:14px 16px;border:1px solid #e5e7eb;border-radius:8px;background:#f8fafc;font-size:12px;line-height:1.6;color:#475569;text-align:left;">
+<strong style="color:#1a3a5c;">Conformité RGPD.</strong> Cet email confirme la création de votre compte ({{ user.email }}). Vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Pour les exercer : <a href="mailto:{{ app_email|default('contact@outils-qualite.com') }}" style="color:#2563eb;text-decoration:underline;">{{ app_email|default('contact@outils-qualite.com') }}</a> — <a href="{{ app_url }}/politique-de-confidentialite" style="color:#2563eb;text-decoration:underline;">Politique de confidentialité</a>.
+</div>
+{% endblock %}
+
+{% block email_footer %}
+{{ parent() }}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% set p_s1 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0">Le diagramme de Pareto illustre que <strong class="font-semibold text-foreground">environ 80 % des effets</strong> proviennent d’environ <strong class="font-semibold text-foreground">20 % des causes</strong>. Cet outil vous aide à identifier les leviers prioritaires pour maximiser l’impact de vos plans d’action.</p>
+</div>
+{% endset %}
+{% set p_s2 %}
+<ul class="mb-0 list-disc pl-5 text-sm leading-relaxed text-slate-700 marker:text-primary dark:text-slate-200">
+    <li>Analyse des <strong class="font-semibold text-foreground">types de défauts</strong> ou des réclamations les plus fréquents</li>
+    <li>Préparation de <strong class="font-semibold text-foreground">revue de direction</strong> ou de revue qualité</li>
+    <li>Priorisation après collecte de données (production, service, SAV)</li>
+    <li>Niveau requis : <strong class="font-semibold text-foreground">Débutant</strong></li>
+</ul>
+{% endset %}
+{% set p_s3 %}
+<div class="rounded-lg border border-border bg-muted/50 p-3 text-sm leading-relaxed text-slate-700 dark:bg-muted/30 dark:text-slate-200">
+    <p class="mb-2"><strong class="font-semibold text-foreground">Contexte :</strong> retours SAV sur 200 dossiers — 4 motifs représentent 72 % du volume.</p>
+    <p class="mb-0">Le Pareto met en évidence ces motifs en tête de liste ; la courbe cumulative guide la décision sur les premières actions à traiter.</p>
+</div>
+{% endset %}
+{% set p_s4 %}
+<div class="flex flex-col gap-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+    <p class="mb-0"><strong class="font-semibold text-foreground">Saisie :</strong> renseignez chaque cause et sa fréquence (ou effectif), puis générez le graphique.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Lecture :</strong> les barres sont triées par fréquence décroissante ; la courbe indique le pourcentage cumulé.</p>
+    <p class="mb-0"><strong class="font-semibold text-foreground">Conseil :</strong> vérifiez la qualité des libellés de causes (éviter des regroupements trop larges ou trop fins).</p>
+</div>
+{% endset %}
+{% include 'components/tool_help_accordion_panel.html.twig' with {
+    panel_id: 'pareto',
+    sections: [
+        { title: 'Infos utiles avant de commencer', html: p_s1|trim },
+        { title: 'Quand utiliser cette méthode en QSE ?', html: p_s2|trim },
+        { title: "Exemple d'application", html: p_s3|trim },
+        { title: 'Mini-guide', html: p_s4|trim },
+    ],
+} only %}

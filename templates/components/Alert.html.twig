@@ -1,0 +1,24 @@
+{# @prop variant 'default'|'destructive'|'success'|'warning'|'info' The visual style variant. Defaults to `default` #}
+{# @block content The alert content, typically includes `Alert:Title` and `Alert:Description` #}
+{%- props variant = 'default' -%}
+{%- set style = html_cva(
+    base: "grid gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4 w-full relative group/alert",
+    variants: {
+        variant: {
+            default: 'border-border bg-card text-card-foreground',
+            destructive: 'border-destructive/40 bg-destructive/5 text-destructive *:data-[slot=alert-description]:text-destructive/90 dark:bg-destructive/10 *:[svg]:text-current',
+            success: 'border-emerald-200/90 bg-emerald-50 text-emerald-950 *:data-[slot=alert-description]:text-emerald-900/90 dark:border-emerald-800/50 dark:bg-emerald-950/30 dark:text-emerald-50 *:[svg]:text-emerald-600 dark:*:[svg]:text-emerald-400',
+            warning: 'border-amber-200/90 bg-amber-50 text-amber-950 *:data-[slot=alert-description]:text-amber-900/90 dark:border-amber-800/50 dark:bg-amber-950/25 dark:text-amber-50 *:[svg]:text-amber-600 dark:*:[svg]:text-amber-400',
+            info: 'border-sky-200/90 bg-sky-50 text-sky-950 *:data-[slot=alert-description]:text-sky-900/90 dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-50 *:[svg]:text-sky-600 dark:*:[svg]:text-sky-400',
+        },
+    },
+) -%}
+
+<div
+    data-slot="alert"
+    role="alert"
+    class="{{ style.apply({variant: variant}, attributes.render('class'))|tailwind_merge }}"
+    {{ attributes }}
+>
+    {%- block content %}{% endblock -%}
+</div>

@@ -1,17 +1,18 @@
-{# Composant Modal réutilisable (Tailwind + Stimulus bootstrap-modal) #}
-{# Usage:
+{# Composant Modal réutilisable (Tailwind + Stimulus app-modal) #}
+{# Convergence future : migrer vers twig:Dialog lorsque le JS d’ouverture/fermeture sera aligné sur ux-dialog (voir docs/ui-shadcn-audit-rapport.md). #}
+{# Usage (phase 8 — UX Toolkit) :
     {% component BootstrapModal with {id: 'my-modal'} %}
         {% block modal_header %}
             <h5>Mon titre</h5>
-            <button type="button" class="tw-modal-close" data-action="bootstrap-modal#hide" aria-label="Fermer">
+            <twig:Button variant="ghost" size="icon" type="button" data-action="app-modal#hide" aria-label="Fermer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            </twig:Button>
         {% endblock %}
         {% block modal_body %}
             Contenu du modal
         {% endblock %}
         {% block modal_footer %}
-            <button type="button" class="inline-flex items-center justify-center gap-1 border border-border text-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors" data-action="bootstrap-modal#hide">Fermer</button>
+            <twig:Button variant="outline" type="button" data-action="app-modal#hide">Fermer</twig:Button>
         {% endblock %}
     {% endcomponent %}
 #}
@@ -25,7 +26,7 @@
     id: id ? id : false,
     style: 'display: none;'
 }) }}
-    {{ stimulus_controller('bootstrap-modal', { autoShow: autoShow ?? false }) }}
+    {{ stimulus_controller('app-modal', { autoShow: autoShow ?? false }) }}
     data-turbo="false"
 >
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg" role="document">
