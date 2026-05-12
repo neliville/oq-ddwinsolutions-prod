@@ -705,38 +705,18 @@ export default class extends Controller {
         }
     }
 
-    // Notifications avec Toastify
+    // Notifications homogènes via le bus global de l'application.
     showNotification(message, type = 'success') {
-        const Toastify = window.Toastify;
-
-        if (this.currentToast) {
-            this.currentToast.hideToast();
-            this.currentToast = null;
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(message, type);
+            return;
         }
 
-        if (typeof Toastify !== 'undefined') {
-            const backgroundColor = type === 'success' 
-                ? 'linear-gradient(to right, #00b09b, #96c93d)'
-                : type === 'error' 
-                ? 'linear-gradient(to right, #ff6b6b, #ee5a6f)'
-                : type === 'warning'
-                ? 'linear-gradient(to right, #ffa500, #ff8c00)'
-                : 'linear-gradient(to right, #3498db, #2980b9)';
-
-            this.currentToast = Toastify({
-                text: message,
-                duration: 3000,
-                gravity: 'top',
-                position: 'right',
-                backgroundColor: backgroundColor,
-                stopOnFocus: true,
-                callback: () => {
-                    this.currentToast = null;
-                },
-            });
-            this.currentToast.showToast();
-        } else {
-            alert(message);
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+            return;
         }
+
+        alert(message);
     }
 }

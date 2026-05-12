@@ -44,34 +44,18 @@ function initializeFiveWhy() {
 }
 
 // Fonction pour afficher les notifications
-// Variable pour stocker la référence de la notification actuelle
-let currentToast = null
-
 function showNotification(message, type = "success") {
-  const Toastify = window.Toastify // Declare Toastify variable
-  
-  // Fermer la notification précédente si elle existe
-  if (currentToast) {
-    currentToast.hideToast()
-    currentToast = null
+  if (typeof window.appNotify === "function") {
+    window.appNotify(message, type)
+    return
   }
-  
-  if (typeof Toastify !== "undefined") {
-    currentToast = Toastify({
-      text: message,
-      duration: 3000,
-      gravity: "top",
-      position: "right",
-      backgroundColor: type === "success" ? "#2ecc71" : type === "error" ? "#e74c3c" : "#3498db",
-      stopOnFocus: true,
-      callback: function() {
-        currentToast = null
-      }
-    })
-    currentToast.showToast()
-  } else {
-    alert(message)
+
+  if (typeof window.showToast === "function") {
+    window.showToast(message, type)
+    return
   }
+
+  alert(message)
 }
 
 function updateProblemStatement() {

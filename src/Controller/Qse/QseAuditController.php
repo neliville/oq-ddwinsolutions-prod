@@ -330,6 +330,15 @@ final class QseAuditController extends AbstractController
         }
         $this->entityManager->remove($audit);
         $this->entityManager->flush();
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'message' => 'L’audit a été supprimé.',
+                'redirect' => $this->generateUrl('app_qse_audit_index'),
+            ]);
+        }
+
         $this->addFlash('success', 'L’audit a été supprimé.');
 
         return $this->redirectToRoute('app_qse_audit_index');

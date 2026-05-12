@@ -272,7 +272,7 @@
     {% endif %}
 
     {# Un seul <main id="main-content"> : toujours ici ; les pages qui redéfinissent block body s’y insèrent (évite double main + lien d’évitement cassé). #}
-    <main id="main-content" tabindex="-1">
+    <main id="main-content" class="w-full max-w-full overflow-x-hidden" tabindex="-1">
         {# Messages flash Symfony : rendus en premier pour consommer le sac avant tout {% for %} local dans les blocs enfants. #}
         <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
             {% include 'components/flash_messages.html.twig' %}
@@ -296,6 +296,27 @@
     {% if app.user %}
     {% include 'components/post_save_cta_modal.html.twig' %}
     {% endif %}
+
+    <script>
+        window.appNotify = function(message, type) {
+            if (!message) {
+                return;
+            }
+
+            var normalizedType = String(type || 'info');
+            if (normalizedType === 'danger' || normalizedType === 'destructive') {
+                normalizedType = 'error';
+            }
+
+            document.dispatchEvent(new CustomEvent('app:notification', {
+                bubbles: true,
+                detail: {
+                    message: String(message),
+                    type: normalizedType
+                }
+            }));
+        };
+    </script>
 
     {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
     <div data-controller="notifications" class="hidden" aria-hidden="true"></div>

@@ -5,7 +5,7 @@
 {% block meta_description %}Tableau de bord de l'administration — OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full">
+<div class="dashboard-page admin-dashboard-page w-full">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -115,7 +115,7 @@
                 Derniers événements métier (TrackingEvent)
             </h2>
         </div>
-        <div class="p-6 overflow-x-auto">
+        <div class="p-6 max-w-full overflow-x-auto">
             {% if recentTrackingEvents|length > 0 %}
                 <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
                     <thead>
@@ -270,7 +270,7 @@
             </div>
             <div class="p-6">
                 {% if mostVisitedPages|length > 0 %}
-                <div class="overflow-x-auto">
+                <div class="max-w-full overflow-x-auto">
                     <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
                         <thead>
                             <tr>
@@ -311,7 +311,7 @@
             </div>
             <div class="p-6">
                 {% if mostViewedPosts|length > 0 %}
-                <div class="overflow-x-auto">
+                <div class="max-w-full overflow-x-auto">
                     <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
                         <thead>
                             <tr>
@@ -487,7 +487,7 @@
             </div>
             <div class="p-6">
                 {% if recentActivity|length > 0 %}
-                <div class="overflow-x-auto">
+                <div class="max-w-full overflow-x-auto">
                     <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
                         <thead>
                             <tr>

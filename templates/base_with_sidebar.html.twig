@@ -7,11 +7,9 @@
 
 {% block body %}
 {% if app.user %}
-    <header>
-        {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
-    </header>
+    {% include 'components/dashboard_topbar.html.twig' with { show_sidebar_toggle: show_sidebar_toggle } %}
 {% endif %}
-<div class="flex">
+<div class="flex{% if app.user %} min-h-screen{% endif %} w-full max-w-full overflow-x-hidden">
     <!-- Overlay pour mobile quand sidebar ouverte -->
     {% if app.user %}
     <div class="sidebar-overlay" id="sidebarOverlay" style="display: none;" aria-hidden="true"></div>
@@ -23,7 +21,7 @@
     {% endif %}
 
     {# Colonne de contenu : pas de second <main> (déjà enveloppé par base.html.twig). #}
-    <div class="main-content grow{% if app.user %} dashboard-layout{% endif %}" tabindex="-1" {% if app.user %}style="transition: margin-left 0.3s;"{% endif %} role="region" aria-label="Contenu de la page">
+    <div class="main-content grow min-w-0 w-full max-w-full{% if app.user %} dashboard-layout{% endif %}" {% if app.user %}data-sidebar-main-content style="transition: margin-left 0.3s;"{% endif %} tabindex="-1" role="region" aria-label="Contenu de la page">
         {% block content %}{% endblock %}
     </div>
 </div>

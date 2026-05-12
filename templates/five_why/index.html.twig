@@ -309,14 +309,7 @@
 
     async function saveFiveWhy() {
         if (!{{ app.user ? 'true' : 'false' }}) {
-            Toastify({
-                text: "Connectez-vous pour sauvegarder définitivement.",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
-            }).showToast();
+            _showFiveWhyToast("Connectez-vous pour sauvegarder définitivement.", 'warning');
             var modalEl = document.getElementById('saveGuestModal');
             if (modalEl && window.Stimulus && typeof window.Stimulus.getControllerForElementAndIdentifier === 'function') {
                 try {
@@ -404,24 +397,10 @@
                 answerOverride: fiveWhyData.rootCause,
             });
 
-            Toastify({
-                text: data.message || "Analyse sauvegardée avec succès !",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-            }).showToast();
+            _showFiveWhyToast(data.message || "Analyse sauvegardée avec succès !", 'success');
         } catch (error) {
             console.error('Erreur lors de la sauvegarde:', error);
-            Toastify({
-                text: "Erreur lors de la sauvegarde : " + error.message,
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
+            _showFiveWhyToast("Erreur lors de la sauvegarde : " + error.message, 'error');
         } finally {
             if (saveBtn) {
                 saveBtn.disabled = false;
@@ -448,31 +427,35 @@
             if (data.data && data.data.length > 0) {
                 showLoadModal(data.data);
             } else {
-                Toastify({
-                    text: "Aucune analyse sauvegardée.",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ffa500, #ff8c00)",
-                }).showToast();
+                _showFiveWhyToast("Aucune analyse sauvegardée.", 'warning');
             }
         } catch (error) {
             console.error('Erreur lors du chargement:', error);
-            Toastify({
-                text: "Erreur lors du chargement de la liste.",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-            }).showToast();
+            _showFiveWhyToast("Erreur lors du chargement de la liste.", 'error');
         }
     }
 
-    function _showFiveWhyToast(text, color) {
-        const Toastify = window.Toastify;
-        if (Toastify) Toastify({ text, duration: 3000, close: true, gravity: 'top', position: 'right', backgroundColor: color }).showToast();
+    function _showFiveWhyToast(text, typeOrColor) {
+        const value = String(typeOrColor || 'info');
+        const normalizedType = value.includes('ff6b6b') || value === 'error'
+            ? 'error'
+            : value.includes('f97316') || value.includes('ffa500') || value === 'warning'
+            ? 'warning'
+            : value.includes('00b09b') || value === 'success'
+            ? 'success'
+            : 'info';
+
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(text, normalizedType);
+            return;
+        }
+
+        if (typeof window.showToast === 'function') {
+            window.showToast(text, normalizedType);
+            return;
+        }
+
+        console.log(`[${normalizedType}]`, text);
     }
 
     async function _openFiveWhyModal(modalElement) {
@@ -673,14 +656,7 @@
                 setCurrentFiveWhyAnalysisId(data.data.id);
 
                 if (!silent) {
-                    Toastify({
-                        text: "Analyse chargée avec succès !",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                    }).showToast();
+                    _showFiveWhyToast("Analyse chargée avec succès !", 'success');
                 }
 
                 return data.data;
@@ -690,14 +666,7 @@
         } catch (error) {
             console.error('Erreur lors du chargement:', error);
             if (!silent) {
-                Toastify({
-                    text: "Erreur lors du chargement de l'analyse.",
-                    duration: 5000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                }).showToast();
+                _showFiveWhyToast("Erreur lors du chargement de l'analyse.", 'error');
             }
             return null;
         }

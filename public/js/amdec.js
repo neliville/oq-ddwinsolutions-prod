@@ -54,26 +54,17 @@
     const routes = () => window.amdecRoutes || {};
 
     const notify = (message, type = 'info') => {
-        if (typeof Toastify === 'undefined') {
-            console.log(`[${type}]`, message);
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(message, type);
             return;
         }
 
-        const colors = {
-            success: 'linear-gradient(to right, #10b981, #34d399)',
-            error: 'linear-gradient(to right, #ef4444, #dc2626)',
-            warning: 'linear-gradient(to right, #f59e0b, #f97316)',
-            info: 'linear-gradient(to right, #6366f1, #3b82f6)',
-        };
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+            return;
+        }
 
-        Toastify({
-            text: message,
-            duration: 3500,
-            close: true,
-            gravity: 'top',
-            position: 'right',
-            backgroundColor: colors[type] || colors.info,
-        }).showToast();
+        console.log(`[${type}]`, message);
     };
 
     const computeMetrics = (entry) => {

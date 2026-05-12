@@ -1,7 +1,7 @@
 {% set currentRoute = app.request.get('_route') %}
 
 <aside id="app-dashboard-sidebar" class="admin-sidebar admin-cockpit-sidebar" aria-label="Navigation administration">
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Rubriques administration" data-sidebar-scroll-region>
         <div class="sidebar-section">
             <div class="sidebar-section-label">Cockpit</div>
             <a href="{{ path('app_admin_dashboard_index') }}"
@@ -136,13 +136,16 @@
                 <i data-lucide="scroll-text" width="16" height="16" class="sidebar-item-icon"></i>
                 <span>Logs admin</span>
             </a>
-            <a href="{{ path('app_logout') }}"
-               class="sidebar-item text-destructive">
-                <i data-lucide="log-out" width="16" height="16" class="sidebar-item-icon"></i>
-                <span>Déconnexion</span>
-            </a>
         </div>
     </nav>
+
+    <div class="sidebar-footer" aria-label="Actions de session">
+        <a href="{{ path('app_logout') }}"
+           class="sidebar-item sidebar-item--destructive">
+            <i data-lucide="log-out" width="16" height="16" class="sidebar-item-icon"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
 </aside>
 
 {% include 'components/sidebar_toggle_script.html.twig' %}

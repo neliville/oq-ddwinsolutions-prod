@@ -141,9 +141,27 @@
         (function () {
             const v2IndexUrl = {{ path('app_ishikawa_v2_index')|json_encode|raw }};
 
-            function _showIshikawaToast(text, color) {
-                const Toastify = window.Toastify;
-                if (Toastify) Toastify({ text: text, duration: 3000, close: true, gravity: 'top', position: 'right', backgroundColor: color }).showToast();
+            function _showIshikawaToast(text, typeOrColor) {
+                const value = String(typeOrColor || 'info');
+                const normalizedType = value.includes('ff6b6b') || value === 'error'
+                    ? 'error'
+                    : value.includes('f97316') || value.includes('ffa500') || value === 'warning'
+                    ? 'warning'
+                    : value.includes('00b09b') || value === 'success'
+                    ? 'success'
+                    : 'info';
+
+                if (typeof window.appNotify === 'function') {
+                    window.appNotify(text, normalizedType);
+                    return;
+                }
+
+                if (typeof window.showToast === 'function') {
+                    window.showToast(text, normalizedType);
+                    return;
+                }
+
+                console.log(`[${normalizedType}]`, text);
             }
 
             async function _openIshikawaModal(modalElement) {

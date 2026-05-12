@@ -1,18 +1,21 @@
 {# Dialogue natif + Stimulus qse-audit-delete (voir assets/controllers/qse_audit_delete_controller.js) #}
 <dialog
     data-qse-audit-delete-target="dialog"
-    class="w-[min(28rem,calc(100%-2rem))] max-h-[min(90vh,32rem)] overflow-y-auto rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl backdrop:bg-black/50 open:backdrop:backdrop-blur-sm"
+    hidden
+    class="fixed top-[50%] left-[50%] z-50 m-0 grid w-[min(28rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl backdrop:bg-black/55 backdrop:backdrop-blur-[2px] sm:max-w-md"
     aria-labelledby="qse-audit-delete-title"
     aria-describedby="qse-audit-delete-desc"
+    data-action="click->qse-audit-delete#backdropClose keydown.esc->qse-audit-delete#close:prevent"
 >
-    <form method="post" data-turbo="false" data-qse-audit-delete-target="form" class="flex flex-col">
+    <form method="post" data-turbo="false" data-action="submit->qse-audit-delete#submit" data-qse-audit-delete-target="form" class="flex max-h-[min(90vh,32rem)] flex-col">
         <input type="hidden" name="_token" value="" data-qse-audit-delete-target="token">
-        <div class="border-b border-border px-5 py-4">
-            <h2 id="qse-audit-delete-title" class="text-lg font-semibold m-0 flex items-start gap-2" data-qse-audit-delete-target="title">
+        <div class="border-b border-border px-5 py-4 sm:px-6">
+            <h2 id="qse-audit-delete-title" class="m-0 flex items-start gap-2 text-lg font-semibold" data-qse-audit-delete-target="title">
+                <twig:ux:icon name="lucide:alert-triangle" class="mt-0.5 size-5 shrink-0 text-amber-500" aria-hidden="true" />
                 Supprimer l’audit ?
             </h2>
         </div>
-        <div id="qse-audit-delete-desc" class="px-5 py-4 space-y-3 text-sm leading-relaxed">
+        <div id="qse-audit-delete-desc" class="space-y-3 overflow-y-auto px-5 py-4 text-sm leading-relaxed sm:px-6">
             <p class="m-0 text-muted-foreground" data-qse-audit-delete-target="lead"></p>
             <div
                 role="alert"
@@ -28,7 +31,7 @@
                 </p>
             </div>
         </div>
-        <div class="flex flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end">
+        <div class="flex flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
             <twig:Button type="button" variant="outline" class="w-full sm:w-auto" data-action="click->qse-audit-delete#close">Annuler</twig:Button>
             <twig:Button type="submit" variant="destructive" class="w-full sm:w-auto">Supprimer définitivement</twig:Button>
         </div>

@@ -39,6 +39,11 @@ function scrollToSection(sectionId) {
 }
 
 function showToast(message, type = "info") {
+  if (typeof window.appNotify === "function") {
+    window.appNotify(message, type)
+    return
+  }
+
   let toastContainer = document.querySelector(".app-toast-container")
   if (!toastContainer) {
     toastContainer = document.createElement("div")
@@ -64,7 +69,7 @@ function showToast(message, type = "info") {
   wrap.className = "pointer-events-auto rounded-lg border border-slate-200 bg-white shadow-lg overflow-hidden text-sm"
   wrap.setAttribute("role", "alert")
   wrap.innerHTML = `
-        <div class="flex items-center gap-2 px-3 py-2 text-white ${headerBg}">
+        <div class="flex items-center gap-2 px-3 py-2 text-white ${headerBg}"> 
             <i data-lucide="${icon}" width="16" height="16" class="shrink-0" aria-hidden="true"></i>
             <strong class="font-semibold">${title}</strong>
             <button type="button" class="ml-auto inline-flex h-7 w-7 items-center justify-center rounded text-white/90 hover:bg-white/10" aria-label="Fermer">

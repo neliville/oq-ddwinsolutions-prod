@@ -757,16 +757,13 @@ Le diagramme d'Ishikawa est un outil puissant qui, bien utilisé, peut transform
   }
 
   showNotification(message, type = "success") {
-    const Toastify = window.Toastify
-    if (typeof Toastify !== "undefined") {
-      Toastify({
-        text: message,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        backgroundColor: type === "success" ? "#2ecc71" : type === "error" ? "#e74c3c" : "#3498db",
-        stopOnFocus: true,
-      }).showToast()
+    if (typeof window.appNotify === "function") {
+      window.appNotify(message, type)
+      return
+    }
+
+    if (typeof window.showToast === "function") {
+      window.showToast(message, type)
     }
   }
 }

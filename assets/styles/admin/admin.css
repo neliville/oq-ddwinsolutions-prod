@@ -65,3 +65,25 @@
   }
 }
 
+body.layout-admin {
+  .admin-dashboard-page > div:first-child {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  body.layout-admin .admin-dashboard-page > div:first-child {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  body.layout-admin .admin-dashboard-page > div:first-child > div:last-child {
+    width: 100%;
+  }
+
+  body.layout-admin .admin-dashboard-page > div:first-child .inline-flex.rounded-full {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

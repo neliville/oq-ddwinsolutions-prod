@@ -186,14 +186,7 @@
             if (window.ishikawaApp && typeof window.ishikawaApp.getDiagramData === 'function') {
                 diagramData = window.ishikawaApp.getDiagramData();
             } else {
-                Toastify({
-                    text: "Erreur : Impossible de récupérer les données du diagramme.",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                }).showToast();
+                _showIshikawaToast("Erreur : Impossible de récupérer les données du diagramme.", 'error');
                 return;
             }
             
@@ -231,14 +224,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    Toastify({
-                        text: "Diagramme sauvegardé avec succès !",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                    }).showToast();
+                    _showIshikawaToast("Diagramme sauvegardé avec succès !", 'success');
 
                     if (diagramIdInput && data.data && data.data.id) {
                         diagramIdInput.value = data.data.id;
@@ -248,14 +234,7 @@
                 }
             } catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error);
-                Toastify({
-                    text: "Erreur lors de la sauvegarde : " + error.message,
-                    duration: 5000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                }).showToast();
+                _showIshikawaToast("Erreur lors de la sauvegarde : " + error.message, 'error');
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = originalText;
@@ -332,14 +311,7 @@
                 }
                 feedback.classList.add('hidden');
                 if (window.Toastify) {
-                    window.Toastify({
-                        text: 'Lien copié dans le presse-papiers.',
-                        duration: 2500,
-                        close: true,
-                        gravity: 'top',
-                        position: 'right',
-                        backgroundColor: 'linear-gradient(to right, #6366f1, #4f46e5)',
-                    }).showToast();
+                    _showIshikawaToast('Lien copié dans le presse-papiers.', 'info');
                 } else {
                     feedback.textContent = 'Copié dans le presse-papiers.';
                     feedback.classList.remove('hidden');
@@ -355,14 +327,7 @@
                 feedback.textContent = 'Copie impossible : sélectionnez le lien puis Ctrl+C (ou Cmd+C).';
                 feedback.classList.remove('hidden');
                 if (window.Toastify) {
-                    window.Toastify({
-                        text: 'Copie impossible. Sélectionnez le lien puis Ctrl+C (ou Cmd+C).',
-                        duration: 4000,
-                        close: true,
-                        gravity: 'top',
-                        position: 'right',
-                        backgroundColor: 'linear-gradient(to right, #f97316, #ea580c)',
-                    }).showToast();
+                    _showIshikawaToast('Copie impossible. Sélectionnez le lien puis Ctrl+C (ou Cmd+C).', 'warning');
                 }
             }
         }
@@ -381,14 +346,7 @@
             const diagramIdInput = document.getElementById('ishikawaDiagramId');
 
             if (!diagramIdInput || !diagramIdInput.value) {
-                Toastify({
-                    text: "Sauvegardez le diagramme avant de le partager.",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #f97316, #ea580c)",
-                }).showToast();
+                _showIshikawaToast("Sauvegardez le diagramme avant de le partager.", 'warning');
                 return;
             }
 
@@ -419,23 +377,34 @@
                 ishikawaOpenShareDialog(shareUrl, expiration);
             } catch (error) {
                 console.error('Erreur lors du partage:', error);
-                Toastify({
-                    text: "Erreur lors du partage : " + error.message,
-                    duration: 5000,
-                    close: true,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "linear-gradient(to right, #ff6b6b, #ee5a6f)",
-                }).showToast();
+                _showIshikawaToast("Erreur lors du partage : " + error.message, 'error');
             } finally {
                 shareBtn.disabled = false;
                 shareBtn.innerHTML = '<i class="fas fa-share-alt mr-2"></i>Partager';
             }
         }
 
-        function _showIshikawaToast(text, color) {
-            const Toastify = window.Toastify;
-            if (Toastify) Toastify({ text, duration: 3000, close: true, gravity: 'top', position: 'right', backgroundColor: color }).showToast();
+        function _showIshikawaToast(text, typeOrColor) {
+            const value = String(typeOrColor || 'info');
+            const normalizedType = value.includes('ff6b6b') || value === 'error'
+                ? 'error'
+                : value.includes('f97316') || value.includes('ffa500') || value === 'warning'
+                ? 'warning'
+                : value.includes('00b09b') || value === 'success'
+                ? 'success'
+                : 'info';
+
+            if (typeof window.appNotify === 'function') {
+                window.appNotify(text, normalizedType);
+                return;
+            }
+
+            if (typeof window.showToast === 'function') {
+                window.showToast(text, normalizedType);
+                return;
+            }
+
+            console.log(`[${normalizedType}]`, text);
         }
 
         async function _openIshikawaModal(modalElement) {
@@ -618,14 +587,7 @@
                         warning: 'linear-gradient(to right, #f97316, #ea580c)',
                         info: 'linear-gradient(to right, #2563eb, #38bdf8)'
                     };
-                    Toastify({
-                        text: message,
-                        duration: 3200,
-                        close: true,
-                        gravity: 'top',
-                        position: 'right',
-                        backgroundColor: colors[type] || colors.info,
-                    }).showToast();
+                    _showIshikawaToast(message, type);
                 } else {
                     if (type === 'error') {
                         console.error(message);

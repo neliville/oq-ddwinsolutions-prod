@@ -14,41 +14,19 @@
     let dragOffset = { x: 0, y: 0 };
     let selectedColor = '#FF6B6B';
     let hasShownDragHint = false;
-    let currentToast = null;
-
     // Fonction pour afficher les notifications
     function showNotification(message, type = "success") {
-        const Toastify = window.Toastify;
-        if (typeof Toastify !== "undefined") {
-            if (currentToast) {
-                currentToast.hideToast();
-                currentToast = null;
-            }
-
-            const backgroundColor = type === "success"
-                ? "#2ecc71"
-                : type === "error"
-                    ? "#e74c3c"
-                    : type === "warning"
-                        ? "#f39c12"
-                        : "#3498db";
-
-            currentToast = Toastify({
-                text: message,
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor,
-                stopOnFocus: true,
-                callback: function () {
-                    currentToast = null;
-                }
-            });
-
-            currentToast.showToast();
-        } else {
-            alert(message);
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(message, type);
+            return;
         }
+
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+            return;
+        }
+
+        alert(message);
     }
 
     const predefinedColors = [

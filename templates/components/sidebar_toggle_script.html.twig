@@ -35,10 +35,35 @@ function initSidebar() {
     const sidebarMobileToggle = document.getElementById('sidebarToggleMobile');
     const sidebar = document.querySelector('.admin-sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const mainContent = document.querySelector('[data-sidebar-main-content]');
+    const siteFooter = document.querySelector('body > footer');
     const sidebarToggleButtons = [sidebarPrimaryToggle, sidebarMobileToggle].filter(Boolean);
 
     if (sidebar && sidebarToggleButtons.length) {
         const isDesktop = () => window.innerWidth > 1200;
+        const setInertState = (element, isInert) => {
+            if (!element) return;
+
+            if (isInert) {
+                element.setAttribute('inert', '');
+                element.setAttribute('aria-hidden', 'true');
+            } else {
+                element.removeAttribute('inert');
+                element.removeAttribute('aria-hidden');
+            }
+        };
+
+        const syncMobileDrawerA11y = () => {
+            const desktop = isDesktop();
+            const open = sidebar.classList.contains('show') && !document.body.classList.contains('sidebar-collapsed');
+            const mobileOpen = !desktop && open;
+            const visible = desktop ? !document.body.classList.contains('sidebar-collapsed') : mobileOpen;
+
+            document.body.classList.toggle('sidebar-mobile-open', mobileOpen);
+            sidebar.setAttribute('aria-hidden', visible ? 'false' : 'true');
+            setInertState(mainContent, mobileOpen);
+            setInertState(siteFooter, mobileOpen);
+        };
 
         const hideOverlay = () => {
             if (sidebarOverlay) {
@@ -86,6 +111,7 @@ function initSidebar() {
                 }
             });
 
+            syncMobileDrawerA11y();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
 

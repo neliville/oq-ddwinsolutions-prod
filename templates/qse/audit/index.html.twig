@@ -79,10 +79,11 @@
                                                 class="text-destructive border-destructive/40 hover:bg-destructive/10"
                                                 data-action="click->qse-audit-delete#open"
                                                 data-audit-id="{{ a.id }}"
+                                                data-delete-url="{{ path('app_qse_audit_delete', { id: a.id }) }}"
                                                 data-capa-count="{{ capa_n }}"
-                                                data-audit-label="{{ audit_label|e('html_attr') }}"
+                                                data-audit-label="{{ audit_label }}"
                                                 data-csrf-token="{{ csrf_token('delete_qse_audit_' ~ a.id) }}"
-                                                aria-label="Supprimer l’audit {{ audit_label|e('html_attr') }}"
+                                                aria-label="Supprimer l’audit {{ audit_label }}"
                                             >
                                                 <twig:ux:icon name="lucide:trash-2" class="size-4 sm:mr-1" aria-hidden="true" />
                                                 <span class="hidden sm:inline">Supprimer</span>

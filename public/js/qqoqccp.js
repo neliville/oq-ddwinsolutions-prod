@@ -57,26 +57,17 @@
     }
 
     function notify(message, type = 'info') {
-        if (!isToastAvailable()) {
-            console.log(`[${type}] ${message}`);
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(message, type);
             return;
         }
 
-        const colors = {
-            success: 'linear-gradient(to right, #00b09b, #96c93d)',
-            error: 'linear-gradient(to right, #ff6b6b, #ee5a6f)',
-            warning: 'linear-gradient(to right, #fbbf24, #f97316)',
-            info: 'linear-gradient(to right, #60a5fa, #1d4ed8)',
-        };
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+            return;
+        }
 
-        Toastify({
-            text: message,
-            duration: 3500,
-            close: true,
-            gravity: 'top',
-            position: 'right',
-            backgroundColor: colors[type] || colors.info,
-        }).showToast();
+        console.log(`[${type}] ${message}`);
     }
 
     function syncInputsFromState() {

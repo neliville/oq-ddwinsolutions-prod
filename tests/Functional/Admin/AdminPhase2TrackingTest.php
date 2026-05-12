@@ -12,6 +12,44 @@ use App\Tests\TestCase\WebTestCaseWithDatabase;
 use Symfony\Component\HttpFoundation\Response;
 final class AdminPhase2TrackingTest extends WebTestCaseWithDatabase
 {
+    public function testAdminDashboardExposesPersistentLogoutActionInSidebarFooter(): void
+    {
+        $admin = $this->createTestUser('admin-sidebar-' . uniqid() . '@example.com', 'Test123456!', ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->client->loginUser($admin);
+        $crawler = $this->client->request('GET', '/admin/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('aside[aria-label="Navigation administration"] .sidebar-footer a[href="/logout"]')->count(),
+            'Le logout doit rester accessible dans le footer de la sidebar admin.'
+        );
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('button#sidebarToggleMobile[aria-controls="app-dashboard-sidebar"]')->count(),
+            'Le bouton mobile doit piloter explicitement le drawer de navigation.'
+        );
+    }
+
+    public function testAdminDashboardShellPreventsHorizontalOverflowOnMobile(): void
+    {
+        $admin = $this->createTestUser('admin-shell-' . uniqid() . '@example.com', 'Test123456!', ['ROLE_ADMIN', 'ROLE_USER']);
+        $this->client->loginUser($admin);
+        $crawler = $this->client->request('GET', '/admin/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('main#main-content.w-full.max-w-full.overflow-x-hidden')->count(),
+            'Le conteneur principal doit borner le débordement horizontal.'
+        );
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('.main-content.min-w-0.w-full.max-w-full[data-sidebar-main-content]')->count(),
+            'La colonne de contenu doit rester compressible dans le layout flex.'
+        );
+    }
+
     public function testAdminDashboardShowsUserViewSwitch(): void
     {
         $admin = $this->createTestUser('admin-phase2-' . uniqid() . '@example.com', 'Test123456!', ['ROLE_ADMIN', 'ROLE_USER']);

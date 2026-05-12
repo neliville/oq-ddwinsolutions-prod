@@ -1,5 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
+const COLORS = {
+    success: '#2ecc71',
+    error: '#e74c3c',
+    warning: '#f39c12',
+    info: '#3498db',
+};
+
 /**
  * Contrôleur pour gérer les notifications Toastify
  */
@@ -10,6 +17,7 @@ export default class extends Controller {
     };
 
     connect() {
+        this.currentToast = null;
         this.loadToastify();
         this.boundOnNotification = this.onNotificationEvent.bind(this);
         document.addEventListener('app:notification', this.boundOnNotification);
@@ -25,52 +33,14 @@ export default class extends Controller {
             this.show(message, type);
         }
     }
-    
-    show(event) {
-        // Méthode appelée depuis data-action
-        if (event && event.type === 'click') {
-            event.preventDefault();
-            const message = event.currentTarget.dataset.notificationsMessageValue || this.messageValue;
-            const type = event.currentTarget.dataset.notificationsTypeValue || this.typeValue || 'info';
-            if (message) {
-                this.displayNotification(message, type);
-            }
-        } else if (typeof event === 'string') {
-            // Méthode appelée directement avec message
-            const message = event;
-            const type = arguments[1] || 'info';
-            this.displayNotification(message, type);
-        }
-    }
-    
+
     displayNotification(event) {
-        // Récupérer le message depuis l'élément qui a déclenché l'événement
         const element = event?.currentTarget || event?.target || this.element;
         const message = element?.dataset?.notificationsMessageValue || this.messageValue;
         const type = element?.dataset?.notificationsTypeValue || this.typeValue || 'info';
-        
-        if (message) {
-            this.loadToastify().then(() => {
-                if (window.Toastify) {
-                    // Palette alignée sur les notifications Ishikawa (création, export PDF)
-                    const colors = {
-                        success: '#2ecc71',
-                        error: '#e74c3c',
-                        warning: '#f39c12',
-                        info: '#3498db',
-                    };
 
-                    window.Toastify({
-                        text: message,
-                        duration: 3000,
-                        gravity: 'top',
-                        position: 'right',
-                        backgroundColor: colors[type] || colors.info,
-                        stopOnFocus: true,
-                        className: 'toastify-notification',
-                    }).showToast();
-                }
-            });
+        if (message) {
+            this.show(message, type);
         }
     }
 
@@ -103,27 +73,58 @@ export default class extends Controller {
     }
 
     show(message, type = 'info') {
-        this.loadToastify().then(() => {
-            if (window.Toastify) {
-                // Palette alignée sur les notifications Ishikawa (création, export PDF)
-                const colors = {
-                    success: '#2ecc71',
-                    error: '#e74c3c',
-                    warning: '#f39c12',
-                    info: '#3498db',
-                };
+        const normalizedType = this.normalizeType(type);
+        const text = String(message || '').trim();
+        if (!text) {
+            return;
+        }
 
-                window.Toastify({
-                    text: message,
+        this.loadToastify()
+            .then(() => {
+                if (!window.Toastify) {
+                    return;
+                }
+
+                if (this.currentToast && typeof this.currentToast.hideToast === 'function') {
+                    this.currentToast.hideToast();
+                    this.currentToast = null;
+                }
+
+                this.currentToast = window.Toastify({
+                    text,
                     duration: 3000,
                     gravity: 'top',
                     position: 'right',
-                    backgroundColor: colors[type] || colors.info,
+                    backgroundColor: COLORS[normalizedType] || COLORS.info,
                     stopOnFocus: true,
                     className: 'toastify-notification',
-                }).showToast();
-            }
-        });
+                    callback: () => {
+                        this.currentToast = null;
+                    },
+                });
+                this.currentToast.showToast();
+            })
+            .catch(() => {
+                if (normalizedType === 'error') {
+                    console.error(text);
+                    return;
+                }
+
+                console.log(text);
+            });
+    }
+
+    normalizeType(type) {
+        const value = String(type || 'info');
+        if (value === 'danger' || value === 'destructive') {
+            return 'error';
+        }
+
+        if (value === 'success' || value === 'error' || value === 'warning' || value === 'info') {
+            return value;
+        }
+
+        return 'info';
     }
 
     success(message) {

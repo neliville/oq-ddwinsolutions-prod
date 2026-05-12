@@ -221,6 +221,12 @@ dialog footer[data-slot="dialog-footer"] a:hover,
     font-size: 0.95rem;
 }
 
+.main-content {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
 @media (max-width: 1200px) {
     .sidebar-toggle-label {
         display: none;
@@ -234,6 +240,12 @@ body.sidebar-collapsed .sidebar-overlay {
 
 body.sidebar-collapsed .admin-sidebar {
     transform: translateX(-100%) !important;
+}
+
+@media (max-width: 1200px) {
+    body.sidebar-mobile-open {
+        overflow: hidden;
+    }
 }
 
 @media (min-width: 1201px) {

@@ -209,54 +209,17 @@ export default class extends Controller {
                 return;
             }
         }
-        
-        // Fallback direct à Toastify
-        this.loadToastify().then(() => {
-            if (window.Toastify) {
-                const colors = {
-                    success: '#22c55e',
-                    error: '#ef4444',
-                    warning: '#f59e0b',
-                    info: '#3b82f6',
-                };
-                
-                window.Toastify({
-                    text: message,
-                    duration: 3000,
-                    gravity: 'top',
-                    position: 'right',
-                    backgroundColor: colors[type] || colors.info,
-                    stopOnFocus: true,
-                }).showToast();
-            }
-        });
-    }
-    
-    async loadToastify() {
-        if (window.Toastify) {
-            return Promise.resolve();
+
+        if (typeof window.appNotify === 'function') {
+            window.appNotify(message, type);
+            return;
         }
 
-        return new Promise((resolve, reject) => {
-            if (!document.querySelector('link[href*="toastify"]')) {
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = 'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css';
-                document.head.appendChild(link);
-            }
-
-            if (!window.Toastify) {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/toastify-js';
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            } else {
-                resolve();
-            }
-        });
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+        }
     }
-
+    
     addPresets() {
         // Attendre que le calendrier soit rendu
         const checkAndAddPresets = () => {
