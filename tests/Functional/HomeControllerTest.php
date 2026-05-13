@@ -19,11 +19,15 @@ class HomeControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
+        $siteFooter = $crawler->filter('footer')->reduce(
+            static fn ($node): bool => str_contains($node->text(), "Outils d'Analyse Gratuits")
+        )->first();
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('nav');
         $this->assertSelectorExists('footer');
-        $this->assertSelectorTextContains('footer', "Outils d'Analyse Gratuits");
+        $this->assertGreaterThan(0, $siteFooter->count());
+        $this->assertStringContainsString("Outils d'Analyse Gratuits", $siteFooter->text());
         $this->assertGreaterThan(0, $crawler->filter('#outils')->count());
         $this->assertGreaterThan(0, $crawler->filter('#fonctionnalites')->count());
         $this->assertGreaterThan(0, $crawler->filter('#newsletter')->count());
@@ -35,7 +39,7 @@ class HomeControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h2', 'Votre cockpit QHSE quotidien');
+        $this->assertSelectorTextContains('#home-dashboard-heading', 'Votre cockpit QHSE quotidien');
         $this->assertGreaterThan(0, $crawler->selectLink('Explorer tous les outils')->count());
     }
 }

@@ -230,6 +230,38 @@ final class OnboardingControllerTest extends WebTestCaseWithDatabase
         $this->assertNotEmpty($prefs->getActivationState()['nudge_dismissed_until'] ?? null);
     }
 
+    public function testLegacyOnboardedActivationContextStepDoesNotMutatePreferences(): void
+    {
+        $user = $this->createUser('onb-legacy-step-' . uniqid() . '@example.com');
+        $this->prepareIncompleteOnboarding($user);
+        $csrfToken = $this->fetchOnboardingCsrfToken($user);
+
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+        $this->entityManager->clear();
+
+        $this->client->request('POST', '/preferences/onboarding/step', [
+            '_token' => $csrfToken,
+            'activation_step' => 'context',
+            'job_function' => JobFunction::QSE_LEAD->value,
+            'company_size' => CompanySize::P2_10->value,
+            'main_activity' => MainActivity::INDUSTRY->value,
+        ]);
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertTrue($data['ok']);
+        $this->assertTrue($data['completed']);
+
+        $this->entityManager->clear();
+        $prefs = $this->entityManager->getRepository(UserPreferences::class)->findOneBy(['user' => $user]);
+        self::assertInstanceOf(UserPreferences::class, $prefs);
+        $this->assertTrue($prefs->isProfileOnboardingCompleted());
+        $this->assertNull($prefs->getActivationState());
+    }
+
     public function testLegacyOnboardedUserSkipRemainsCompleted(): void
     {
         $user = $this->createUser('onb-legacy-' . uniqid() . '@example.com');
