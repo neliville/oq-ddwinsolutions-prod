@@ -118,6 +118,14 @@ class UserPreferences
     #[ORM\Column(name: 'collaboration_ui_state', type: Types::JSON, nullable: true)]
     private ?array $collaborationUiState = null;
 
+    /**
+     * Parcours d'activation onboarding (clés versionnées, dates ISO8601).
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(name: 'activation_state', type: Types::JSON, nullable: true)]
+    private ?array $activationState = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -474,6 +482,34 @@ class UserPreferences
         $this->collaborationUiState = $collaborationUiState;
 
         return $this;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getActivationState(): ?array
+    {
+        return $this->activationState;
+    }
+
+    /**
+     * @param array<string, mixed>|null $activationState
+     */
+    public function setActivationState(?array $activationState): static
+    {
+        $this->activationState = $activationState;
+
+        return $this;
+    }
+
+    public function isActivationCompleted(): bool
+    {
+        return ($this->activationState['status'] ?? null) === 'completed';
+    }
+
+    public function hasActivationPendingAction(): bool
+    {
+        return ($this->activationState['status'] ?? null) === 'action_pending';
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable

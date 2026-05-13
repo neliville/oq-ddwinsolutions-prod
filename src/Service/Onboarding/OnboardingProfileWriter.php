@@ -11,6 +11,7 @@ use App\UserPreferences\AcquisitionSource;
 use App\UserPreferences\CompanySize;
 use App\UserPreferences\JobFunction;
 use App\UserPreferences\MainActivity;
+use App\UserPreferences\OnboardingActivationChoices;
 use App\UserPreferences\PilotingFocus;
 use App\UserPreferences\PrimaryStandard;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,7 @@ final class OnboardingProfileWriter
     public function __construct(
         private readonly UserPreferencesRepository $userPreferencesRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly OnboardingActivationService $onboardingActivationService,
     ) {
     }
 
@@ -36,6 +38,9 @@ final class OnboardingProfileWriter
         }
 
         $prefs = $this->userPreferencesRepository->getOrCreateForUser($user);
+        if ($this->isLegacyOnboarded($prefs)) {
+            return $prefs;
+        }
 
         match ($step) {
             1 => $this->applyJobFunction($prefs, $value),
@@ -54,17 +59,137 @@ final class OnboardingProfileWriter
     }
 
     /**
-     * Ferme l’assistant d’onboarding sans renseigner les étapes : les valeurs par défaut / existantes restent en place.
-     * L’utilisateur peut compléter plus tard via Préférences (Profil, QHSE).
+     * @param array<string, mixed> $payload
      */
-    public function skipForLater(User $user): UserPreferences
+    public function applyActivationStep(User $user, string $step, array $payload): UserPreferences
     {
+        if (!OnboardingActivationChoices::isValidStep($step)) {
+            throw new BadRequestHttpException('Étape d’activation invalide.');
+        }
+
         $prefs = $this->userPreferencesRepository->getOrCreateForUser($user);
-        $prefs->setProfileOnboardingCompleted(true);
-        $prefs->touchUpdatedAt();
+        if ($this->isLegacyOnboarded($prefs)) {
+            return $prefs;
+        }
+
+        $this->onboardingActivationService->start($prefs);
+
+        match ($step) {
+            OnboardingActivationChoices::STEP_CONTEXT => $this->applyActivationContext($prefs, $payload),
+            OnboardingActivationChoices::STEP_GOAL => $this->applyActivationGoal($prefs, $payload),
+            OnboardingActivationChoices::STEP_GUIDED_ACTION => $this->applyActivationGuidedAction($prefs),
+            default => throw new BadRequestHttpException('Étape d’activation invalide.'),
+        };
+
         $this->entityManager->flush();
 
         return $prefs;
+    }
+
+    public function skip(User $user, string $source = 'modal'): UserPreferences
+    {
+        $prefs = $this->userPreferencesRepository->getOrCreateForUser($user);
+        if ($this->isLegacyOnboarded($prefs)) {
+            return $prefs;
+        }
+
+        try {
+            if ($prefs->getActivationState() === null) {
+                $this->onboardingActivationService->start($prefs);
+            }
+            $this->onboardingActivationService->skip($prefs, $source);
+        } catch (\InvalidArgumentException|\LogicException $exception) {
+            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        }
+
+        $this->entityManager->flush();
+
+        return $prefs;
+    }
+
+    private function isLegacyOnboarded(UserPreferences $prefs): bool
+    {
+        return $prefs->isProfileOnboardingCompleted() && $prefs->getActivationState() === null;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    private function applyActivationContext(UserPreferences $prefs, array $payload): void
+    {
+        $jobFunction = $this->parseEnum($payload, 'job_function', JobFunction::class, 'Fonction non reconnue.');
+        $companySize = $this->parseEnum($payload, 'company_size', CompanySize::class, 'Taille d’entreprise non reconnue.');
+        $mainActivity = $this->parseEnum($payload, 'main_activity', MainActivity::class, 'Secteur non reconnu.');
+
+        $this->onboardingActivationService->applyContext($prefs, $jobFunction, $companySize, $mainActivity);
+        $prefs->setSector($mainActivity->label());
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    private function applyActivationGoal(UserPreferences $prefs, array $payload): void
+    {
+        $pilotingFocus = $this->parseEnum($payload, 'piloting_focus', PilotingFocus::class, 'Priorité non reconnue.');
+        $primaryStandard = $this->parseOptionalEnum($payload, 'primary_standard', PrimaryStandard::class, 'Référentiel non reconnu.');
+
+        $this->onboardingActivationService->applyGoal($prefs, $pilotingFocus, $primaryStandard);
+    }
+
+    private function applyActivationGuidedAction(UserPreferences $prefs): void
+    {
+        $state = $prefs->getActivationState();
+        if (!is_array($state) || ($state['current_step'] ?? null) !== OnboardingActivationChoices::STEP_GUIDED_ACTION) {
+            throw new BadRequestHttpException('L’étape action guidée n’est pas disponible.');
+        }
+
+        $state['first_action_started_at'] = (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM);
+        $prefs->setActivationState($state);
+        $prefs->touchUpdatedAt();
+    }
+
+    /**
+     * @template T of \BackedEnum
+     * @param class-string<T> $enumClass
+     * @return T
+     */
+    private function parseEnum(array $payload, string $field, string $enumClass, string $errorMessage): \BackedEnum
+    {
+        $value = trim((string) ($payload[$field] ?? ''));
+        if ($value === '') {
+            throw new BadRequestHttpException('Valeur manquante.');
+        }
+
+        $enum = $enumClass::tryFrom($value);
+        if ($enum === null) {
+            throw new BadRequestHttpException($errorMessage);
+        }
+
+        return $enum;
+    }
+
+    /**
+     * @template T of \BackedEnum
+     * @param class-string<T> $enumClass
+     * @return T|null
+     */
+    private function parseOptionalEnum(array $payload, string $field, string $enumClass, string $errorMessage): ?\BackedEnum
+    {
+        if (!array_key_exists($field, $payload)) {
+            return null;
+        }
+
+        $value = trim((string) $payload[$field]);
+        if ($value === '') {
+            return null;
+        }
+
+        $enum = $enumClass::tryFrom($value);
+        if ($enum === null) {
+            throw new BadRequestHttpException($errorMessage);
+        }
+
+        return $enum;
     }
 
     private function applyJobFunction(UserPreferences $prefs, string $value): void

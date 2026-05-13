@@ -11,6 +11,7 @@ use App\Entity\Qse\AuditRequirement;
 use App\Entity\Qse\AuditStandard;
 use App\Entity\Qse\CAPAAction;
 use App\Entity\User;
+use App\Entity\UserPreferences;
 use App\Tests\TestCase\WebTestCaseWithDatabase;
 
 class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
@@ -88,6 +89,122 @@ class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
         $this->assertResponseRedirects();
         $this->client->followRedirect();
         $this->assertStringContainsString('/dashboard/qse/capa/', $this->client->getRequest()->getPathInfo());
+    }
+
+    public function testAuditCreationWithOnboardingOriginRedirectsToDashboard(): void
+    {
+        $user = $this->createTestUser('qse-onb-audit-' . uniqid() . '@example.com', 'Test123456!');
+        $this->client->loginUser($user);
+        $std = $this->entityManager->getRepository(AuditStandard::class)->findOneBy(['code' => 'iso_9001']);
+        $this->assertInstanceOf(AuditStandard::class, $std);
+        $standardId = (int) $std->getId();
+
+        $crawler = $this->client->request('GET', '/dashboard/qse/audit/new?standard=' . $standardId . '&origin=onboarding');
+        $this->assertResponseIsSuccessful();
+        $csrf = $crawler->filter('input[name="_token"]')->attr('value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/dashboard/qse/audit/new?standard=' . $standardId . '&origin=onboarding', [
+            '_token' => $csrf,
+            'audit_standard_id' => (string) $standardId,
+            'companyName' => 'ACME',
+            'mainAuditor' => 'Alice',
+            'auditedAt' => '2026-05-01',
+            'auditVersion' => '1.0',
+        ]);
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('/dashboard', $location);
+        $this->assertStringContainsString('activation=audit_created', $location);
+
+        $this->entityManager->clear();
+        $userReloaded = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+        $this->assertNotNull($userReloaded);
+        $prefs = $this->entityManager->getRepository(UserPreferences::class)->findOneBy(['user' => $userReloaded]);
+        $this->assertInstanceOf(UserPreferences::class, $prefs);
+        $this->assertNotEmpty($prefs->getActivationState()['first_action_completed_at'] ?? null);
+    }
+
+    public function testAuditCreationWithoutOnboardingOriginRedirectsToAuditShow(): void
+    {
+        $user = $this->createTestUser('qse-audit-std-' . uniqid() . '@example.com', 'Test123456!');
+        $this->client->loginUser($user);
+        $std = $this->entityManager->getRepository(AuditStandard::class)->findOneBy(['code' => 'iso_9001']);
+        $this->assertInstanceOf(AuditStandard::class, $std);
+        $standardId = (int) $std->getId();
+
+        $crawler = $this->client->request('GET', '/dashboard/qse/audit/new?standard=' . $standardId);
+        $this->assertResponseIsSuccessful();
+        $csrf = $crawler->filter('input[name="_token"]')->attr('value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/dashboard/qse/audit/new?standard=' . $standardId, [
+            '_token' => $csrf,
+            'audit_standard_id' => (string) $standardId,
+            'companyName' => 'ACME',
+            'mainAuditor' => 'Alice',
+            'auditedAt' => '2026-05-01',
+            'auditVersion' => '1.0',
+        ]);
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('/dashboard/qse/audit/', $location);
+        $this->assertStringNotContainsString('activation=audit_created', $location);
+    }
+
+    public function testRiskCreationWithOnboardingOriginRedirectsToDashboard(): void
+    {
+        $user = $this->createTestUser('qse-onb-risk-' . uniqid() . '@example.com', 'Test123456!');
+        $this->client->loginUser($user);
+
+        $crawler = $this->client->request('GET', '/dashboard/qse/risque/new?origin=onboarding');
+        $this->assertResponseIsSuccessful();
+        $csrf = $crawler->filter('input[name="_token"]')->attr('value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/dashboard/qse/risque/new?origin=onboarding', [
+            '_token' => $csrf,
+            'identified_risk' => 'Risque onboarding test',
+            'risk_category' => 'quality',
+            'status' => 'identifie',
+        ]);
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('/dashboard', $location);
+        $this->assertStringContainsString('activation=risk_created', $location);
+
+        $this->entityManager->clear();
+        $userReloaded = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+        $this->assertNotNull($userReloaded);
+        $prefs = $this->entityManager->getRepository(UserPreferences::class)->findOneBy(['user' => $userReloaded]);
+        $this->assertInstanceOf(UserPreferences::class, $prefs);
+        $this->assertNotEmpty($prefs->getActivationState()['first_action_completed_at'] ?? null);
+    }
+
+    public function testRiskCreationWithoutOnboardingOriginRedirectsToRiskShow(): void
+    {
+        $user = $this->createTestUser('qse-risk-std-' . uniqid() . '@example.com', 'Test123456!');
+        $this->client->loginUser($user);
+
+        $crawler = $this->client->request('GET', '/dashboard/qse/risque/new');
+        $this->assertResponseIsSuccessful();
+        $csrf = $crawler->filter('input[name="_token"]')->attr('value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/dashboard/qse/risque/new', [
+            '_token' => $csrf,
+            'identified_risk' => 'Risque standard test',
+            'risk_category' => 'quality',
+            'status' => 'identifie',
+        ]);
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString('/dashboard/qse/risque/', $location);
+        $this->assertStringNotContainsString('activation=risk_created', $location);
     }
 
     public function testCapaPrefillFromIshikawaSetsOriginAndSource(): void

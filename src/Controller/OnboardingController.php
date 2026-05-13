@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserPreferences;
+use App\Service\Onboarding\OnboardingActivationService;
 use App\Service\Onboarding\OnboardingProfileWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +22,7 @@ final class OnboardingController extends AbstractController
 {
     public function __construct(
         private readonly OnboardingProfileWriter $onboardingProfileWriter,
+        private readonly OnboardingActivationService $onboardingActivationService,
     ) {
     }
 
@@ -36,19 +39,21 @@ final class OnboardingController extends AbstractController
             return new JsonResponse(['ok' => false, 'message' => 'Jeton CSRF invalide.'], Response::HTTP_FORBIDDEN);
         }
 
-        $step = (int) $request->request->get('step', 0);
-        $value = (string) $request->request->get('value', '');
+        $activationStep = trim($request->request->getString('activation_step'));
 
         try {
-            $prefs = $this->onboardingProfileWriter->applyStep($user, $step, $value);
+            if ($activationStep !== '') {
+                $prefs = $this->onboardingProfileWriter->applyActivationStep($user, $activationStep, $request->request->all());
+            } else {
+                $step = (int) $request->request->get('step', 0);
+                $value = (string) $request->request->get('value', '');
+                $prefs = $this->onboardingProfileWriter->applyStep($user, $step, $value);
+            }
         } catch (BadRequestHttpException $e) {
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse([
-            'ok' => true,
-            'completed' => $prefs->isProfileOnboardingCompleted(),
-        ]);
+        return $this->buildPreferencesResponse($prefs);
     }
 
     #[Route('/skip', name: 'skip', methods: ['POST'])]
@@ -64,11 +69,29 @@ final class OnboardingController extends AbstractController
             return new JsonResponse(['ok' => false, 'message' => 'Jeton CSRF invalide.'], Response::HTTP_FORBIDDEN);
         }
 
-        $prefs = $this->onboardingProfileWriter->skipForLater($user);
+        $source = trim($request->request->getString('source'));
+        if ($source === '') {
+            $source = 'modal';
+        }
+
+        try {
+            $prefs = $this->onboardingProfileWriter->skip($user, $source);
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->buildPreferencesResponse($prefs);
+    }
+
+    private function buildPreferencesResponse(UserPreferences $prefs): JsonResponse
+    {
+        $state = $prefs->getActivationState();
 
         return new JsonResponse([
             'ok' => true,
             'completed' => $prefs->isProfileOnboardingCompleted(),
+            'current_step' => is_array($state) ? ($state['current_step'] ?? null) : null,
+            'recommended_action' => $this->onboardingActivationService->resolveRecommendedAction($prefs),
         ]);
     }
 }

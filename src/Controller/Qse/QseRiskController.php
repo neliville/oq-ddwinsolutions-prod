@@ -8,11 +8,14 @@ use App\Application\Analytics\TrackingEventRecorder;
 use App\Application\Analytics\TrackingEventType;
 use App\Entity\Qse\CAPAAction;
 use App\Entity\Qse\RiskMatrixEntry;
+use App\Entity\User;
 use App\Qse\Enum\RiskCategory;
 use App\Qse\Enum\RiskEntryStatus;
 use App\Qse\Service\RiskCapaPolicy;
 use App\Repository\Qse\CAPAActionRepository;
 use App\Repository\Qse\RiskMatrixEntryRepository;
+use App\Repository\UserPreferencesRepository;
+use App\Service\Onboarding\OnboardingActivationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +33,8 @@ final class QseRiskController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly RiskCapaPolicy $riskCapaPolicy,
         private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly UserPreferencesRepository $userPreferencesRepository,
+        private readonly OnboardingActivationService $onboardingActivationService,
     ) {
     }
 
@@ -98,6 +103,14 @@ final class QseRiskController extends AbstractController
                 'web',
             );
 
+            if ($this->isOnboardingOrigin($request) && $user instanceof User) {
+                $preferences = $this->userPreferencesRepository->getOrCreateForUser($user);
+                $this->onboardingActivationService->markFirstActionCompleted($preferences);
+                $this->entityManager->flush();
+
+                return $this->redirectToRoute('app_dashboard_index', ['activation' => 'risk_created']);
+            }
+
             return $this->redirectToRoute('app_qse_risk_show', ['id' => $entry->getId()]);
         }
 
@@ -149,5 +162,14 @@ final class QseRiskController extends AbstractController
         }
 
         return (int) $v;
+    }
+
+    private function isOnboardingOrigin(Request $request): bool
+    {
+        if ($request->query->getString('origin') === 'onboarding') {
+            return true;
+        }
+
+        return $request->request->getString('origin') === 'onboarding';
     }
 }
