@@ -19,6 +19,8 @@ use App\Repository\Qse\AuditRepository;
 use App\Repository\Qse\CAPAActionRepository;
 use App\Repository\Qse\AuditRequirementRepository;
 use App\Repository\Qse\AuditStandardRepository;
+use App\Repository\UserPreferencesRepository;
+use App\Service\Onboarding\OnboardingActivationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +44,8 @@ final class QseAuditController extends AbstractController
         private readonly AuditEvaluationCapaFactory $capaFactory,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly UserPreferencesRepository $userPreferencesRepository,
+        private readonly OnboardingActivationService $onboardingActivationService,
     ) {
     }
 
@@ -130,6 +134,14 @@ final class QseAuditController extends AbstractController
                 'create',
                 'web',
             );
+
+            if ($this->isOnboardingOrigin($request) && $user instanceof User) {
+                $preferences = $this->userPreferencesRepository->getOrCreateForUser($user);
+                $this->onboardingActivationService->markFirstActionCompleted($preferences);
+                $this->entityManager->flush();
+
+                return $this->redirectToRoute('app_dashboard_index', ['activation' => 'audit_created']);
+            }
 
             return $this->redirectToRoute('app_qse_audit_show', ['id' => $audit->getId()]);
         }
@@ -365,5 +377,14 @@ final class QseAuditController extends AbstractController
         $this->addFlash('success', 'Brouillon CAPA créé depuis cette exigence. Complétez la vérification d’efficacité avant clôture.');
 
         return $this->redirectToRoute('app_qse_capa_show', ['id' => $capa->getId()]);
+    }
+
+    private function isOnboardingOrigin(Request $request): bool
+    {
+        if ($request->query->getString('origin') === 'onboarding') {
+            return true;
+        }
+
+        return $request->request->getString('origin') === 'onboarding';
     }
 }
