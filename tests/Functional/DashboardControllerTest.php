@@ -110,6 +110,61 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
         $this->assertSelectorTextContains('body', 'Pilotage :');
     }
 
+    public function testDashboardShowsActivationOnboardingWizardForEligibleUser(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-onb-' . uniqid() . '@example.com');
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(false);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-controller="onboarding-wizard"]');
+        $this->assertSelectorExists('[data-onboarding-wizard-csrf-value]');
+        $this->assertSelectorTextContains('[data-controller="onboarding-wizard"]', 'Commencez par votre première action utile');
+        $this->assertSelectorTextNotContains('[data-controller="onboarding-wizard"]', 'Personnalisez votre espace QHSE');
+        $this->assertSelectorExists('[data-onboarding-wizard-total-steps-value="5"]');
+        $this->assertSelectorExists('[data-onboarding-field="job_function"]');
+        $this->assertSelectorExists('[data-onboarding-field="piloting_focus"]');
+        $this->assertSelectorExists('[data-onboarding-guided-action]');
+    }
+
+    public function testDashboardDoesNotShowActivationWizardForLegacyOnboardedUser(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-legacy-' . uniqid() . '@example.com');
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+    }
+
+    public function testDashboardDoesNotShowActivationWizardForAdmin(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-admin-' . uniqid() . '@example.com', ['ROLE_ADMIN']);
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(false);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+    }
+
     public function testDashboardHidesCapaBlockWhenPreferenceDisabled(): void
     {
         $uniqueEmail = 'test-dashboard-capa-' . uniqid() . '@example.com';
@@ -132,6 +187,21 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
 
         $this->assertResponseIsSuccessful();
         $this->assertStringNotContainsString('2. CAPA (vue synthétique)', $this->client->getResponse()->getContent());
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    private function createDashboardUser(string $email, array $roles = ['ROLE_USER']): User
+    {
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'Test123456!'));
+        $user->setRoles($roles);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
     }
 }
 

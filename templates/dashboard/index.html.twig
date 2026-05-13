@@ -726,7 +726,14 @@
 </div>
 
 {% if show_onboarding_wizard %}
-    {% include 'components/onboarding_profile_dialog.html.twig' %}
+    {% include 'components/onboarding_profile_dialog.html.twig' with {
+        onboarding_wizard_must_open: onboarding_wizard_must_open,
+        onboarding_wizard_steps: onboarding_wizard_steps,
+        onboarding_wizard_context_options: onboarding_wizard_context_options,
+        onboarding_wizard_goal_options: onboarding_wizard_goal_options,
+        onboarding_wizard_initial_step: onboarding_wizard_initial_step,
+        onboarding_wizard_recommended_action_urls: onboarding_wizard_recommended_action_urls,
+    } only %}
 {% endif %}
 {% endblock %}
 

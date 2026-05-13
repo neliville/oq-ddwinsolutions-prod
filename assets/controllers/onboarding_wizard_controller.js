@@ -1,7 +1,14 @@
 import { Controller } from '@hotwired/stimulus';
 
+const ACTION_LABELS = {
+    start_audit: 'Préparer un audit',
+    create_risk: 'Créer un risque',
+    create_capa_draft: 'Ouvrir une CAPA brouillon',
+    open_cockpit: 'Explorer le cockpit',
+};
+
 /**
- * Wizard d’onboarding (dashboard) : ouverture du Dialog UX, étapes séquentielles, POST sécurisé.
+ * Wizard d’activation onboarding (dashboard) : étapes context / goal / guided_action / aha / return_reason.
  */
 export default class extends Controller {
     static values = {
@@ -9,8 +16,12 @@ export default class extends Controller {
         stepUrl: String,
         skipUrl: String,
         csrf: String,
-        totalSteps: { type: Number, default: 6 },
+        totalSteps: { type: Number, default: 5 },
         steps: Array,
+        contextOptions: Object,
+        goalOptions: Object,
+        initialStep: String,
+        recommendedActionUrls: Object,
     };
 
     connect() {
@@ -21,12 +32,14 @@ export default class extends Controller {
             this._dialogEl.addEventListener('cancel', this._onCancel);
         }
 
+        this._recommendedAction = null;
+        this._stepIndex = this._resolveInitialStepIndex();
+        this._populateSelects();
+        this._renderStep();
+
         if (this.mustOpenValue) {
             requestAnimationFrame(() => this._openDialog());
         }
-
-        this._stepIndex = 0;
-        this._renderStep();
     }
 
     disconnect() {
@@ -41,6 +54,19 @@ export default class extends Controller {
 
     async advance(event) {
         if (event) event.preventDefault();
+        const def = this._currentStepDef();
+        if (!def) return;
+
+        if (def.kind === 'aha' || def.kind === 'return_reason') {
+            this._stepIndex += 1;
+            if (this._stepIndex >= (this.stepsValue || []).length) {
+                this._closeDialogWithMessage('Vous pouvez reprendre l’activation depuis le tableau de bord.');
+                return;
+            }
+            this._renderStep();
+            return;
+        }
+
         await this._submitCurrentStep();
     }
 
@@ -72,7 +98,7 @@ export default class extends Controller {
                 throw new Error(data.message || 'Action impossible pour le moment.');
             }
             this._closeDialogWithMessage(
-                'Assistant fermé. Complétez votre profil quand vous voulez depuis les préférences (Profil et QHSE).',
+                'Assistant fermé. Vous pourrez reprendre une première action depuis le tableau de bord.',
             );
         } catch (err) {
             document.dispatchEvent(
@@ -85,6 +111,48 @@ export default class extends Controller {
             if (continueBtn) continueBtn.disabled = false;
             this._syncContinueDisabled();
         }
+    }
+
+    _resolveInitialStepIndex() {
+        const steps = this.stepsValue || [];
+        const initial = this.initialStepValue || 'context';
+        const index = steps.findIndex((step) => step.step === initial);
+        return index >= 0 ? index : 0;
+    }
+
+    _populateSelects() {
+        this._fillSelect('[data-onboarding-field="job_function"]', this.contextOptionsValue?.job_function || []);
+        this._fillSelect('[data-onboarding-field="company_size"]', this.contextOptionsValue?.company_size || []);
+        this._fillSelect('[data-onboarding-field="main_activity"]', this.contextOptionsValue?.main_activity || []);
+        this._fillSelect('[data-onboarding-field="piloting_focus"]', this.goalOptionsValue?.piloting_focus || []);
+        this._fillSelect('[data-onboarding-field="primary_standard"]', this.goalOptionsValue?.primary_standard || [], true);
+    }
+
+    _fillSelect(selector, options, allowEmpty = false) {
+        const selectEl = this.element.querySelector(selector);
+        if (!selectEl) return;
+
+        selectEl.innerHTML = '';
+        if (allowEmpty) {
+            const empty = document.createElement('option');
+            empty.value = '';
+            empty.textContent = 'Sans préférence';
+            selectEl.appendChild(empty);
+        } else {
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Sélectionnez une option';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            selectEl.appendChild(placeholder);
+        }
+
+        options.forEach((opt) => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.label;
+            selectEl.appendChild(option);
+        });
     }
 
     _openDialog() {
@@ -107,14 +175,17 @@ export default class extends Controller {
 
     _renderStep() {
         const def = this._currentStepDef();
-        const titleEl = this.element.querySelector('[data-onboarding-title]');
-        const selectEl = this.element.querySelector('[data-onboarding-select]');
+        const descriptionEl = this.element.querySelector('[data-onboarding-step-description]');
         const continueBtn = this.element.querySelector('[data-onboarding-continue]');
         const formPanel = this.element.querySelector('[data-onboarding-form]');
         const stepIndicator = this.element.querySelector('[data-onboarding-step-indicator]');
         const stepFraction = this.element.querySelector('[data-onboarding-step-fraction]');
         const progressFill = this.element.querySelector('[data-onboarding-progress-fill]');
-        const total = this.totalStepsValue || 6;
+        const total = this.totalStepsValue || 5;
+
+        this.element.querySelectorAll('[data-onboarding-panel]').forEach((panel) => {
+            panel.classList.add('hidden');
+        });
 
         if (!def) {
             if (formPanel) formPanel.classList.add('hidden');
@@ -124,22 +195,15 @@ export default class extends Controller {
 
         if (formPanel) formPanel.classList.remove('hidden');
         if (continueBtn) continueBtn.classList.remove('hidden');
-        if (titleEl) titleEl.textContent = def.title;
-        if (selectEl) {
-            selectEl.innerHTML = '';
-            const ph = document.createElement('option');
-            ph.value = '';
-            ph.textContent = 'Sélectionnez une option';
-            ph.disabled = true;
-            ph.selected = true;
-            selectEl.appendChild(ph);
-            (def.options || []).forEach((opt) => {
-                const o = document.createElement('option');
-                o.value = opt.value;
-                o.textContent = opt.label;
-                selectEl.appendChild(o);
-            });
+        if (descriptionEl) descriptionEl.textContent = def.description || '';
+
+        const activePanel = this.element.querySelector(`[data-onboarding-panel="${def.kind}"]`);
+        if (activePanel) activePanel.classList.remove('hidden');
+
+        if (def.kind === 'guided_action') {
+            this._renderGuidedAction();
         }
+
         this._syncContinueDisabled();
 
         const current = this._stepIndex + 1;
@@ -154,27 +218,75 @@ export default class extends Controller {
         }
     }
 
+    _renderGuidedAction() {
+        const cta = this.element.querySelector('[data-onboarding-guided-action-cta]');
+        const copy = this.element.querySelector('[data-onboarding-guided-action-copy]');
+        if (!cta) return;
+
+        const action = this._recommendedAction;
+        const url = action ? this.recommendedActionUrlsValue?.[action] : null;
+        if (!action || !url) {
+            cta.hidden = true;
+            if (copy) {
+                copy.textContent = 'Nous vous proposons une première action alignée sur votre priorité pour nourrir le cockpit.';
+            }
+            return;
+        }
+
+        cta.hidden = false;
+        cta.textContent = ACTION_LABELS[action] || 'Lancer ma première action';
+        cta.onclick = () => {
+            window.location.href = url;
+        };
+        if (copy) {
+            copy.textContent = 'Lancez cette première action pour alimenter votre cockpit. Vous pourrez ensuite revenir au tableau de bord.';
+        }
+    }
+
     _syncContinueDisabled() {
-        const selectEl = this.element.querySelector('[data-onboarding-select]');
         const continueBtn = this.element.querySelector('[data-onboarding-continue]');
-        if (!continueBtn || !selectEl) return;
-        continueBtn.disabled = !selectEl.value;
+        const def = this._currentStepDef();
+        if (!continueBtn || !def) return;
+
+        if (def.kind === 'context') {
+            continueBtn.disabled = !['job_function', 'company_size', 'main_activity'].every((field) => {
+                const select = this.element.querySelector(`[data-onboarding-field="${field}"]`);
+                return Boolean(select?.value);
+            });
+            return;
+        }
+
+        if (def.kind === 'goal') {
+            const piloting = this.element.querySelector('[data-onboarding-field="piloting_focus"]');
+            continueBtn.disabled = !piloting?.value;
+            return;
+        }
+
+        continueBtn.disabled = false;
     }
 
     async _submitCurrentStep() {
-        const selectEl = this.element.querySelector('[data-onboarding-select]');
         const continueBtn = this.element.querySelector('[data-onboarding-continue]');
         const def = this._currentStepDef();
-        if (!def || !selectEl?.value) return;
-
-        const step = def.step;
-        const value = selectEl.value;
-        continueBtn.disabled = true;
+        if (!def || !continueBtn) return;
 
         const body = new URLSearchParams();
         body.set('_token', this.csrfValue);
-        body.set('step', String(step));
-        body.set('value', value);
+        body.set('activation_step', def.step);
+
+        if (def.kind === 'context') {
+            body.set('job_function', this._fieldValue('job_function'));
+            body.set('company_size', this._fieldValue('company_size'));
+            body.set('main_activity', this._fieldValue('main_activity'));
+        } else if (def.kind === 'goal') {
+            body.set('piloting_focus', this._fieldValue('piloting_focus'));
+            const standard = this._fieldValue('primary_standard');
+            if (standard) {
+                body.set('primary_standard', standard);
+            }
+        }
+
+        continueBtn.disabled = true;
 
         try {
             const res = await fetch(this.stepUrlValue, {
@@ -190,11 +302,28 @@ export default class extends Controller {
             if (!res.ok || !data.ok) {
                 throw new Error(data.message || 'Enregistrement impossible');
             }
+
+            if (data.recommended_action) {
+                this._recommendedAction = data.recommended_action;
+            }
+
             if (data.completed) {
-                this._closeDialogWithMessage('Votre espace QHSE est personnalisé. Bienvenue !');
+                this._closeDialogWithMessage('Votre première action utile est lancée.');
                 return;
             }
-            this._stepIndex += 1;
+
+            if (data.current_step) {
+                const steps = this.stepsValue || [];
+                const nextIndex = steps.findIndex((step) => step.step === data.current_step);
+                if (nextIndex >= 0) {
+                    this._stepIndex = nextIndex;
+                } else {
+                    this._stepIndex += 1;
+                }
+            } else {
+                this._stepIndex += 1;
+            }
+
             this._renderStep();
         } catch (err) {
             document.dispatchEvent(
@@ -206,6 +335,10 @@ export default class extends Controller {
             continueBtn.disabled = false;
             this._syncContinueDisabled();
         }
+    }
+
+    _fieldValue(field) {
+        return this.element.querySelector(`[data-onboarding-field="${field}"]`)?.value || '';
     }
 
     _closeDialogWithMessage(message) {
