@@ -1,108 +1,51 @@
-<section id="outils" class="tools-section" aria-labelledby="home-outils-heading">
+<section id="outils" class="tools-section py-14 sm:py-16 bg-muted/20" aria-labelledby="home-outils-heading">
     <div class="container">
-        <div class="section-header">
-            <span class="section-badge">Outils gratuits</span>
-            <h2 id="home-outils-heading">Des outils gratuits pour commencer rapidement</h2>
-            <p>Ishikawa, 5 Pourquoi, Pareto, QQOQCCP, AMDEC, 8D — le moteur d’acquisition et d’analyse, relié à votre pilotage QHSE lorsque vous créez un compte.</p>
+        <div class="section-header max-w-3xl mx-auto text-center">
+            <span class="section-badge">Entrée simple</span>
+            <h2 id="home-outils-heading">Des outils gratuits pour un premier besoin</h2>
+            <p>Pour un besoin isolé, ces outils gratuits offrent une porte d’entrée simple vers la plateforme avant de structurer votre pilotage complet dans le cockpit QHSE.</p>
         </div>
 
-        <div class="tools-showcase">
-            <div class="tool-feature featured">
-                <div class="tool-feature-content">
-                    <div class="tool-badge best">Le plus utilisé</div>
-                    <h3>Diagramme d'Ishikawa</h3>
-                    <p>
-                        Identifiez les causes de vos problèmes avec le diagramme en arête de poisson. Structurez votre analyse (5M ou 6M) et exportez des rapports prêts pour vos réunions ou audits.
-                    </p>
-                    <ul class="feature-list">
-                        <li>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <span>Création visuelle simple avec catégories personnalisables.</span>
-                        </li>
-                        <li>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <span>Export PDF prêt pour vos réunions et audits.</span>
-                        </li>
-                        <li>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                                <path d="M16.25 6.25L8.125 14.375L3.75 10" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <span>Sauvegarde automatique et historique de vos analyses.</span>
-                        </li>
-                    </ul>
-                    <a href="{{ path('app_ishikawa_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        Créer un diagramme
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <div class="tools-showcase max-w-6xl mx-auto">
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-card-icon primary">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                            <line x1="6" y1="20" x2="34" y2="20" stroke="currentColor" stroke-width="2.5" />
+                            <line x1="14" y1="20" x2="9" y2="10" stroke="currentColor" stroke-width="2" />
+                            <line x1="22" y1="20" x2="17" y2="10" stroke="currentColor" stroke-width="2" />
+                            <line x1="14" y1="20" x2="9" y2="30" stroke="currentColor" stroke-width="2" />
+                            <line x1="22" y1="20" x2="17" y2="30" stroke="currentColor" stroke-width="2" />
+                            <circle cx="32" cy="20" r="3" fill="currentColor" />
                         </svg>
+                    </div>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme d'Ishikawa</h3>
+                    <p>Structurez rapidement vos causes possibles avec un cadre visuel simple pour un premier besoin d’analyse.</p>
+                    <div class="tool-card__tags">
+                        <span class="badge">5M / 6M</span>
+                        <span class="badge">Export PDF</span>
+                        <span class="badge">Démarrage immédiat</span>
+                    </div>
+                    <a href="{{ path('app_ishikawa_index') }}" aria-label="Créer un diagramme d'Ishikawa" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
-                <div class="tool-mockup">
-                    <div class="mockup-window">
-                        <div class="window-header">
-                            <div class="window-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                        <div class="ishikawa-canvas">
-                            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration d'un diagramme d'Ishikawa">
-                                <line x1="50" y1="250" x2="750" y2="250" stroke="#1f2937" stroke-width="3" />
-                                <polygon points="753,250 740,242 740,258" fill="#ef4444" />
-                                <line x1="200" y1="250" x2="150" y2="150" stroke="#ef4444" stroke-width="2.5" />
-                                <line x1="400" y1="250" x2="350" y2="150" stroke="#06b6d4" stroke-width="2.5" />
-                                <line x1="600" y1="250" x2="550" y2="150" stroke="#3b82f6" stroke-width="2.5" />
-                                <line x1="200" y1="250" x2="150" y2="350" stroke="#f97316" stroke-width="2.5" />
-                                <line x1="400" y1="250" x2="350" y2="350" stroke="#06b6d4" stroke-width="2.5" />
-                                <line x1="600" y1="250" x2="550" y2="350" stroke="#a855f7" stroke-width="2.5" />
-                                <rect x="110" y="130" width="90" height="35" rx="8" fill="#ef4444" />
-                                <text x="155" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Méthodes</text>
-                                <rect x="310" y="130" width="90" height="35" rx="8" fill="#06b6d4" />
-                                <text x="355" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Mesure</text>
-                                <rect x="510" y="130" width="90" height="35" rx="8" fill="#3b82f6" />
-                                <text x="555" y="152" text-anchor="middle" fill="white" font-size="14" font-weight="600">Machines</text>
-                                <rect x="110" y="335" width="90" height="35" rx="8" fill="#f97316" />
-                                <text x="155" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Matériels</text>
-                                <rect x="310" y="335" width="90" height="35" rx="8" fill="#06b6d4" />
-                                <text x="355" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Milieu</text>
-                                <rect x="510" y="335" width="100" height="35" rx="8" fill="#a855f7" />
-                                <text x="560" y="357" text-anchor="middle" fill="white" font-size="14" font-weight="600">Management</text>
-                                <rect x="125" y="185" width="120" height="24" rx="6" fill="#fecaca" />
-                                <text x="185" y="200" text-anchor="middle" fill="#7f1d1d" font-size="11">Procédures inadéquates</text>
-                                <rect x="325" y="185" width="140" height="24" rx="6" fill="#a5f3fc" />
-                                <text x="395" y="200" text-anchor="middle" fill="#164e63" font-size="11">Instruments défaillants</text>
-                                <rect x="480" y="185" width="150" height="24" rx="6" fill="#bfdbfe" />
-                                <text x="555" y="200" text-anchor="middle" fill="#1e3a8a" font-size="11">Maintenance préventive insuf.</text>
-                                <rect x="620" y="218" width="150" height="64" rx="12" fill="#ef4444" />
-                                <text x="695" y="244" text-anchor="middle" fill="white" font-size="12" font-weight="600">Problème :</text>
-                                <text x="695" y="264" text-anchor="middle" fill="white" font-size="11">Non-conformité</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="tools-grid">
                 <div class="tool-card">
                     <div class="tool-card-icon cyan">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                             <text x="20" y="28" text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">5?</text>
                         </svg>
                     </div>
-                    <h4>Méthode 5 Pourquoi</h4>
-                    <p>Remontez à l'origine d'un problème en posant « Pourquoi ? » plusieurs fois. Simple et efficace pour vos analyses terrain.</p>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 5 Pourquoi</h3>
+                    <p>Remontez rapidement à l'origine d'un problème avec un questionnement simple et directement exploitable.</p>
                     <div class="tool-card__tags">
                         <span class="badge">Analyse des causes</span>
                         <span class="badge">Export PDF</span>
                         <span class="badge">Guide intégré</span>
                     </div>
-                    <a href="{{ path('app_fivewhy_index') }}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        Utiliser l'outil
+                    <a href="{{ path('app_fivewhy_index') }}" aria-label="Utiliser la méthode 5 Pourquoi" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
 
@@ -115,15 +58,15 @@
                             <circle cx="16" cy="26" r="2" fill="currentColor"></circle>
                         </svg>
                     </div>
-                    <h4>Analyse QQOQCCP</h4>
-                    <p>Structurez votre diagnostic avec les 7 questions essentielles : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi.</p>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Analyse QQOQCCP</h3>
+                    <p>Cadrez un diagnostic avec les 7 questions essentielles pour formaliser rapidement une première analyse.</p>
                     <div class="tool-card__tags">
                         <span class="badge">Questionnement 5W2H</span>
                         <span class="badge">Rapport généré</span>
                         <span class="badge">Sauvegarde sécurisée</span>
                     </div>
-                    <a href="{{ path('app_qqoqccp_index') }}" class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-colors no-underline">
-                        Utiliser l'outil
+                    <a href="{{ path('app_qqoqccp_index') }}" aria-label="Utiliser l'analyse QQOQCCP" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
 
@@ -135,15 +78,15 @@
                             <path d="M20 15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <h4>Analyse AMDEC</h4>
-                    <p>Identifiez les risques, calculez les priorités et obtenez des recommandations pour prioriser vos actions.</p>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Analyse AMDEC</h3>
+                    <p>Repérez vos risques prioritaires et posez une première hiérarchisation d’actions sur un cas concret.</p>
                     <div class="tool-card__tags">
                         <span class="badge">Risque & NPR</span>
                         <span class="badge">Rapport intelligent</span>
                         <span class="badge">Sauvegarde sécurisée</span>
                     </div>
-                    <a href="{{ path('app_amdec_index') }}" class="inline-flex items-center gap-2 bg-destructive text-destructive-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        Utiliser l'outil
+                    <a href="{{ path('app_amdec_index') }}" aria-label="Utiliser l'analyse AMDEC" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
 
@@ -156,15 +99,15 @@
                             <path d="M14 26H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
                         </svg>
                     </div>
-                    <h4>Méthode 8D</h4>
-                    <p>Résolvez vos problèmes de façon structurée en 8 étapes : containment, analyse des causes, plan d'actions et suivi.</p>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 8D</h3>
+                    <p>Suivez une résolution structurée en 8 étapes quand vous avez besoin d’un cadre plus formel dès le départ.</p>
                     <div class="tool-card__tags">
                         <span class="badge">Structure 8 disciplines</span>
                         <span class="badge">Suivi progression</span>
-                        <span class="badge">Exports PDF & JSON</span>
+                        <span class="badge">Export PDF & JSON</span>
                     </div>
-                    <a href="{{ path('app_eightd_index') }}" class="inline-flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        Utiliser l'outil
+                    <a href="{{ path('app_eightd_index') }}" aria-label="Utiliser la méthode 8D" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
 
@@ -177,39 +120,17 @@
                             <path d="M6 10C14 4 26 4 34 10" stroke="currentColor" stroke-width="2" fill="none" />
                         </svg>
                     </div>
-                    <h4>Diagramme de Pareto</h4>
-                    <p>Visualisez rapidement quelles causes concentrent l'essentiel de vos problèmes et priorisez vos actions.</p>
+                    <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme de Pareto</h3>
+                    <p>Visualisez les causes qui concentrent l’essentiel de vos problèmes pour prioriser un premier plan d’action.</p>
                     <div class="tool-card__tags">
                         <span class="badge">Analyse 80/20</span>
                         <span class="badge">Graphique interactif</span>
                         <span class="badge">Export PDF & JSON</span>
                     </div>
-                    <a href="{{ path('app_pareto_index') }}" class="inline-flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        Utiliser l'outil
+                    <a href="{{ path('app_pareto_index') }}" aria-label="Utiliser le diagramme de Pareto" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        Ouvrir l'outil
                     </a>
                 </div>
-
-                <div class="tool-card coming-soon">
-                    <div class="tool-card-icon gray">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <line x1="5" y1="20" x2="35" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2" />
-                            <line x1="5" y1="12" x2="35" y2="12" stroke="#ef4444" stroke-width="1.5" />
-                            <line x1="5" y1="28" x2="35" y2="28" stroke="#ef4444" stroke-width="1.5" />
-                            <polyline points="8,18 12,22 16,16 20,20 24,19 28,21 32,18" stroke="currentColor" stroke-width="2" fill="none" />
-                        </svg>
-                    </div>
-                    <h4>Cartes de contrôle</h4>
-                    <p>Surveillez la stabilité de vos processus avec les cartes de contrôle statistiques et détectez les dérives.</p>
-                    <div class="tool-card__tags">
-                        <span class="badge">Bientôt disponible</span>
-                    </div>
-                    <button type="button" class="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium opacity-50 cursor-not-allowed" disabled>À venir</button>
-                </div>
-            </div>
-            <div class="tools-cta flex flex-col sm:flex-row items-center justify-center gap-3">
-                <twig:Button as="a" href="{{ path('app_outils_index') }}" size="lg" class="no-underline">
-                    Explorer tous les outils
-                </twig:Button>
             </div>
         </div>
     </div>

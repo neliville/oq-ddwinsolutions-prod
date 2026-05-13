@@ -1,32 +1,32 @@
-<section id="dashboard-focus" class="home-landing-section py-16 sm:py-20" aria-labelledby="home-dashboard-heading">
+<section id="dashboard-focus" class="home-landing-section py-14 sm:py-16" aria-labelledby="home-dashboard-heading">
     <div class="container max-w-6xl mx-auto px-4">
         <div class="grid gap-10 lg:grid-cols-2 lg:gap-14 items-center">
             <div data-aos="fade-up">
                 <twig:Badge variant="outline" class="mb-3">Récurrence</twig:Badge>
-                <h2 id="home-dashboard-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">Votre cockpit QHSE quotidien</h2>
+                <h2 id="home-dashboard-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">
+                    Le cockpit qui garde vos priorités visibles au quotidien
+                </h2>
                 <p class="text-muted-foreground mt-3 text-base m-0">
-                    Le dashboard est la raison de revenir plusieurs fois par semaine : vision synthétique, priorités visibles, liens vers CAPA, audits et risques.
+                    Votre point de passage quotidien puis hebdomadaire réduit la charge mentale :
+                    les audits à préparer, les CAPA à relancer, les risques à arbitrer
+                    et les échéances à revoir restent visibles dans le même cockpit.
                 </p>
                 <ul class="mt-6 space-y-2 text-sm text-foreground list-none m-0 p-0">
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Actions en retard et échéances</li>
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> CAPA en cours</li>
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Audits à préparer</li>
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Risques critiques</li>
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Avancement PDCA</li>
-                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Dernières activités</li>
+                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Priorités du jour et de la semaine au même endroit</li>
+                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Audits à préparer sans refaire le tour de vos fichiers</li>
+                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> CAPA à relancer avant qu'elles sortent du radar</li>
+                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Risques visibles pour arbitrer plus vite</li>
+                    <li class="flex gap-2"><span class="text-primary font-semibold shrink-0">·</span> Échéances, alertes et avancement PDCA dans une seule revue</li>
                 </ul>
-                <div class="mt-8 flex flex-wrap gap-3">
+                <div class="mt-8">
                     {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" class="no-underline">
-                            Accéder à mon dashboard
-                        </twig:Button>
+                        <a href="{{ path('app_dashboard_index') }}" class="text-sm font-medium text-primary underline underline-offset-4">
+                            Ouvrir mon cockpit
+                        </a>
                     {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" class="no-underline">
-                            Créer un compte gratuit
-                        </twig:Button>
-                        <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" class="no-underline">
-                            J’ai déjà un compte
-                        </twig:Button>
+                        <a href="{{ path('app_login') }}" class="text-sm font-medium text-primary underline underline-offset-4">
+                            Me connecter au cockpit
+                        </a>
                     {% endif %}
                 </div>
             </div>

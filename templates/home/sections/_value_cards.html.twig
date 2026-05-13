@@ -3,79 +3,40 @@
         <header class="text-center max-w-3xl mx-auto mb-12 sm:mb-14" data-aos="fade-up">
             <twig:Badge variant="outline" class="mb-3">Plateforme</twig:Badge>
             <h2 id="home-value-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">
-                Une plateforme simple pour analyser, auditer, suivre les actions et piloter le QHSE
+                Ce que centralise le cockpit pour piloter votre QHSE
             </h2>
             <p class="text-muted-foreground mt-3 text-base sm:text-lg m-0">
-                Au-delà des générateurs : tout votre cycle qualité relié — des outils gratuits au cockpit quotidien.
+                Analyses, audits ISO, CAPA et risques restent reliés dans un même cockpit pour arbitrer les priorités sans recréer quatre parcours séparés.
             </p>
         </header>
 
-        <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 xl:grid-cols-5 js-kpi-card">
+        <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 xl:grid-cols-4 js-kpi-card">
             <twig:Card class="border-border/80 shadow-sm js-kpi-card" data-aos="fade-up" data-aos-delay="0">
                 <twig:Card:Header class="space-y-1 pb-3">
-                    <twig:Card:Title class="text-lg">Analyse</twig:Card:Title>
-                    <twig:Card:Description>Ishikawa, 5 Pourquoi, Pareto, QQOQCCP, AMDEC, 8D.</twig:Card:Description>
+                    <twig:Card:Title class="text-lg">Analyses</twig:Card:Title>
+                    <twig:Card:Description>Reliez les causes, les écarts et les signaux faibles pour comprendre ce qui doit être traité en premier.</twig:Card:Description>
                 </twig:Card:Header>
-                <twig:Card:Content class="pt-0 flex flex-wrap gap-2">
-                    <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" variant="outline" size="sm" class="no-underline">Ishikawa</twig:Button>
-                    <twig:Button as="a" href="{{ path('app_outils_index') }}" variant="link" size="sm" class="no-underline px-0">Tous les outils →</twig:Button>
-                </twig:Card:Content>
             </twig:Card>
 
             <twig:Card class="border-border/80 shadow-sm js-kpi-card" data-aos="fade-up" data-aos-delay="50">
                 <twig:Card:Header class="space-y-1 pb-3">
-                    <twig:Card:Title class="text-lg">Audit</twig:Card:Title>
-                    <twig:Card:Description>Audits ISO 9001, ISO 14001, ISO 45001 avec exigences structurées.</twig:Card:Description>
+                    <twig:Card:Title class="text-lg">Audits ISO</twig:Card:Title>
+                    <twig:Card:Description>Gardez les référentiels, constats et échéances visibles dans le même cockpit pour préparer et suivre la conformité.</twig:Card:Description>
                 </twig:Card:Header>
-                <twig:Card:Content class="pt-0">
-                    {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="default" size="sm" class="no-underline">Créer un audit</twig:Button>
-                    {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" variant="default" size="sm" class="no-underline">Créer un compte</twig:Button>
-                    {% endif %}
-                </twig:Card:Content>
             </twig:Card>
 
             <twig:Card class="border-border/80 shadow-sm js-kpi-card" data-aos="fade-up" data-aos-delay="100">
                 <twig:Card:Header class="space-y-1 pb-3">
                     <twig:Card:Title class="text-lg">CAPA</twig:Card:Title>
-                    <twig:Card:Description>Transformez vos constats en actions correctives et préventives suivies.</twig:Card:Description>
+                    <twig:Card:Description>Transformez chaque constat en actions suivies, responsables clairs et boucles de progression continues.</twig:Card:Description>
                 </twig:Card:Header>
-                <twig:Card:Content class="pt-0">
-                    {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" variant="default" size="sm" class="no-underline">Voir mes CAPA</twig:Button>
-                    {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" variant="default" size="sm" class="no-underline">Créer un compte</twig:Button>
-                    {% endif %}
-                </twig:Card:Content>
             </twig:Card>
 
             <twig:Card class="border-border/80 shadow-sm js-kpi-card" data-aos="fade-up" data-aos-delay="0">
                 <twig:Card:Header class="space-y-1 pb-3">
                     <twig:Card:Title class="text-lg">Risques</twig:Card:Title>
-                    <twig:Card:Description>Identifiez, évaluez et suivez vos risques QHSE.</twig:Card:Description>
+                    <twig:Card:Description>Priorisez les expositions critiques et reliez prévention, surveillance et décisions au pilotage global.</twig:Card:Description>
                 </twig:Card:Header>
-                <twig:Card:Content class="pt-0">
-                    {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_qse_risk_index') }}" variant="default" size="sm" class="no-underline">Matrice des risques</twig:Button>
-                    {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" variant="default" size="sm" class="no-underline">Créer un compte</twig:Button>
-                    {% endif %}
-                </twig:Card:Content>
-            </twig:Card>
-
-            <twig:Card class="border-border/80 shadow-sm sm:col-span-2 xl:col-span-1 js-kpi-card" data-aos="fade-up" data-aos-delay="50">
-                <twig:Card:Header class="space-y-1 pb-3">
-                    <twig:Card:Title class="text-lg">Dashboard</twig:Card:Title>
-                    <twig:Card:Description>Visualisez les priorités, retards, audits, risques et actions.</twig:Card:Description>
-                </twig:Card:Header>
-                <twig:Card:Content class="pt-0">
-                    {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" variant="default" size="sm" class="no-underline">Ouvrir le dashboard</twig:Button>
-                    {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" variant="default" size="sm" class="no-underline">Commencer gratuitement</twig:Button>
-                    {% endif %}
-                </twig:Card:Content>
             </twig:Card>
         </div>
     </div>
