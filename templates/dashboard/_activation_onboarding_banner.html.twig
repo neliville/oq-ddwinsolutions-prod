@@ -1,0 +1,58 @@
+{% if show_activation_aha_banner %}
+    <twig:Alert
+        variant="default"
+        class="mb-6 border-primary/30 bg-primary/[0.06]"
+        id="activation-onboarding-aha-banner"
+        data-activation-onboarding-banner="aha"
+        data-activation-onboarding-aha-csrf-value="{{ csrf_token('activation_onboarding_aha') }}"
+    >
+        <twig:Alert:Title>Votre cockpit prend vie</twig:Alert:Title>
+        <twig:Alert:Description class="text-sm">
+            Votre première action utile est enregistrée. Le bloc mis en évidence ci-dessous montre où suivre la suite de votre pilotage QSE.
+        </twig:Alert:Description>
+        <form method="post" action="{{ path('app_dashboard_index') }}" class="mt-3 flex flex-wrap gap-2">
+            <input type="hidden" name="_token" value="{{ csrf_token('activation_onboarding_aha') }}">
+            <input type="hidden" name="activation_action" value="complete_aha">
+            <twig:Button type="submit" variant="default" size="sm">Continuer sur le tableau de bord</twig:Button>
+        </form>
+    </twig:Alert>
+{% elseif show_activation_nudge_banner %}
+    <twig:Alert
+        variant="info"
+        class="mb-6"
+        id="activation-onboarding-nudge-banner"
+        data-activation-onboarding-banner="nudge"
+        data-activation-onboarding-nudge-csrf-value="{{ csrf_token('onboarding_profile') }}"
+        data-activation-onboarding-nudge-skip-url-value="{{ path('app_preferences_onboarding_skip') }}"
+    >
+        <twig:Alert:Title>Reprenez votre première action utile</twig:Alert:Title>
+        <twig:Alert:Description class="text-sm">
+            Vous avez quitté l’assistant sans lancer d’action. Reprenez là où vous en étiez pour alimenter votre cockpit.
+        </twig:Alert:Description>
+        <div class="mt-3 flex flex-wrap gap-2" data-slot="alert-action">
+            {% if activation_nudge_cta_url %}
+                <twig:Button as="a" href="{{ activation_nudge_cta_url }}" variant="secondary" size="sm" class="no-underline">{{ activation_nudge_cta_label }}</twig:Button>
+            {% endif %}
+            <twig:Button type="button" variant="ghost" size="sm" class="activation-onboarding-nudge-dismiss">Plus tard</twig:Button>
+        </div>
+    </twig:Alert>
+    <script>
+    (function () {
+        const banner = document.getElementById('activation-onboarding-nudge-banner');
+        if (!banner || banner.dataset.bound) {
+            return;
+        }
+        banner.dataset.bound = '1';
+        const csrf = banner.getAttribute('data-activation-onboarding-nudge-csrf-value');
+        const skipUrl = banner.getAttribute('data-activation-onboarding-nudge-skip-url-value');
+        banner.querySelector('.activation-onboarding-nudge-dismiss')?.addEventListener('click', async function () {
+            await fetch(skipUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ _token: csrf, source: 'banner' }),
+            });
+            banner.remove();
+        });
+    })();
+    </script>
+{% endif %}

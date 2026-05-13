@@ -57,6 +57,8 @@
         </script>
     {% endif %}
 
+    {% include 'dashboard/_activation_onboarding_banner.html.twig' %}
+
     <twig:Card class="border-border/80 shadow-sm mb-6">
         <twig:Card:Content class="p-4 sm:p-5">
             <h2 class="text-base font-semibold m-0 mb-2 flex items-center gap-2">
@@ -83,9 +85,9 @@
 
     {# ── Cockpit manager : 6 blocs « attention aujourd’hui » ───────────────── #}
     {% set pf = user_preferences.pilotingFocus.value %}
-    {% set hl_capa = pf == 'capa' %}
-    {% set hl_audit = pf in ['audit', 'certification_prep'] %}
-    {% set hl_risk = pf == 'risk' %}
+    {% set hl_capa = pf == 'capa' or activation_highlight == 'capa' %}
+    {% set hl_audit = pf in ['audit', 'certification_prep'] or activation_highlight == 'audit' %}
+    {% set hl_risk = pf == 'risk' or activation_highlight == 'risk' %}
     <p class="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-3xl">Qu’est-ce qui nécessite mon attention aujourd’hui&nbsp;?</p>
     <div class="space-y-6 mb-8 sm:mb-10" aria-labelledby="dashboard-attention-heading">
         <h2 id="dashboard-attention-heading" class="sr-only">Priorités et pilotage QSE</h2>
@@ -114,6 +116,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {# Bloc 2 — CAPA par statut #}
             {% if user_preferences.isDashboardSectionVisible('capa') %}
+            <div{% if activation_highlight == 'capa' %} data-activation-highlight-target="capa"{% endif %}>
             <twig:Card class="border-border/80 shadow-sm h-full{% if hl_capa %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b2">
                 <twig:Card:Content class="p-4 sm:p-5">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -147,10 +150,12 @@
                 </div>
                 </twig:Card:Content>
             </twig:Card>
+            </div>
             {% endif %}
 
             {# Bloc 3 — Risques #}
             {% if user_preferences.isDashboardSectionVisible('risks') %}
+            <div{% if activation_highlight == 'risk' %} data-activation-highlight-target="risk"{% endif %}>
             <twig:Card class="border-border/80 shadow-sm h-full{% if hl_risk %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b3">
                 <twig:Card:Content class="p-4 sm:p-5">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -178,10 +183,12 @@
                 </ul>
                 </twig:Card:Content>
             </twig:Card>
+            </div>
             {% endif %}
 
             {# Bloc 4 — Audits #}
             {% if user_preferences.isDashboardSectionVisible('audits') %}
+            <div{% if activation_highlight == 'audit' %} data-activation-highlight-target="audit"{% endif %}>
             <twig:Card class="border-border/80 shadow-sm h-full{% if hl_audit %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b4">
                 <twig:Card:Content class="p-4 sm:p-5">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -210,6 +217,7 @@
                 </ul>
                 </twig:Card:Content>
             </twig:Card>
+            </div>
             {% endif %}
 
             {# Bloc 5 — PDCA #}

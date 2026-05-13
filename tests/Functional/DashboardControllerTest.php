@@ -189,6 +189,275 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
         $this->assertStringNotContainsString('2. CAPA (vue synthétique)', $this->client->getResponse()->getContent());
     }
 
+    public function testDashboardDoesNotShowActivationBannersForLegacyOnboardedUser(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-legacy-banner-' . uniqid() . '@example.com');
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=audit_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner]');
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+    }
+
+    public function testDashboardDoesNotShowActivationUiForCompletedUser(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-completed-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'completed',
+            'current_step' => 'aha',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+            'aha_seen_at' => '2026-05-13T14:00:00+00:00',
+        ]);
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=audit_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner]');
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+    }
+
+    public function testDashboardDoesNotShowActivationBannersForAdmin(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-admin-banner-' . uniqid() . '@example.com', ['ROLE_ADMIN']);
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(false);
+        $prefs->setActivationState([
+            'version' => 1,
+            'status' => 'action_pending',
+            'current_step' => 'guided_action',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+        ]);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner]');
+    }
+
+    public function testDashboardShowsNudgeBannerWhenActionPendingWithoutFirstAction(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-nudge-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'action_pending',
+            'current_step' => 'guided_action',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="nudge"]');
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner="aha"]');
+    }
+
+    public function testDashboardHidesNudgeBannerDuringCooldownAfterBannerSkip(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-nudge-cooldown-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'action_pending',
+            'current_step' => 'guided_action',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+            'nudge_dismissed_until' => (new \DateTimeImmutable('+7 days'))->format(\DateTimeInterface::ATOM),
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner="nudge"]');
+    }
+
+    public function testDashboardShowsAhaBannerAfterAuditCreationNotice(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-audit-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'in_progress',
+            'current_step' => 'aha',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=audit_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner="nudge"]');
+        $this->assertSelectorExists('[data-activation-highlight-target="audit"]');
+    }
+
+    public function testDashboardShowsAhaBannerAfterRiskCreationNotice(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-risk-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'in_progress',
+            'current_step' => 'aha',
+            'goal' => 'risk',
+            'recommended_action' => 'create_risk',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=risk_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorExists('[data-activation-highlight-target="risk"]');
+    }
+
+    public function testDashboardShowsAhaBannerAfterCapaCreationNotice(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-capa-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'in_progress',
+            'current_step' => 'aha',
+            'goal' => 'capa',
+            'recommended_action' => 'create_capa_draft',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=capa_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorExists('[data-activation-highlight-target="capa"]');
+    }
+
+    public function testDashboardPrefersAhaBannerOverNudgeWhenActivationNoticePresent(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-priority-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'action_pending',
+            'current_step' => 'guided_action',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=audit_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner="nudge"]');
+        $this->assertSame(1, $this->client->getCrawler()->filter('[data-activation-onboarding-banner]')->count());
+    }
+
+    public function testDashboardCompletesActivationOnAhaAcknowledgement(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-complete-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'in_progress',
+            'current_step' => 'aha',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+        ]);
+
+        $this->client->loginUser($user);
+        $crawler = $this->client->request('GET', '/dashboard?activation=audit_created');
+        $this->assertResponseIsSuccessful();
+        $csrf = $crawler->filter('[data-activation-onboarding-aha-csrf-value]')->attr('data-activation-onboarding-aha-csrf-value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/dashboard', [
+            '_token' => $csrf,
+            'activation_action' => 'complete_aha',
+        ]);
+
+        $this->assertResponseRedirects('/dashboard');
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner]');
+
+        $this->entityManager->clear();
+        $prefs = $this->entityManager->getRepository(UserPreferences::class)->findOneBy(['user' => $user]);
+        $this->assertInstanceOf(UserPreferences::class, $prefs);
+        $this->assertTrue($prefs->isProfileOnboardingCompleted());
+        $this->assertSame('completed', $prefs->getActivationState()['status'] ?? null);
+        $this->assertNotEmpty($prefs->getActivationState()['aha_seen_at'] ?? null);
+    }
+
+    public function testDashboardNudgeDismissUsesBannerSkipWithoutCompletingProfile(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-nudge-dismiss-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'action_pending',
+            'current_step' => 'guided_action',
+            'goal' => 'audit',
+            'recommended_action' => 'start_audit',
+        ]);
+
+        $this->client->loginUser($user);
+        $crawler = $this->client->request('GET', '/dashboard');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="nudge"]');
+        $csrf = $crawler->filter('[data-activation-onboarding-nudge-csrf-value]')->attr('data-activation-onboarding-nudge-csrf-value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/preferences/onboarding/skip', [
+            '_token' => $csrf,
+            'source' => 'banner',
+        ]);
+        $this->assertResponseIsSuccessful();
+
+        $this->entityManager->clear();
+        $prefs = $this->entityManager->getRepository(UserPreferences::class)->findOneBy(['user' => $user]);
+        $this->assertInstanceOf(UserPreferences::class, $prefs);
+        $this->assertFalse($prefs->isProfileOnboardingCompleted());
+        $this->assertNotEmpty($prefs->getActivationState()['nudge_dismissed_until'] ?? null);
+
+        $this->client->request('GET', '/dashboard');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorNotExists('[data-activation-onboarding-banner="nudge"]');
+    }
+
+    /**
+     * @param array<string, mixed> $state
+     */
+    private function setActivationState(User $user, array $state): void
+    {
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(false);
+        $prefs->setActivationState($state);
+        $this->entityManager->flush();
+    }
+
     /**
      * @param list<string> $roles
      */
