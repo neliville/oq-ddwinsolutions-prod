@@ -1,21 +1,24 @@
 <section class="cta-section js-final-cta" aria-labelledby="home-final-cta-heading">
     <div class="container">
         <div class="cta-box">
-            <h2 id="home-final-cta-heading" class="js-final-cta-title">Commencez à structurer votre pilotage QHSE dès aujourd’hui</h2>
-            <p class="js-final-cta-subtitle">Créez vos analyses, suivez vos actions, préparez vos audits et gardez une vision claire de vos priorités.</p>
+            <h2 id="home-final-cta-heading" class="js-final-cta-title">Entrez dans la plateforme pour structurer votre QHSE</h2>
+            <p class="js-final-cta-subtitle">Centralisez vos analyses, vos audits et vos actions dans un cockpit unique pour garder une vision claire de vos priorités.</p>
             <div class="cta-buttons flex flex-col sm:flex-row flex-wrap justify-center gap-3">
                 {% if is_granted('ROLE_USER') %}
                     <twig:Button as="a" href="{{ path('app_dashboard_index') }}" variant="secondary" size="lg" class="no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
-                        Accéder à mon dashboard
+                        Accéder à mon cockpit QHSE
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="outline" size="lg" class="no-underline border-white/80 text-white bg-transparent hover:bg-white/10 h-11 px-6">
+                        Ouvrir mes audits
                     </twig:Button>
                 {% else %}
                     <twig:Button as="a" href="{{ path('app_register') }}" variant="secondary" size="lg" class="no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
-                        Commencer gratuitement
+                        Structurer mon QHSE
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" size="lg" class="no-underline border-white/80 text-white bg-transparent hover:bg-white/10 h-11 px-6">
+                        Me connecter
                     </twig:Button>
                 {% endif %}
-                <twig:Button as="a" href="{{ path('app_outils_index') }}" variant="outline" size="lg" class="no-underline border-white/80 text-white bg-transparent hover:bg-white/10 h-11 px-6">
-                    Voir les outils gratuits
-                </twig:Button>
             </div>
         </div>
     </div>

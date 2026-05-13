@@ -4,78 +4,129 @@
             <div class="hero-content">
                 <div class="home-hero-badges mb-4 flex flex-wrap items-center gap-2">
                     <span class="badge-dot shrink-0" aria-hidden="true"></span>
-                    <twig:Badge variant="secondary" class="font-normal">Gratuit</twig:Badge>
-                    <twig:Badge variant="secondary" class="font-normal">Sans installation</twig:Badge>
-                    <twig:Badge variant="secondary" class="font-normal">Pensé QHSE</twig:Badge>
-                    <twig:Badge variant="secondary" class="font-normal">Export PDF</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Plateforme QHSE</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Cockpit de pilotage</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Priorités et alertes</twig:Badge>
                 </div>
-                <p class="hero-problem mt-4">Passez de l’analyse ponctuelle au pilotage QHSE structuré.</p>
-                <h1 id="home-hero-heading" class="hero-title js-hero-title">Pilotez vos analyses, audits et actions QHSE au même endroit</h1>
+                <p class="hero-problem mt-4">
+                    Sans cockpit, la charge mentale monte vite: audits, CAPA, risques et échéances se dispersent jusqu'à faire perdre la maîtrise des priorités.
+                </p>
+                <h1 id="home-hero-heading" class="hero-title js-hero-title">Le cockpit QHSE pour reprendre le contrôle de vos priorités</h1>
                 <p class="hero-subtitle js-hero-subtitle">
-                    Utilisez gratuitement des outils qualité, lancez vos audits ISO, suivez vos CAPA, maîtrisez vos risques et visualisez votre pilotage QHSE dans un dashboard clair.
+                    Le point de passage quotidien qui réduit la charge mentale : audits, CAPA, risques et échéances restent enfin dans une même vue.
                 </p>
 
                 <div class="hero-cta js-hero-cta flex flex-col sm:flex-row flex-wrap gap-3">
                     {% if is_granted('ROLE_USER') %}
                         <twig:Button as="a" href="{{ path('app_dashboard_index') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
-                            Accéder à mon dashboard
+                            Ouvrir mon cockpit QHSE
                         </twig:Button>
                     {% else %}
                         <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
-                            Commencer gratuitement
+                            Reprendre le contrôle de mon QHSE
+                        </twig:Button>
+                        <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" size="lg" class="no-underline h-11 px-5 sm:h-10 bg-background/80">
+                            Voir mon cockpit
                         </twig:Button>
                     {% endif %}
-                    <twig:Button as="a" href="{{ path('app_outils_index') }}" variant="outline" size="lg" class="no-underline h-11 px-5 sm:h-10 bg-background/80">
-                        Voir les outils
-                    </twig:Button>
                 </div>
 
                 <div class="hero-stats js-kpi-card mt-8">
                     <div class="stat-item">
-                        <span class="stat-value">6</span>
-                        <span class="stat-label">Outils interactifs</span>
+                        <span class="stat-value">1 vue</span>
+                        <span class="stat-label">Priorités, alertes et échéances</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value">0€</span>
-                        <span class="stat-label">Accès illimité</span>
+                        <span class="stat-value">4 flux</span>
+                        <span class="stat-label">Audit ISO, CAPA, Risques, PDCA</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value">100%</span>
-                        <span class="stat-label">Conforme ISO &amp; RGPD</span>
+                        <span class="stat-value">0 oubli</span>
+                        <span class="stat-label">Moins de dispersion, plus de maîtrise</span>
                     </div>
                 </div>
             </div>
 
-            <div class="hero-landing-preview js-hero-preview home-hero-preview" data-aos="fade-up" data-aos-delay="80">
+            <div class="hero-landing-preview js-hero-preview home-hero-preview" data-aos="fade-up" data-aos-delay="80" aria-hidden="true">
                 <div class="home-hero-preview__browser">
                     <div class="home-hero-preview__browser-bar">
                         <span class="home-hero-preview__dots" aria-hidden="true"><span></span><span></span><span></span></span>
-                        <span class="home-hero-preview__url text-muted-foreground text-xs truncate">outils-qualite.com</span>
+                        <span class="home-hero-preview__url text-muted-foreground text-xs truncate">cockpit.outils-qualite.com</span>
                     </div>
-                    <div class="home-hero-preview__grid">
-                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu dashboard">
-                            <p class="text-xs font-semibold text-foreground m-0">Dashboard</p>
-                            <p class="text-[11px] text-muted-foreground m-0 mt-1">Priorités, retards, synthèse</p>
-                            <div class="mt-2 space-y-1">
-                                <div class="h-1.5 rounded bg-primary/25 w-full"></div>
-                                <div class="h-1.5 rounded bg-muted w-4/5"></div>
-                                <div class="h-1.5 rounded bg-muted w-3/5"></div>
+                    <article class="rounded-[1.5rem] border border-border/70 bg-background/95 p-4 shadow-sm sm:p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="m-0 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cockpit QHSE</p>
+                                <p class="m-0 mt-1 text-sm font-semibold text-foreground">Priorités, échéances et alertes sous contrôle</p>
                             </div>
-                        </article>
-                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu CAPA">
-                            <p class="text-xs font-semibold text-foreground m-0">CAPA</p>
-                            <p class="text-[11px] text-muted-foreground m-0 mt-1">Actions &amp; échéances</p>
-                            <div class="mt-2 flex gap-1">
-                                <twig:Badge variant="secondary" class="text-[10px] px-1.5 py-0">En cours</twig:Badge>
-                                <twig:Badge variant="outline" class="text-[10px] px-1.5 py-0">À faire</twig:Badge>
+                            <twig:Badge variant="destructive" class="text-[10px] px-2 py-0.5">3 alertes critiques</twig:Badge>
+                        </div>
+
+                        <div class="mt-4 grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+                            <div class="rounded-2xl border border-border/70 bg-muted/30 p-3 js-hero-cockpit-priority">
+                                <p class="m-0 text-xs font-semibold text-foreground">Priorités de la semaine</p>
+                                <div class="mt-3 space-y-2">
+                                    <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                        <p class="m-0 text-[11px] font-medium text-foreground">Audit ISO 9001 interne</p>
+                                        <p class="m-0 mt-1 text-[11px] text-muted-foreground">J-3 · checklist incomplète · relance équipe</p>
+                                    </div>
+                                    <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                        <p class="m-0 text-[11px] font-medium text-foreground">CAPA fournisseur critique</p>
+                                        <p class="m-0 mt-1 text-[11px] text-muted-foreground">Échéance 48h · propriétaire à confirmer</p>
+                                    </div>
+                                    <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                        <p class="m-0 text-[11px] font-medium text-foreground">Risque maintenance</p>
+                                        <p class="m-0 mt-1 text-[11px] text-muted-foreground">Criticité haute · action préventive attendue</p>
+                                    </div>
+                                </div>
                             </div>
-                        </article>
-                        <article class="home-hero-preview__tile hero-product-preview" aria-label="Aperçu audit ISO">
-                            <p class="text-xs font-semibold text-foreground m-0">Audit ISO</p>
-                            <p class="text-[11px] text-muted-foreground m-0 mt-1">9001 · 14001 · 45001</p>
-                            <div class="mt-2 h-8 rounded border border-dashed border-border/80 flex items-center justify-center text-[10px] text-muted-foreground">Exigences</div>
-                        </article>
-                    </div>
+
+                            <div class="space-y-3 js-hero-cockpit-kpis">
+                                <div class="rounded-2xl border border-border/70 bg-muted/30 p-3">
+                                    <p class="m-0 text-xs font-semibold text-foreground">Modules visibles</p>
+                                    <div class="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                                        <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                            <p class="m-0 font-medium text-foreground">Audit ISO</p>
+                                            <p class="m-0 mt-1 text-muted-foreground">2 audits à préparer</p>
+                                        </div>
+                                        <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                            <p class="m-0 font-medium text-foreground">CAPA</p>
+                                            <p class="m-0 mt-1 text-muted-foreground">5 actions ouvertes</p>
+                                        </div>
+                                        <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                            <p class="m-0 font-medium text-foreground">Risques</p>
+                                            <p class="m-0 mt-1 text-muted-foreground">3 critiques à traiter</p>
+                                        </div>
+                                        <div class="rounded-xl border border-border/60 bg-background/90 px-3 py-2">
+                                            <p class="m-0 font-medium text-foreground">PDCA</p>
+                                            <p class="m-0 mt-1 text-muted-foreground">Cycle hebdo aligné</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-2xl border border-border/70 bg-primary/5 p-3 js-hero-cockpit-summary">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="m-0 text-xs font-semibold text-foreground">Synthèse PDCA</p>
+                                        <span class="text-[11px] font-medium text-primary">2 plans à relancer</span>
+                                    </div>
+                                    <div class="mt-3 space-y-2 text-[11px] text-muted-foreground">
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span>Charge mentale réduite</span>
+                                            <span class="font-medium text-foreground">Vue unique</span>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span>Dispersion limitée</span>
+                                            <span class="font-medium text-foreground">Priorités claires</span>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span>Perte de maîtrise évitée</span>
+                                            <span class="font-medium text-foreground">Alertes suivies</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
         </div>

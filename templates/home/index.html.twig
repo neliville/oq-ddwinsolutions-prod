@@ -5,9 +5,9 @@
     {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
 {% endblock %}
 
-{% block title %}Outils-Qualite.com — Plateforme QHSE : audits ISO, CAPA, risques, dashboard &amp; outils gratuits{% endblock %}
+{% block title %}Outils-Qualite.com — Plateforme QHSE : pilotage, audits ISO, CAPA et risques{% endblock %}
 
-{% block meta_description %}Plateforme QHSE en ligne : audits ISO 9001/14001/45001, CAPA, matrice des risques et dashboard. Outils gratuits Ishikawa, 5 Pourquoi, Pareto, QQOQCCP, AMDEC, 8D. Export PDF, sans installation.{% endblock %}
+{% block meta_description %}Plateforme QHSE pour piloter audits ISO, CAPA et risques depuis un cockpit unique. Priorisez vos actions et structurez votre pilotage.{% endblock %}
 
 {% block meta_keywords %}
 plateforme QHSE, pilotage qualité, audit ISO 9001, ISO 14001, ISO 45001, CAPA, matrice des risques, dashboard QSE, outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP, AMDEC, 8D, amélioration continue, lean, SME,
@@ -20,13 +20,9 @@ plateforme QHSE, pilotage qualité, audit ISO 9001, ISO 14001, ISO 45001, CAPA, 
 {% block body %}
     <div class="home-page">
         {% include 'home/sections/_hero_landing.html.twig' %}
-        {% include 'home/sections/_value_cards.html.twig' %}
-        {% include 'home/sections/_before_after.html.twig' %}
-        {% include 'home/sections/_workflow.html.twig' %}
         {% include 'home/sections/_dashboard_focus.html.twig' %}
-        {% include 'home/sections/_audits_iso.html.twig' %}
-        {% include 'home/sections/_capa_focus.html.twig' %}
-        {% include 'home/sections/_personas.html.twig' %}
+        {% include 'home/sections/_value_cards.html.twig' %}
+        {% include 'home/sections/_workflow.html.twig' %}
         {% include 'home/sections/_social_proof_compact.html.twig' %}
         {% include 'home/sections/_outils_gratuits.html.twig' %}
         {% include 'home/sections/_cta_final.html.twig' %}
