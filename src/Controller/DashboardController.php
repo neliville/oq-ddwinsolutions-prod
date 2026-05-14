@@ -105,10 +105,11 @@ final class DashboardController extends AbstractController
             'onboarding_wizard_context_options' => OnboardingActivationChoices::contextOptions(),
             'onboarding_wizard_goal_options' => OnboardingActivationChoices::goalOptions(),
             'onboarding_wizard_initial_step' => $initialStep,
+            'onboarding_wizard_recommended_action' => $recommendedAction,
             'onboarding_wizard_recommended_action_urls' => [
                 'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
                 'create_risk' => $this->generateUrl('app_qse_risk_new'),
-                'create_capa_draft' => $this->generateUrl('app_dashboard_index'),
+                'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
                 'open_cockpit' => $this->generateUrl('app_dashboard_index'),
             ],
             'cockpit' => $cockpit,
@@ -125,6 +126,7 @@ final class DashboardController extends AbstractController
             'show_activation_nudge_banner' => $showActivationNudgeBanner,
             'activation_highlight' => $activationHighlight,
             'activation_nudge_cta_url' => $this->resolveActivationNudgeCtaUrl($recommendedAction),
+            'activation_nudge_cta_http_method' => $this->resolveActivationNudgeCtaHttpMethod($recommendedAction),
             'activation_nudge_cta_label' => $this->resolveActivationNudgeCtaLabel($recommendedAction),
         ]));
     }
@@ -163,7 +165,7 @@ final class DashboardController extends AbstractController
         return match ($recommendedAction) {
             'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
             'create_risk' => $this->generateUrl('app_qse_risk_new'),
-            'create_capa_draft' => $this->generateUrl('app_dashboard_index'),
+            'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
             'open_cockpit' => $this->generateUrl('app_dashboard_index'),
             default => null,
         };
@@ -178,6 +180,11 @@ final class DashboardController extends AbstractController
             'open_cockpit' => 'Ouvrir le cockpit',
             default => 'Reprendre l’activation',
         };
+    }
+
+    private function resolveActivationNudgeCtaHttpMethod(?string $recommendedAction): string
+    {
+        return $recommendedAction === 'create_capa_draft' ? 'post' : 'get';
     }
 
     /**
@@ -202,19 +209,7 @@ final class DashboardController extends AbstractController
                 'step' => OnboardingActivationChoices::STEP_GUIDED_ACTION,
                 'title' => 'Lancez votre première action utile',
                 'kind' => OnboardingActivationChoices::STEP_GUIDED_ACTION,
-                'description' => 'Une action simple suffit pour alimenter votre cockpit et structurer la suite.',
-            ],
-            [
-                'step' => 'aha',
-                'title' => 'Votre cockpit prend vie',
-                'kind' => 'aha',
-                'description' => 'Après la première action, votre tableau de bord devient la scène de preuve de votre pilotage.',
-            ],
-            [
-                'step' => 'return_reason',
-                'title' => 'Revenez au tableau de bord',
-                'kind' => 'return_reason',
-                'description' => 'Vous pourrez reprendre l’activation plus tard depuis le tableau de bord si besoin.',
+                'description' => 'Choisissez l’action la plus naturelle pour démarrer votre pilotage QHSE.',
             ],
         ];
     }
