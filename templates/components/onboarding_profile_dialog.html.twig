@@ -119,7 +119,7 @@
                                 value="start_audit"
                                 class="sr-only"
                                 data-onboarding-action-choice
-                                data-onboarding-action-url="{{ path('app_qse_audit_pick_standard') }}"
+                                data-onboarding-action-url="{{ path('app_qse_audit_pick_standard', { origin: 'onboarding' }) }}"
                                 data-onboarding-action-label="Préparer un audit"
                                 data-action="change->onboarding-wizard#onGuidedActionChange"
                             >

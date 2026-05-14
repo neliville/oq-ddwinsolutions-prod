@@ -108,7 +108,7 @@ final class DashboardController extends AbstractController
             'onboarding_wizard_initial_step' => $initialStep,
             'onboarding_wizard_recommended_action' => $recommendedAction,
             'onboarding_wizard_recommended_action_urls' => [
-                'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
+                'start_audit' => $this->generateUrl('app_qse_audit_pick_standard', ['origin' => 'onboarding']),
                 'create_risk' => $this->generateUrl('app_ishikawa_onboarding_draft'),
                 'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
                 'open_cockpit' => $this->generateUrl('app_ishikawa_onboarding_draft'),
@@ -166,7 +166,7 @@ final class DashboardController extends AbstractController
     private function resolveActivationNudgeCtaUrl(?string $recommendedAction): ?string
     {
         return match ($recommendedAction) {
-            'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
+            'start_audit' => $this->generateUrl('app_qse_audit_pick_standard', ['origin' => 'onboarding']),
             'create_risk' => $this->generateUrl('app_ishikawa_onboarding_draft'),
             'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
             'open_cockpit' => $this->generateUrl('app_ishikawa_onboarding_draft'),

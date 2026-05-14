@@ -3,6 +3,7 @@
 {% block title %}Choisir le référentiel | Audit QSE{% endblock %}
 
 {% block content %}
+{% set onboarding_origin = app.request.query.get('origin') %}
 <div class="w-full max-w-4xl mx-auto px-4 py-6">
     <a href="{{ path('app_qse_audit_index') }}" class="text-sm app-inline-link app-inline-link--muted">← Audits</a>
     <h1 class="text-2xl font-bold mt-2 mb-2">Choisir le référentiel</h1>
@@ -10,7 +11,7 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for s in standards %}
-            <a href="{{ path('app_qse_audit_new', { standard: s.id }) }}" class="block rounded-lg border border-border bg-card p-5 hover:bg-muted/40 no-underline text-foreground">
+            <a href="{{ path('app_qse_audit_new', onboarding_origin == 'onboarding' ? { standard: s.id, origin: 'onboarding' } : { standard: s.id }) }}" class="block rounded-lg border border-border bg-card p-5 hover:bg-muted/40 no-underline text-foreground">
                 <h2 class="font-semibold text-lg mb-1">{{ s.name }}</h2>
                 <p class="text-xs text-muted-foreground mb-2">Code : {{ s.code }}{% if s.version %} · version {{ s.version }}{% endif %}</p>
                 {% if s.description %}

@@ -3,13 +3,17 @@
 {% block title %}Nouvel audit — {{ standard.name }} | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
+{% set onboarding_origin = app.request.query.get('origin') %}
 <div class="w-full max-w-lg mx-auto px-4 py-6">
-    <a href="{{ path('app_qse_audit_pick_standard') }}" class="text-sm app-inline-link app-inline-link--muted">← Autre référentiel</a>
+    <a href="{{ path('app_qse_audit_pick_standard', onboarding_origin == 'onboarding' ? { origin: 'onboarding' } : {}) }}" class="text-sm app-inline-link app-inline-link--muted">← Autre référentiel</a>
     <h1 class="text-2xl font-bold mt-2 mb-1">Nouvel audit</h1>
     <p class="text-sm text-muted-foreground mb-6">Référentiel : <strong>{{ standard.name }}</strong></p>
     <form method="post" class="space-y-4">
         <input type="hidden" name="_token" value="{{ csrf_token('qse_audit_new') }}">
         <input type="hidden" name="audit_standard_id" value="{{ standard.id }}">
+        {% if onboarding_origin == 'onboarding' %}
+            <input type="hidden" name="origin" value="onboarding">
+        {% endif %}
         <div>
             <label class="block text-sm font-medium mb-1" for="companyName">Entreprise</label>
             <input id="companyName" name="companyName" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
