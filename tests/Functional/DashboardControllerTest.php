@@ -357,6 +357,27 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
         $this->assertSelectorExists('[data-activation-highlight-target="capa"]');
     }
 
+    public function testDashboardShowsAhaBannerAfterIshikawaCreationNotice(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-aha-ishikawa-' . uniqid() . '@example.com');
+        $this->setActivationState($user, [
+            'version' => 1,
+            'status' => 'in_progress',
+            'current_step' => 'aha',
+            'goal' => 'global_piloting',
+            'recommended_action' => 'open_cockpit',
+            'first_action_completed_at' => '2026-05-13T13:00:00+00:00',
+        ]);
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard?activation=ishikawa_created');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorExists('[data-activation-highlight-target="ishikawa"]');
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+    }
+
     public function testDashboardPrefersAhaBannerOverNudgeWhenActivationNoticePresent(): void
     {
         $user = $this->createDashboardUser('test-dashboard-aha-priority-' . uniqid() . '@example.com');

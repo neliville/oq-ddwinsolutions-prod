@@ -12,6 +12,7 @@ export default class extends Controller {
         skipUrl: String,
         csrf: String,
         capaNewDraftCsrf: String,
+        ishikawaNewDraftCsrf: String,
         totalSteps: { type: Number, default: 3 },
         steps: Array,
         contextOptions: Object,
@@ -34,6 +35,21 @@ export default class extends Controller {
         this._stepIndex = this._resolveInitialStepIndex();
         this._populateSelects();
         this._renderStep();
+        this._boundFormChange = (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLSelectElement)) {
+                return;
+            }
+
+            if (!target.matches('[data-onboarding-field]')) {
+                return;
+            }
+
+            this.updateContinueState();
+        };
+        this._formChangeRoot = this._dialogEl ?? this.element;
+        this._formChangeRoot.addEventListener('change', this._boundFormChange);
+        this._formChangeRoot.addEventListener('input', this._boundFormChange);
 
         if (this.mustOpenValue) {
             requestAnimationFrame(() => this._openDialog());
@@ -44,9 +60,24 @@ export default class extends Controller {
         if (this._dialogEl && this._onCancel) {
             this._dialogEl.removeEventListener('cancel', this._onCancel);
         }
+
+        if (this._boundFormChange && this._formChangeRoot) {
+            this._formChangeRoot.removeEventListener('change', this._boundFormChange);
+            this._formChangeRoot.removeEventListener('input', this._boundFormChange);
+        }
     }
 
-    onSelectChange() {
+    onSelectChange(event) {
+        if (event?.currentTarget instanceof HTMLSelectElement) {
+            this.updateContinueState();
+
+            return;
+        }
+
+        this.updateContinueState();
+    }
+
+    updateContinueState() {
         this._syncContinueDisabled();
     }
 
@@ -81,8 +112,14 @@ export default class extends Controller {
                 return;
             }
 
-            if (input.dataset.onboardingActionMethod === 'post') {
-                await this._submitCapaDraft(url);
+            if (this._isCapaDraftAction(input)) {
+                this._submitPostDraft(url, this.capaNewDraftCsrfValue);
+
+                return;
+            }
+
+            if (this._isIshikawaDraftAction(input)) {
+                this._submitPostDraft(url, this.ishikawaNewDraftCsrfValue);
 
                 return;
             }
@@ -147,7 +184,7 @@ export default class extends Controller {
             if (continueBtn) {
                 continueBtn.disabled = false;
             }
-            this._syncContinueDisabled();
+            this.updateContinueState();
         }
     }
 
@@ -168,6 +205,7 @@ export default class extends Controller {
         this._fillSelect('[data-onboarding-field="main_activity"]', context.main_activity || []);
         this._fillSelect('[data-onboarding-field="piloting_focus"]', goal.piloting_focus || []);
         this._fillSelect('[data-onboarding-field="primary_standard"]', goal.primary_standard || [], true);
+        this.updateContinueState();
     }
 
     _fillSelect(selector, options, allowEmpty = false) {
@@ -271,7 +309,7 @@ export default class extends Controller {
             this._setContinueLabel('Continuer');
         }
 
-        this._syncContinueDisabled();
+        this.updateContinueState();
 
         const current = this._stepIndex + 1;
         if (stepIndicator) {
@@ -334,7 +372,7 @@ export default class extends Controller {
         const input = this._selectedGuidedActionInput();
         const label = input?.dataset.onboardingActionLabel || 'Lancer ma première action';
         this._setContinueLabel(label);
-        this._syncContinueDisabled();
+        this.updateContinueState();
         this._syncGuidedActionIndicators();
     }
 
@@ -356,8 +394,23 @@ export default class extends Controller {
         });
     }
 
-    _submitCapaDraft(url) {
-        const token = this.capaNewDraftCsrfValue;
+    _isCapaDraftAction(input) {
+        if (!(input instanceof HTMLInputElement)) {
+            return false;
+        }
+
+        return input.value === 'create_capa_draft';
+    }
+
+    _isIshikawaDraftAction(input) {
+        if (!(input instanceof HTMLInputElement)) {
+            return false;
+        }
+
+        return input.value === 'open_ishikawa';
+    }
+
+    _submitPostDraft(url, token) {
         if (!url || !token) {
             return;
         }
@@ -366,6 +419,7 @@ export default class extends Controller {
         form.method = 'POST';
         form.action = url;
         form.className = 'hidden';
+        form.setAttribute('data-turbo', 'false');
 
         const csrfInput = document.createElement('input');
         csrfInput.type = 'hidden';
@@ -391,31 +445,23 @@ export default class extends Controller {
             return;
         }
 
+        let shouldDisable = false;
+
         if (def.kind === 'context') {
-            continueBtn.disabled = !['job_function', 'company_size', 'main_activity'].every((field) => {
-                const select = this.element.querySelector(`[data-onboarding-field="${field}"]`);
-
-                return Boolean(select?.value);
-            });
-
-            return;
-        }
-
-        if (def.kind === 'goal') {
-            const piloting = this.element.querySelector('[data-onboarding-field="piloting_focus"]');
-            continueBtn.disabled = !piloting?.value;
-
-            return;
-        }
-
-        if (def.kind === 'guided_action') {
+            shouldDisable = !['job_function', 'company_size', 'main_activity'].every((field) => this._hasFieldValue(field));
+        } else if (def.kind === 'goal') {
+            shouldDisable = !this._hasFieldValue('piloting_focus');
+        } else if (def.kind === 'guided_action') {
             const input = this._selectedGuidedActionInput();
-            continueBtn.disabled = !input || !input.dataset.onboardingActionUrl;
-
-            return;
+            shouldDisable = !input || !input.dataset.onboardingActionUrl;
         }
 
-        continueBtn.disabled = false;
+        continueBtn.disabled = shouldDisable;
+        if (shouldDisable) {
+            continueBtn.setAttribute('disabled', '');
+        } else {
+            continueBtn.removeAttribute('disabled');
+        }
     }
 
     async _submitCurrentStep() {
@@ -489,12 +535,63 @@ export default class extends Controller {
             );
         } finally {
             continueBtn.disabled = false;
-            this._syncContinueDisabled();
+            this.updateContinueState();
         }
     }
 
     _fieldValue(field) {
-        return this.element.querySelector(`[data-onboarding-field="${field}"]`)?.value || '';
+        return this._selectFieldValue(field);
+    }
+
+    _selectFieldElement(field) {
+        const byField = this.element.querySelector(`[data-onboarding-field="${field}"]`);
+        if (byField instanceof HTMLSelectElement) {
+            return byField;
+        }
+
+        const byId = {
+            job_function: 'onboarding-job-function',
+            company_size: 'onboarding-company-size',
+            main_activity: 'onboarding-main-activity',
+            piloting_focus: 'onboarding-piloting-focus',
+            primary_standard: 'onboarding-primary-standard',
+        }[field];
+        if (!byId) {
+            return null;
+        }
+
+        const root = this._dialogEl ?? this.element;
+        const fallback = root.querySelector(`#${byId}`);
+
+        return fallback instanceof HTMLSelectElement ? fallback : null;
+    }
+
+    _selectFieldValue(field) {
+        const select = this._selectFieldElement(field);
+        if (!select) {
+            return '';
+        }
+
+        return (select.value || '').trim();
+    }
+
+    _hasFieldValue(field) {
+        const select = this._selectFieldElement(field);
+        if (!select) {
+            return false;
+        }
+
+        const value = (select.value || '').trim();
+        if (!value) {
+            return false;
+        }
+
+        const selected = select.selectedOptions[0];
+        if (selected?.disabled) {
+            return false;
+        }
+
+        return true;
     }
 
     _closeDialogWithMessage(message) {

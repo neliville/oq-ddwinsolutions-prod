@@ -90,6 +90,29 @@ final class OnboardingActivationRegressionTest extends WebTestCaseWithDatabase
         $this->assertActivationClosed($user);
     }
 
+    public function testIshikawaDraftOnboardingPathClosesOnDashboardAha(): void
+    {
+        $user = $this->createActivationUser('onb-e2e-ishikawa-' . uniqid() . '@example.com');
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+        $this->assertResponseIsSuccessful();
+        $csrf = $this->client->getCrawler()->filter('[data-onboarding-wizard-ishikawa-new-draft-csrf-value]')->attr('data-onboarding-wizard-ishikawa-new-draft-csrf-value');
+        $this->assertNotEmpty($csrf);
+
+        $this->client->request('POST', '/ishikawa/onboarding-draft', [
+            '_token' => $csrf,
+        ]);
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-activation-onboarding-banner="aha"]');
+        $this->assertSelectorNotExists('[data-controller="onboarding-wizard"]');
+
+        $this->completeAhaFromDashboard();
+        $this->assertActivationClosed($user);
+    }
+
     private function createActivationUser(string $email): User
     {
         $user = $this->createTestUser($email, 'Test123456!');

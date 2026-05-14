@@ -88,6 +88,7 @@
     {% set hl_capa = pf == 'capa' or activation_highlight == 'capa' %}
     {% set hl_audit = pf in ['audit', 'certification_prep'] or activation_highlight == 'audit' %}
     {% set hl_risk = pf == 'risk' or activation_highlight == 'risk' %}
+    {% set hl_ishikawa = activation_highlight == 'ishikawa' %}
     <p class="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-3xl">Qu’est-ce qui nécessite mon attention aujourd’hui&nbsp;?</p>
     <div class="space-y-6 mb-8 sm:mb-10" aria-labelledby="dashboard-attention-heading">
         <h2 id="dashboard-attention-heading" class="sr-only">Priorités et pilotage QSE</h2>
@@ -289,7 +290,8 @@
         </div>
 
         <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
-            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-ishikawa-label">
+            <div{% if activation_highlight == 'ishikawa' %} data-activation-highlight-target="ishikawa"{% endif %}>
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm{% if hl_ishikawa %} ring-2 ring-primary/25{% endif %}" aria-labelledby="stat-ishikawa-label">
                 <twig:Card:Content class="p-4 sm:p-5 md:p-6">
                     <div class="flex items-start justify-between gap-2 mb-2">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -306,6 +308,7 @@
                     <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">diagrammes enregistrés</p>
                 </twig:Card:Content>
             </twig:Card>
+            </div>
         </div>
 
         <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">

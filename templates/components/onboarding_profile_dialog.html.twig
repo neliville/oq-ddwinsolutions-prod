@@ -21,6 +21,7 @@
             data-onboarding-wizard-skip-url-value="{{ path('app_preferences_onboarding_skip') }}"
             data-onboarding-wizard-csrf-value="{{ csrf_token('onboarding_profile') }}"
             data-onboarding-wizard-capa-new-draft-csrf-value="{{ csrf_token('qse_capa_new_draft') }}"
+            data-onboarding-wizard-ishikawa-new-draft-csrf-value="{{ csrf_token('qse_ishikawa_new_draft') }}"
             data-onboarding-wizard-total-steps-value="3"
             data-onboarding-wizard-steps-value="{{ onboarding_wizard_steps|json_encode|e('html_attr') }}"
             data-onboarding-wizard-context-options-value="{{ onboarding_wizard_context_options|json_encode|e('html_attr') }}"
@@ -136,7 +137,8 @@
                                 value="open_ishikawa"
                                 class="sr-only"
                                 data-onboarding-action-choice
-                                data-onboarding-action-url="{{ path('app_ishikawa_index') }}"
+                                data-onboarding-action-url="{{ path('app_ishikawa_onboarding_draft') }}"
+                                data-onboarding-action-method="post"
                                 data-onboarding-action-label="Ouvrir Ishikawa"
                                 data-action="change->onboarding-wizard#onGuidedActionChange"
                             >

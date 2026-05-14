@@ -33,7 +33,7 @@
             {% if activation_nudge_cta_url %}
                 {% if activation_nudge_cta_http_method|default('get') == 'post' %}
                     <form method="post" action="{{ activation_nudge_cta_url }}" class="inline-flex">
-                        <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_new_draft') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token(activation_nudge_cta_csrf_token_id|default('qse_capa_new_draft')) }}">
                         <twig:Button type="submit" variant="default" size="sm">Commencer maintenant</twig:Button>
                     </form>
                 {% else %}

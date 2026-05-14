@@ -17,7 +17,7 @@ final class OnboardingActivationService
     private const NUDGE_COOLDOWN = 'P7D';
 
   /** @var list<string> */
-    private const AHA_NOTICES = ['audit_created', 'risk_created', 'capa_created'];
+    private const AHA_NOTICES = ['audit_created', 'risk_created', 'capa_created', 'ishikawa_created'];
 
     public function start(UserPreferences $preferences, ?\DateTimeImmutable $now = null): void
     {

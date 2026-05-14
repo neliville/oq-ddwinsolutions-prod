@@ -84,7 +84,8 @@ final class DashboardController extends AbstractController
             ? $this->resolveActivationHighlight($activationNotice, $userPreferences)
             : null;
         $recommendedAction = $this->onboardingActivationService->resolveRecommendedAction($userPreferences);
-        $showOnboardingWizard = $this->onboardingActivationService->shouldShowModal($userPreferences, $isAdmin);
+        $showOnboardingWizard = $this->onboardingActivationService->shouldShowModal($userPreferences, $isAdmin)
+            && !$showActivationAhaBanner;
         $activationState = $userPreferences->getActivationState();
         $initialStep = is_array($activationState) ? (string) ($activationState['current_step'] ?? OnboardingActivationChoices::STEP_CONTEXT) : OnboardingActivationChoices::STEP_CONTEXT;
 
@@ -108,9 +109,9 @@ final class DashboardController extends AbstractController
             'onboarding_wizard_recommended_action' => $recommendedAction,
             'onboarding_wizard_recommended_action_urls' => [
                 'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
-                'create_risk' => $this->generateUrl('app_qse_risk_new'),
+                'create_risk' => $this->generateUrl('app_ishikawa_onboarding_draft'),
                 'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
-                'open_cockpit' => $this->generateUrl('app_dashboard_index'),
+                'open_cockpit' => $this->generateUrl('app_ishikawa_onboarding_draft'),
             ],
             'cockpit' => $cockpit,
             'managerDashboard' => $managerDashboard,
@@ -127,6 +128,7 @@ final class DashboardController extends AbstractController
             'activation_highlight' => $activationHighlight,
             'activation_nudge_cta_url' => $this->resolveActivationNudgeCtaUrl($recommendedAction),
             'activation_nudge_cta_http_method' => $this->resolveActivationNudgeCtaHttpMethod($recommendedAction),
+            'activation_nudge_cta_csrf_token_id' => $this->resolveActivationNudgeCtaCsrfTokenId($recommendedAction),
             'activation_nudge_cta_label' => $this->resolveActivationNudgeCtaLabel($recommendedAction),
         ]));
     }
@@ -137,6 +139,7 @@ final class DashboardController extends AbstractController
             'audit_created' => 'audit',
             'risk_created' => 'risk',
             'capa_created' => 'capa',
+            'ishikawa_created' => 'ishikawa',
         ];
         if ($activationNotice !== null && isset($noticeMap[$activationNotice])) {
             return $noticeMap[$activationNotice];
@@ -164,9 +167,9 @@ final class DashboardController extends AbstractController
     {
         return match ($recommendedAction) {
             'start_audit' => $this->generateUrl('app_qse_audit_pick_standard'),
-            'create_risk' => $this->generateUrl('app_qse_risk_new'),
+            'create_risk' => $this->generateUrl('app_ishikawa_onboarding_draft'),
             'create_capa_draft' => $this->generateUrl('app_qse_capa_new_draft'),
-            'open_cockpit' => $this->generateUrl('app_dashboard_index'),
+            'open_cockpit' => $this->generateUrl('app_ishikawa_onboarding_draft'),
             default => null,
         };
     }
@@ -175,16 +178,28 @@ final class DashboardController extends AbstractController
     {
         return match ($recommendedAction) {
             'start_audit' => 'Lancer un audit',
-            'create_risk' => 'Créer un risque',
+            'create_risk' => 'Ouvrir une analyse Ishikawa',
             'create_capa_draft' => 'Ouvrir une CAPA brouillon',
-            'open_cockpit' => 'Ouvrir le cockpit',
+            'open_cockpit' => 'Lancer une analyse Ishikawa',
             default => 'Reprendre l’activation',
         };
     }
 
     private function resolveActivationNudgeCtaHttpMethod(?string $recommendedAction): string
     {
-        return $recommendedAction === 'create_capa_draft' ? 'post' : 'get';
+        return match ($recommendedAction) {
+            'create_capa_draft', 'create_risk', 'open_cockpit' => 'post',
+            default => 'get',
+        };
+    }
+
+    private function resolveActivationNudgeCtaCsrfTokenId(?string $recommendedAction): ?string
+    {
+        return match ($recommendedAction) {
+            'create_capa_draft' => 'qse_capa_new_draft',
+            'create_risk', 'open_cockpit' => 'qse_ishikawa_new_draft',
+            default => null,
+        };
     }
 
     /**
