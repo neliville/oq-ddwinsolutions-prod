@@ -1,146 +1,204 @@
 {# Dialog d’activation onboarding (première action utile ; ouverture contrôlée par le dashboard). #}
+{% set active_panel = onboarding_wizard_initial_step|default('context') %}
+{% if active_panel not in ['context', 'goal', 'guided_action'] %}
+    {% set active_panel = 'context' %}
+{% endif %}
 <twig:Dialog id="profile-onboarding">
-    <div
-        class="contents"
-        data-controller="onboarding-wizard"
-        data-onboarding-wizard-must-open-value="{{ onboarding_wizard_must_open ? 'true' : 'false' }}"
-        data-onboarding-wizard-step-url-value="{{ path('app_preferences_onboarding_step') }}"
-        data-onboarding-wizard-skip-url-value="{{ path('app_preferences_onboarding_skip') }}"
-        data-onboarding-wizard-csrf-value="{{ csrf_token('onboarding_profile') }}"
-        data-onboarding-wizard-capa-new-draft-csrf-value="{{ csrf_token('qse_capa_new_draft') }}"
-        data-onboarding-wizard-total-steps-value="5"
-        data-onboarding-wizard-steps-value="{{ onboarding_wizard_steps|json_encode|e('html_attr') }}"
-        data-onboarding-wizard-context-options-value="{{ onboarding_wizard_context_options|json_encode|e('html_attr') }}"
-        data-onboarding-wizard-goal-options-value="{{ onboarding_wizard_goal_options|json_encode|e('html_attr') }}"
-        data-onboarding-wizard-initial-step-value="{{ onboarding_wizard_initial_step|e('html_attr') }}"
-        data-onboarding-wizard-recommended-action-urls-value="{{ onboarding_wizard_recommended_action_urls|json_encode|e('html_attr') }}"
-    >
-        <button
-            type="button"
-            id="profileOnboardingOpenStub"
-            class="sr-only"
-            tabindex="-1"
-            data-action="click->ux-dialog#open"
-            data-ux-dialog-target="trigger"
-        >Ouvrir l’assistant d’activation</button>
-        <twig:Dialog:Content class="onboarding-mandatory-dialog [&::backdrop]:bg-black/70 [&::backdrop]:backdrop-blur-sm sm:max-w-lg max-h-[min(92vh,42rem)] w-[calc(100%-2rem)] grid-rows-[auto_1fr_auto] gap-0 overflow-hidden border-border/80 p-0 shadow-2xl ring-1 ring-border/50 sm:w-full">
-            <twig:Dialog:Header class="border-b border-border/60 bg-gradient-to-b from-primary/[0.08] via-background to-background px-6 pb-5 pt-6 text-center sm:px-8">
-                <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm ring-1 ring-primary/15" aria-hidden="true">
-                    <twig:ux:icon name="lucide:sparkles" class="size-7 shrink-0" />
+    <button
+        type="button"
+        id="profileOnboardingOpenStub"
+        class="sr-only"
+        tabindex="-1"
+        data-action="click->ux-dialog#open"
+        data-ux-dialog-target="trigger"
+    >Ouvrir l’assistant d’activation</button>
+    <twig:Dialog:Content class="onboarding-mandatory-dialog w-[calc(100%-2rem)] max-w-md gap-0 overflow-hidden border-border/80 p-0 shadow-lg open:flex open:flex-col sm:w-full">
+        <div
+            class="flex flex-col"
+            data-controller="onboarding-wizard"
+            data-onboarding-wizard-must-open-value="{{ onboarding_wizard_must_open ? 'true' : 'false' }}"
+            data-onboarding-wizard-step-url-value="{{ path('app_preferences_onboarding_step') }}"
+            data-onboarding-wizard-skip-url-value="{{ path('app_preferences_onboarding_skip') }}"
+            data-onboarding-wizard-csrf-value="{{ csrf_token('onboarding_profile') }}"
+            data-onboarding-wizard-capa-new-draft-csrf-value="{{ csrf_token('qse_capa_new_draft') }}"
+            data-onboarding-wizard-total-steps-value="3"
+            data-onboarding-wizard-steps-value="{{ onboarding_wizard_steps|json_encode|e('html_attr') }}"
+            data-onboarding-wizard-context-options-value="{{ onboarding_wizard_context_options|json_encode|e('html_attr') }}"
+            data-onboarding-wizard-goal-options-value="{{ onboarding_wizard_goal_options|json_encode|e('html_attr') }}"
+            data-onboarding-wizard-initial-step-value="{{ onboarding_wizard_initial_step|e('html_attr') }}"
+            data-onboarding-wizard-recommended-action-value="{{ onboarding_wizard_recommended_action|default('')|e('html_attr') }}"
+            data-onboarding-wizard-recommended-action-urls-value="{{ onboarding_wizard_recommended_action_urls|json_encode|e('html_attr') }}"
+        >
+            <twig:Dialog:Header class="shrink-0 gap-3 border-b border-border/60 px-5 pb-4 pt-5 text-left sm:px-6">
+                <div class="flex items-start justify-between gap-3">
+                    <twig:Dialog:Title class="text-lg font-semibold tracking-tight text-foreground sm:text-xl" data-onboarding-dialog-title>
+                        Lancez votre première action utile
+                    </twig:Dialog:Title>
+                    <twig:Badge variant="secondary" class="shrink-0 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide" data-onboarding-step-indicator aria-live="polite">
+                        Étape 1 sur 3
+                    </twig:Badge>
                 </div>
-                <twig:Dialog:Title class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                    Commencez par votre première action utile
-                </twig:Dialog:Title>
-                <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-primary" data-onboarding-step-indicator aria-live="polite">
-                    Étape 1 sur 5
-                </p>
-                <twig:Dialog:Description class="mt-3 text-sm leading-relaxed text-muted-foreground" data-onboarding-step-description>
-                    Nous vous guidons vers une première action concrète pour alimenter votre cockpit QHSE.
-                </twig:Dialog:Description>
+                <div class="h-1 w-full overflow-hidden rounded-full bg-muted" role="presentation" aria-hidden="true">
+                    <div
+                        class="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
+                        data-onboarding-progress-fill
+                        style="width: calc(100% / 3)"
+                    ></div>
+                </div>
             </twig:Dialog:Header>
 
-            <div class="min-h-0 overflow-y-auto px-5 py-5 sm:px-8 sm:py-6" data-onboarding-form>
-                <div class="hidden space-y-4" data-onboarding-panel="context">
-                    <div class="rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5">
-                        <label for="onboarding-job-function" class="mb-2 block text-left text-sm font-semibold text-foreground">Votre fonction</label>
-                        <twig:Select id="onboarding-job-function" class="h-11 w-full" data-onboarding-field="job_function" data-action="change->onboarding-wizard#onSelectChange"></twig:Select>
-                    </div>
-                    <div class="rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5">
-                        <label for="onboarding-company-size" class="mb-2 block text-left text-sm font-semibold text-foreground">Taille de l’entreprise</label>
-                        <twig:Select id="onboarding-company-size" class="h-11 w-full" data-onboarding-field="company_size" data-action="change->onboarding-wizard#onSelectChange"></twig:Select>
-                    </div>
-                    <div class="rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5">
-                        <label for="onboarding-main-activity" class="mb-2 block text-left text-sm font-semibold text-foreground">Secteur d’activité</label>
-                        <twig:Select id="onboarding-main-activity" class="h-11 w-full" data-onboarding-field="main_activity" data-action="change->onboarding-wizard#onSelectChange"></twig:Select>
+            <div class="px-5 py-4 sm:px-6 sm:py-5" data-onboarding-form>
+                <p class="m-0 mb-4 text-sm leading-relaxed text-muted-foreground" data-onboarding-step-description>
+                    Quelques repères suffisent pour orienter votre première action concrète avant d’aller plus loin.
+                </p>
+
+                <div class="{{ active_panel == 'context' ? '' : 'hidden ' }}space-y-3" data-onboarding-panel="context">
+                    <div class="space-y-3 rounded-lg border border-border/70 bg-card p-4 shadow-sm">
+                        <div>
+                            <label for="onboarding-job-function" class="mb-1.5 block text-sm font-medium text-foreground">Votre fonction</label>
+                            <twig:Select id="onboarding-job-function" class="h-10 w-full" data-onboarding-field="job_function" data-action="change->onboarding-wizard#onSelectChange">
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                {% for option in onboarding_wizard_context_options.job_function %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                {% endfor %}
+                            </twig:Select>
+                        </div>
+                        <div>
+                            <label for="onboarding-company-size" class="mb-1.5 block text-sm font-medium text-foreground">Taille de l’entreprise</label>
+                            <twig:Select id="onboarding-company-size" class="h-10 w-full" data-onboarding-field="company_size" data-action="change->onboarding-wizard#onSelectChange">
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                {% for option in onboarding_wizard_context_options.company_size %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                {% endfor %}
+                            </twig:Select>
+                        </div>
+                        <div>
+                            <label for="onboarding-main-activity" class="mb-1.5 block text-sm font-medium text-foreground">Secteur d’activité</label>
+                            <twig:Select id="onboarding-main-activity" class="h-10 w-full" data-onboarding-field="main_activity" data-action="change->onboarding-wizard#onSelectChange">
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                {% for option in onboarding_wizard_context_options.main_activity %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                {% endfor %}
+                            </twig:Select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="hidden space-y-4" data-onboarding-panel="goal">
-                    <div class="rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5">
-                        <label for="onboarding-piloting-focus" class="mb-2 block text-left text-sm font-semibold text-foreground">Priorité de pilotage</label>
-                        <twig:Select id="onboarding-piloting-focus" class="h-11 w-full" data-onboarding-field="piloting_focus" data-action="change->onboarding-wizard#onSelectChange"></twig:Select>
+                <div class="{{ active_panel == 'goal' ? '' : 'hidden ' }}space-y-3" data-onboarding-panel="goal">
+                    <div class="space-y-3 rounded-lg border border-border/70 bg-card p-4 shadow-sm">
+                        <div>
+                            <label for="onboarding-piloting-focus" class="mb-1.5 block text-sm font-medium text-foreground">Priorité de pilotage</label>
+                            <twig:Select id="onboarding-piloting-focus" class="h-10 w-full" data-onboarding-field="piloting_focus" data-action="change->onboarding-wizard#onSelectChange">
+                                <option value="" disabled selected>Sélectionnez une option</option>
+                                {% for option in onboarding_wizard_goal_options.piloting_focus %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                {% endfor %}
+                            </twig:Select>
+                        </div>
+                        <div>
+                            <label for="onboarding-primary-standard" class="mb-1.5 block text-sm font-medium text-foreground">Référentiel principal (optionnel)</label>
+                            <twig:Select id="onboarding-primary-standard" class="h-10 w-full" data-onboarding-field="primary_standard" data-action="change->onboarding-wizard#onSelectChange">
+                                <option value="">Sans préférence</option>
+                                {% for option in onboarding_wizard_goal_options.primary_standard %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                {% endfor %}
+                            </twig:Select>
+                        </div>
                     </div>
-                    <div class="rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5">
-                        <label for="onboarding-primary-standard" class="mb-2 block text-left text-sm font-semibold text-foreground">Référentiel principal (optionnel)</label>
-                        <twig:Select id="onboarding-primary-standard" class="h-11 w-full" data-onboarding-field="primary_standard" data-action="change->onboarding-wizard#onSelectChange"></twig:Select>
-                    </div>
                 </div>
 
-                <div class="hidden rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5" data-onboarding-panel="guided_action" data-onboarding-guided-action>
-                    <p class="m-0 text-sm leading-relaxed text-muted-foreground" data-onboarding-guided-action-copy>
-                        Nous vous proposons une première action alignée sur votre priorité pour nourrir le cockpit.
-                    </p>
-                    <twig:Button
-                        type="button"
-                        variant="default"
-                        size="default"
-                        class="mt-4 h-11 w-full justify-center gap-2 text-base font-semibold shadow-sm sm:h-10 sm:text-sm"
-                        data-onboarding-guided-action-cta
-                        hidden
-                    >
-                        Lancer ma première action
-                        <twig:ux:icon name="lucide:arrow-right" class="size-4 shrink-0" aria-hidden="true" />
-                    </twig:Button>
-                </div>
+                <div class="{{ active_panel == 'guided_action' ? '' : 'hidden' }}" data-onboarding-panel="guided_action" data-onboarding-guided-action>
+                    <fieldset class="m-0 space-y-2 border-0 p-0" data-onboarding-guided-action-choices>
+                        <legend class="sr-only">Choisissez votre première action utile</legend>
 
-                <div class="hidden rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5" data-onboarding-panel="aha">
-                    <p class="m-0 text-sm leading-relaxed text-muted-foreground">
-                        Après votre première action, le tableau de bord mettra en évidence ce qui avance, bloque ou doit être priorisé.
-                    </p>
-                </div>
+                        <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-border/70 bg-card p-3 shadow-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/[0.04] has-[:checked]:ring-1 has-[:checked]:ring-primary/20">
+                            <input
+                                type="radio"
+                                name="onboarding_guided_action"
+                                value="start_audit"
+                                class="sr-only"
+                                data-onboarding-action-choice
+                                data-onboarding-action-url="{{ path('app_qse_audit_pick_standard') }}"
+                                data-onboarding-action-label="Préparer un audit"
+                                data-action="change->onboarding-wizard#onGuidedActionChange"
+                            >
+                            <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background" aria-hidden="true" data-onboarding-choice-indicator></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-semibold text-foreground">Préparer un audit</span>
+                                <span class="mt-1 block text-sm leading-relaxed text-muted-foreground">Cadrez votre prochain audit ISO et gardez vos échéances visibles.</span>
+                            </span>
+                        </label>
 
-                <div class="hidden rounded-xl border border-border/70 bg-muted/20 p-4 shadow-inner sm:p-5" data-onboarding-panel="return_reason">
-                    <p class="m-0 text-sm leading-relaxed text-muted-foreground">
-                        Vous pouvez reprendre l’activation plus tard depuis le tableau de bord si vous préférez explorer d’abord.
-                    </p>
+                        <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-border/70 bg-card p-3 shadow-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/[0.04] has-[:checked]:ring-1 has-[:checked]:ring-primary/20">
+                            <input
+                                type="radio"
+                                name="onboarding_guided_action"
+                                value="open_ishikawa"
+                                class="sr-only"
+                                data-onboarding-action-choice
+                                data-onboarding-action-url="{{ path('app_ishikawa_index') }}"
+                                data-onboarding-action-label="Ouvrir Ishikawa"
+                                data-action="change->onboarding-wizard#onGuidedActionChange"
+                            >
+                            <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background" aria-hidden="true" data-onboarding-choice-indicator></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-semibold text-foreground">Analyser un problème</span>
+                                <span class="mt-1 block text-sm leading-relaxed text-muted-foreground">Utilisez le diagramme d’Ishikawa pour identifier rapidement les causes racines.</span>
+                            </span>
+                        </label>
+
+                        <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-border/70 bg-card p-3 shadow-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/[0.04] has-[:checked]:ring-1 has-[:checked]:ring-primary/20">
+                            <input
+                                type="radio"
+                                name="onboarding_guided_action"
+                                value="create_capa_draft"
+                                class="sr-only"
+                                data-onboarding-action-choice
+                                data-onboarding-action-url="{{ path('app_qse_capa_new_draft') }}"
+                                data-onboarding-action-method="post"
+                                data-onboarding-action-label="Créer une CAPA"
+                                data-action="change->onboarding-wizard#onGuidedActionChange"
+                            >
+                            <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-border bg-background" aria-hidden="true" data-onboarding-choice-indicator></span>
+                            <span class="min-w-0">
+                                <span class="block text-sm font-semibold text-foreground">Créer une première CAPA</span>
+                                <span class="mt-1 block text-sm leading-relaxed text-muted-foreground">Transformez un constat terrain en action corrective suivie.</span>
+                            </span>
+                        </label>
+                    </fieldset>
                 </div>
             </div>
 
-            <twig:Dialog:Footer class="flex flex-col gap-4 border-t border-border/60 bg-muted/10 px-5 py-4 sm:px-8 sm:py-5">
-                <div class="w-full space-y-2">
-                    <div class="flex items-center justify-between gap-2 text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
-                        <span>Progression</span>
-                        <span class="tabular-nums text-foreground/80" data-onboarding-step-fraction>1 / 5</span>
-                    </div>
-                    <div class="h-2 w-full overflow-hidden rounded-full bg-muted" role="presentation">
-                        <div
-                            class="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
-                            data-onboarding-progress-fill
-                            style="width: calc(100% / 5)"
-                        ></div>
-                    </div>
-                </div>
+            <twig:Dialog:Footer class="shrink-0 flex-col gap-2 border-t border-border/60 bg-muted/20 px-5 py-4 sm:flex-col sm:justify-stretch sm:px-6">
                 <twig:Button
                     type="button"
                     variant="default"
                     size="default"
-                    class="h-11 w-full justify-center gap-2 text-base font-semibold shadow-sm sm:h-10 sm:text-sm"
+                    class="h-10 w-full justify-center gap-2"
                     data-onboarding-continue
                     data-action="click->onboarding-wizard#advance"
                     disabled
                 >
-                    Continuer
-                    <twig:ux:icon name="lucide:arrow-right" class="size-4 shrink-0" aria-hidden="true" />
+                    <span data-onboarding-continue-label>Continuer</span>
+                    <twig:ux:icon name="lucide:arrow-right" class="size-4 shrink-0" data-onboarding-continue-icon aria-hidden="true" />
                 </twig:Button>
-                <div class="space-y-2 border-t border-border/50 pt-3 text-center">
-                    <twig:Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        class="w-full text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                        data-onboarding-skip
-                        data-action="click->onboarding-wizard#skip"
-                    >
-                        Passer pour l’instant
-                    </twig:Button>
-                    <p class="m-0 text-xs leading-relaxed text-muted-foreground">
-                        Vous pourrez reprendre plus tard depuis le tableau de bord. Les préférences restent modifiables dans
-                        <a href="{{ path('app_preferences_index', { tab: 'profile' }) }}" class="font-medium text-primary underline-offset-2 hover:underline">Profil</a>
-                        et
-                        <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="font-medium text-primary underline-offset-2 hover:underline">QHSE</a>.
-                    </p>
-                </div>
+                <twig:Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    class="h-9 w-full text-muted-foreground hover:bg-background hover:text-foreground"
+                    data-onboarding-skip
+                    data-action="click->onboarding-wizard#skip"
+                >
+                    Plus tard
+                </twig:Button>
+                <p class="m-0 text-center text-[11px] leading-relaxed text-muted-foreground">
+                    Préférences modifiables dans
+                    <a href="{{ path('app_preferences_index', { tab: 'profile' }) }}" class="font-medium text-primary underline-offset-2 hover:underline">Profil</a>
+                    et
+                    <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="font-medium text-primary underline-offset-2 hover:underline">QHSE</a>.
+                </p>
             </twig:Dialog:Footer>
-        </twig:Dialog:Content>
-    </div>
+        </div>
+    </twig:Dialog:Content>
 </twig:Dialog>

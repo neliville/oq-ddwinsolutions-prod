@@ -125,12 +125,15 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('[data-controller="onboarding-wizard"]');
         $this->assertSelectorExists('[data-onboarding-wizard-csrf-value]');
-        $this->assertSelectorTextContains('[data-controller="onboarding-wizard"]', 'Commencez par votre première action utile');
+        $this->assertSelectorTextContains('[data-controller="onboarding-wizard"]', 'Lancez votre première action utile');
         $this->assertSelectorTextNotContains('[data-controller="onboarding-wizard"]', 'Personnalisez votre espace QHSE');
-        $this->assertSelectorExists('[data-onboarding-wizard-total-steps-value="5"]');
+        $this->assertSelectorExists('[data-onboarding-wizard-total-steps-value="3"]');
         $this->assertSelectorExists('[data-onboarding-field="job_function"]');
         $this->assertSelectorExists('[data-onboarding-field="piloting_focus"]');
         $this->assertSelectorExists('[data-onboarding-guided-action]');
+        $this->assertGreaterThan(1, $this->client->getCrawler()->filter('#onboarding-job-function option')->count());
+        $this->assertGreaterThan(1, $this->client->getCrawler()->filter('#onboarding-company-size option')->count());
+        $this->assertGreaterThan(1, $this->client->getCrawler()->filter('#onboarding-main-activity option')->count());
     }
 
     public function testDashboardDoesNotShowActivationWizardForLegacyOnboardedUser(): void
