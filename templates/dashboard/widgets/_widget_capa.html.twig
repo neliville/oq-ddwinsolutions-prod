@@ -1,0 +1,35 @@
+<div{% if activation_highlight == 'capa' %} data-activation-highlight-target="capa"{% endif %}>
+<twig:Card class="border-border/80 shadow-sm h-full{% if hl_capa %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b2">
+    <twig:Card:Content class="p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h3 id="dash-b2" class="text-base font-bold m-0 flex items-center gap-2">
+            <i data-lucide="kanban" width="18" height="18" class="text-primary shrink-0" aria-hidden="true"></i>
+            2. CAPA (vue synthétique)
+        </h3>
+        <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Toutes les CAPA</twig:Button>
+    </div>
+    <p class="text-xs text-muted-foreground mb-3">Ouvertes récentes par statut (aperçu).</p>
+    {% set capa_order = ['en_cours', 'en_attente_de_verification', 'a_valider', 'validee', 'brouillon', 'reouverte'] %}
+    <div class="flex flex-col gap-3 max-h-[22rem] overflow-y-auto pr-1">
+        {% set capa_groups_shown = false %}
+        {% for key in capa_order %}
+            {% set group = managerDashboard.capas_by_status[key] ?? [] %}
+            {% if group|length > 0 %}
+                {% set capa_groups_shown = true %}
+                <div>
+                    <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">{{ key|qse_status_label('capa') }}</h4>
+                    <ul class="text-sm space-y-1 list-none m-0 p-0">
+                        {% for c in group|slice(0, 4) %}
+                            <li><a href="{{ path('app_qse_capa_show', { id: c.id }) }}" class="app-inline-link">{{ c.title }}</a>{% if c.dueAt %} <span class="text-muted-foreground text-xs">· {{ c.dueAt|date('d/m/Y') }}</span>{% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if not capa_groups_shown %}
+            <p class="text-sm text-muted-foreground mb-0">Aucune CAPA ouverte.</p>
+        {% endif %}
+    </div>
+    </twig:Card:Content>
+</twig:Card>
+</div>

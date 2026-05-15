@@ -1,0 +1,30 @@
+<div{% if activation_highlight == 'audit' %} data-activation-highlight-target="audit"{% endif %}>
+<twig:Card class="border-border/80 shadow-sm h-full{% if hl_audit %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b4">
+    <twig:Card:Content class="p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h3 id="dash-b4" class="text-base font-bold m-0 flex items-center gap-2">
+            <i data-lucide="clipboard-check" width="18" height="18" class="text-sky-600 shrink-0" aria-hidden="true"></i>
+            4. Audits
+        </h3>
+        <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Liste</twig:Button>
+    </div>
+    <p class="text-sm text-muted-foreground mb-2">Conformité moyenne (audits calculés)&nbsp;: <strong class="text-foreground">{% if cockpit.avgAuditCompliancePercent is not null %}{{ cockpit.avgAuditCompliancePercent }}&nbsp;%{% else %}—{% endif %}</strong></p>
+    <h4 class="text-xs font-semibold text-muted-foreground mb-1">Chapitres avec le plus d’écarts (1–2)</h4>
+    <ul class="text-sm space-y-1 list-none m-0 p-0 mb-4">
+        {% for row in managerDashboard.weak_chapters %}
+            <li><span class="font-medium">{{ row.chapter }}</span> <span class="text-muted-foreground">({{ row.issues }})</span></li>
+        {% else %}
+            <li class="text-muted-foreground">Pas assez de données</li>
+        {% endfor %}
+    </ul>
+    <h4 class="text-xs font-semibold text-muted-foreground mb-1">Audits récents</h4>
+    <ul class="text-sm space-y-1 list-none m-0 p-0">
+        {% for a in cockpitAudits %}
+            <li><a href="{{ path('app_qse_audit_show', { id: a.id }) }}" class="app-inline-link">{{ a.companyName|default('Audit') }}</a> <span class="text-muted-foreground">{{ a.auditedAt|date('d/m/Y') }}</span></li>
+        {% else %}
+            <li class="text-muted-foreground">Aucun — <a href="{{ path('app_qse_audit_pick_standard') }}" class="app-inline-link">créer</a></li>
+        {% endfor %}
+    </ul>
+    </twig:Card:Content>
+</twig:Card>
+</div>

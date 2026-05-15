@@ -13,6 +13,7 @@ use App\Repository\Qse\CockpitMetricsRepository;
 use App\Repository\SharedAccessRepository;
 use App\Repository\UserInvitationRepository;
 use App\Repository\UserPreferencesRepository;
+use App\Service\DashboardPreferencesService;
 use App\Service\Onboarding\OnboardingActivationService;
 use App\UserPreferences\OnboardingActivationChoices;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ final class DashboardController extends AbstractController
         private readonly SharedAccessRepository $sharedAccessRepository,
         private readonly CollaborationSuggestionEngine $collaborationSuggestionEngine,
         private readonly OnboardingActivationService $onboardingActivationService,
+        private readonly DashboardPreferencesService $dashboardPreferencesService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -118,6 +120,7 @@ final class DashboardController extends AbstractController
             'cockpitCapas' => $cockpitCapas,
             'cockpitAudits' => $cockpitAudits,
             'user_preferences' => $userPreferences,
+            'dashboard_widgets' => $this->dashboardPreferencesService->getVisibleWidgetsByPlacementZone($userPreferences),
             'dashboard_welcome_name' => $userPreferences->getProfileDisplayName(),
             'qhse_priority_label' => $userPreferences->getQhsePriorityLabel(),
             'piloting_focus_label' => $userPreferences->getPilotingFocusLabel(),

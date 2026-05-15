@@ -198,10 +198,7 @@ final class PreferencesController extends AbstractController
         if (isset($data['user_dashboard_preferences'])) {
             $dashboardForm->handleRequest($request);
             if ($dashboardForm->isSubmitted() && $dashboardForm->isValid()) {
-                $this->dashboardPreferencesService->applyVisibility(
-                    $prefs,
-                    $this->dashboardPreferencesService->resolveVisibilityFromSubmittedForm($dashboardForm),
-                );
+                $this->dashboardPreferencesService->applyVisibilityFromSubmittedForm($prefs, $dashboardForm);
                 $prefs->touchUpdatedAt();
                 $this->entityManager->flush();
                 $this->addFlash('success', 'Affichage du tableau de bord mis à jour.');

@@ -1,0 +1,13 @@
+<twig:Card class="border-border/80 shadow-sm h-full" aria-labelledby="dash-b5">
+    <twig:Card:Content class="p-4 sm:p-5">
+    <h3 id="dash-b5" class="text-base font-bold mb-2 flex items-center gap-2">
+        <i data-lucide="orbit" width="18" height="18" class="text-primary shrink-0" aria-hidden="true"></i>
+        5. PDCA (synthèse)
+    </h3>
+    <p class="text-sm text-muted-foreground mb-3">Vue Plan / Do / Check / Act avec liens vers les modules.</p>
+        <twig:Button as="a" href="{{ path('app_qse_pdca_index') }}" variant="default" size="sm" class="no-underline w-full sm:w-auto gap-2 shadow-sm">
+            <i data-lucide="arrow-right" width="16" height="16" class="shrink-0 opacity-90" aria-hidden="true"></i>
+            Ouvrir le cockpit PDCA
+        </twig:Button>
+    </twig:Card:Content>
+</twig:Card>

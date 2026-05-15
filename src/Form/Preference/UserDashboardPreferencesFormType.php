@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Formulaire sans data_class : hydrate {@see UserPreferences::dashboardVisibility} dans le contrôleur.
+ * Formulaire sans data_class : hydrate le layout dashboard via {@see DashboardPreferencesService} dans le contrôleur.
  */
 final class UserDashboardPreferencesFormType extends AbstractType
 {
@@ -27,10 +27,11 @@ final class UserDashboardPreferencesFormType extends AbstractType
             'audits' => 'Audits',
             'pdca' => 'PDCA',
             'anomalies' => 'Décisions / anomalies à traiter',
-            'kpi' => 'KPI et statistiques outils',
+            'kpi_stats' => 'KPI et statistiques outils',
+            'kpi_ai' => 'Espace assistances IA (placeholder)',
         ];
 
-        foreach (UserPreferences::dashboardSectionKeys() as $key) {
+        foreach (UserPreferences::dashboardWidgetKeys() as $key) {
             $builder->add('dash_'.$key, CheckboxType::class, [
                 'label' => $labels[$key] ?? $key,
                 'required' => false,

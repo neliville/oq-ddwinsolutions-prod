@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Dashboard\DashboardLayout;
+use App\Dashboard\DashboardWidgetId;
 use App\Repository\UserPreferencesRepository;
 use App\UserPreferences\AcquisitionSource;
 use App\UserPreferences\CompanySize;
@@ -21,7 +23,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_user_preferences_user', fields: ['user'])]
 class UserPreferences
 {
-    private const DASHBOARD_KEYS = ['deadlines', 'capa', 'risks', 'audits', 'pdca', 'anomalies', 'kpi'];
+    /** @var list<string> */
+    private const DASHBOARD_WIDGET_KEYS = [
+        'deadlines',
+        'capa',
+        'risks',
+        'audits',
+        'pdca',
+        'anomalies',
+        'kpi_stats',
+        'kpi_ai',
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -105,10 +117,12 @@ class UserPreferences
     private ?string $exportLogoFilename = null;
 
     /**
-     * @var array<string, bool>|null
+     * Layout dashboard versionné : { version: 1, widgets: [{ id, visible }, ...] }.
+     *
+     * @var array<string, mixed>|null
      */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $dashboardVisibility = null;
+    #[ORM\Column(name: 'dashboard_layout', type: Types::JSON, nullable: true)]
+    private ?array $dashboardLayout = null;
 
     /**
      * État UI collaboration : dismiss / cooldown des suggestions (clés + dates ISO8601).
@@ -449,19 +463,47 @@ class UserPreferences
     }
 
     /**
-     * @return array<string, bool>|null
+     * @return array<string, mixed>|null
      */
-    public function getDashboardVisibility(): ?array
+    public function getDashboardLayout(): ?array
     {
-        return $this->dashboardVisibility;
+        return $this->dashboardLayout;
     }
 
     /**
-     * @param array<string, bool>|null $dashboardVisibility
+     * @param array<string, mixed>|null $dashboardLayout
+     */
+    public function setDashboardLayout(?array $dashboardLayout): static
+    {
+        $this->dashboardLayout = $dashboardLayout;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, bool>|null map legacy (tests / rétrocompat)
+     */
+    public function getDashboardVisibility(): ?array
+    {
+        if ($this->dashboardLayout === null) {
+            return null;
+        }
+
+        return DashboardLayout::fromStored($this->dashboardLayout)->toLegacyVisibilityMap();
+    }
+
+    /**
+     * @param array<string, bool>|null $dashboardVisibility ancien format ou map partielle
      */
     public function setDashboardVisibility(?array $dashboardVisibility): static
     {
-        $this->dashboardVisibility = $dashboardVisibility;
+        if ($dashboardVisibility === null) {
+            $this->dashboardLayout = null;
+
+            return $this;
+        }
+
+        $this->dashboardLayout = DashboardLayout::fromLegacyVisibilityMap($dashboardVisibility)->toStorage();
 
         return $this;
     }
@@ -531,15 +573,23 @@ class UserPreferences
 
     public function isDashboardSectionVisible(string $key): bool
     {
-        if (!in_array($key, self::DASHBOARD_KEYS, true)) {
-            return true;
+        if ($key === DashboardWidgetId::KPI_LEGACY) {
+            return DashboardLayout::fromStored($this->dashboardLayout)->isWidgetVisible($key);
         }
-        $m = $this->dashboardVisibility;
-        if (!is_array($m) || $m === []) {
+
+        if (!in_array($key, self::DASHBOARD_WIDGET_KEYS, true)) {
             return true;
         }
 
-        return (bool) ($m[$key] ?? true);
+        return DashboardLayout::fromStored($this->dashboardLayout)->isWidgetVisible($key);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function dashboardWidgetKeys(): array
+    {
+        return self::DASHBOARD_WIDGET_KEYS;
     }
 
     /**
@@ -547,7 +597,7 @@ class UserPreferences
      */
     public static function dashboardSectionKeys(): array
     {
-        return self::DASHBOARD_KEYS;
+        return self::dashboardWidgetKeys();
     }
 
     public function getProfileDisplayName(): string

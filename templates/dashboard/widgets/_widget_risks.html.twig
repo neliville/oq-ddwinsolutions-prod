@@ -1,0 +1,29 @@
+<div{% if activation_highlight == 'risk' %} data-activation-highlight-target="risk"{% endif %}>
+<twig:Card class="border-border/80 shadow-sm h-full{% if hl_risk %} ring-2 ring-primary/25{% endif %}" aria-labelledby="dash-b3">
+    <twig:Card:Content class="p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h3 id="dash-b3" class="text-base font-bold m-0 flex items-center gap-2">
+            <i data-lucide="shield-alert" width="18" height="18" class="text-amber-600 shrink-0" aria-hidden="true"></i>
+            3. Risques
+        </h3>
+        <twig:Button as="a" href="{{ path('app_qse_risk_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Matrice</twig:Button>
+    </div>
+    <h4 class="text-xs font-semibold text-muted-foreground mb-1">Criticité élevée</h4>
+    <ul class="text-sm space-y-1 list-none m-0 p-0 mb-4">
+        {% for r in managerDashboard.top_risks %}
+            <li><a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link">{{ r.identifiedRisk|length > 48 ? r.identifiedRisk|slice(0, 45) ~ '…' : r.identifiedRisk }}</a> <span class="text-muted-foreground">({{ r.criticalityScore ?? '—' }})</span></li>
+        {% else %}
+            <li class="text-muted-foreground">Aucune entrée</li>
+        {% endfor %}
+    </ul>
+    <h4 class="text-xs font-semibold text-muted-foreground mb-1">Révision sous 14&nbsp;j</h4>
+    <ul class="text-sm space-y-1 list-none m-0 p-0">
+        {% for r in managerDashboard.risks_review_soon %}
+            <li><a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link">{{ r.identifiedRisk|length > 40 ? r.identifiedRisk|slice(0, 37) ~ '…' : r.identifiedRisk }}</a> <span class="text-muted-foreground">{{ r.reviewAt|date('d/m/Y') }}</span></li>
+        {% else %}
+            <li class="text-muted-foreground">Aucune</li>
+        {% endfor %}
+    </ul>
+    </twig:Card:Content>
+</twig:Card>
+</div>

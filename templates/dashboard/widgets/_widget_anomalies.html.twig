@@ -1,0 +1,15 @@
+<twig:Card class="border-border/80 shadow-sm lg:col-span-2" aria-labelledby="dash-b6">
+    <twig:Card:Content class="p-4 sm:p-5">
+    <h3 id="dash-b6" class="text-base font-bold mb-3 flex items-center gap-2">
+        <i data-lucide="list-todo" width="18" height="18" class="text-foreground shrink-0" aria-hidden="true"></i>
+        6. Décisions / anomalies à traiter
+    </h3>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none m-0 p-0 text-sm">
+        <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">CAPA ouvertes sans responsable</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.openCapasWithoutResponsible }}</twig:Badge></li>
+        <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">CAPA en vérif. sans commentaire</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.capasInVerificationMissingComment }}</twig:Badge></li>
+        <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">Brouillons audit anciens</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.staleAuditDrafts }}</twig:Badge></li>
+        <li class="rounded-md border border-border/60 px-3 py-2 flex justify-between gap-2 items-center"><span class="text-muted-foreground">Risques critiques sans CAPA</span><twig:Badge variant="outline" class="tabular-nums">{{ cockpit.criticalRisksWithoutCapa }}</twig:Badge></li>
+    </ul>
+    <p class="text-xs text-muted-foreground mt-3 mb-0">Utilisez les liens des blocs 1–4 pour corriger ces points dans les écrans dédiés.</p>
+    </twig:Card:Content>
+</twig:Card>

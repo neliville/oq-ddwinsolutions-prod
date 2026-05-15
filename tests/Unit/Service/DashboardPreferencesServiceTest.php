@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Service;
 
+use App\Dashboard\DashboardLayout;
+use App\Dashboard\DashboardWidgetId;
 use App\Entity\UserPreferences;
 use App\Form\Preference\UserDashboardPreferencesFormType;
 use App\Service\DashboardPreferencesService;
@@ -29,7 +31,7 @@ final class DashboardPreferencesServiceTest extends FormIntegrationTestCase
             ->getFormFactory();
     }
 
-    public function testResolveVisibilityTreatsUncheckedBoxesAsFalse(): void
+    public function testApplyVisibilityFromSubmittedFormPersistsVersionedLayout(): void
     {
         $prefs = new UserPreferences();
         $form = $this->formFactory->create(UserDashboardPreferencesFormType::class, null, [
@@ -40,33 +42,40 @@ final class DashboardPreferencesServiceTest extends FormIntegrationTestCase
             'dash_deadlines' => '1',
             'dash_capa' => '1',
             'dash_risks' => '1',
-            // audits et pdca absents = décochés
+            // audits et pdca absents
             'dash_anomalies' => '1',
-            'dash_kpi' => '1',
+            'dash_kpi_stats' => '1',
+            'dash_kpi_ai' => '1',
         ]);
 
-        $visibility = $this->service->resolveVisibilityFromSubmittedForm($form);
+        $this->service->applyVisibilityFromSubmittedForm($prefs, $form);
 
-        $this->assertTrue($visibility['deadlines']);
-        $this->assertFalse($visibility['audits']);
-        $this->assertFalse($visibility['pdca']);
+        $layout = $this->service->getDashboardLayout($prefs);
+        $this->assertFalse($layout->isWidgetVisible('audits'));
+        $this->assertFalse($layout->isWidgetVisible('pdca'));
+        $this->assertSame(1, $prefs->getDashboardLayout()['version'] ?? null);
     }
 
-    public function testApplyVisibilityPersistsAllKeys(): void
+    public function testGetOrderedVisibleWidgetsExcludesHidden(): void
     {
         $prefs = new UserPreferences();
-        $this->service->applyVisibility($prefs, [
-            'audits' => false,
-            'pdca' => false,
-            'deadlines' => true,
-        ]);
+        $prefs->setDashboardVisibility(['capa' => false, 'kpi' => false]);
 
-        $stored = $prefs->getDashboardVisibility();
+        $visible = $this->service->getOrderedVisibleWidgets($prefs);
+
+        $this->assertNotContains('capa', $visible);
+        $this->assertNotContains('kpi_stats', $visible);
+        $this->assertNotContains('kpi_ai', $visible);
+        $this->assertContains('deadlines', $visible);
+    }
+
+    public function testLegacyVisibilityMapSetsAllWidgetKeys(): void
+    {
+        $prefs = new UserPreferences();
+        $this->service->applyLegacyVisibilityMap($prefs, ['risks' => false]);
+
+        $stored = $prefs->getDashboardLayout();
         $this->assertIsArray($stored);
-        $this->assertFalse($stored['audits']);
-        $this->assertFalse($stored['pdca']);
-        $this->assertTrue($stored['deadlines']);
-        $this->assertFalse($prefs->isDashboardSectionVisible('audits'));
-        $this->assertTrue($prefs->isDashboardSectionVisible('deadlines'));
+        $this->assertCount(8, $stored['widgets'] ?? []);
     }
 }

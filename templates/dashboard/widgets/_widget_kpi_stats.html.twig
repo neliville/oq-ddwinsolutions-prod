@@ -1,0 +1,143 @@
+    <section class="grid grid-cols-12 gap-3 sm:gap-4 xl:gap-6 mb-6 sm:mb-10 lg:mb-12" aria-labelledby="dashboard-kpi-heading">
+        <h2 id="dashboard-kpi-heading" class="sr-only">Synthèse de vos analyses par outil</h2>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-total-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-primary/10 text-primary rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="file-text" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-total-label" class="text-muted-foreground text-sm sm:text-sm font-semibold leading-tight">Total</span>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ totalRecords }} créations enregistrées">{{ totalRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">créations enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <div{% if activation_highlight == 'ishikawa' %} data-activation-highlight-target="ishikawa"{% endif %}>
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm{% if hl_ishikawa %} ring-2 ring-primary/25{% endif %}" aria-labelledby="stat-ishikawa-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-green-100 text-green-600 rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="git-branch" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-ishikawa-label" class="text-muted-foreground text-sm font-semibold leading-tight">Ishikawa</span>
+                        </div>
+                        <a href="{{ path('app_ishikawa_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Diagramme Ishikawa">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ ishikawaRecords }} diagrammes Ishikawa">{{ ishikawaRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">diagrammes enregistrés</p>
+                </twig:Card:Content>
+            </twig:Card>
+            </div>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-fivewhy-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="help-circle" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-fivewhy-label" class="text-muted-foreground text-sm font-semibold leading-tight">5 Pourquoi</span>
+                        </div>
+                        <a href="{{ path('app_fivewhy_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Méthode 5 Pourquoi">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ fiveWhyRecords }} analyses 5 Pourquoi">{{ fiveWhyRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-qqoqccp-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-secondary text-secondary-foreground rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="list-checks" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-qqoqccp-label" class="text-muted-foreground text-sm font-semibold leading-tight">QQOQCCP</span>
+                        </div>
+                        <a href="{{ path('app_qqoqccp_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil QQOQCCP">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ qqoqccpRecords }} analyses QQOQCCP">{{ qqoqccpRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-amdec-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-red-100 text-destructive rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="alert-triangle" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-amdec-label" class="text-muted-foreground text-sm font-semibold leading-tight">AMDEC</span>
+                        </div>
+                        <a href="{{ path('app_amdec_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil AMDEC">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ amdecRecords }} analyses AMDEC">{{ amdecRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-pareto-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-sky-100 text-sky-600 rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="bar-chart-2" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-pareto-label" class="text-muted-foreground text-sm font-semibold leading-tight">Pareto</span>
+                        </div>
+                        <a href="{{ path('app_pareto_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Diagramme de Pareto">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ paretoRecords }} analyses Pareto">{{ paretoRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">analyses enregistrées</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
+            <twig:Card class="h-full dashboard-stat-card border-border/60 shadow-sm" aria-labelledby="stat-eightd-label">
+                <twig:Card:Content class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="stat-icon bg-amber-100 text-amber-600 rounded-xl p-2 shrink-0" aria-hidden="true">
+                                <i data-lucide="layers" width="20" height="20"></i>
+                            </div>
+                            <span id="stat-eightd-label" class="text-muted-foreground text-sm font-semibold leading-tight">Méthode 8D</span>
+                        </div>
+                        <a href="{{ path('app_eightd_index') }}" class="dashboard-stat-card__tool-link text-muted-foreground inline-flex items-center justify-center rounded-md hover:bg-muted/80 hover:text-foreground transition-colors shrink-0" aria-label="Ouvrir l’outil Méthode 8D">
+                            <i data-lucide="arrow-right" width="18" height="18" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-bold tabular-nums text-foreground mb-0 leading-none" aria-label="{{ eightDRecords }} rapports 8D">{{ eightDRecords }}</p>
+                    <p class="text-muted-foreground text-[0.9375rem] sm:text-sm mt-1.5 mb-0 leading-snug">rapports enregistrés</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+    </section>

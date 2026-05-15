@@ -112,7 +112,7 @@ final class PreferencesControllerTest extends WebTestCaseWithDatabase
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->filter('form[name="user_dashboard_preferences"]')->form();
-        foreach (UserPreferences::dashboardSectionKeys() as $key) {
+        foreach (UserPreferences::dashboardWidgetKeys() as $key) {
             if ($key === 'audits' || $key === 'pdca') {
                 unset($form['user_dashboard_preferences[dash_'.$key.']']);
                 continue;
@@ -131,6 +131,10 @@ final class PreferencesControllerTest extends WebTestCaseWithDatabase
         $this->assertFalse($prefs->isDashboardSectionVisible('audits'));
         $this->assertFalse($prefs->isDashboardSectionVisible('pdca'));
         $this->assertTrue($prefs->isDashboardSectionVisible('deadlines'));
+        $layout = $prefs->getDashboardLayout();
+        $this->assertIsArray($layout);
+        $this->assertSame(1, $layout['version'] ?? null);
+        $this->assertCount(8, $layout['widgets'] ?? []);
 
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
@@ -178,7 +182,8 @@ final class PreferencesControllerTest extends WebTestCaseWithDatabase
             'audits' => false,
             'pdca' => false,
             'anomalies' => true,
-            'kpi' => true,
+            'kpi_stats' => true,
+            'kpi_ai' => true,
         ]);
         $this->entityManager->flush();
 
