@@ -1,0 +1,61 @@
+{% set nav_items = [
+    {
+        tab: 'profile',
+        label: 'Profil',
+        description: 'Identité et entreprise',
+        icon: 'user',
+    },
+    {
+        tab: 'qhse',
+        label: 'QHSE',
+        description: 'Normes et pilotage',
+        icon: 'shield-check',
+    },
+    {
+        tab: 'notifications',
+        label: 'Notifications',
+        description: 'Alertes et rappels',
+        icon: 'bell',
+    },
+    {
+        tab: 'exports',
+        label: 'Exports',
+        description: 'PDF et documents',
+        icon: 'file-down',
+    },
+    {
+        tab: 'dashboard',
+        label: 'Dashboard',
+        description: 'Blocs du tableau de bord',
+        icon: 'layout-grid',
+    },
+    {
+        tab: 'security',
+        label: 'Sécurité',
+        description: 'Mot de passe et accès',
+        icon: 'lock',
+    },
+] %}
+
+<div class="pref-nav__wrapper">
+    <p class="pref-nav__hint sr-only">Sections des préférences — sur mobile, choisissez une rubrique ci-dessous.</p>
+    <nav class="pref-nav" aria-label="Sections des préférences">
+        {% for item in nav_items %}
+            {% set is_active = active_tab == item.tab %}
+            <a
+                href="{{ path('app_preferences_index', { tab: item.tab }) }}"
+                class="pref-nav__item{{ is_active ? ' is-active' : '' }}"
+                {% if is_active %}aria-current="page"{% endif %}
+            >
+                <span class="pref-nav__icon" aria-hidden="true">
+                    <i data-lucide="{{ item.icon }}" width="18" height="18"></i>
+                </span>
+                <span class="pref-nav__label--mobile">{{ item.label }}</span>
+                <span class="pref-nav__text">
+                    <span class="pref-nav__label">{{ item.label }}</span>
+                    <span class="pref-nav__description">{{ item.description }}</span>
+                </span>
+            </a>
+        {% endfor %}
+    </nav>
+</div>

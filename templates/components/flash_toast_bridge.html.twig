@@ -4,6 +4,7 @@
     'contact_success', 'profile_success', 'reset_password_error',
 ]) %}
 
+{# Accumulation fiable (évite le piège Twig du {% set %} dans les boucles imbriquées). #}
 {% set toastMessages = [] %}
 {% for label in flashTypes %}
     {% for message in app.flashes(label) %}
@@ -21,5 +22,10 @@
 {% endfor %}
 
 {% if toastMessages is not empty %}
-    <div data-controller="flash-toast" data-flash-toast-messages-value="{{ toastMessages|json_encode|e('html_attr') }}" class="sr-only" aria-hidden="true"></div>
+    <div
+        data-controller="flash-toast"
+        data-flash-toast-messages-value="{{ toastMessages|json_encode|e('html_attr') }}"
+        class="sr-only"
+        aria-hidden="true"
+    ></div>
 {% endif %}

@@ -273,14 +273,12 @@
 
     {# Un seul <main id="main-content"> : toujours ici ; les pages qui redéfinissent block body s’y insèrent (évite double main + lien d’évitement cassé). #}
     <main id="main-content" class="w-full max-w-full overflow-x-hidden" tabindex="-1">
-        {# Messages flash Symfony : rendus en premier pour consommer le sac avant tout {% for %} local dans les blocs enfants. #}
-        <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
-            {% if app.user %}
-                {% include 'components/flash_toast_bridge.html.twig' %}
-            {% else %}
+        {# Invités : alertes dans le flux principal. Connectés : pont toast après notifications (fin de page). #}
+        {% if not app.user %}
+            <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
                 {% include 'components/flash_messages.html.twig' %}
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
         {% block body %}
             {% block content %}{% endblock %}
         {% endblock %}
@@ -324,6 +322,13 @@
 
     {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
     <div data-controller="notifications" class="hidden" aria-hidden="true"></div>
+
+    {# Flash connecté : après appNotify + notifications pour que les toasts s’affichent (préférences, audits, etc.). #}
+    {% if app.user %}
+        <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
+            {% include 'components/flash_toast_bridge.html.twig' %}
+        </div>
+    {% endif %}
 
     {# Modal de confirmation global réutilisable #}
     {% component ConfirmationModal with {

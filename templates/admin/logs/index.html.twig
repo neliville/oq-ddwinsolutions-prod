@@ -3,223 +3,185 @@
 {% block title %}Logs d'administration | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Logs d'administration</h1>
-            <p class="text-muted-foreground mb-0">Historique des actions d'administration</p>
-        </div>
-        <div>
-            <a href="{{ path('app_admin_logs_export', app.request.query.all) }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
-                <i data-lucide="download" width="16" height="16" class="mr-1"></i>
+<div class="mx-auto w-full max-w-[100rem] space-y-6">
+    <twig:DataPageHeader title="Logs d’administration" description="Historique des actions d’administration">
+        <twig:block name="actions">
+            <twig:Button as="a" href="{{ path('app_admin_logs_export', app.request.query.all) }}" variant="outline" size="sm" class="no-underline w-full sm:w-auto">
+                <twig:ux:icon name="lucide:download" class="size-4 shrink-0" aria-hidden="true" />
                 Exporter (CSV)
-            </a>
-        </div>
-    </div>
+            </twig:Button>
+        </twig:block>
+    </twig:DataPageHeader>
 
-    <!-- Filtres -->
-    <div class="rounded-lg bg-card shadow-sm mb-6">
-        <div class="p-6">
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="p-4 sm:p-6">
             <form method="get" action="{{ path('app_admin_logs_index') }}" class="grid grid-cols-12 gap-4">
-                <div class="col-span-12 md:col-span-2">
-                    <label for="action" class="form-label text-sm">Action</label>
-                    <select name="action" id="action" class="form-select form-select-sm">
+                <div class="col-span-12 md:col-span-2 space-y-1.5">
+                    <label for="action" class="text-sm font-medium text-foreground">Action</label>
+                    <twig:Select name="action" id="action">
                         <option value="">Toutes</option>
                         {% for actionItem in actions %}
-                        <option value="{{ actionItem }}" {{ currentAction == actionItem ? 'selected' : '' }}>
-                            {{ actionItem }}
-                        </option>
+                            <option value="{{ actionItem }}" {{ currentAction == actionItem ? 'selected' : '' }}>{{ actionItem }}</option>
                         {% endfor %}
-                    </select>
+                    </twig:Select>
                 </div>
-                <div class="col-span-12 md:col-span-2">
-                    <label for="entityType" class="form-label text-sm">Entité</label>
-                    <select name="entityType" id="entityType" class="form-select form-select-sm">
+                <div class="col-span-12 md:col-span-2 space-y-1.5">
+                    <label for="entityType" class="text-sm font-medium text-foreground">Entité</label>
+                    <twig:Select name="entityType" id="entityType">
                         <option value="">Toutes</option>
                         {% for entityTypeItem in entityTypes %}
-                        <option value="{{ entityTypeItem }}" {{ currentEntityType == entityTypeItem ? 'selected' : '' }}>
-                            {{ entityTypeItem|split('\\')|last }}
-                        </option>
+                            <option value="{{ entityTypeItem }}" {{ currentEntityType == entityTypeItem ? 'selected' : '' }}>
+                                {{ entityTypeItem|split('\\')|last }}
+                            </option>
                         {% endfor %}
-                    </select>
+                    </twig:Select>
                 </div>
-                <div class="col-span-12 md:col-span-3">
-                    <label for="user" class="form-label text-sm">Utilisateur</label>
-                    <select name="user" id="user" class="form-select form-select-sm">
+                <div class="col-span-12 md:col-span-3 space-y-1.5">
+                    <label for="user" class="text-sm font-medium text-foreground">Utilisateur</label>
+                    <twig:Select name="user" id="user">
                         <option value="">Tous</option>
                         {% for userItem in users %}
-                        <option value="{{ userItem.id }}" {{ currentUserId == userItem.id ? 'selected' : '' }}>
-                            {{ userItem.email }}
-                        </option>
+                            <option value="{{ userItem.id }}" {{ currentUserId == userItem.id ? 'selected' : '' }}>{{ userItem.email }}</option>
                         {% endfor %}
-                    </select>
+                    </twig:Select>
                 </div>
-                <div class="col-span-12 md:col-span-2">
-                    <label for="period" class="form-label text-sm">Période</label>
-                    <select name="period" id="period" class="form-select form-select-sm">
+                <div class="col-span-12 md:col-span-2 space-y-1.5">
+                    <label for="period" class="text-sm font-medium text-foreground">Période</label>
+                    <twig:Select name="period" id="period">
                         <option value="today" {{ currentPeriod == 'today' ? 'selected' : '' }}>Aujourd'hui</option>
                         <option value="week" {{ currentPeriod == 'week' ? 'selected' : '' }}>7 jours</option>
                         <option value="month" {{ currentPeriod == 'month' ? 'selected' : '' }}>30 jours</option>
                         <option value="year" {{ currentPeriod == 'year' ? 'selected' : '' }}>1 an</option>
-                    </select>
+                    </twig:Select>
                 </div>
-                <div class="col-span-12 md:col-span-3 flex items-end gap-2">
-                    <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                        <i data-lucide="filter" width="14" height="14" class="mr-1"></i>
+                <div class="col-span-12 md:col-span-3 flex flex-wrap items-end gap-2">
+                    <twig:Button type="submit" variant="default" size="sm" class="gap-2">
+                        <twig:ux:icon name="lucide:filter" class="size-3.5 shrink-0" aria-hidden="true" />
                         Filtrer
-                    </button>
-                    <a href="{{ path('app_admin_logs_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline">
-                        <i data-lucide="x" width="14" height="14" class="mr-1"></i>
+                    </twig:Button>
+                    <twig:Button as="a" href="{{ path('app_admin_logs_index') }}" variant="outline" size="sm" class="no-underline gap-2">
+                        <twig:ux:icon name="lucide:x" class="size-3.5 shrink-0" aria-hidden="true" />
                         Réinitialiser
-                    </a>
+                    </twig:Button>
                 </div>
             </form>
-        </div>
-    </div>
+        </twig:Card:Content>
+    </twig:Card>
 
-    <!-- Liste des logs -->
     {% if logs|length > 0 %}
-    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-logs', list_caption: 'Journal d’audit' } %}
-        {% block list_table %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Date</th>
-                            <th>Utilisateur</th>
-                            <th>Action</th>
-                            <th>Entité</th>
-                            <th>Description</th>
-                            <th>IP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-logs', list_caption: 'Journal d’audit' } %}
+            {% block list_table %}
+                <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
+                    <twig:Table:Caption class="sr-only">Journal d’audit des actions d’administration</twig:Table:Caption>
+                    <twig:Table:Header>
+                        <twig:Table:Row class="border-b border-border bg-muted/40 hover:bg-muted/40">
+                            <twig:Table:Head scope="col" class="whitespace-nowrap font-medium">Date</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="min-w-[12rem] font-medium">Utilisateur</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Action</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Entité</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="min-w-[10rem] font-medium">Description</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="whitespace-nowrap font-medium">IP</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for log in logs %}
-                        <tr>
-                            <td>
-                                <small>{{ log.createdAt|date('d/m/Y H:i:s') }}</small>
-                            </td>
-                            <td>
-                                <div class="flex items-center">
-                                    <div class="bg-primary/10 text-primary rounded-full flex items-center justify-center mr-2" style="width: 32px; height: 32px;">
-                                        <i data-lucide="user" width="16" height="16"></i>
+                            <twig:Table:Row class="border-b border-border/60">
+                                <twig:Table:Cell class="whitespace-nowrap align-top text-xs text-muted-foreground tabular-nums">
+                                    {{ log.createdAt|date('d/m/Y H:i:s') }}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="align-top">
+                                    <div class="flex min-w-0 items-center gap-2">
+                                        <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                            <i data-lucide="user" width="16" height="16" aria-hidden="true"></i>
+                                        </div>
+                                        <span class="truncate font-medium text-foreground">{{ log.user.email }}</span>
                                     </div>
-                                    <div>
-                                        <strong>{{ log.user.email }}</strong>
-                                    </div>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="align-top">
+                                    {% if log.action == 'CREATE' %}
+                                        <twig:Badge variant="outline" class="border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200">{{ log.action }}</twig:Badge>
+                                    {% elseif log.action == 'UPDATE' %}
+                                        <twig:Badge variant="default">{{ log.action }}</twig:Badge>
+                                    {% elseif log.action == 'DELETE' %}
+                                        <twig:Badge variant="destructive">{{ log.action }}</twig:Badge>
+                                    {% else %}
+                                        <twig:Badge variant="secondary">{{ log.action }}</twig:Badge>
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="align-top text-sm">
+                                    {% if log.entityType %}
+                                        <code class="rounded bg-muted px-1.5 py-0.5 text-xs">{{ log.entityType|split('\\')|last }}</code>
+                                        {% if log.entityId %}
+                                            <span class="mt-1 block text-xs text-muted-foreground">ID&nbsp;: {{ log.entityId }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted-foreground">—</span>
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="max-w-md align-top text-sm text-muted-foreground">
+                                    {{ log.description|default('—') }}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="align-top text-xs text-muted-foreground tabular-nums">
+                                    {{ log.ipAddress|default('—') }}
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            {% endblock %}
+            {% block list_cards %}
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {% for log in logs %}
+                        <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                            <twig:Card:Content class="flex flex-col gap-2 p-5 sm:p-6">
+                                <div class="flex items-start justify-between gap-2">
+                                    <span class="text-xs text-muted-foreground tabular-nums">{{ log.createdAt|date('d/m/Y H:i:s') }}</span>
+                                    {% if log.action == 'CREATE' %}
+                                        <twig:Badge variant="outline" class="border-emerald-500/40 bg-emerald-500/10 shrink-0 text-emerald-800 dark:text-emerald-200">{{ log.action }}</twig:Badge>
+                                    {% elseif log.action == 'UPDATE' %}
+                                        <twig:Badge variant="default" class="shrink-0">{{ log.action }}</twig:Badge>
+                                    {% elseif log.action == 'DELETE' %}
+                                        <twig:Badge variant="destructive" class="shrink-0">{{ log.action }}</twig:Badge>
+                                    {% else %}
+                                        <twig:Badge variant="secondary" class="shrink-0">{{ log.action }}</twig:Badge>
+                                    {% endif %}
                                 </div>
-                            </td>
-                            <td>
-                                {% if log.action == 'CREATE' %}
-                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                                {% elseif log.action == 'UPDATE' %}
-                                <span class="inline-flex items-center rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                                {% elseif log.action == 'DELETE' %}
-                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                                {% else %}
-                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
+                                <p class="mb-0 break-all text-sm font-semibold text-foreground">{{ log.user.email }}</p>
                                 {% if log.entityType %}
-                                <code class="small">{{ log.entityType|split('\\')|last }}</code>
-                                {% if log.entityId %}
-                                <br><small class="text-muted-foreground">ID: {{ log.entityId }}</small>
+                                    <p class="mb-0 text-sm">
+                                        <code class="text-xs">{{ log.entityType|split('\\')|last }}</code>{% if log.entityId %} <span class="text-muted-foreground">#{{ log.entityId }}</span>{% endif %}
+                                    </p>
                                 {% endif %}
-                                {% else %}
-                                <span class="text-muted-foreground">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <small>{{ log.description|default('-') }}</small>
-                            </td>
-                            <td>
-                                <small class="text-muted-foreground">{{ log.ipAddress|default('-') }}</small>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block list_cards %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for log in logs %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                    <div class="p-6 flex flex-col">
-                        <div class="flex justify-between items-start gap-2 mb-2">
-                            <span class="text-sm text-muted-foreground">{{ log.createdAt|date('d/m/Y H:i:s') }}</span>
-                            {% if log.action == 'CREATE' %}
-                            <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                            {% elseif log.action == 'UPDATE' %}
-                            <span class="inline-flex items-center rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                            {% elseif log.action == 'DELETE' %}
-                            <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                            {% else %}
-                            <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ log.action }}</span>
-                            {% endif %}
-                        </div>
-                        <p class="text-sm font-semibold mb-1 break-all">{{ log.user.email }}</p>
-                        {% if log.entityType %}
-                        <p class="text-sm mb-2"><code>{{ log.entityType|split('\\')|last }}</code>{% if log.entityId %} <span class="text-muted-foreground">#{{ log.entityId }}</span>{% endif %}</p>
-                        {% endif %}
-                        <p class="text-sm flex-1 mb-2">{{ log.description|default('—')|slice(0, 200) }}{% if log.description|length > 200 %}…{% endif %}</p>
-                        <p class="text-sm text-muted-foreground mb-0 mt-auto pt-2 border-t border-border">IP : {{ log.ipAddress|default('—') }}</p>
-                    </div>
-                </article>
-                {% endfor %}
-            </div>
-        {% endblock %}
-        {% block list_footer %}
-            {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-t border-border rounded-b">
-                <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
-                        {% if currentPage > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: currentPage - 1}) }}">
-                                <i data-lucide="chevron-left" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% for i in 1..totalPages %}
-                        {% if i == currentPage %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ i }}</span>
-                        </li>
-                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: i}) }}">{{ i }}</a>
-                        </li>
-                        {% elseif i == 4 or i == totalPages - 3 %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if currentPage < totalPages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_logs_index', {action: currentAction, entityType: currentEntityType, user: currentUserId, period: currentPeriod, page: currentPage + 1}) }}">
-                                <i data-lucide="chevron-right" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
+                                <p class="mb-0 flex-1 text-sm text-muted-foreground">{{ log.description|default('—')|slice(0, 200) }}{% if log.description|length > 200 %}…{% endif %}</p>
+                                <p class="mb-0 mt-auto border-t border-border pt-2 text-xs text-muted-foreground">IP : {{ log.ipAddress|default('—') }}</p>
+                            </twig:Card:Content>
+                        </twig:Card>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+            {% block list_footer %}
+                {% include 'components/admin/list_pagination.html.twig' with {
+                    routeName: 'app_admin_logs_index',
+                    routeParams: {
+                        action: currentAction,
+                        entityType: currentEntityType,
+                        user: currentUserId,
+                        period: currentPeriod,
+                    },
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                } %}
+            {% endblock %}
+        {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="file-text" width="48" height="48" class="text-muted-foreground mb-4"></i>
-            <p class="text-muted-foreground mb-0">Aucun log{{ currentAction or currentEntityType or currentUserId ? ' (avec les filtres appliqués)' : '' }}</p>
-        </div>
-    </div>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="flex flex-col items-center justify-center gap-3 py-14 text-center">
+                <twig:ux:icon name="lucide:file-text" class="size-12 text-muted-foreground" aria-hidden="true" />
+                <p class="m-0 text-sm text-muted-foreground">
+                    Aucun log{{ currentAction or currentEntityType or currentUserId ? ' (avec les filtres appliqués)' : '' }}
+                </p>
+            </twig:Card:Content>
+        </twig:Card>
     {% endif %}
 </div>
 
@@ -229,4 +191,3 @@ if (typeof lucide !== 'undefined') {
 }
 </script>
 {% endblock %}
-

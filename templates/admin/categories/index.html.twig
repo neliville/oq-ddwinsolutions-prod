@@ -3,145 +3,134 @@
 {% block title %}Gestion des catégories | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Gestion des catégories</h1>
-            <p class="text-muted-foreground mb-0">Gérer les catégories de blog</p>
-        </div>
-        <div>
-            <a href="{{ path('app_admin_categories_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
+<div class="mx-auto w-full max-w-[100rem] space-y-6">
+    <twig:DataPageHeader title="Gestion des catégories" description="Gérer les catégories de blog">
+        <twig:block name="actions">
+            <twig:Button as="a" href="{{ path('app_admin_categories_new') }}" variant="default" class="no-underline w-full gap-2 sm:w-auto">
+                <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" />
                 Nouvelle catégorie
-            </a>
-        </div>
-    </div>
+            </twig:Button>
+        </twig:block>
+    </twig:DataPageHeader>
 
-    <!-- Liste des catégories -->
     {% if categories|length > 0 %}
-    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-categories', list_caption: 'Catégories' } %}
-        {% block list_table %}
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 60px;">Ordre</th>
-                            <th>Nom</th>
-                            <th>Slug</th>
-                            <th>Description</th>
-                            <th>Couleur</th>
-                            <th>Icône</th>
-                            <th>Articles</th>
-                            <th style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-categories', list_caption: 'Catégories' } %}
+            {% block list_table %}
+                <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
+                    <twig:Table:Caption class="sr-only">Catégories du blog</twig:Table:Caption>
+                    <twig:Table:Header>
+                        <twig:Table:Row class="border-b border-border bg-muted/40 hover:bg-muted/40">
+                            <twig:Table:Head scope="col" class="w-14 font-medium whitespace-nowrap">Ordre</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="min-w-[10rem] font-medium">Nom</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Slug</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="min-w-[8rem] font-medium">Description</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Couleur</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Icône</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Articles</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="w-[1%] text-end font-medium whitespace-nowrap">Actions</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for category in categories %}
-                        <tr>
-                            <td>
-                                <strong>{{ category.order }}</strong>
-                            </td>
-                            <td>
-                                <span class="badge mr-2" style="background-color: {{ category.color }}; color: white;">
-                                    <i data-lucide="{{ category.icon }}" width="14" height="14" class="mr-1"></i>
-                                    {{ category.name }}
-                                </span>
-                            </td>
-                            <td>
-                                <code class="small">{{ category.slug }}</code>
-                            </td>
-                            <td>
-                                <small>{{ category.description|default('-')|slice(0, 50) }}{% if category.description|length > 50 %}...{% endif %}</small>
-                            </td>
-                            <td>
-                                <div class="flex items-center">
-                                    <div class="rounded mr-2" style="width: 24px; height: 24px; background-color: {{ category.color }}; border: 1px solid #ddd;"></div>
-                                    <small>{{ category.color }}</small>
+                            <twig:Table:Row class="border-b border-border/60">
+                                <twig:Table:Cell class="tabular-nums font-semibold">{{ category.order }}</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm" style="background-color: {{ category.color }};">
+                                        <i data-lucide="{{ category.icon }}" width="14" height="14" aria-hidden="true"></i>
+                                        {{ category.name }}
+                                    </span>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell><code class="rounded bg-muted px-1.5 py-0.5 text-xs">{{ category.slug }}</code></twig:Table:Cell>
+                                <twig:Table:Cell class="max-w-[14rem] text-sm text-muted-foreground">{{ category.description|default('—')|slice(0, 50) }}{% if category.description|length > 50 %}…{% endif %}</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <div class="flex items-center gap-2">
+                                        <div class="size-6 shrink-0 rounded border border-border" style="background-color: {{ category.color }};"></div>
+                                        <span class="text-xs text-muted-foreground font-mono">{{ category.color }}</span>
+                                    </div>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-sm">
+                                    <i data-lucide="{{ category.icon }}" width="20" height="20" aria-hidden="true"></i>
+                                    <span class="ml-1 text-muted-foreground">{{ category.icon }}</span>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <twig:Badge variant="secondary" class="tabular-nums">{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</twig:Badge>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-end">
+                                    <div class="inline-flex flex-nowrap gap-1" role="group">
+                                        <twig:Button as="a" href="{{ path('app_admin_categories_edit', {id: category.id}) }}" variant="outline" size="icon" class="size-9 shrink-0 no-underline" title="Modifier">
+                                            <twig:ux:icon name="lucide:pencil" class="size-4" aria-hidden="true" /><span class="sr-only">Modifier</span>
+                                        </twig:Button>
+                                        {% if category.blogPosts|length == 0 %}
+                                            <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="inline-flex" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
+                                                <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-destructive hover:bg-destructive/10" title="Supprimer">
+                                                    <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" /><span class="sr-only">Supprimer</span>
+                                                </twig:Button>
+                                            </form>
+                                        {% else %}
+                                            <twig:Button type="button" variant="outline" size="icon" disabled class="pointer-events-none size-9 shrink-0 opacity-50" title="Catégorie utilisée">
+                                                <twig:ux:icon name="lucide:lock" class="size-4" aria-hidden="true" /><span class="sr-only">Verrouillé</span>
+                                            </twig:Button>
+                                        {% endif %}
+                                    </div>
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            {% endblock %}
+            {% block list_cards %}
+                <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                    {% for category in categories %}
+                        <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                            <twig:Card:Content class="flex flex-col gap-2 p-5 sm:p-6">
+                                <div class="mb-2 flex items-center gap-2">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm" style="background-color: {{ category.color }};">
+                                        <i data-lucide="{{ category.icon }}" width="16" height="16" aria-hidden="true"></i>{{ category.name }}
+                                    </span>
+                                    <twig:Badge variant="outline" class="ml-auto tabular-nums">#{{ category.order }}</twig:Badge>
                                 </div>
-                            </td>
-                            <td>
-                                <i data-lucide="{{ category.icon }}" width="20" height="20"></i>
-                                <small class="text-muted-foreground ml-1">{{ category.icon }}</small>
-                            </td>
-                            <td>
-                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ category.blogPosts|length }} article{{ category.blogPosts|length > 1 ? 's' : '' }}</span>
-                            </td>
-                            <td>
-                                <div class="flex gap-1" role="group">
-                                    <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}"
-                                       class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline" title="Modifier">
-                                        <i data-lucide="edit" width="14" height="14"></i>
-                                    </a>
+                                <code class="mb-2 block text-sm">{{ category.slug }}</code>
+                                <p class="mb-2 flex-1 text-sm text-muted-foreground">{{ category.description|default('—')|slice(0, 120) }}{% if category.description|length > 120 %}…{% endif %}</p>
+                                <div class="mb-2 flex items-center gap-2">
+                                    <div class="size-7 shrink-0 rounded border border-border" style="background-color: {{ category.color }};"></div>
+                                    <small class="text-muted-foreground font-mono">{{ category.color }}</small>
+                                    <twig:Badge variant="secondary" class="ml-auto shrink-0 tabular-nums">{{ category.blogPosts|length }} art.</twig:Badge>
+                                </div>
+                                <div class="mt-auto flex flex-wrap gap-2 border-t border-border pt-4">
+                                    <twig:Button as="a" href="{{ path('app_admin_categories_edit', {id: category.id}) }}" variant="outline" size="sm" class="no-underline gap-2">
+                                        <twig:ux:icon name="lucide:pencil" class="size-4 shrink-0" aria-hidden="true" /> Modifier
+                                    </twig:Button>
                                     {% if category.blogPosts|length == 0 %}
-                                    <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}"
-                                          class="inline"
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
-                                            <i data-lucide="trash-2" width="14" height="14"></i>
-                                        </button>
-                                    </form>
+                                        <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="inline-flex" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
+                                            <twig:Button type="submit" variant="outline" size="sm" class="gap-2 text-destructive hover:bg-destructive/10">
+                                                <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" /> Supprimer
+                                            </twig:Button>
+                                        </form>
                                     {% else %}
-                                    <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled title="Catégorie utilisée, impossible de supprimer">
-                                        <i data-lucide="lock" width="14" height="14"></i>
-                                    </button>
+                                        <twig:Button type="button" variant="outline" size="sm" disabled class="pointer-events-none opacity-50 gap-2">
+                                            <twig:ux:icon name="lucide:lock" class="size-4 shrink-0" aria-hidden="true" /> Utilisée
+                                        </twig:Button>
                                     {% endif %}
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block list_cards %}
-            <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-                {% for category in categories %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                    <div class="p-6 flex flex-col">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="badge fs-6" style="background-color: {{ category.color }}; color: white;">
-                                <i data-lucide="{{ category.icon }}" width="16" height="16" class="mr-1"></i>{{ category.name }}
-                            </span>
-                            <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold ml-auto">#{{ category.order }}</span>
-                        </div>
-                        <code class="text-sm block mb-2">{{ category.slug }}</code>
-                        <p class="text-sm text-muted-foreground flex-1 mb-2">{{ category.description|default('—')|slice(0, 120) }}{% if category.description|length > 120 %}…{% endif %}</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="rounded border" style="width: 28px; height: 28px; background-color: {{ category.color }};"></div>
-                            <small class="text-muted-foreground">{{ category.color }}</small>
-                            <span class="inline-flex items-center rounded-md bg-muted text-muted-foreground px-2 py-0.5 text-xs ml-auto">{{ category.blogPosts|length }} art.</span>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-2 border-t border-border mt-auto">
-                            <a href="{{ path('app_admin_categories_edit', {id: category.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
-                            {% if category.blogPosts|length == 0 %}
-                            <form method="post" action="{{ path('app_admin_categories_delete', {id: category.id}) }}" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_category_' ~ category.id) }}">
-                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
-                            </form>
-                            {% else %}
-                            <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled><i data-lucide="lock" width="14" height="14" class="mr-1"></i>Utilisée</button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </article>
-                {% endfor %}
-            </div>
-        {% endblock %}
-        {% block list_footer %}{% endblock %}
-    {% endembed %}
+                            </twig:Card:Content>
+                        </twig:Card>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+            {% block list_footer %}{% endblock %}
+        {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="folder" width="48" height="48" class="text-muted-foreground mb-4"></i>
-            <p class="text-muted-foreground mb-0">Aucune catégorie</p>
-            <a href="{{ path('app_admin_categories_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline mt-4">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
-                Créer la première catégorie
-            </a>
-        </div>
-    </div>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="flex flex-col items-center justify-center gap-4 py-14 text-center">
+                <twig:ux:icon name="lucide:folder" class="size-12 text-muted-foreground" aria-hidden="true" />
+                <p class="m-0 text-sm text-muted-foreground">Aucune catégorie</p>
+                <twig:Button as="a" href="{{ path('app_admin_categories_new') }}" variant="default" class="no-underline gap-2">
+                    <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" /> Créer la première catégorie
+                </twig:Button>
+            </twig:Card:Content>
+        </twig:Card>
     {% endif %}
 </div>
 

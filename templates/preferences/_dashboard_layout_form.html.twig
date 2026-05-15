@@ -1,38 +1,41 @@
-{# Onglet dashboard : ordre (drag) + visibilité (cases) #}
+{# Onglet dashboard : ordre (drag) + visibilité (toggles) #}
 <div data-controller="dashboard-preferences-layout">
-    {{ form_start(dashboard_form, { attr: { class: 'space-y-4' } }) }}
-        <p class="text-sm text-muted-foreground mb-0">Glissez les blocs pour définir l’ordre d’affichage. Décochez un bloc pour le masquer sur le tableau de bord.</p>
+    {{ form_start(dashboard_form, { attr: { class: 'pref-form' } }) }}
+        <p class="pref-form-hint mb-0">Glissez les blocs pour définir l’ordre d’affichage. Désactivez un bloc pour le masquer sur le tableau de bord.</p>
 
         <ul
             data-dashboard-preferences-layout-target="list"
-            class="space-y-2 list-none m-0 p-0"
+            class="pref-widget-list"
             aria-label="Ordre des blocs du tableau de bord"
         >
             {% for widget in dashboard_widget_entries %}
+                {% set field_name = 'dash_' ~ widget.id %}
+                {% set child = attribute(dashboard_form, field_name) %}
                 <li
                     data-widget-id="{{ widget.id }}"
-                    class="flex items-center gap-3 rounded-lg border border-border/80 bg-card px-3 py-2.5 shadow-sm"
+                    class="pref-widget-row"
                 >
                     <button
                         type="button"
-                        class="cursor-grab text-muted-foreground hover:text-foreground shrink-0 p-1 rounded-md hover:bg-muted/60"
+                        class="pref-widget-row__drag"
                         data-drag-handle
                         aria-label="Déplacer {{ widget.label }}"
                     >
                         <i data-lucide="grip-vertical" width="18" height="18" aria-hidden="true"></i>
                     </button>
-                    <label class="flex items-center gap-2 flex-1 min-w-0 cursor-pointer mb-0 text-sm font-medium">
-                        {{ form_widget(attribute(dashboard_form, 'dash_' ~ widget.id), { label: false }) }}
-                        <span>{{ widget.label }}</span>
-                    </label>
+                    <span class="pref-widget-row__label">{{ widget.label }}</span>
+                    <div class="pref-widget-row__control">
+                        <label class="pref-switch" for="{{ child.vars.id }}">
+                            {{ form_widget(child, { label: false, attr: { class: 'pref-switch__input', 'aria-label': 'Afficher ' ~ widget.label } }) }}
+                            <span class="pref-switch__track" aria-hidden="true"></span>
+                        </label>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
 
         {{ form_widget(dashboard_form.widget_order, { attr: { 'data-dashboard-preferences-layout-target': 'orderInput' } }) }}
 
-        <div class="flex justify-end pt-2">
-            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-        </div>
+        {% include 'preferences/_form_footer.html.twig' %}
     {{ form_end(dashboard_form) }}
 </div>

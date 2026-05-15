@@ -108,6 +108,13 @@ final class AnalyticsController extends AbstractController
             'data' => array_map(static fn (array $row): int => (int) $row['visitCount'], $topCountries),
         ];
 
+        $trafficCharts = $this->buildTrafficChartsPayload(
+            $visitsDailyChart,
+            $visitsMonthlyChart,
+            $deviceChart,
+            $countryChart
+        );
+
         return $this->render('admin/analytics/traffic.html.twig', [
             'period' => $period,
             'totalVisits' => $totalVisits,
@@ -124,6 +131,7 @@ final class AnalyticsController extends AbstractController
             'visitsMonthlyChart' => $visitsMonthlyChart,
             'deviceChart' => $deviceChart,
             'countryChart' => $countryChart,
+            'trafficCharts' => $trafficCharts,
             'startDate' => $start,
             'endDate' => $end,
         ]);
@@ -255,11 +263,14 @@ final class AnalyticsController extends AbstractController
         $recentShares = $this->shareRepository->findRecentShares(10);
         $recentShareVisits = $this->shareVisitRepository->findRecentVisits(10);
 
+        $sharingCharts = $this->buildSharingChartsPayload($shareChart, $shareVisitChart);
+
         return $this->render('admin/analytics/sharing.html.twig', [
             'period' => $period,
             'shareTotals' => $shareTotals,
             'shareChart' => $shareChart,
             'shareVisitChart' => $shareVisitChart,
+            'sharingCharts' => $sharingCharts,
             'topSharers' => $topSharers,
             'topSharedAnalyses' => $topSharedAnalyses,
             'recentShares' => $recentShares,
@@ -267,6 +278,86 @@ final class AnalyticsController extends AbstractController
             'startDate' => $start,
             'endDate' => $end,
         ]);
+    }
+
+    /**
+     * @param array{labels:string[],data:int[]} $visitsDailyChart
+     * @param array{labels:string[],data:int[]} $visitsMonthlyChart
+     * @param array{labels:string[],data:int[]} $deviceChart
+     * @param array{labels:string[],data:int[]} $countryChart
+     *
+     * @return array{charts:list<array<string,mixed>>}
+     */
+    private function buildTrafficChartsPayload(
+        array $visitsDailyChart,
+        array $visitsMonthlyChart,
+        array $deviceChart,
+        array $countryChart,
+    ): array {
+        return [
+            'charts' => [
+                [
+                    'ref' => 'traffic-daily',
+                    'kind' => 'line',
+                    'datasetLabel' => 'Visites',
+                    'labels' => $visitsDailyChart['labels'],
+                    'values' => $visitsDailyChart['data'],
+                    'fill' => true,
+                ],
+                [
+                    'ref' => 'traffic-monthly',
+                    'kind' => 'bar',
+                    'datasetLabel' => 'Visites',
+                    'labels' => $visitsMonthlyChart['labels'],
+                    'values' => $visitsMonthlyChart['data'],
+                    'colorVariant' => 'secondary',
+                ],
+                [
+                    'ref' => 'traffic-devices',
+                    'kind' => 'doughnut',
+                    'datasetLabel' => 'Appareils',
+                    'labels' => $deviceChart['labels'],
+                    'values' => $deviceChart['data'],
+                ],
+                [
+                    'ref' => 'traffic-countries',
+                    'kind' => 'polarArea',
+                    'datasetLabel' => 'Pays',
+                    'labels' => $countryChart['labels'],
+                    'values' => $countryChart['data'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param array{labels:string[],data:int[]} $shareChart
+     * @param array{labels:string[],data:int[]} $shareVisitChart
+     *
+     * @return array{charts:list<array<string,mixed>>}
+     */
+    private function buildSharingChartsPayload(array $shareChart, array $shareVisitChart): array
+    {
+        return [
+            'charts' => [
+                [
+                    'ref' => 'share-creation',
+                    'kind' => 'bar',
+                    'datasetLabel' => 'Partages créés',
+                    'labels' => $shareChart['labels'],
+                    'values' => $shareChart['data'],
+                ],
+                [
+                    'ref' => 'share-visits',
+                    'kind' => 'line',
+                    'datasetLabel' => 'Visites via partage',
+                    'labels' => $shareVisitChart['labels'],
+                    'values' => $shareVisitChart['data'],
+                    'fill' => true,
+                    'colorVariant' => 'secondary',
+                ],
+            ],
+        ];
     }
 
     /**

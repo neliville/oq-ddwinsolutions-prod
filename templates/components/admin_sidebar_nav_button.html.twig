@@ -3,14 +3,15 @@
     <button type="button"
             class="sidebar-item sidebar-collapse-trigger{{ is_active ? ' active' : '' }}"
             data-sidebar-target="{{ target|e('html_attr') }}"
+            data-sidebar-item-label="{{ label|e('html_attr') }}"
             aria-expanded="{{ expanded ? 'true' : 'false' }}"
             aria-controls="{{ controls|e('html_attr') }}"
             data-slot="hover-card-trigger"
             data-action="focus->hover-card#show blur->hover-card#hide"
     >
-        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon"></i>
-        <span>{{ label }}</span>
-        <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron"></i>
+        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
+        <span class="sidebar-item-label">{{ label }}</span>
+        <i data-lucide="chevron-down" width="14" height="14" class="sidebar-chevron" aria-hidden="true"></i>
     </button>
     <twig:HoverCard:Content>
         <span class="block font-semibold leading-tight text-zinc-50">{{ hover_title }}</span>

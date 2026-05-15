@@ -1,0 +1,78 @@
+{% include 'preferences/_panel_header.html.twig' with {
+    title: 'Sécurité',
+    description: 'Gérez l’accès à votre compte et la réinitialisation de votre mot de passe.',
+} only %}
+
+<div class="pref-security-actions">
+    <div class="pref-security-card">
+        <h3 class="pref-security-card__title">Mot de passe</h3>
+        <p class="pref-security-card__text">Pour modifier votre mot de passe, nous vous envoyons un lien sécurisé par email (même procédure que la page « mot de passe oublié »).</p>
+        <twig:Dialog id="preferences-password-reset">
+            <twig:Button
+                type="button"
+                variant="default"
+                class="w-full sm:w-auto"
+                data-preferences-reset-opener
+                data-action="click->ux-dialog#open"
+                data-ux-dialog-target="trigger"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+            >
+                Réinitialiser mon mot de passe
+            </twig:Button>
+            <twig:Dialog:Content>
+                <twig:Dialog:Header>
+                    <twig:Dialog:Title>Réinitialiser votre mot de passe</twig:Dialog:Title>
+                    <twig:Dialog:Description class="text-left text-sm leading-relaxed text-muted-foreground">
+                        Un lien temporaire vous permet de définir un nouveau mot de passe. Nous envoyons l’email à l’adresse de votre compte connecté.
+                    </twig:Dialog:Description>
+                </twig:Dialog:Header>
+                <div class="mt-4 space-y-4 text-sm" data-preferences-password-reset-root>
+                    <div data-step="form" class="space-y-4">
+                        <div class="rounded-md border border-border bg-muted/30 p-3">
+                            <p class="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">Compte</p>
+                            <p class="m-0 mt-1 break-all font-medium text-foreground">{{ app.user.email }}</p>
+                        </div>
+                        <ul class="pref-security-list">
+                            <li>
+                                <span aria-hidden="true">🕒</span>
+                                <span>Chaque lien est valable <strong class="text-foreground">60 minutes</strong>.</span>
+                            </li>
+                            <li>
+                                <span aria-hidden="true">🔐</span>
+                                <span>Les mots de passe sont chiffrés ; nous recommandons un gestionnaire de mots de passe.</span>
+                            </li>
+                            <li>
+                                <span aria-hidden="true">💬</span>
+                                <span>Besoin d’aide ? <a class="app-inline-link font-medium" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a></span>
+                            </li>
+                        </ul>
+                        <p class="text-xs text-muted-foreground m-0">Vous recevrez immédiatement un email ; pensez à vérifier le dossier indésirables.</p>
+                        <input type="hidden" id="preferences-password-reset-csrf" value="{{ csrf_token('preferences_password_reset') }}">
+                        <p data-reset-feedback class="hidden text-sm font-medium text-destructive" role="alert"></p>
+                        <twig:Dialog:Footer class="mt-2 flex flex-col-reverse gap-2 border-t border-border/60 pt-4 sm:flex-row sm:justify-end">
+                            <twig:Button type="button" variant="secondary" data-action="click->ux-dialog#close">Annuler</twig:Button>
+                            <twig:Button type="button" variant="default" data-send-password-reset data-reset-url="{{ path('app_preferences_request_password_reset') }}">
+                                Envoyer le lien sécurisé
+                            </twig:Button>
+                        </twig:Dialog:Footer>
+                    </div>
+                    <div data-step="success" class="hidden space-y-4">
+                        <div class="rounded-md border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+                            <p class="m-0 font-medium">Vérifiez votre messagerie</p>
+                            <p class="mt-2 mb-0 text-muted-foreground" data-success-message></p>
+                        </div>
+                        <div class="mt-2 flex justify-end border-t border-border/60 pt-4">
+                            <twig:Button type="button" variant="default" data-action="click->ux-dialog#close">Fermer</twig:Button>
+                        </div>
+                    </div>
+                </div>
+            </twig:Dialog:Content>
+        </twig:Dialog>
+    </div>
+    <p class="pref-form-hint mb-0">
+        Préférez la page complète ?
+        <a href="{{ path('app_forgot_password_request') }}" class="app-inline-link font-medium">Ouvrir la réinitialisation classique</a>
+        — vous restez connecté sur cet appareil jusqu’à déconnexion.
+    </p>
+</div>

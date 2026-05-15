@@ -185,41 +185,19 @@ function showConfirmationModal(options = {}) {
   })
 }
 
-let exportBrandingCache = null
-let exportBrandingPromise = null
-
 async function fetchExportBranding() {
-  if (exportBrandingCache !== null) {
-    return exportBrandingCache
+  if (window.OqExportBranding?.load) {
+    const branding = await window.OqExportBranding.load()
+    return branding?.raw ?? branding ?? {}
   }
-  if (exportBrandingPromise === null) {
-    exportBrandingPromise = fetch("/api/user/export-branding", {
-      method: "GET",
-      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
-      credentials: "same-origin",
-    })
-      .then(async (response) => {
-        const ct = response.headers.get("content-type") || ""
-        if (!response.ok || !ct.includes("application/json")) {
-          return {}
-        }
-        try {
-          return await response.json()
-        } catch {
-          return {}
-        }
-      })
-      .catch(() => ({}))
-  }
-  exportBrandingCache = await exportBrandingPromise
-  return exportBrandingCache
+  return {}
 }
 
 async function trackExport(tool, format, metadata = {}) {
   try {
-    const branding = await fetchExportBranding()
+    const brandingPayload = await fetchExportBranding()
     const mergedMetadata = {
-      ...branding,
+      ...brandingPayload,
       ...metadata,
       url: window.location.pathname,
     }

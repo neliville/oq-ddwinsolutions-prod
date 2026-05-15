@@ -2,6 +2,7 @@
 
 namespace App\Site\Controller;
 
+use App\Repository\HomepageContentSlotRepository;
 use App\Repository\HomepageTestimonialRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,7 @@ final class HomeController extends AbstractController
 {
     public function __construct(
         private readonly HomepageTestimonialRepository $homepageTestimonialRepository,
+        private readonly HomepageContentSlotRepository $homepageContentSlotRepository,
     ) {
     }
 
@@ -19,6 +21,7 @@ final class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig', [
             'homepageTestimonials' => $this->homepageTestimonialRepository->findActiveForHomepage(2),
+            'homepage_slots' => $this->homepageContentSlotRepository->getActiveNonEmptyContentMap(),
         ]);
     }
 }

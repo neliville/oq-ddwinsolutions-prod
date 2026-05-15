@@ -1,0 +1,15 @@
+{% include 'preferences/_panel_header.html.twig' with {
+    title: 'Exports',
+    description: 'Personnalisez les libellés affichés sur vos documents PDF exportés.',
+} only %}
+
+{{ form_start(export_form, { attr: { class: 'pref-form' } }) }}
+    <div class="pref-form-grid pref-form-grid--two">
+        <div class="pref-field-group">{{ form_row(export_form.exportDisplayName) }}</div>
+        <div class="pref-field-group">{{ form_row(export_form.exportJobTitle) }}</div>
+        <div class="pref-field-group">{{ form_row(export_form.exportCompanyName) }}</div>
+        <div class="pref-field-group pref-form-grid__full">{{ form_row(export_form.exportPdfFooter) }}</div>
+    </div>
+    <p class="pref-form-hint pref-form-hint--spaced">Les outils peuvent récupérer ces libellés via l’API (connecté). Le logo personnalisé pourra être ajouté ultérieurement.</p>
+    {% include 'preferences/_form_footer.html.twig' %}
+{{ form_end(export_form) }}

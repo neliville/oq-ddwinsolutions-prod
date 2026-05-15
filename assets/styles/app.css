@@ -61,8 +61,10 @@ dialog footer[data-slot="dialog-footer"] a:hover,
 @import "./site/_mautic-form-download.css";
 @import "./site/_legal-prose.css";
 @import "./site/dashboard.css";
+@import "./site/preferences.css";
 @import "./site/_inline-links.css";
 @import "./site/_auth.css";
+@import "./site/reset-password.css";
 
 /* ─── Admin ───────────────────────────────────────────────────────────── */
 @import "./admin/admin.css";
@@ -126,6 +128,22 @@ dialog footer[data-slot="dialog-footer"] a:hover,
     --brand-success:            160 84% 39%;       /* Emerald 500 #10b981 */
     --brand-warning:            38 92% 50%;        /* Amber 500  #f59e0b */
     --brand-info:               189 95% 36%;       /* Cyan 700   #0891b2 */
+
+    /* Chart.js — couleurs résolues (alignées thème clair / .dark via tokens HSL) */
+    --chart-primary:            hsl(var(--primary));
+    --chart-secondary:        hsl(var(--brand-cyan));
+    --chart-muted-fg:           hsl(var(--muted-foreground));
+    --chart-grid:               hsl(var(--muted-foreground) / 0.22);
+    --chart-fill-primary:       hsl(var(--primary) / 0.14);
+    --chart-fill-secondary:     hsl(var(--brand-cyan) / 0.18);
+    --chart-palette-1:          hsl(var(--primary));
+    --chart-palette-2:          hsl(var(--brand-cyan));
+    --chart-palette-3:          hsl(var(--brand-warning));
+    --chart-palette-4:          hsl(var(--brand-success));
+    --chart-palette-5:          hsl(268 83% 60%);
+
+    /* Séparation des parts (doughnut) sur fond carte */
+    --chart-ring-bg:            hsl(var(--background));
 }
 
 .dark {
@@ -157,6 +175,9 @@ dialog footer[data-slot="dialog-footer"] a:hover,
     --border:                   215 28% 17%;
     --input:                    215 28% 17%;
     --ring:                     243 75% 68%;
+
+    --chart-fill-primary:       hsl(var(--primary) / 0.22);
+    --chart-fill-secondary:     hsl(var(--brand-cyan) / 0.25);
 }
 
 /* ─── Mapper les variables CSS aux tokens Tailwind (v4 @theme inline) ─ */
@@ -238,10 +259,6 @@ body.sidebar-collapsed .sidebar-overlay {
     opacity: 0 !important;
 }
 
-body.sidebar-collapsed .admin-sidebar {
-    transform: translateX(-100%) !important;
-}
-
 @media (max-width: 1200px) {
     body.sidebar-mobile-open {
         overflow: hidden;
@@ -258,11 +275,9 @@ body.sidebar-collapsed .admin-sidebar {
     .admin-sidebar {
         transform: translateX(0) !important;
     }
-    body.sidebar-collapsed .admin-sidebar {
-        transform: translateX(-100%) !important;
-    }
+    /* Mode rail : sidebar étroite — largeur gérée dans _sidebar.css */
     body.sidebar-collapsed .main-content {
-        margin-left: 0 !important;
+        margin-left: 72px !important;
     }
 }
 
@@ -438,7 +453,7 @@ body.layout-dashboard .main-content.dashboard-layout:has(
  * 1) Dégager la .dashboard-topbar fixe (sinon seul le bas de l’alerte restait visible).
  * 2) En ≥1201px, aligner la zone sur la colonne de contenu (même marge que .main-content),
  *    pas sous la sidebar (largeur 280px — _sidebar.css / app.css).
- * 3) Sidebar repliée : reprendre toute la largeur utile.
+ * 3) Sidebar repliée en mode rail : marge 72px (voir _sidebar.css --sidebar-rail-w).
  */
 body.layout-dashboard #main-content > .flash-messages-global:has([data-slot="alert"]) {
     position: relative;
@@ -458,10 +473,11 @@ body.layout-dashboard #main-content > .flash-messages-global:has([data-slot="ale
     }
 
     body.layout-dashboard.sidebar-collapsed #main-content > .flash-messages-global:has([data-slot="alert"]) {
-        margin-left: 0;
-        width: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        margin-left: 72px;
+        width: calc(100% - 72px);
+        max-width: none;
+        padding-left: clamp(1rem, 1.5vw, 1.5rem);
+        padding-right: clamp(1rem, 1.5vw, 1.5rem);
     }
 }
 

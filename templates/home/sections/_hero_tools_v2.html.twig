@@ -8,12 +8,14 @@
                     <twig:Badge variant="secondary" class="font-normal">Gratuits</twig:Badge>
                     <twig:Badge variant="secondary" class="font-normal">Sans inscription pour démarrer</twig:Badge>
                 </div>
-                <h1 id="home-hero-heading" class="hero-title js-hero-title">Analysez vos problèmes qualité en ligne, gratuitement et tout de suite</h1>
+                <h1 id="home-hero-heading" class="hero-title js-hero-title">
+                    {{- homepage_slots['hero_title']|default('Analysez vos problèmes qualité en ligne, gratuitement et tout de suite') -}}
+                </h1>
                 <p class="hero-subtitle js-hero-subtitle">
-                    Ishikawa, 5 Pourquoi, Pareto, AMDEC… Créez, exportez en PDF et retrouvez vos analyses quand vous créez un compte gratuit.
+                    {{- homepage_slots['hero_subtitle']|default('Ishikawa, 5 Pourquoi, Pareto, AMDEC… Créez, exportez en PDF et retrouvez vos analyses quand vous créez un compte gratuit.') -}}
                 </p>
                 <p class="hero-usp-note m-0 mt-3 text-sm text-muted-foreground">
-                    Sans inscription pour essayer · Export PDF · Compte gratuit pour sauvegarder en ligne
+                    {{- homepage_slots['hero_usp_note']|default('Sans inscription pour essayer · Export PDF · Compte gratuit pour sauvegarder en ligne') -}}
                 </p>
 
                 <div class="hero-actions">

@@ -21,7 +21,8 @@
     {% else %}
         <twig:Card class="border-border/80 shadow-sm overflow-hidden">
             <twig:Card:Content class="p-0 sm:p-0">
-                <twig:Table>
+                <div class="hidden md:block [&_[data-slot=table-container]]:rounded-none">
+                    <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
                     <twig:Table:Header>
                         <twig:Table:Row>
                             <twig:Table:Head>Risque identifié</twig:Table:Head>
@@ -49,6 +50,23 @@
                         {% endfor %}
                     </twig:Table:Body>
                 </twig:Table>
+                </div>
+                <div class="space-y-3 p-4 md:hidden" aria-label="Liste risques (vue mobile)">
+                    {% for r in risks %}
+                        <article class="rounded-xl border border-border/80 bg-card p-4 shadow-sm ring-1 ring-border/40">
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ path('app_qse_risk_show', { id: r.id }) }}" class="app-inline-link text-base font-semibold text-foreground">{{ r.identifiedRisk }}</a>
+                                <div class="flex flex-wrap gap-2">
+                                    <twig:Badge variant="outline" class="tabular-nums">{{ r.criticalityScore|default('—') }}</twig:Badge>
+                                    <twig:Badge variant="secondary">{{ r.status.value|qse_status_label('risk') }}</twig:Badge>
+                                </div>
+                                <twig:Button as="a" href="{{ path('app_qse_risk_show', { id: r.id }) }}" variant="outline" size="sm" class="mt-1 w-fit no-underline">
+                                    Ouvrir
+                                </twig:Button>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
             </twig:Card:Content>
         </twig:Card>
     {% endif %}

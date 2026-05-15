@@ -1,0 +1,30 @@
+{# Enveloppe commune reset password : brand + carte split 5/7 #}
+<div class="auth-page auth-page--reset">
+    <div class="auth-page__container container">
+        <div class="auth-page__brand">
+            <div class="auth-brand">
+                <span class="auth-brand__icon">
+                    <i data-lucide="{{ brand_icon|default('key') }}" width="24" height="24" aria-hidden="true"></i>
+                </span>
+                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+            </div>
+            <p class="auth-page__baseline">
+                {% block brand_baseline %}{% endblock %}
+            </p>
+        </div>
+
+        <div class="auth-card{% block auth_card_modifier %}{% endblock %}">
+            <div class="auth-card__column auth-card__column--form">
+                <section class="auth-card__panel auth-card__panel--form{% block form_panel_modifier %}{% endblock %}">
+                    {% block form_panel %}{% endblock %}
+                </section>
+            </div>
+
+            <div class="auth-card__column auth-card__column--info">
+                <section class="auth-card__panel auth-card__panel--info">
+                    {% block info_panel %}{% endblock %}
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

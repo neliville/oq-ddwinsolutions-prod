@@ -1,0 +1,66 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Pilotage CAPA — Administration{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold tracking-tight text-foreground m-0">Pilotage CAPA (vue globale)</h1>
+        <p class="text-muted-foreground text-sm m-0">Données agrégées en lecture seule — tous comptes confondus.</p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Ouvertes criticité haute</p>
+                <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ openCritical }}</p>
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6">
+                <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Ouvertes en retard (échéance)</p>
+                <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ openOverdue }}</p>
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="p-5 sm:p-6 flex items-center justify-center">
+                <twig:Button as="a" href="{{ path('app_admin_dashboard_index') }}" variant="outline" size="sm" class="no-underline">
+                    Retour dashboard
+                </twig:Button>
+            </twig:Card:Content>
+        </twig:Card>
+    </div>
+
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Header class="pb-2">
+            <twig:Card:Title class="text-base">Actions ouvertes (extrait)</twig:Card:Title>
+        </twig:Card:Header>
+        <twig:Card:Content class="p-0 sm:p-0 overflow-x-auto">
+            {% if recentOpen is empty %}
+                <p class="text-sm text-muted-foreground p-6 mb-0">Aucune CAPA ouverte.</p>
+            {% else %}
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="border-b border-border bg-muted/40">
+                        <tr>
+                            <th class="text-left font-medium px-4 py-3">Titre</th>
+                            <th class="text-left font-medium px-4 py-3">Compte</th>
+                            <th class="text-left font-medium px-4 py-3">Statut</th>
+                            <th class="text-left font-medium px-4 py-3">Échéance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for capa in recentOpen %}
+                        <tr class="border-b border-border/60">
+                            <td class="px-4 py-2">{{ capa.title }}</td>
+                            <td class="px-4 py-2">{{ capa.owner.email }}</td>
+                            <td class="px-4 py-2"><code class="text-xs">{{ capa.status.value }}</code></td>
+                            <td class="px-4 py-2">{{ capa.dueAt ? capa.dueAt|date('d/m/Y') : '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </twig:Card:Content>
+    </twig:Card>
+</div>
+{% endblock %}

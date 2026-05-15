@@ -7,7 +7,9 @@ namespace App\Tests\Unit\Qse;
 use App\Entity\Qse\Audit;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\User;
+use App\Qse\Enum\AuditVerdict;
 use App\Qse\Service\AuditComplianceCalculator;
+use App\Qse\Service\AuditEvaluationVerdictHelper;
 use PHPUnit\Framework\TestCase;
 
 final class AuditComplianceCalculatorTest extends TestCase
@@ -61,5 +63,25 @@ final class AuditComplianceCalculatorTest extends TestCase
 
         self::assertNull($audit->getGlobalComplianceRate());
         self::assertNull($audit->getGlobalScore());
+    }
+
+    public function testRecalculateExcludesNotEvaluatedVerdict(): void
+    {
+        $owner = new User();
+        $audit = new Audit();
+        $e1 = new AuditEvaluation();
+        $e1->setOwner($owner);
+        $e1->setVerdict(AuditVerdict::CONFORM);
+        AuditEvaluationVerdictHelper::syncLegacyScore($e1);
+        $e2 = new AuditEvaluation();
+        $e2->setOwner($owner);
+        $e2->setVerdict(AuditVerdict::NOT_EVALUATED);
+        AuditEvaluationVerdictHelper::syncLegacyScore($e2);
+        $audit->addEvaluation($e1);
+        $audit->addEvaluation($e2);
+
+        (new AuditComplianceCalculator())->recalculate($audit);
+
+        self::assertSame(100.0, $audit->getGlobalComplianceRate());
     }
 }

@@ -6,62 +6,155 @@
 
 {% block content %}
 <div class="dashboard-page admin-dashboard-page w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
+    {% set pis = platformIntegrationSummary %}
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
         <div>
             <h1 class="text-2xl font-bold mb-1">Tableau de bord Administration</h1>
-            <p class="text-muted-foreground mb-0">Vue d'ensemble de votre application</p>
+            <p class="text-muted-foreground mb-0">Vue synthétique — les actions détaillées sont accessibles depuis la sidebar ou les liens rapides ci‑dessous.</p>
         </div>
-        <div>
-            <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">
-                <i data-lucide="check-circle" width="14" height="14" class="mr-1"></i>
-                Système opérationnel
-            </span>
+        <div class="flex flex-wrap gap-2 shrink-0">
+            <twig:Button as="a" href="{{ path('app_admin_platform_health_index') }}" variant="outline" size="sm" class="no-underline">
+                Santé &amp; intégrations
+            </twig:Button>
+            <twig:Button as="a" href="{{ path('app_admin_tool_usage_index') }}" variant="outline" size="sm" class="no-underline">
+                Usage outils
+            </twig:Button>
+            <twig:Button as="a" href="{{ path('app_admin_export_analytics_index') }}" variant="outline" size="sm" class="no-underline">
+                Exports fichiers
+            </twig:Button>
         </div>
     </div>
 
-    <div class="rounded-lg border border-border bg-muted/30 p-4 mb-6">
-        <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
-            <i data-lucide="radar" width="20" height="20"></i>
+    {% if (pis.mautic_configured and pis.mautic_reachable is same as(false)) or (pis.messenger_failed_count is not null and pis.messenger_failed_count > 0) %}
+    <div class="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 mb-6 text-sm">
+        <strong class="text-destructive">Alerte plateforme</strong>
+        {% if pis.mautic_configured and pis.mautic_reachable is same as(false) %}
+            <span class="block mt-1 text-foreground/90">{{ pis.mautic_detail }}</span>
+        {% endif %}
+        {% if pis.messenger_failed_count is not null and pis.messenger_failed_count > 0 %}
+            <span class="block mt-1 text-foreground/90">{{ pis.messenger_failed_detail }}</span>
+        {% endif %}
+        <twig:Button as="a" href="{{ path('app_admin_platform_health_index') }}" variant="destructive" size="sm" class="no-underline mt-3">
+            Diagnostic complet
+        </twig:Button>
+    </div>
+    {% endif %}
+
+    <div class="rounded-lg border border-border bg-muted/30 p-4 sm:p-6 mb-6"
+         data-controller="admin-dashboard-charts"
+         data-admin-dashboard-charts-config-value="{{ adminDashboardCharts|json_encode|e('html_attr') }}">
+        <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
+            <i data-lucide="radar" width="20" height="20" aria-hidden="true"></i>
             Pilotage produit (7 derniers jours)
         </h2>
-        <div class="grid gap-4 mb-4" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));">
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Utilisateurs actifs (événements)</div>
-                <div class="text-2xl font-bold">{{ trackingUsers7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Inscriptions</div>
-                <div class="text-2xl font-bold">{{ registrations7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Retours connexion</div>
-                <div class="text-2xl font-bold">{{ loginReturns7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Ouvertures dashboard</div>
-                <div class="text-2xl font-bold">{{ dashboardOpens7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Exports déclenchés</div>
-                <div class="text-2xl font-bold">{{ exports7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">CAPA créées (métier)</div>
-                <div class="text-2xl font-bold">{{ capaEntities7d }}</div>
-                <div class="text-xs text-muted-foreground">Événements TE : {{ capaEvents7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Audits créés</div>
-                <div class="text-2xl font-bold">{{ auditEntities7d }}</div>
-                <div class="text-xs text-muted-foreground">Événements TE : {{ auditEvents7d }}</div>
-            </div>
-            <div class="rounded-md bg-card p-3 border border-border">
-                <div class="text-xs text-muted-foreground uppercase">Risques créés</div>
-                <div class="text-2xl font-bold">{{ riskEntities7d }}</div>
-                <div class="text-xs text-muted-foreground">Événements TE : {{ riskEvents7d }}</div>
-            </div>
+        <p class="text-sm text-muted-foreground mb-4">
+            Vues détaillées :
+            <a href="{{ path('app_admin_qse_capa_overview') }}" class="text-primary underline-offset-4 hover:underline">CAPA (file globale)</a>
+            ·
+            <a href="{{ path('app_admin_qse_risk_overview') }}" class="text-primary underline-offset-4 hover:underline">Risques</a>
+            ·
+            <a href="{{ path('app_admin_tool_usage_index') }}" class="text-primary underline-offset-4 hover:underline">Créations par outil</a>
+            ·
+            <a href="{{ path('app_admin_export_analytics_index') }}" class="text-primary underline-offset-4 hover:underline">Exports</a>
+        </p>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6">
+            <twig:HoverCard openDelay="200" closeDelay="100" class="block w-full min-w-0">
+                <div tabindex="0" data-slot="hover-card-trigger" data-action="focus->hover-card#show blur->hover-card#hide" class="block w-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    <twig:KpiStatCard label="Utilisateurs actifs (TE)" value="{{ trackingUsers7d }}" tone="default">
+                        <twig:block name="icon"><twig:ux:icon name="lucide:radio" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+                    </twig:KpiStatCard>
+                </div>
+                <twig:HoverCard:Content class="leading-snug tracking-tight text-zinc-50">
+                    <span class="block font-semibold">Tracking événements (TE)</span>
+                    <p class="mt-1.5 mb-0 font-normal leading-snug text-zinc-300">Compteurs uniques agrégés côté produit pour les usages connectés récents. Utile comme proxy d’attention sur l’outil, pas comme reflet du trafic web brut.</p>
+                </twig:HoverCard:Content>
+            </twig:HoverCard>
+            <twig:KpiStatCard label="Inscriptions" value="{{ registrations7d }}" tone="emerald">
+                <twig:block name="icon"><twig:ux:icon name="lucide:user-plus" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+            </twig:KpiStatCard>
+            <twig:KpiStatCard label="Exports déclenchés" value="{{ exports7d }}" tone="sky">
+                <twig:block name="icon"><twig:ux:icon name="lucide:download" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+            </twig:KpiStatCard>
+            <twig:HoverCard openDelay="200" closeDelay="100" class="block w-full min-w-0">
+                <div tabindex="0" data-slot="hover-card-trigger" data-action="focus->hover-card#show blur->hover-card#hide" class="block w-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    <twig:KpiStatCard label="CAPA créées" value="{{ capaEntities7d }}" tone="amber" helper="Événements TE : {{ capaEvents7d }}">
+                        <twig:block name="icon"><twig:ux:icon name="lucide:list-checks" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+                    </twig:KpiStatCard>
+                </div>
+                <twig:HoverCard:Content class="leading-snug tracking-tight text-zinc-50">
+                    <span class="block font-semibold">Entités CAPA vs événements</span>
+                    <p class="mt-1.5 mb-0 font-normal leading-snug text-zinc-300"><strong>{{ capaEntities7d }}</strong> correspond aux enregistrements créés côté QSE ; <strong>{{ capaEvents7d }}</strong> regroupe les signaux Tracking sur la fonctionnalité. Les deux peuvent diverger suivant usage.</p>
+                </twig:HoverCard:Content>
+            </twig:HoverCard>
         </div>
+
+        <div class="grid gap-6 lg:grid-cols-2 mb-6">
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Header class="pb-2">
+                    <twig:Card:Title class="text-base font-semibold tracking-tight">Inscriptions journalières</twig:Card:Title>
+                </twig:Card:Header>
+                <twig:Card:Content>
+                    <p class="text-xs text-muted-foreground mb-3 m-0">Nouveaux comptes par jour — tendance brute sur 7&nbsp;jours glissants.</p>
+                    <div class="h-52 w-full min-h-[13rem]" data-chart-wrap>
+                        <canvas data-admin-dashboard-charts-chart-ref="chartRegistrations" class="block h-full max-h-52 w-full" role="img" aria-label="Graphique inscriptions 7 jours"></canvas>
+                    </div>
+                </twig:Card:Content>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Header class="pb-2">
+                    <twig:Card:Title class="text-base font-semibold tracking-tight">Visites (pages)</twig:Card:Title>
+                </twig:Card:Header>
+                <twig:Card:Content>
+                    <p class="text-xs text-muted-foreground mb-3 m-0">Volume agrégé de vues journalières — corrélé au référent acquisition.</p>
+                    <div class="h-52 w-full min-h-[13rem]" data-chart-wrap>
+                        <canvas data-admin-dashboard-charts-chart-ref="chartVisits" class="block h-full max-h-52 w-full" role="img" aria-label="Graphique visites 7 jours"></canvas>
+                    </div>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <twig:Card class="mb-6 border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Entonnoir d’activation (7&nbsp;j)</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <p class="text-xs text-muted-foreground mb-3 m-0">Comparaison ordres de grandeur : actifs événements → engagement cockpit → exports.</p>
+                <div class="min-h-[16rem] w-full" data-chart-wrap>
+                    <canvas data-admin-dashboard-charts-chart-ref="chartEngagement" class="block h-full max-h-[16rem] w-full" role="img" aria-label="Graphique activation 7 jours"></canvas>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6">
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Content class="p-4 sm:p-5">
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Retours connexion</p>
+                    <p class="m-0 text-xl font-bold tabular-nums text-foreground">{{ loginReturns7d }}</p>
+                </twig:Card:Content>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Content class="p-4 sm:p-5">
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Ouvertures cockpit</p>
+                    <p class="m-0 text-xl font-bold tabular-nums text-foreground">{{ dashboardOpens7d }}</p>
+                </twig:Card:Content>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Content class="p-4 sm:p-5">
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Audits créés</p>
+                    <p class="m-0 text-xl font-bold tabular-nums text-foreground">{{ auditEntities7d }}</p>
+                    <p class="mb-0 mt-1 text-xs text-muted-foreground">TE&nbsp;: {{ auditEvents7d }}</p>
+                </twig:Card:Content>
+            </twig:Card>
+            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+                <twig:Card:Content class="p-4 sm:p-5">
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Risques créés</p>
+                    <p class="m-0 text-xl font-bold tabular-nums text-foreground">{{ riskEntities7d }}</p>
+                    <p class="mb-0 mt-1 text-xs text-muted-foreground">TE&nbsp;: {{ riskEvents7d }}</p>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
         <div class="grid gap-6 md:grid-cols-2">
             <div>
                 <h3 class="text-sm font-semibold mb-2">Événements par type (TE)</h3>
@@ -218,11 +311,11 @@
             <div class="p-6">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Articles blog</h6>
-                        <h3 class="font-bold mb-0">{{ mostViewedPosts|length }}</h3>
+                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Articles publiés</h6>
+                        <h3 class="font-bold mb-0">{{ blogPostsPublishedCount }}</h3>
                         <small class="text-muted-foreground">
                             <i data-lucide="book-open" width="14" height="14" class="mr-1"></i>
-                            Articles publiés
+                            Articles au catalogue public
                         </small>
                     </div>
                     <div class="bg-green-100 rounded-full p-3">

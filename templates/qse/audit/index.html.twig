@@ -33,7 +33,8 @@
     {% else %}
         <twig:Card class="border-border/80 shadow-sm overflow-hidden">
             <twig:Card:Content class="p-0 sm:p-0">
-                    <twig:Table class="min-w-[42rem]">
+                <div class="hidden md:block [&_[data-slot=table-container]]:rounded-none">
+                    <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
                         <caption class="sr-only text-left">Liste de vos audits qualité, triés par date d’audit décroissante.</caption>
                         <twig:Table:Header>
                             <twig:Table:Row>
@@ -94,6 +95,45 @@
                             {% endfor %}
                         </twig:Table:Body>
                     </twig:Table>
+                </div>
+                <div class="space-y-3 p-4 md:hidden" aria-label="Liste audits (vue mobile)">
+                    {% for a in audits %}
+                        {% set capa_n = audit_capa_counts[a.id] ?? 0 %}
+                        {% set audit_label = (a.companyName|default('Audit')) ~ ' — ' ~ a.auditedAt|date('d/m/Y') %}
+                        <article class="rounded-xl border border-border/80 bg-card p-4 shadow-sm ring-1 ring-border/40">
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ path('app_qse_audit_show', { id: a.id }) }}" class="app-inline-link text-base font-semibold text-foreground">{{ audit_label }}</a>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <twig:Badge variant="outline" class="font-normal tabular-nums">{{ a.auditStandard.code }}</twig:Badge>
+                                    {% if a.globalComplianceRate is not null %}
+                                        <twig:Badge variant="secondary" class="tabular-nums">{{ a.globalComplianceRate }}&nbsp;%</twig:Badge>
+                                    {% endif %}
+                                    <twig:Badge variant="secondary">{{ a.status.value|qse_status_label('audit_exec') }}</twig:Badge>
+                                </div>
+                                <div class="flex flex-wrap gap-2 pt-1">
+                                    <twig:Button as="a" href="{{ path('app_qse_audit_show', { id: a.id }) }}" variant="outline" size="sm" class="no-underline">
+                                        Ouvrir
+                                    </twig:Button>
+                                    <twig:Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        class="text-destructive border-destructive/40 hover:bg-destructive/10"
+                                        data-action="click->qse-audit-delete#open"
+                                        data-audit-id="{{ a.id }}"
+                                        data-delete-url="{{ path('app_qse_audit_delete', { id: a.id }) }}"
+                                        data-capa-count="{{ capa_n }}"
+                                        data-audit-label="{{ audit_label }}"
+                                        data-csrf-token="{{ csrf_token('delete_qse_audit_' ~ a.id) }}"
+                                    >
+                                        <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0 mr-1" aria-hidden="true" />
+                                        Supprimer
+                                    </twig:Button>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
             </twig:Card:Content>
         </twig:Card>
     {% endif %}

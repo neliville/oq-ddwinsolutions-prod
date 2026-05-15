@@ -7,10 +7,11 @@
     <a href="{{ href }}"
        class="sidebar-subitem{{ is_active ? ' active' : '' }}"
        {% if is_active %}aria-current="page"{% endif %}
+       data-sidebar-item-label="{{ label|e('html_attr') }}"
        data-slot="hover-card-trigger"
        data-action="focus->hover-card#show blur->hover-card#hide"
     >
-        {{ label }}
+        <span class="sidebar-subitem-label">{{ label }}</span>
     </a>
     <twig:HoverCard:Content class="w-[min(15rem,calc(100vw-18rem))] max-w-[min(15rem,calc(100vw-18rem))] py-2 text-[11px]">
         <span class="block font-semibold text-zinc-50">{{ hover_title }}</span>

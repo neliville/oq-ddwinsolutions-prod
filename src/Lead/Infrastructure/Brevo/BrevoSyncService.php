@@ -14,7 +14,7 @@ class BrevoSyncService
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
-        private readonly string $brevoApiKey,
+        private readonly ?string $brevoApiKey,
     ) {
     }
 
@@ -24,7 +24,7 @@ class BrevoSyncService
      */
     public function syncLead(Lead $lead): void
     {
-        if ('' === $this->brevoApiKey) {
+        if (null === $this->brevoApiKey || '' === trim($this->brevoApiKey)) {
             return;
         }
         $email = $lead->getEmail();

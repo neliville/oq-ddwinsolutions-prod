@@ -66,6 +66,53 @@ class CAPAActionRepository extends ServiceEntityRepository
     }
 
     /**
+     * CAPA ouvertes avec criticité élevée (tous utilisateurs).
+     */
+    public function adminCountOpenHighCriticality(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.status NOT IN (:closed)')
+            ->andWhere('c.criticality IN (:crits)')
+            ->setParameter('closed', CapaStatus::terminalStatuses())
+            ->setParameter('crits', ['high', 'critical'])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * CAPA non closes avec échéance dépassée.
+     */
+    public function adminCountOpenOverdue(\DateTimeImmutable $todayUtcStart): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.status NOT IN (:closed)')
+            ->andWhere('c.dueAt IS NOT NULL')
+            ->andWhere('c.dueAt < :today')
+            ->setParameter('closed', CapaStatus::terminalStatuses())
+            ->setParameter('today', $todayUtcStart)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<CAPAAction>
+     */
+    public function adminFindRecentOpen(int $limit = 25): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.owner', 'o')->addSelect('o')
+            ->where('c.status NOT IN (:closed)')
+            ->setParameter('closed', CapaStatus::terminalStatuses())
+            ->orderBy('c.dueAt', 'ASC')
+            ->addOrderBy('c.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Nombre d’actions CAPA dont la source remonte à l’audit (via une évaluation ou une constatation).
      */
     public function countLinkedToAudit(Audit $audit): int
@@ -124,5 +171,46 @@ class CAPAActionRepository extends ServiceEntityRepository
         }
 
         return $out;
+    }
+
+    /**
+     * @return list<CAPAAction>
+     */
+    public function findLinkedToAudit(Audit $audit): array
+    {
+        $id = $audit->getId();
+        if ($id === null) {
+            return [];
+        }
+
+        $byEv = $this->createQueryBuilder('c')
+            ->join('c.sourceAuditEvaluation', 'e')
+            ->where('e.audit = :audit')
+            ->setParameter('audit', $audit)
+            ->getQuery()
+            ->getResult();
+
+        $byFinding = $this->createQueryBuilder('c')
+            ->join('c.sourceAuditFinding', 'f')
+            ->join('f.auditEvaluation', 'ev')
+            ->where('ev.audit = :audit')
+            ->setParameter('audit', $audit)
+            ->getQuery()
+            ->getResult();
+
+        $merged = [];
+        $seen = [];
+        foreach (array_merge($byEv, $byFinding) as $capa) {
+            if (!$capa instanceof CAPAAction) {
+                continue;
+            }
+            $cid = $capa->getId();
+            if ($cid !== null && !isset($seen[$cid])) {
+                $seen[$cid] = true;
+                $merged[] = $capa;
+            }
+        }
+
+        return $merged;
     }
 }

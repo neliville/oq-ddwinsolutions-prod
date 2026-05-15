@@ -3,258 +3,186 @@
 {% block title %}Gestion de la newsletter | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Gestion de la newsletter</h1>
-            <p class="text-muted-foreground mb-0">Gérer les abonnés à la newsletter</p>
-        </div>
-        <div>
-            <a href="{{ path('app_admin_newsletter_export', {filter: 'active'}) }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
-                <i data-lucide="download" width="16" height="16" class="mr-1"></i>
+<div class="mx-auto w-full max-w-[100rem] space-y-6">
+    <twig:DataPageHeader title="Gestion de la newsletter" description="Gérer les abonnés à la newsletter">
+        <twig:block name="actions">
+            <twig:Button as="a" href="{{ path('app_admin_newsletter_export', {filter: 'active'}) }}" variant="outline" size="sm" class="no-underline w-full sm:w-auto">
+                <twig:ux:icon name="lucide:download" class="size-4 shrink-0" aria-hidden="true" />
                 Exporter (CSV)
-            </a>
-        </div>
+            </twig:Button>
+        </twig:block>
+    </twig:DataPageHeader>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <twig:KpiStatCard label="Abonnés actifs" value="{{ activeCount }}" tone="emerald">
+            <twig:block name="icon"><twig:ux:icon name="lucide:users" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Désabonnés" value="{{ inactiveCount }}" tone="destructive">
+            <twig:block name="icon"><twig:ux:icon name="lucide:user-x" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Total" value="{{ total }}" tone="default">
+            <twig:block name="icon"><twig:ux:icon name="lucide:mail" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Abonnés actifs</h6>
-                        <h3 class="font-bold mb-0">{{ activeCount }}</h3>
-                    </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="users" width="24" height="24" class="text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Désabonnés</h6>
-                        <h3 class="font-bold mb-0">{{ inactiveCount }}</h3>
-                    </div>
-                    <div class="bg-red-100 rounded-full p-3">
-                        <i data-lucide="user-x" width="24" height="24" class="text-destructive"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Total</h6>
-                        <h3 class="font-bold mb-0">{{ total }}</h3>
-                    </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="mail" width="24" height="24" class="text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filtres -->
-    <div class="rounded-lg bg-card shadow-sm mb-6">
-        <div class="p-6">
-            <div class="flex flex-wrap gap-1" role="group" aria-label="Filtres">
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'all'}) }}"
-                   class="{{ currentFilter == 'all' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+    <twig:DataToolbar ariaLabel="Filtrer les abonnés">
+        <twig:block name="content">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Filtres">
+                <twig:Button as="a" href="{{ path('app_admin_newsletter_index', {filter: 'all'}) }}" variant="{{ currentFilter == 'all' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Tous ({{ total }})
-                </a>
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'active'}) }}"
-                   class="{{ currentFilter == 'active' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_newsletter_index', {filter: 'active'}) }}" variant="{{ currentFilter == 'active' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Actifs ({{ activeCount }})
-                </a>
-                <a href="{{ path('app_admin_newsletter_index', {filter: 'inactive'}) }}"
-                   class="{{ currentFilter == 'inactive' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_newsletter_index', {filter: 'inactive'}) }}" variant="{{ currentFilter == 'inactive' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Inactifs ({{ inactiveCount }})
-                </a>
+                </twig:Button>
             </div>
-        </div>
-    </div>
+        </twig:block>
+    </twig:DataToolbar>
 
-    <!-- Liste des abonnés -->
     {% if subscribers|length > 0 %}
-    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-newsletter', list_caption: 'Abonnés newsletter' } %}
-        {% block list_table %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px;">
-                                <input type="checkbox" class="form-check-input" id="selectAll" aria-label="Tout sélectionner">
-                            </th>
-                            <th>Email</th>
-                            <th>Date d'inscription</th>
-                            <th>Date de désabonnement</th>
-                            <th>Source</th>
-                            <th>Statut</th>
-                            <th style="width: 120px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-newsletter', list_caption: 'Abonnés newsletter' } %}
+            {% block list_table %}
+                <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
+                    <twig:Table:Caption class="sr-only">Abonnés à la newsletter</twig:Table:Caption>
+                    <twig:Table:Header>
+                        <twig:Table:Row class="border-b border-border bg-muted/40 hover:bg-muted/40">
+                            <twig:Table:Head scope="col" class="w-12 pr-0">
+                                <input type="checkbox" id="selectAll" class="size-4 rounded border-input accent-primary" aria-label="Tout sélectionner">
+                            </twig:Table:Head>
+                            <twig:Table:Head scope="col" class="min-w-[12rem] font-medium">Email</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="whitespace-nowrap font-medium">Inscription</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="whitespace-nowrap font-medium">Désabonnement</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Source</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Statut</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="w-[1%] text-end font-medium whitespace-nowrap">Actions</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for subscriber in subscribers %}
-                        <tr class="{% if not subscriber.active %}table-secondary{% endif %}">
-                            <td>
-                                <input type="checkbox" class="form-check-input subscriber-checkbox" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
-                            </td>
-                            <td>
-                                <strong>{{ subscriber.email }}</strong>
-                            </td>
-                            <td>
-                                <small>{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</small>
-                            </td>
-                            <td>
-                                {% if subscriber.unsubscribedAt %}
-                                <small class="text-muted-foreground">{{ subscriber.unsubscribedAt|date('d/m/Y H:i') }}</small>
-                                {% else %}
-                                <span class="text-muted-foreground">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if subscriber.source %}
-                                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold">{{ subscriber.source }}</span>
-                                {% else %}
-                                <span class="text-muted-foreground">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if subscriber.active %}
-                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">Actif</span>
-                                {% else %}
-                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">Inactif</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="flex gap-1" role="group">
-                                    {% if subscriber.active %}
-                                    <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline" data-turbo="false">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors" title="Désabonner">
-                                            <i data-lucide="user-x" width="14" height="14"></i>
-                                        </button>
-                                    </form>
+                            <twig:Table:Row class="border-b border-border/60 {{ not subscriber.active ? 'bg-muted/25' : '' }}">
+                                <twig:Table:Cell class="pr-0">
+                                    <input type="checkbox" class="subscriber-checkbox size-4 rounded border-input accent-primary" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="font-medium">{{ subscriber.email }}</twig:Table:Cell>
+                                <twig:Table:Cell class="whitespace-nowrap text-xs tabular-nums text-muted-foreground">{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</twig:Table:Cell>
+                                <twig:Table:Cell class="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
+                                    {% if subscriber.unsubscribedAt %}
+                                        {{ subscriber.unsubscribedAt|date('d/m/Y H:i') }}
+                                    {% else %}
+                                        —
                                     {% endif %}
-                                    <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}"
-                                          class="inline"
-                                          data-turbo="false"
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet abonné ?');">
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if subscriber.source %}
+                                        <twig:Badge variant="outline" class="border-sky-500/30 bg-sky-500/10 text-sky-900 dark:border-sky-500/40 dark:text-sky-100">{{ subscriber.source }}</twig:Badge>
+                                    {% else %}
+                                        <span class="text-muted-foreground">—</span>
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if subscriber.active %}
+                                        <twig:Badge variant="outline" class="border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200">Actif</twig:Badge>
+                                    {% else %}
+                                        <twig:Badge variant="secondary">Inactif</twig:Badge>
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-end">
+                                    <div class="inline-flex flex-nowrap gap-1" role="group">
+                                        {% if subscriber.active %}
+                                            <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline-flex" data-turbo="false">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
+                                                <twig:Button type="submit" variant="outline" size="icon" class="size-9 text-amber-700 hover:bg-amber-500/10 dark:text-amber-400" title="Désabonner">
+                                                    <twig:ux:icon name="lucide:user-x" class="size-4" aria-hidden="true" />
+                                                    <span class="sr-only">Désabonner {{ subscriber.email }}</span>
+                                                </twig:Button>
+                                            </form>
+                                        {% endif %}
+                                        <form method="post"
+                                              action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}"
+                                              class="inline-flex"
+                                              data-turbo="false"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet abonné ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
+                                            <twig:Button type="submit" variant="outline" size="icon" class="size-9 text-destructive hover:bg-destructive/10" title="Supprimer">
+                                                <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" />
+                                                <span class="sr-only">Supprimer {{ subscriber.email }}</span>
+                                            </twig:Button>
+                                        </form>
+                                    </div>
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            {% endblock %}
+            {% block list_cards %}
+                <div class="mb-4 flex items-center gap-2 border-b border-border pb-2">
+                    <input type="checkbox" id="selectAllCards" class="size-4 rounded border-input accent-primary" aria-label="Tout sélectionner (vue cartes)">
+                    <label for="selectAllCards" class="mb-0 text-sm text-muted-foreground cursor-pointer select-none">Sélectionner tout</label>
+                </div>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {% for subscriber in subscribers %}
+                        <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40 {{ not subscriber.active ? 'opacity-80' : '' }}">
+                            <twig:Card:Content class="flex flex-col gap-3 p-5 sm:p-6">
+                                <div class="flex gap-2">
+                                    <input type="checkbox" class="subscriber-checkbox mt-1 size-4 shrink-0 rounded border-input accent-primary" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
+                                    <div class="min-w-0 flex-1">
+                                        <h2 class="mb-1 break-all text-base font-semibold">{{ subscriber.email }}</h2>
+                                        {% if subscriber.active %}
+                                            <twig:Badge variant="outline" class="border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200">Actif</twig:Badge>
+                                        {% else %}
+                                            <twig:Badge variant="secondary">Inactif</twig:Badge>
+                                        {% endif %}
+                                        {% if subscriber.source %}
+                                            <twig:Badge variant="outline" class="ml-1 border-sky-500/30 bg-sky-500/10">{{ subscriber.source }}</twig:Badge>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <dl class="m-0 grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
+                                    <dt class="text-muted-foreground">Inscription</dt>
+                                    <dd class="m-0 text-end tabular-nums">{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</dd>
+                                    <dt class="text-muted-foreground">Désabonnement</dt>
+                                    <dd class="m-0 text-end tabular-nums">{{ subscriber.unsubscribedAt ? subscriber.unsubscribedAt|date('d/m/Y H:i') : '—' }}</dd>
+                                </dl>
+                                <div class="mt-auto flex flex-wrap gap-2 border-t border-border pt-2">
+                                    {% if subscriber.active %}
+                                        <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline-flex" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
+                                            <twig:Button type="submit" variant="outline" size="sm" class="gap-2 text-amber-700 hover:bg-amber-500/10 dark:text-amber-400">
+                                                <twig:ux:icon name="lucide:user-x" class="size-4 shrink-0" aria-hidden="true" /> Désabonner
+                                            </twig:Button>
+                                        </form>
+                                    {% endif %}
+                                    <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" class="inline-flex" data-turbo="false" onsubmit="return confirm('Supprimer cet abonné ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
-                                            <i data-lucide="trash-2" width="14" height="14"></i>
-                                        </button>
+                                        <twig:Button type="submit" variant="outline" size="sm" class="gap-2 text-destructive hover:bg-destructive/10">
+                                            <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" /> Supprimer
+                                        </twig:Button>
                                     </form>
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block list_cards %}
-            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-border">
-                <input type="checkbox" class="form-check-input" id="selectAllCards" aria-label="Tout sélectionner (vue cartes)">
-                <label for="selectAllCards" class="text-sm text-muted-foreground mb-0">Sélectionner tout</label>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for subscriber in subscribers %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full {% if not subscriber.active %}opacity-75{% endif %}">
-                    <div class="p-6 flex flex-col">
-                        <div class="flex gap-2 mb-2">
-                            <input type="checkbox" class="form-check-input subscriber-checkbox shrink-0 mt-1" value="{{ subscriber.id }}" aria-label="Sélectionner {{ subscriber.email }}">
-                            <div class="min-w-0 flex-1">
-                                <h2 class="text-base font-semibold mb-1 break-all">{{ subscriber.email }}</h2>
-                                {% if subscriber.active %}
-                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-2.5 py-0.5 text-xs font-semibold">Actif</span>
-                                {% else %}
-                                <span class="inline-flex items-center rounded-full bg-red-100 text-destructive px-2.5 py-0.5 text-xs font-semibold">Inactif</span>
-                                {% endif %}
-                                {% if subscriber.source %}
-                                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold ml-1">{{ subscriber.source }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <dl class="grid grid-cols-2 text-sm gap-1 mb-4">
-                            <dt class="text-muted-foreground">Inscription</dt>
-                            <dd class="mb-0">{{ subscriber.subscribedAt|date('d/m/Y H:i') }}</dd>
-                            <dt class="text-muted-foreground">Désabonnement</dt>
-                            <dd class="mb-0">{{ subscriber.unsubscribedAt ? subscriber.unsubscribedAt|date('d/m/Y H:i') : '—' }}</dd>
-                        </dl>
-                        <div class="flex flex-wrap gap-2 mt-auto pt-2 border-t border-border">
-                            {% if subscriber.active %}
-                            <form method="post" action="{{ path('app_admin_newsletter_unsubscribe', {id: subscriber.id}) }}" class="inline" data-turbo="false">
-                                <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe_' ~ subscriber.id) }}">
-                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-amber-600 text-amber-600 px-3 py-1.5 text-sm rounded-md hover:bg-amber-600/5 transition-colors"><i data-lucide="user-x" width="14" height="14" class="mr-1"></i>Désabonner</button>
-                            </form>
-                            {% endif %}
-                            <form method="post" action="{{ path('app_admin_newsletter_delete', {id: subscriber.id}) }}" class="inline" data-turbo="false" onsubmit="return confirm('Supprimer cet abonné ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ subscriber.id) }}">
-                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
-                            </form>
-                        </div>
-                    </div>
-                </article>
-                {% endfor %}
-            </div>
-        {% endblock %}
-        {% block list_footer %}
-            {% if totalPages > 1 %}
-            <div class="card-footer bg-white border-t border-border rounded-b">
-                <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0 justify-center flex-wrap">
-                        {% if currentPage > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_newsletter_index', {filter: currentFilter, page: currentPage - 1}) }}">
-                                <i data-lucide="chevron-left" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% for i in 1..totalPages %}
-                        {% if i == currentPage %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ i }}</span>
-                        </li>
-                        {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_newsletter_index', {filter: currentFilter, page: i}) }}">{{ i }}</a>
-                        </li>
-                        {% elseif i == 4 or i == totalPages - 3 %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if currentPage < totalPages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ path('app_admin_newsletter_index', {filter: currentFilter, page: currentPage + 1}) }}">
-                                <i data-lucide="chevron-right" width="14" height="14"></i>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
+                            </twig:Card:Content>
+                        </twig:Card>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+            {% block list_footer %}
+                {% include 'components/admin/list_pagination.html.twig' with {
+                    routeName: 'app_admin_newsletter_index',
+                    routeParams: { filter: currentFilter },
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                } %}
+            {% endblock %}
+        {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="users" width="48" height="48" class="text-muted-foreground mb-4"></i>
-            <p class="text-muted-foreground mb-0">Aucun abonné{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
-        </div>
-    </div>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="flex flex-col items-center justify-center gap-3 py-14 text-center">
+                <twig:ux:icon name="lucide:users" class="size-12 text-muted-foreground" aria-hidden="true" />
+                <p class="m-0 text-sm text-muted-foreground">Aucun abonné{{ currentFilter != 'all' ? ' (' ~ currentFilter ~ ')' : '' }}</p>
+            </twig:Card:Content>
+        </twig:Card>
     {% endif %}
 </div>
 

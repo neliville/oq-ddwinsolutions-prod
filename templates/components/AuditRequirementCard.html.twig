@@ -1,0 +1,95 @@
+{# @var requirement \App\Entity\Qse\AuditRequirement #}
+{# @var evaluation \App\Entity\Qse\AuditEvaluation|null #}
+{# @var audit \App\Entity\Qse\Audit #}
+{% set ev = evaluation %}
+{% set v = audit_effective_verdict(ev) %}
+{% set selectedV = v ?? audit_verdict_choices()[0] %}
+{% set filterKey = v ? v.value : 'not_evaluated' %}
+<div
+    id="audit-req-{{ requirement.id }}"
+    class="audit-req-card rounded-xl border border-border bg-card shadow-sm overflow-hidden transition-shadow hover:shadow-md"
+    data-audit-cockpit-target="card"
+    data-filter="{{ filterKey }}"
+    data-search="{{ (requirement.isoArticle ~ ' ' ~ requirement.requirementText)|lower }}"
+>
+    <details class="group" {{ expanded ? 'open' : '' }}>
+        <summary class="list-none cursor-pointer px-4 pt-4 pb-2 border-b border-border/60 bg-muted/20 [&::-webkit-details-marker]:hidden">
+            <div class="flex flex-wrap items-start gap-2">
+                <twig:ux:icon name="lucide:chevron-down" class="size-4 shrink-0 mt-0.5 text-muted-foreground transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+                <div class="min-w-0 flex-1 space-y-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-mono bg-background border border-border px-2 py-0.5 rounded shrink-0">{{ requirement.isoArticle }}</span>
+                        {% if requirement.pdcaPhase %}
+                            <twig:Badge variant="outline" class="text-[10px] uppercase tracking-wide shrink-0">PDCA {{ requirement.pdcaPhase.value }}</twig:Badge>
+                        {% endif %}
+                        {% if v %}
+                            <twig:Badge variant="{{ v.value == 'conform' ? 'default' : (v.value in ['major_nc','minor_nc'] ? 'destructive' : 'secondary') }}" class="shrink-0">
+                                {{ audit_verdict_label(v) }}
+                            </twig:Badge>
+                        {% else %}
+                            <twig:Badge variant="outline" class="shrink-0">Non évalué</twig:Badge>
+                        {% endif %}
+                        {% if ev and ev.id and not readOnly and audit_verdict_suggests_capa(v) %}
+                            <twig:Button as="a" href="{{ path('app_qse_audit_suggest_capa', { id: audit.id, evaluationId: ev.id }) }}" variant="outline" size="sm" class="no-underline shrink-0 ms-auto">
+                                CAPA
+                            </twig:Button>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-sm font-semibold text-foreground leading-snug m-0">{{ requirement.requirementText }}</h3>
+                    {% if requirement.subChapter %}
+                        <p class="text-xs text-muted-foreground m-0">{{ requirement.subChapter }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </summary>
+        {% if requirement.isoComment %}
+            <div class="px-4 py-2 text-xs text-amber-950 dark:text-amber-100/90 bg-amber-50 dark:bg-amber-950/35 border-b border-amber-200/80 dark:border-amber-900/50">
+                <span class="font-semibold">Commentaire ISO</span> — {{ requirement.isoComment }}
+            </div>
+        {% endif %}
+        {% if requirement.businessLink %}
+            <p class="px-4 py-1.5 text-xs text-muted-foreground m-0 border-b border-border/40">Lien métier : {{ requirement.businessLink }}</p>
+        {% endif %}
+        {% if readOnly %}
+            <div class="px-4 py-3 text-sm space-y-1">
+                <p class="m-0"><span class="text-muted-foreground">Preuves :</span> {{ ev and ev.evidence ? ev.evidence : '—' }}</p>
+                <p class="m-0"><span class="text-muted-foreground">Commentaire :</span> {{ ev and ev.auditComment ? ev.auditComment : '—' }}</p>
+            </div>
+        {% else %}
+            <div class="px-4 py-3 space-y-4">
+                <div class="rounded-lg border border-border/60 bg-muted/10 p-3 space-y-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">Décision</p>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" for="verdict-{{ requirement.id }}">Verdict</label>
+                        <select id="verdict-{{ requirement.id }}" name="eval[{{ requirement.id }}][verdict]" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">
+                            {% for verdict in audit_verdict_choices() %}
+                                <option value="{{ verdict.value }}" {{ selectedV == verdict ? 'selected' : '' }}>
+                                    {{ verdict.label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" for="crit-{{ requirement.id }}">Criticité (court libellé)</label>
+                        <input id="crit-{{ requirement.id }}" type="text" name="eval[{{ requirement.id }}][criticality]" maxlength="50" value="{{ ev ? ev.criticality|default('') : '' }}" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm" placeholder="ex. élevée, site A">
+                    </div>
+                </div>
+                <div class="rounded-lg border border-border/60 bg-muted/5 p-3 space-y-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">Preuves & commentaires</p>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" for="evid-{{ requirement.id }}">Preuves / références</label>
+                        <textarea id="evid-{{ requirement.id }}" name="eval[{{ requirement.id }}][evidence]" rows="2" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm" placeholder="Documents, enregistrements…">{{ ev ? ev.evidence|default('') : '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" for="obs-{{ requirement.id }}">Observation terrain</label>
+                        <textarea id="obs-{{ requirement.id }}" name="eval[{{ requirement.id }}][field_observation]" rows="2" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">{{ ev ? ev.fieldObservation|default('') : '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" for="com-{{ requirement.id }}">Commentaire d’audit</label>
+                        <textarea id="com-{{ requirement.id }}" name="eval[{{ requirement.id }}][comment]" rows="2" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">{{ ev ? ev.auditComment|default('') : '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </details>
+</div>

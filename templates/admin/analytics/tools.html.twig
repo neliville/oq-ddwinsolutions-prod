@@ -3,37 +3,29 @@
 {% block title %}Créations par outil | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Utilisation des outils</h1>
-            <p class="text-muted-foreground mb-0">Nombre d'analyses enregistrées par outil (tous utilisateurs) et comparaison avec les exports tracés.</p>
-        </div>
-        <div class="flex flex-wrap gap-2">
-            <a href="{{ path('app_admin_export_analytics_index') }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline">
-                <i data-lucide="download" class="mr-1" width="16" height="16"></i> Exports
-            </a>
-            <a href="{{ path('app_admin_analytics_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline">
-                <i data-lucide="bar-chart-2" class="mr-1" width="16" height="16"></i> Analytics
-            </a>
-        </div>
-    </div>
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <twig:DataPageHeader title="Utilisation des outils" description="Nombre d'analyses enregistrées par outil (tous utilisateurs) et comparaison avec les exports tracés.">
+        <twig:block name="actions">
+            <div class="flex flex-wrap gap-2">
+                <twig:Button as="a" href="{{ path('app_admin_export_analytics_index') }}" variant="default" size="sm" class="no-underline gap-1.5">
+                    <twig:ux:icon name="lucide:download" class="size-4 shrink-0" aria-hidden="true" />
+                    Exports
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_index') }}" variant="outline" size="sm" class="no-underline gap-1.5">
+                    <twig:ux:icon name="lucide:bar-chart-2" class="size-4 shrink-0" aria-hidden="true" />
+                    Analytics
+                </twig:Button>
+            </div>
+        </twig:block>
+    </twig:DataPageHeader>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Analyses enregistrées (total)</h6>
-                <h3 class="font-bold mb-0">{{ totalCreations|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">Toutes sauvegardes confondues sur les 6 outils</small>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Exports tracés (total)</h6>
-                <h3 class="font-bold mb-0">{{ totalExports|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">PDF, PNG, JSON… (voir aussi la page Exports)</small>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <twig:KpiStatCard label="Analyses enregistrées" value="{{ totalCreations|number_format(0, ',', ' ') }}" tone="default" helper="Toutes sauvegardes sur les outils">
+            <twig:block name="icon"><twig:ux:icon name="lucide:database" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Exports tracés" value="{{ totalExports|number_format(0, ',', ' ') }}" tone="sky" helper="PDF, PNG, JSON… — page Exports">
+            <twig:block name="icon"><twig:ux:icon name="lucide:download" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">

@@ -44,7 +44,9 @@ final class AuditRequirementRowNormalizer
         }
         $sub = isset($row['sub_chapter']) ? trim((string) $row['sub_chapter']) : null;
         $sub = $sub === '' ? null : $sub;
-        $comment = isset($row['iso_comment']) ? trim((string) $row['iso_comment']) : null;
+        $comment = isset($row['iso_comment'])
+            ? trim((string) $row['iso_comment'])
+            : (isset($row['commentaire']) ? trim((string) $row['commentaire']) : '');
         if ($comment === '') {
             $comment = null;
         }

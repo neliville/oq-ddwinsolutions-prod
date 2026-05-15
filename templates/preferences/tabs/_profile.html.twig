@@ -1,0 +1,18 @@
+{% include 'preferences/_panel_header.html.twig' with {
+    title: 'Profil professionnel',
+    description: 'Vos informations d’identité et d’entreprise. L’adresse email se modifie depuis <a href="' ~ path('app_profile_index') ~ '" class="app-inline-link font-medium">Mon profil</a>.',
+} only %}
+
+{{ form_start(professional_form, { attr: { class: 'pref-form' } }) }}
+    <div class="pref-form-grid pref-form-grid--two">
+        <div class="pref-field-group">{{ form_row(professional_form.firstName) }}</div>
+        <div class="pref-field-group">{{ form_row(professional_form.lastName) }}</div>
+        <div class="pref-field-group pref-form-grid__full">{{ form_row(professional_form.companyName) }}</div>
+        <div class="pref-field-group">{{ form_row(professional_form.jobFunction) }}</div>
+        <div class="pref-field-group">{{ form_row(professional_form.sector) }}</div>
+        <div class="pref-field-group">{{ form_row(professional_form.companySize) }}</div>
+        <div class="pref-field-group pref-form-grid__full">{{ form_row(professional_form.mainActivity) }}</div>
+        <div class="pref-field-group pref-form-grid__full">{{ form_row(professional_form.acquisitionSource) }}</div>
+    </div>
+    {% include 'preferences/_form_footer.html.twig' %}
+{{ form_end(professional_form) }}

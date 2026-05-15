@@ -6,6 +6,7 @@ namespace App\Repository\Qse;
 
 use App\Entity\Qse\Audit;
 use App\Entity\User;
+use App\Qse\Enum\AuditExecutionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -69,5 +70,53 @@ class AuditRepository extends ServiceEntityRepository
             ->setParameter('to', $to)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function adminCountNonTerminated(): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.status NOT IN (:done)')
+            ->setParameter('done', [
+                AuditExecutionStatus::TERMINE,
+                AuditExecutionStatus::VALIDE,
+                AuditExecutionStatus::ARCHIVE,
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function adminCountStaleDrafts(\DateTimeImmutable $olderThan): int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.status = :brouillon')
+            ->andWhere('a.updatedAt IS NOT NULL OR a.createdAt IS NOT NULL')
+            ->andWhere('COALESCE(a.updatedAt, a.createdAt) < :cutoff')
+            ->setParameter('brouillon', AuditExecutionStatus::BROUILLON)
+            ->setParameter('cutoff', $olderThan)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<Audit>
+     */
+    public function adminFindRecentNonTerminated(int $limit = 25): array
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.owner', 'o')->addSelect('o')
+            ->join('a.auditStandard', 's')->addSelect('s')
+            ->where('a.status NOT IN (:done)')
+            ->setParameter('done', [
+                AuditExecutionStatus::TERMINE,
+                AuditExecutionStatus::VALIDE,
+                AuditExecutionStatus::ARCHIVE,
+            ])
+            ->orderBy('a.auditedAt', 'DESC')
+            ->addOrderBy('a.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

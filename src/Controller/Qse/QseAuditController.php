@@ -11,15 +11,21 @@ use App\Entity\User;
 use App\Entity\Qse\Audit;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\Qse\AuditStandard;
+use App\Qse\Audit\ViewModel\AuditCockpitViewModelFactory;
+use App\Qse\Enum\AuditVerdict;
 use App\Qse\Event\AuditEvaluationSavedEvent;
+use App\Qse\Export\AuditDocumentExporter;
+use App\Qse\Export\AuditSpreadsheetExporter;
 use App\Qse\Service\AuditComplianceCalculator;
 use App\Qse\Service\AuditEvaluationCapaFactory;
+use App\Qse\Service\AuditEvaluationVerdictHelper;
 use App\Repository\Qse\AuditEvaluationRepository;
 use App\Repository\Qse\AuditRepository;
 use App\Repository\Qse\CAPAActionRepository;
 use App\Repository\Qse\AuditRequirementRepository;
 use App\Repository\Qse\AuditStandardRepository;
 use App\Repository\UserPreferencesRepository;
+use App\Service\Export\ExportBrandingResolver;
 use App\Service\Onboarding\OnboardingActivationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,6 +52,10 @@ final class QseAuditController extends AbstractController
         private readonly TrackingEventRecorder $trackingEventRecorder,
         private readonly UserPreferencesRepository $userPreferencesRepository,
         private readonly OnboardingActivationService $onboardingActivationService,
+        private readonly ExportBrandingResolver $exportBrandingResolver,
+        private readonly AuditCockpitViewModelFactory $auditCockpitViewModelFactory,
+        private readonly AuditSpreadsheetExporter $auditSpreadsheetExporter,
+        private readonly AuditDocumentExporter $auditDocumentExporter,
     ) {
     }
 
@@ -151,6 +161,106 @@ final class QseAuditController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/export.xlsx', name: 'export_xlsx', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function exportXlsx(int $id): Response
+    {
+        $user = $this->getUser();
+        if (!\is_object($user)) {
+            throw $this->createAccessDeniedException();
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+        $evaluationsByReqId = [];
+        foreach ($audit->getEvaluations() as $ev) {
+            $rid = $ev->getRequirement()?->getId();
+            if ($rid !== null) {
+                $evaluationsByReqId[$rid] = $ev;
+            }
+        }
+        $metrics = $this->auditCockpitViewModelFactory->build($audit);
+        $spreadsheet = $this->auditSpreadsheetExporter->build($audit, $metrics, $evaluationsByReqId);
+
+        $this->trackingEventRecorder->record(
+            TrackingEventType::EXPORT_TRIGGERED,
+            [
+                'resource_type' => 'qse_audit',
+                'resource_id' => $audit->getId(),
+                'format' => 'xlsx',
+            ],
+            $user,
+            'qse_audit',
+            'export_xlsx',
+            'web',
+        );
+
+        $filename = 'audit-' . $audit->getId() . '.xlsx';
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $buffer = fopen('php://temp', 'r+');
+        if ($buffer === false) {
+            throw new \RuntimeException('Buffer mémoire indisponible pour l’export XLSX.');
+        }
+        $writer->save($buffer);
+        rewind($buffer);
+        $content = stream_get_contents($buffer) ?: '';
+        fclose($buffer);
+
+        return new Response($content, Response::HTTP_OK, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    #[Route('/{id}/export.docx', name: 'export_docx', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function exportDocx(int $id, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!\is_object($user)) {
+            throw $this->createAccessDeniedException();
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+        $variant = $request->query->getString('variant');
+        if (!\in_array($variant, ['direction', 'terrain', 'certification'], true)) {
+            $variant = 'direction';
+        }
+        $evaluationsByReqId = [];
+        foreach ($audit->getEvaluations() as $ev) {
+            $rid = $ev->getRequirement()?->getId();
+            if ($rid !== null) {
+                $evaluationsByReqId[$rid] = $ev;
+            }
+        }
+        $metrics = $this->auditCockpitViewModelFactory->build($audit);
+        $branding = $this->exportBrandingResolver->resolveForUser($user instanceof User ? $user : null);
+        $binary = $this->auditDocumentExporter->writeDocxToString($audit, $metrics, $evaluationsByReqId, $branding, $variant);
+
+        $this->trackingEventRecorder->record(
+            TrackingEventType::EXPORT_TRIGGERED,
+            [
+                'resource_type' => 'qse_audit',
+                'resource_id' => $audit->getId(),
+                'format' => 'docx',
+                'variant' => $variant,
+            ],
+            $user,
+            'qse_audit',
+            'export_docx',
+            'web',
+        );
+
+        $filename = sprintf('audit-%d-%s.docx', $audit->getId(), $variant);
+
+        return new Response($binary, Response::HTTP_OK, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(int $id, Request $request): Response
     {
@@ -186,6 +296,9 @@ final class QseAuditController extends AbstractController
             }
         }
 
+        $cockpitMetrics = $this->auditCockpitViewModelFactory->build($audit);
+        $chartConfigJson = json_encode($cockpitMetrics->chartConfig, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE);
+
         if (in_array($audit->getStatus(), [AuditExecutionStatus::TERMINE, AuditExecutionStatus::VALIDE], true)) {
             $this->trackingEventRecorder->record(
                 TrackingEventType::AUDIT_COMPLETED,
@@ -201,61 +314,11 @@ final class QseAuditController extends AbstractController
             'audit' => $audit,
             'chapters' => $chapters,
             'currentChapter' => $chapter,
+            'showRequirementsForm' => $chapter !== '',
             'requirements' => $requirements,
             'evaluationsByReqId' => $evaluationsByReqId,
-        ]);
-    }
-
-    #[Route('/{id}/export.json', name: 'export_json', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function exportJson(int $id): Response
-    {
-        $user = $this->getUser();
-        if (!\is_object($user)) {
-            throw $this->createAccessDeniedException();
-        }
-        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
-        if (!$audit instanceof Audit) {
-            throw $this->createNotFoundException();
-        }
-        $std = $audit->getAuditStandard();
-        $out = [
-            'audit' => [
-                'id' => $audit->getId(),
-                'standard' => $std?->getCode(),
-                'companyName' => $audit->getCompanyName(),
-                'auditedAt' => $audit->getAuditedAt()?->format('Y-m-d'),
-                'globalComplianceRate' => $audit->getGlobalComplianceRate(),
-            ],
-            'evaluations' => [],
-        ];
-        foreach ($audit->getEvaluations() as $ev) {
-            $req = $ev->getRequirement();
-            $out['evaluations'][] = [
-                'requirementId' => $req?->getId(),
-                'legacyKey' => $req?->getLegacyKey(),
-                'chapter' => $req?->getChapter(),
-                'article' => $req?->getIsoArticle(),
-                'score' => $ev->getScore(),
-                'comment' => $ev->getAuditComment(),
-                'evidence' => $ev->getEvidence(),
-            ];
-        }
-
-        $this->trackingEventRecorder->record(
-            TrackingEventType::EXPORT_TRIGGERED,
-            [
-                'resource_type' => 'qse_audit',
-                'resource_id' => $audit->getId(),
-                'format' => 'json',
-            ],
-            $user,
-            'qse_audit',
-            'export_json',
-            'web',
-        );
-
-        return $this->json($out, Response::HTTP_OK, [
-            'Content-Disposition' => 'attachment; filename="audit-' . $audit->getId() . '.json"',
+            'cockpitMetrics' => $cockpitMetrics,
+            'chartConfigJson' => $chartConfigJson,
         ]);
     }
 
@@ -297,9 +360,9 @@ final class QseAuditController extends AbstractController
             if ($req === null || $req->getChapter() !== $chapter || $req->getAuditStandard()?->getId() !== $std->getId()) {
                 continue;
             }
-            $scoreRaw = $payload['score'] ?? '';
-            $score = $scoreRaw === '' ? null : (int) $scoreRaw;
-            if ($score !== null && ($score < 0 || $score > 3)) {
+            $verdictRaw = isset($payload['verdict']) ? trim((string) $payload['verdict']) : '';
+            $verdict = $verdictRaw !== '' ? AuditVerdict::tryFrom($verdictRaw) : AuditVerdict::NOT_EVALUATED;
+            if ($verdictRaw !== '' && $verdict === null) {
                 continue;
             }
             $ev = $this->evaluationRepository->findOneByAuditAndRequirement($audit, $req);
@@ -310,9 +373,19 @@ final class QseAuditController extends AbstractController
                 $ev->setOwner($user);
                 $this->entityManager->persist($ev);
             }
-            $ev->setScore($score);
+            if ($verdict !== null) {
+                $ev->setVerdict($verdict);
+                AuditEvaluationVerdictHelper::syncLegacyScore($ev);
+            }
             $ev->setAuditComment(isset($payload['comment']) ? (string) $payload['comment'] : null);
             $ev->setEvidence(isset($payload['evidence']) ? (string) $payload['evidence'] : null);
+            $fieldObs = isset($payload['field_observation']) ? trim((string) $payload['field_observation']) : '';
+            $ev->setFieldObservation($fieldObs !== '' ? $fieldObs : null);
+            $crit = isset($payload['criticality']) ? trim((string) $payload['criticality']) : '';
+            if (mb_strlen($crit) > 50) {
+                $crit = mb_substr($crit, 0, 50);
+            }
+            $ev->setCriticality($crit !== '' ? $crit : null);
             $this->eventDispatcher->dispatch(new AuditEvaluationSavedEvent($ev));
         }
         $this->complianceCalculator->recalculate($audit);

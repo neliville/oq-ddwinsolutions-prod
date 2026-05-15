@@ -1,0 +1,28 @@
+{# Paramètres : routeName (string), routeParams (hash sans page), currentPage, totalPages #}
+{% if totalPages > 1 %}
+<div class="border-t border-border bg-muted/20 px-4 py-4 sm:px-5">
+    <nav class="flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
+        {% if currentPage > 1 %}
+            <twig:Button as="a" href="{{ path(routeName, routeParams|merge({page: currentPage - 1})) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page précédente">
+                <twig:ux:icon name="lucide:chevron-left" class="size-4" aria-hidden="true" />
+            </twig:Button>
+        {% endif %}
+
+        {% for i in 1..totalPages %}
+            {% if i == currentPage %}
+                <twig:Button type="button" variant="default" size="sm" class="pointer-events-none min-w-9" disabled aria-current="page">{{ i }}</twig:Button>
+            {% elseif i <= 3 or i >= totalPages - 2 or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                <twig:Button as="a" href="{{ path(routeName, routeParams|merge({page: i})) }}" variant="outline" size="sm" class="min-w-9 no-underline">{{ i }}</twig:Button>
+            {% elseif i == 4 or i == totalPages - 3 %}
+                <span class="px-2 text-sm text-muted-foreground" aria-hidden="true">…</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if currentPage < totalPages %}
+            <twig:Button as="a" href="{{ path(routeName, routeParams|merge({page: currentPage + 1})) }}" variant="outline" size="icon" class="no-underline size-9" aria-label="Page suivante">
+                <twig:ux:icon name="lucide:chevron-right" class="size-4" aria-hidden="true" />
+            </twig:Button>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}

@@ -20,8 +20,10 @@ Les lignes sont normalisées par `App\Qse\Import\AuditRequirementRowNormalizer` 
 
 ## Racine JSON (CLI `app:qse:import-audit-requirements-json`)
 
+- **Format DDWin (ISO 14001 / 45001)** : `{ "norme": "...", "onglet": "14001"|"45001", "exigences": [{ "article", "paragraphe", "exigence", "commentaire" }] }` — le code référentiel est déduit de `onglet` (`14001` → `iso_14001`, `45001` → `iso_45001`). Les lignes sans `paragraphe`/`article` reprennent le dernier paragraphe connu ; les chapitres affichés sont des libellés du type `4. Contexte de l'organisation`, triés dans l’ordre numérique des clauses (4 … 10).
 - Tableau de lignes : `[{...}, {...}]`
 - Ou objet avec clé `rows` : `{ "rows": [{...}] }`
+- **Format ISO 9001 (chapitres nommés)** : `{ "4. Contexte": [{ "id", "article", "exigence", "commentaire", "numero" }] }` — réservé à `iso_9001` (commande dédiée `app:qse:import-iso9001-requirements` recommandée).
 
 ## Excel (admin — première feuille)
 
@@ -52,6 +54,11 @@ Après lecture Excel, chaque ligne est un tableau associatif passé au même nor
 Commande d’import (référentiel par code) :
 
 ```bash
+# Purge ciblée 14001/45001 (ne touche pas iso_9001) puis import des JSON complets
+php bin/console app:qse:purge-audit-requirements --standards=iso_14001,iso_45001 --force
+php bin/console app:qse:import-audit-requirements-json data/fixtures/iso_14001.json.json
+php bin/console app:qse:import-audit-requirements-json data/fixtures/iso_45001.json.json
+
 php bin/console app:qse:import-audit-requirements-json data/fixtures/iso_14001_requirements_sample.json --standard=iso_14001
 php bin/console app:qse:import-audit-requirements-json data/fixtures/iso_45001_requirements_sample.json --standard=iso_45001
 ```

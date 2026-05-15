@@ -5,188 +5,46 @@
 {% block meta_description %}Personnalisez votre espace QHSE — OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-4xl mx-auto px-4 py-6">
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold mb-1">Préférences</h1>
-        <p class="text-muted-foreground text-sm mb-0">Personnalisez votre profil, le pilotage QHSE, les notifications et l’affichage du tableau de bord.</p>
+<div class="preferences-page">
+    <header class="preferences-page__header">
+        <h1 class="preferences-page__title">Préférences</h1>
+        <p class="preferences-page__subtitle">Gérez votre compte, le pilotage QHSE, les notifications et l’affichage du tableau de bord.</p>
+    </header>
+
+    <div class="preferences-page__layout">
+        {% include 'preferences/_nav.html.twig' %}
+
+        <div class="preferences-panel">
+            <div class="preferences-panel__inner">
+                {% if active_tab == 'profile' %}
+                    {% include 'preferences/tabs/_profile.html.twig' %}
+                {% elseif active_tab == 'qhse' %}
+                    {% include 'preferences/tabs/_qhse.html.twig' %}
+                {% elseif active_tab == 'notifications' %}
+                    {% include 'preferences/tabs/_notifications.html.twig' %}
+                {% elseif active_tab == 'exports' %}
+                    {% include 'preferences/tabs/_exports.html.twig' %}
+                {% elseif active_tab == 'dashboard' %}
+                    {% include 'preferences/tabs/_dashboard.html.twig' %}
+                {% elseif active_tab == 'security' %}
+                    {% include 'preferences/tabs/_security.html.twig' %}
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-    <twig:Tabs defaultValue="{{ active_tab }}" class="w-full">
-        <twig:Tabs:List variant="line" class="w-full flex-wrap justify-start gap-1 mb-6">
-            <twig:Tabs:Trigger value="profile">Profil</twig:Tabs:Trigger>
-            <twig:Tabs:Trigger value="qhse">QHSE</twig:Tabs:Trigger>
-            <twig:Tabs:Trigger value="notifications">Notifications</twig:Tabs:Trigger>
-            <twig:Tabs:Trigger value="exports">Exports</twig:Tabs:Trigger>
-            <twig:Tabs:Trigger value="dashboard">Dashboard</twig:Tabs:Trigger>
-            <twig:Tabs:Trigger value="security">Sécurité</twig:Tabs:Trigger>
-        </twig:Tabs:List>
-
-        <twig:Tabs:Content value="profile">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    <p class="text-sm text-muted-foreground mb-4">
-                        L’adresse email se modifie depuis
-                        <a href="{{ path('app_profile_index') }}" class="app-inline-link font-medium">Mon profil</a>.
-                    </p>
-                    {{ form_start(professional_form, { attr: { class: 'space-y-4' } }) }}
-                        {{ form_row(professional_form.firstName) }}
-                        {{ form_row(professional_form.lastName) }}
-                        {{ form_row(professional_form.companyName) }}
-                        {{ form_row(professional_form.jobFunction) }}
-                        {{ form_row(professional_form.sector) }}
-                        {{ form_row(professional_form.companySize) }}
-                        {{ form_row(professional_form.mainActivity) }}
-                        {{ form_row(professional_form.acquisitionSource) }}
-                        <div class="flex justify-end pt-2">
-                            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-                        </div>
-                    {{ form_end(professional_form) }}
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-
-        <twig:Tabs:Content value="qhse">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    {{ form_start(qhse_form, { attr: { class: 'space-y-4' } }) }}
-                        {{ form_row(qhse_form.primaryStandard) }}
-                        {{ form_row(qhse_form.qhsePriority) }}
-                        {{ form_row(qhse_form.pilotingFocus) }}
-                        <p class="text-xs text-muted-foreground">Ces choix influencent l’accueil du tableau de bord (texte d’orientation) et pourront affiner les suggestions futures.</p>
-                        <div class="flex justify-end pt-2">
-                            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-                        </div>
-                    {{ form_end(qhse_form) }}
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-
-        <twig:Tabs:Content value="notifications">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    {{ form_start(notification_form, { attr: { class: 'space-y-4' } }) }}
-                        {{ form_row(notification_form.notifyOverdueActions) }}
-                        {{ form_row(notification_form.notifyAuditsToPrepare) }}
-                        {{ form_row(notification_form.notifyCapaVerification) }}
-                        {{ form_row(notification_form.notifyCriticalRisks) }}
-                        {{ form_row(notification_form.notifyWeeklyDigest) }}
-                        {{ form_row(notification_form.notificationFrequency) }}
-                        <p class="text-xs text-muted-foreground">L’envoi d’e-mails automatiques sera branché progressivement ; vos choix sont déjà enregistrés.</p>
-                        <div class="flex justify-end pt-2">
-                            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-                        </div>
-                    {{ form_end(notification_form) }}
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-
-        <twig:Tabs:Content value="exports">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    {{ form_start(export_form, { attr: { class: 'space-y-4' } }) }}
-                        {{ form_row(export_form.exportDisplayName) }}
-                        {{ form_row(export_form.exportJobTitle) }}
-                        {{ form_row(export_form.exportCompanyName) }}
-                        {{ form_row(export_form.exportPdfFooter) }}
-                        <p class="text-xs text-muted-foreground">Les outils peuvent récupérer ces libellés via l’API (connecté). Le logo personnalisé pourra être ajouté ultérieurement.</p>
-                        <div class="flex justify-end pt-2">
-                            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-                        </div>
-                    {{ form_end(export_form) }}
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-
-        <twig:Tabs:Content value="dashboard">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    {% include 'preferences/_dashboard_layout_form.html.twig' %}
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-
-        <twig:Tabs:Content value="security">
-            <twig:Card class="border-border/80 shadow-sm">
-                <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    <p class="text-sm text-muted-foreground">Pour modifier votre mot de passe, nous vous envoyons un lien sécurisé par email (même procédure que la page « mot de passe oublié »).</p>
-                    <twig:Dialog id="preferences-password-reset">
-                        <twig:Button
-                            type="button"
-                            variant="outline"
-                            class="w-full sm:w-auto"
-                            data-preferences-reset-opener
-                            data-action="click->ux-dialog#open"
-                            data-ux-dialog-target="trigger"
-                            aria-haspopup="dialog"
-                            aria-expanded="false"
-                        >
-                            Réinitialiser mon mot de passe
-                        </twig:Button>
-                        <twig:Dialog:Content>
-                            <twig:Dialog:Header>
-                                <twig:Dialog:Title>Réinitialiser votre mot de passe</twig:Dialog:Title>
-                                <twig:Dialog:Description class="text-left text-sm leading-relaxed text-muted-foreground">
-                                    Un lien temporaire vous permet de définir un nouveau mot de passe. Nous envoyons l’email à l’adresse de votre compte connecté.
-                                </twig:Dialog:Description>
-                            </twig:Dialog:Header>
-                            <div class="mt-4 space-y-4 text-sm" data-preferences-password-reset-root>
-                                <div data-step="form" class="space-y-4">
-                                    <div class="rounded-md border border-border bg-muted/30 p-3">
-                                        <p class="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">Compte</p>
-                                        <p class="m-0 mt-1 break-all font-medium text-foreground">{{ app.user.email }}</p>
-                                    </div>
-                                    <ul class="m-0 list-none space-y-2 p-0 text-muted-foreground">
-                                        <li class="flex gap-2">
-                                            <span aria-hidden="true">🕒</span>
-                                            <span>Chaque lien est valable <strong class="text-foreground">60 minutes</strong>.</span>
-                                        </li>
-                                        <li class="flex gap-2">
-                                            <span aria-hidden="true">🔐</span>
-                                            <span>Les mots de passe sont chiffrés ; nous recommandons un gestionnaire de mots de passe.</span>
-                                        </li>
-                                        <li class="flex gap-2">
-                                            <span aria-hidden="true">💬</span>
-                                            <span>Besoin d’aide ? <a class="app-inline-link font-medium" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a></span>
-                                        </li>
-                                    </ul>
-                                    <p class="text-xs text-muted-foreground m-0">Vous recevrez immédiatement un email ; pensez à vérifier le dossier indésirables.</p>
-                                    <input type="hidden" id="preferences-password-reset-csrf" value="{{ csrf_token('preferences_password_reset') }}">
-                                    <p data-reset-feedback class="hidden text-sm font-medium text-destructive" role="alert"></p>
-                                    <twig:Dialog:Footer class="mt-2 flex flex-col-reverse gap-2 border-t border-border/60 pt-4 sm:flex-row sm:justify-end">
-                                        <twig:Button type="button" variant="secondary" data-action="click->ux-dialog#close">Annuler</twig:Button>
-                                        <twig:Button type="button" variant="default" data-send-password-reset data-reset-url="{{ path('app_preferences_request_password_reset') }}">
-                                            Envoyer le lien sécurisé
-                                        </twig:Button>
-                                    </twig:Dialog:Footer>
-                                </div>
-                                <div data-step="success" class="hidden space-y-4">
-                                    <div class="rounded-md border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
-                                        <p class="m-0 font-medium">Vérifiez votre messagerie</p>
-                                        <p class="mt-2 mb-0 text-muted-foreground" data-success-message></p>
-                                    </div>
-                                    <div class="mt-2 flex justify-end border-t border-border/60 pt-4">
-                                        <twig:Button type="button" variant="default" data-action="click->ux-dialog#close">Fermer</twig:Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </twig:Dialog:Content>
-                    </twig:Dialog>
-                    <p class="text-xs text-muted-foreground mb-0">
-                        Préférez la page complète ?
-                        <a href="{{ path('app_forgot_password_request') }}" class="app-inline-link font-medium">Ouvrir la réinitialisation classique</a>
-                        — vous restez connecté sur cet appareil jusqu’à déconnexion.
-                    </p>
-                </twig:Card:Content>
-            </twig:Card>
-        </twig:Tabs:Content>
-    </twig:Tabs>
 </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('js/export-branding.js') }}"></script>
     <script>
     (function () {
+        function invalidateExportBrandingCacheIfNeeded() {
+            if (window.OqExportBranding && typeof window.OqExportBranding.invalidateCache === 'function') {
+                window.OqExportBranding.invalidateCache();
+            }
+        }
         function resetPasswordDialogUi(root) {
             if (!root) return;
             var formStep = root.querySelector('[data-step="form"]');
@@ -251,8 +109,31 @@
                     });
             });
         }
-        document.addEventListener('DOMContentLoaded', bindPreferencesPasswordReset);
-        document.addEventListener('turbo:load', bindPreferencesPasswordReset);
+        function scrollActivePrefNavIntoView() {
+            var nav = document.querySelector('.pref-nav');
+            if (!window.matchMedia('(min-width: 768px) and (max-width: 1023px)').matches) return;
+            var active = nav.querySelector('.pref-nav__item.is-active, .pref-nav__item[aria-current="page"]');
+            if (!active || nav.scrollWidth <= nav.clientWidth) return;
+            active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'auto' });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            bindPreferencesPasswordReset();
+            scrollActivePrefNavIntoView();
+            {% if active_tab == 'exports' %}
+            {% for message in app.flashes('success') %}
+            invalidateExportBrandingCacheIfNeeded();
+            {% endfor %}
+            {% endif %}
+        });
+        document.addEventListener('turbo:load', function () {
+            bindPreferencesPasswordReset();
+            scrollActivePrefNavIntoView();
+            {% if active_tab == 'exports' %}
+            {% for message in app.flashes('success') %}
+            invalidateExportBrandingCacheIfNeeded();
+            {% endfor %}
+            {% endif %}
+        });
     })();
     </script>
 {% endblock %}

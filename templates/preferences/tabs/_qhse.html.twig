@@ -1,0 +1,14 @@
+{% include 'preferences/_panel_header.html.twig' with {
+    title: 'Pilotage QHSE',
+    description: 'Affinez la norme de référence, vos priorités et l’orientation du tableau de bord.',
+} only %}
+
+{{ form_start(qhse_form, { attr: { class: 'pref-form' } }) }}
+    <div class="pref-form-grid">
+        <div class="pref-field-group">{{ form_row(qhse_form.primaryStandard) }}</div>
+        <div class="pref-field-group">{{ form_row(qhse_form.qhsePriority) }}</div>
+        <div class="pref-field-group">{{ form_row(qhse_form.pilotingFocus) }}</div>
+    </div>
+    <p class="pref-form-hint pref-form-hint--spaced">Ces choix influencent l’accueil du tableau de bord (texte d’orientation) et pourront affiner les suggestions futures.</p>
+    {% include 'preferences/_form_footer.html.twig' %}
+{{ form_end(qhse_form) }}

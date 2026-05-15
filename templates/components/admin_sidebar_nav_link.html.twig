@@ -4,11 +4,15 @@
     <a href="{{ href }}"
        class="sidebar-item{{ is_active ? ' active' : '' }}"
        {% if is_active %}aria-current="page"{% endif %}
+       data-sidebar-item-label="{{ label|e('html_attr') }}"
        data-slot="hover-card-trigger"
        data-action="focus->hover-card#show blur->hover-card#hide"
     >
-        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon"></i>
-        <span>{{ label }}</span>
+        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
+        <span class="sidebar-item-label">{{ label }}</span>
+        {% if badge_text is defined and badge_text %}
+            <span class="sidebar-item-badge{% if badge_variant is defined and badge_variant %} sidebar-item-badge--{{ badge_variant|e('html_attr') }}{% endif %}">{{ badge_text }}</span>
+        {% endif %}
     </a>
     <twig:HoverCard:Content>
         <span class="block font-semibold leading-tight text-zinc-50">{{ hover_title }}</span>

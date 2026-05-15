@@ -1,0 +1,20 @@
+{# @prop sticky bool Barre collante sous la topbar dashboard #}
+{# @prop ariaLabel string Libellé accessibilité du role=toolbar #}
+{# @block content Contenu : recherche, filtres, exports #}
+{%- props
+    sticky = true,
+    ariaLabel = 'Barre d’outils',
+-%}
+{%- set stickyClasses = sticky
+    ? 'sticky z-[200] -mx-1 border-b border-border/80 bg-card/95 px-3 py-3 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/80 sm:-mx-0 sm:px-0'
+    : 'flex border-b border-border/60 bg-muted/20 py-3'
+-%}
+<div
+    role="toolbar"
+    aria-label="{{ ariaLabel }}"
+    class="{{ (stickyClasses ~ ' mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between ' ~ attributes.render('class'))|tailwind_merge }}"
+    {% if sticky %}style="top: var(--dashboard-sticky-toolbar-top)"{% endif %}
+    {{ attributes }}
+>
+    {%- block content %}{% endblock -%}
+</div>

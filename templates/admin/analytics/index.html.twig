@@ -3,42 +3,48 @@
 {% block title %}Analytics | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold tracking-tight text-foreground m-0">Analytics</h1>
+        <p class="text-muted-foreground text-sm mb-0">Vue hub vers les rapports détaillés.</p>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6 flex flex-col">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40 h-full">
+            <twig:Card:Content class="p-6 flex flex-col h-full">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h2 class="text-xl font-bold mb-1">Trafic & audiences</h2>
-                        <p class="text-muted-foreground mb-0">Visites, pages vues, géographie et appareils utilisés</p>
+                        <h2 class="text-lg font-semibold mb-1 m-0">Trafic &amp; audiences</h2>
+                        <p class="text-muted-foreground text-sm mb-0">Visites, pages vues, géographie et appareils utilisés</p>
                     </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="bar-chart-2" width="26" height="26" class="text-primary"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <i data-lucide="bar-chart-2" width="22" height="22" aria-hidden="true"></i>
                     </div>
                 </div>
-                <p class="text-muted-foreground text-sm flex-1">Visualisez les courbes de fréquentation, les pages les plus consultées et les pays d'origine de vos visiteurs.</p>
-                <a href="{{ path('app_admin_analytics_traffic') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline self-start mt-4">
+                <p class="text-muted-foreground text-sm flex-1 mb-0">Courbes de fréquentation, pages les plus consultées et pays d’origine.</p>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_traffic') }}" size="sm" class="no-underline self-start mt-4">
                     Explorer le trafic
-                </a>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6 flex flex-col">
+                </twig:Button>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40 h-full">
+            <twig:Card:Content class="p-6 flex flex-col h-full">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h2 class="text-xl font-bold mb-1">Partages & collaborations</h2>
-                        <p class="text-muted-foreground mb-0">Liens Ishikawa partagés, activité et destinataires</p>
+                        <h2 class="text-lg font-semibold mb-1 m-0">Partages &amp; collaborations</h2>
+                        <p class="text-muted-foreground text-sm mb-0">Liens Ishikawa partagés, activité et destinataires</p>
                     </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="share-2" width="26" height="26" class="text-green-600"></i>
+                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                        <i data-lucide="share-2" width="22" height="22" aria-hidden="true"></i>
                     </div>
                 </div>
-                <p class="text-muted-foreground text-sm flex-1">Suivez l'usage des liens sécurisés, les analyses les plus partagées et les destinataires engagés.</p>
-                <a href="{{ path('app_admin_analytics_sharing') }}" class="inline-flex items-center justify-center gap-2 border border-green-600 text-green-600 px-4 py-2 rounded-md font-medium hover:bg-green-600/5 transition-colors no-underline self-start mt-4">
+                <p class="text-muted-foreground text-sm flex-1 mb-0">Usage des liens sécurisés et analyses les plus consultées.</p>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_sharing') }}" variant="outline" size="sm" class="no-underline self-start mt-4 border-emerald-600/40 text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-400">
                     Analyse des partages
-                </a>
-            </div>
-        </div>
+                </twig:Button>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 </div>
 

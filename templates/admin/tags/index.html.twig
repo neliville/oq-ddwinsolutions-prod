@@ -3,114 +3,103 @@
 {% block title %}Gestion des tags | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Gestion des tags</h1>
-            <p class="text-muted-foreground mb-0">Gérer les tags de blog</p>
-        </div>
-        <div>
-            <a href="{{ path('app_admin_tags_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
+<div class="mx-auto w-full max-w-[100rem] space-y-6">
+    <twig:DataPageHeader title="Gestion des tags" description="Gérer les tags de blog">
+        <twig:block name="actions">
+            <twig:Button as="a" href="{{ path('app_admin_tags_new') }}" variant="default" class="no-underline w-full gap-2 sm:w-auto">
+                <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" />
                 Nouveau tag
-            </a>
-        </div>
-    </div>
+            </twig:Button>
+        </twig:block>
+    </twig:DataPageHeader>
 
-    <!-- Liste des tags -->
     {% if tags|length > 0 %}
-    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-tags', list_caption: 'Tags' } %}
-        {% block list_table %}
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nom</th>
-                            <th>Slug</th>
-                            <th>Articles</th>
-                            <th style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-tags', list_caption: 'Tags' } %}
+            {% block list_table %}
+                <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
+                    <twig:Table:Caption class="sr-only">Tags du blog</twig:Table:Caption>
+                    <twig:Table:Header>
+                        <twig:Table:Row class="border-b border-border bg-muted/40 hover:bg-muted/40">
+                            <twig:Table:Head scope="col" class="font-medium">Nom</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Slug</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Articles</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="w-[1%] text-end font-medium whitespace-nowrap">Actions</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for tag in tags %}
-                        <tr>
-                            <td>
-                                <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">
-                                    {{ tag.name }}
-                                </span>
-                            </td>
-                            <td>
-                                <code class="small">{{ tag.slug }}</code>
-                            </td>
-                            <td>
-                                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold">{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</span>
-                            </td>
-                            <td>
-                                <div class="flex gap-1" role="group">
-                                    <a href="{{ path('app_admin_tags_edit', {id: tag.id}) }}"
-                                       class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline" title="Modifier">
-                                        <i data-lucide="edit" width="14" height="14"></i>
-                                    </a>
+                            <twig:Table:Row class="border-b border-border/60">
+                                <twig:Table:Cell><twig:Badge variant="secondary">{{ tag.name }}</twig:Badge></twig:Table:Cell>
+                                <twig:Table:Cell><code class="rounded bg-muted px-1.5 py-0.5 text-xs">{{ tag.slug }}</code></twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <twig:Badge variant="outline" class="tabular-nums">{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</twig:Badge>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-end">
+                                    <div class="inline-flex flex-nowrap gap-1" role="group">
+                                        <twig:Button as="a" href="{{ path('app_admin_tags_edit', {id: tag.id}) }}" variant="outline" size="icon" class="size-9 shrink-0 no-underline" title="Modifier">
+                                            <twig:ux:icon name="lucide:pencil" class="size-4" aria-hidden="true" /><span class="sr-only">Modifier</span>
+                                        </twig:Button>
+                                        {% if tag.blogPosts|length == 0 %}
+                                            <form method="post" action="{{ path('app_admin_tags_delete', {id: tag.id}) }}" class="inline-flex" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce tag ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
+                                                <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-destructive hover:bg-destructive/10" title="Supprimer">
+                                                    <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" /><span class="sr-only">Supprimer</span>
+                                                </twig:Button>
+                                            </form>
+                                        {% else %}
+                                            <twig:Button type="button" variant="outline" size="icon" class="pointer-events-none size-9 shrink-0 opacity-50" disabled title="Tag utilisé, impossible de supprimer">
+                                                <twig:ux:icon name="lucide:lock" class="size-4" aria-hidden="true" /><span class="sr-only">Verrouillé</span>
+                                            </twig:Button>
+                                        {% endif %}
+                                    </div>
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            {% endblock %}
+            {% block list_cards %}
+                <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+                    {% for tag in tags %}
+                        <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                            <twig:Card:Content class="flex flex-col gap-3 p-5 sm:p-6">
+                                <twig:Badge variant="secondary" class="self-start">{{ tag.name }}</twig:Badge>
+                                <code class="block text-sm">{{ tag.slug }}</code>
+                                <twig:Badge variant="outline">{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</twig:Badge>
+                                <div class="mt-auto flex flex-wrap gap-2 border-t border-border pt-4">
+                                    <twig:Button as="a" href="{{ path('app_admin_tags_edit', {id: tag.id}) }}" variant="outline" size="sm" class="no-underline gap-2">
+                                        <twig:ux:icon name="lucide:pencil" class="size-4 shrink-0" aria-hidden="true" /> Modifier
+                                    </twig:Button>
                                     {% if tag.blogPosts|length == 0 %}
-                                    <form method="post" action="{{ path('app_admin_tags_delete', {id: tag.id}) }}"
-                                          class="inline"
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce tag ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
-                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors" title="Supprimer">
-                                            <i data-lucide="trash-2" width="14" height="14"></i>
-                                        </button>
-                                    </form>
+                                        <form method="post" action="{{ path('app_admin_tags_delete', {id: tag.id}) }}" class="inline-flex" onsubmit="return confirm('Supprimer ce tag ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
+                                            <twig:Button type="submit" variant="outline" size="sm" class="gap-2 text-destructive hover:bg-destructive/10">
+                                                <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" /> Supprimer
+                                            </twig:Button>
+                                        </form>
                                     {% else %}
-                                    <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled title="Tag utilisé, impossible de supprimer">
-                                        <i data-lucide="lock" width="14" height="14"></i>
-                                    </button>
+                                        <twig:Button type="button" variant="outline" size="sm" disabled class="pointer-events-none opacity-50 gap-2">
+                                            <twig:ux:icon name="lucide:lock" class="size-4 shrink-0" aria-hidden="true" /> Utilisé
+                                        </twig:Button>
                                     {% endif %}
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block list_cards %}
-            <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-                {% for tag in tags %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                    <div class="p-6 flex flex-col">
-                        <span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold mb-2 self-start">{{ tag.name }}</span>
-                        <code class="text-sm mb-2">{{ tag.slug }}</code>
-                        <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-0.5 text-xs font-semibold mb-4">{{ tag.blogPosts|length }} article{{ tag.blogPosts|length > 1 ? 's' : '' }}</span>
-                        <div class="flex flex-wrap gap-2 mt-auto pt-2 border-t border-border">
-                            <a href="{{ path('app_admin_tags_edit', {id: tag.id}) }}" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline"><i data-lucide="edit" width="14" height="14" class="mr-1"></i>Modifier</a>
-                            {% if tag.blogPosts|length == 0 %}
-                            <form method="post" action="{{ path('app_admin_tags_delete', {id: tag.id}) }}" class="inline" onsubmit="return confirm('Supprimer ce tag ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
-                                <button type="submit" class="inline-flex items-center justify-center gap-1.5 border border-destructive text-destructive px-3 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"><i data-lucide="trash-2" width="14" height="14" class="mr-1"></i>Supprimer</button>
-                            </form>
-                            {% else %}
-                            <button type="button" class="inline-flex items-center justify-center gap-1.5 border border-border text-muted-foreground px-3 py-1.5 text-sm rounded-md opacity-50 cursor-not-allowed" disabled><i data-lucide="lock" width="14" height="14" class="mr-1"></i>Utilisé</button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </article>
-                {% endfor %}
-            </div>
-        {% endblock %}
-        {% block list_footer %}{% endblock %}
-    {% endembed %}
+                            </twig:Card:Content>
+                        </twig:Card>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+            {% block list_footer %}{% endblock %}
+        {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12">
-            <i data-lucide="tag" width="48" height="48" class="text-muted-foreground mb-4"></i>
-            <p class="text-muted-foreground mb-0">Aucun tag</p>
-            <a href="{{ path('app_admin_tags_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline mt-4">
-                <i data-lucide="plus" width="16" height="16" class="mr-1"></i>
-                Créer le premier tag
-            </a>
-        </div>
-    </div>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="flex flex-col items-center justify-center gap-4 py-14 text-center">
+                <twig:ux:icon name="lucide:tag" class="size-12 text-muted-foreground" aria-hidden="true" />
+                <p class="m-0 text-sm text-muted-foreground">Aucun tag</p>
+                <twig:Button as="a" href="{{ path('app_admin_tags_new') }}" variant="default" class="no-underline gap-2">
+                    <twig:ux:icon name="lucide:plus" class="size-4 shrink-0" aria-hidden="true" /> Créer le premier tag
+                </twig:Button>
+            </twig:Card:Content>
+        </twig:Card>
     {% endif %}
 </div>
 

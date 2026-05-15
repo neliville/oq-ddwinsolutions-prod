@@ -42,8 +42,8 @@
     <div class="container">
         <div class="section-header" data-aos="fade-up">
             <span class="section-badge">FAQ</span>
-            <h2>Questions fréquentes</h2>
-            <p>Tout ce qu'il faut savoir pour bien démarrer avec OUTILS-QUALITÉ.</p>
+            <h2>{{ homepage_slots['faq_section_title']|default('Questions fréquentes') }}</h2>
+            <p>{{ homepage_slots['faq_section_subtitle']|default("Tout ce qu'il faut savoir pour bien démarrer avec OUTILS-QUALITÉ.") }}</p>
         </div>
         <div class="faq-list">
             <article class="faq-item" data-aos="fade-up" data-aos-delay="0">

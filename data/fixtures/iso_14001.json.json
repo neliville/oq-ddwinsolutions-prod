@@ -1,0 +1,1362 @@
+{
+  "norme": "ISO 14001",
+  "onglet": "14001",
+  "exigences": [
+    {
+      "article": "4",
+      "paragraphe": "4",
+      "exigence": "Contexte de l'entreprise",
+      "commentaire": "Planifier (Plan)"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.1",
+      "exigence": "L'entreprise et de son contexte",
+      "commentaire": ""
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.1",
+      "exigence": "Déterminer les enjeux externes et internes",
+      "commentaire": "Comprendre tout ce qui peut influer sur la finalité, la performance environnementale et l'orientation stratégique de l'entreprise (conditions environnementales, culture d'entreprise, obligations de conformité, activités, produits, services). Comment l'entreprise peut affecter son environnement"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.1",
+      "exigence": "Inclure les conditions environnementales",
+      "commentaire": "Tous les enjeux qui peuvent influencer ou être influencés par l'entreprise. Certains enjeux peuvent changer rapidement, donc rester vigilant"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2",
+      "exigence": "Besoins et attentes des parties intéressées",
+      "commentaire": "début"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 a",
+      "exigence": "Déterminer les parties intéressées",
+      "commentaire": "\"Il n'y a qu'une seule définition valable de la finalité de l'entreprise : créer un client. Peter Drucker\". Connaître du point de vue environnemental toutes les parties intéressées est un prérequis"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 b",
+      "exigence": "Déterminer les besoins et attentes des parties intéressées",
+      "commentaire": "Ce sont les exigences qui nous aident à comprendre quelles obligations de conformité prendre en compte. Cf. § 6.1.3"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 c",
+      "exigence": "Déterminer les exigences obligatoires",
+      "commentaire": "Avant d'accepter une commande"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Domaine d'application du système de management environnemental",
+      "commentaire": "début"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Déterminer le domaine d'application du SME",
+      "commentaire": "Périmètre géographique et organisationnel du SME"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 a",
+      "exigence": "Prendre en considération les enjeux externes et internes",
+      "commentaire": "Cf. § 4.1"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 b",
+      "exigence": "Prendre en considération les obligations de conformité",
+      "commentaire": "Cf. § 4.2"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 c",
+      "exigence": "Prendre en considération les unités, fonctions et limites physiques",
+      "commentaire": "Y compris les filiales quand l'entreprise décide de les inclure dans le SME"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 d",
+      "exigence": "Prendre en considération les activités, produits et services",
+      "commentaire": "Et le niveau de maîtrise et d'influence y compris le cycle de vie"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 e",
+      "exigence": "Prendre en considération l'autorité, la maîtrise et l'influence de l'entreprise",
+      "commentaire": "Rester réaliste"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Inclure dans le SME le domaine d'application, les activités, produits et services",
+      "commentaire": "Cf. 6.1.2"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Tenir à jour une information documentée sur le domaine d'application",
+      "commentaire": "Cf. § 7.5. Le domaine d'application est disponible aux parties intéressées"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.4",
+      "exigence": "Système de management environnemental",
+      "commentaire": "début"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.4",
+      "exigence": "Établir, mettre en place, tenir à jour et améliorer le SME",
+      "commentaire": "Intégrer les exigences du SME dans les fonctions de l'entreprise, les processus et leurs interactions"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.4",
+      "exigence": "Prendre en considération le contexte de l'entreprise",
+      "commentaire": "Intégrer les enjeux liés au contexte de l'entreprise. Cf. §§ 4.1 et 4.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5",
+      "exigence": "Leadership",
+      "commentaire": "Planifier (Plan)  , Dérouler (Do) , Comparer (Check), Agir (Act)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1",
+      "exigence": "Engagement de la direction",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 a",
+      "exigence": "Assumer la responsabilité de l'efficacité du SME",
+      "commentaire": "\"Un escalier se balaie en commençant par le haut. Proverbe roumain\". La direction fait preuve de leadership (assume sa responsabilité et son engagement)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 b",
+      "exigence": "Établir une politique environnementale et des objectifs associés",
+      "commentaire": "La politique et les objectifs sont compatibles avec l'orientation stratégique et le contexte de l'entreprise"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 c",
+      "exigence": "Intégrer les exigences du SME comme exigences internes des processus",
+      "commentaire": "Cf. § 4.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 d",
+      "exigence": "Fournir les ressources nécessaires au SME",
+      "commentaire": "Et s'assurer que ces ressources sont bien disponibles. Cf. § 7.1"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 e",
+      "exigence": "Sensibiliser sur l'importance d'un SME efficace et conforme",
+      "commentaire": "Cf. § 7.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 f",
+      "exigence": "Garantir l'atteinte des résultats du SME",
+      "commentaire": "Confirmer dans la revue de direction (cf. § 9.3)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 g",
+      "exigence": "Soutenir la contribution du personnel à l'efficacité du SME",
+      "commentaire": "Grâce aux compétences acquises (cf. § 7.2)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 h",
+      "exigence": "Promouvoir l'amélioration continue",
+      "commentaire": "Engagement essentiel de la direction (cf. § 10.3)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 i",
+      "exigence": "Soutenir le leadership des managers",
+      "commentaire": "Cf. § 5.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Politique environnementale",
+      "commentaire": "début"
+    },
+    {
+      "article": "",
+      "paragraphe": "",
+      "exigence": "La direction doit établir, mettre en œuvre et tenir à jour une politique environnementale qui, dans le domaine d'application défini de son système de management environnemental",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 a",
+      "exigence": "est appropriée à la finalité et au contexte de l'organisme, y compris la nature, la dimension et les impacts environnementaux de ses activités, produits et services;",
+      "commentaire": "Appropriée à la culture d'entreprise"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 b",
+      "exigence": "fournit un cadre pour l'établissement d'objectifs environnementaux",
+      "commentaire": "Qui fournit un cadre pour établir les objectifs environnementaux. Cf. § 6.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 c",
+      "exigence": "inclut un engagement en matière de protection de l'environnement, y compris la prévention de la pollution et d'autres engagements spécifiques pertinents pour le contexte de l'organisme;",
+      "commentaire": "Qui inclut des engagements de protection de l'environnement (prévention de la pollution, qualité de l'eau, de l'air, préservation de la biodiversité). Savoir s'adapter au changement climatique"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 d",
+      "exigence": "inclut l'engagement de satisfaire à ses obligations de conformité;",
+      "commentaire": "Qui inclut l'engagement de respecter les obligations de conformité. Cf. § 6.1.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 e",
+      "exigence": "inclut l'engagement pour l'amélioration continue du système de management environnemental afin d'améliorer la performance environnementale",
+      "commentaire": "Qui inclut l'engagement d'amélioration continue du SME. Savoir s'adapter au changement climatique, protéger la biodiversité et les écosystèmes. Cf. § 10.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Etre tenue à jour sous forme d'une information documentée;",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Etre communiquée au sein de l'organisme;",
+      "commentaire": "En interne. Cf. § 7.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "être disponible vis-à-vis des parties intéressées.",
+      "commentaire": "En interne et en externe"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "Rôles, responsabilités et autorités",
+      "commentaire": "début"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "La direction doit s’assurer que les responsabilités et autorités des rôles pertinents sont attribuées et communiquées au sein de l'organisme.\nLa direction doit attribuer la responsaibilité et l'autorité pour:",
+      "commentaire": "En interne. Clarté des rôles, responsabilités et autorités et résultats attendus"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3 a",
+      "exigence": "s'assurer que le système de management environnemental est conforme aux exigences de la présente norme internationale;",
+      "commentaire": "Afin de s'assurer que le SME est conforme aux exigences de la norme ISO 14001"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3 b",
+      "exigence": "rendre compte de la performance du système de management environnemental, y compris la performance environnementale, à la direction",
+      "commentaire": "Afin de rendre compte de la performance du SME à la direction (cf. § 9.3)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6",
+      "exigence": "Planification",
+      "commentaire": "Planifier (Plan)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1",
+      "exigence": "Actions face aux risques",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Généralités",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Planifier un processus spécifique lié aux risques",
+      "commentaire": "Afin de déterminer les risques et mettre en place des actions (cf. § 6.1.4)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1 a, b, c",
+      "exigence": "Prendre en considération les enjeux du contexte, les exigences déterminées et le domaine d'application",
+      "commentaire": "Cf. §§ 4.1, 4.2 et 4.3)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Déterminer les risques et opportunités",
+      "commentaire": "Qui sont liés aux aspects environnementaux (cf. § 6.1.2), aux obligations de conformité (cf. § 6.1.3) et aux enjeux (cf.§§ 4.1, 4.2)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Prendre en compte les risques et opportunités",
+      "commentaire": "Pour s'assurer que le SME peut atteindre les objectifs (cf. § 6.2), anticiper des effets indésirables comme conditions externes dans une démarche d'amélioration continue (cf. § 10.3)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Déterminer les situations d'urgence potentielles",
+      "commentaire": "Surtout les situations d'urgence avec un impact environnemental (cf. § 8.2)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Tenir à jour des informations documentées sur les risques et opportunités",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Tenir à jour des informations documentées sur les processus liés aux risques",
+      "commentaire": "Pour s'assurer que les résultats seront comme ceux prévus. Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Aspects environnementaux",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Déterminer les aspects et impacts environnementaux",
+      "commentaire": "Déterminer sur quels aspects environnementaux l'entreprise peut influencer. Y compris le cycle de vie. C'est un processus spécifique SME. \"Identifier les aspects c'est diminuer les impacts\". L'aspect est la cause, l'impact est l'effet. Le cycle de vie comprend principalement :"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2 a",
+      "exigence": "Prendre en compte les changements",
+      "commentaire": "Tout changement dans une activité, produit ou service"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2 b",
+      "exigence": "Prendre en compte les situations anormales et les situations d'urgence",
+      "commentaire": "Et les conditions d'arrêt et de démarrage. Cf. § 8.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Déterminer les aspects environnementaux significatifs",
+      "commentaire": "Établir des critères pour identifier les aspects significatifs. Aspects et activités qui peuvent avoir un impact significatif sur l'environnement (donc des risques que l'entreprise ne puisse pas atteindre ses objectifs environnementaux) et sur lesquels l'entreprise peut influencer comme :"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Communiquer sur les aspects environnementaux significatifs",
+      "commentaire": "En interne. Cf. § 7.4"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Tenir à jour des informations documentées sur les aspects environnementaux",
+      "commentaire": "Y compris les impacts associés. Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Tenir à jour des informations documentées sur les critères",
+      "commentaire": "Pour déterminer quels sont des aspects environnementaux significatifs. Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Tenir à jour des informations documentées sur les aspects environnementaux significatifs",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3",
+      "exigence": "Obligations de conformité",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 a",
+      "exigence": "Identifier les obligations de conformité des aspects environnementaux",
+      "commentaire": "\"Nul n'est censé ignorer la loi. Proverbe latin\". Cf. § 4.2. Les obligations de conformité peuvent avoir un impact négatif (risque) ou un impact bénéfique (opportunité)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 b",
+      "exigence": "Déterminer comment ces obligations s'applique à l'entreprise",
+      "commentaire": "Faire la différence entre exigences légales obligatoires (lois, réglementations, traités, permis, licences, conventions) et obligations auxquelles l'entreprise choisit d'adhérer (certification ISO 14001, accords avec des parties intéressées, codes de conduite volontaires, étiquetage volontaire, engagement de développement durable)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 c",
+      "exigence": "Prendre en compte les obligations de conformité pour le SME",
+      "commentaire": "Pendant la création, la mise en place, le maintien et l'amélioration du SME"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3",
+      "exigence": "Tenir à jour des informations documentées sur les obligations de conformité",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Planification des actions",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 a",
+      "exigence": "Planifier des actions environnementales",
+      "commentaire": "Pour traiter les risques, les aspects environnementaux significatifs et les obligations de conformité. Cf. §§ 6.1.4, 6.1.2 et 6.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 b",
+      "exigence": "Planifier comment mettre en place ces actions",
+      "commentaire": "Intégrer ces actions dans les processus internes (\"métiers\"). Établir des objectifs environnementaux fait partie de ces actions. Cf. § 6.2, les articles 7, 8 et le § 9.1)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Planifier comment évaluer l'efficacité des actions",
+      "commentaire": "Cf. le § 9.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Prendre en considération des conditions internes",
+      "commentaire": "Comme les options technologiques, les conditions financières et opérationnelles"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2",
+      "exigence": "Objectifs environnementaux et planification",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1",
+      "exigence": "Objectifs environnementaux",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "En prenant en compte les aspects environnementaux significatifs, les obligations de conformité et les risques et opportunités. Trouver plus d'information sur la définition des indicateurs environnementaux dans l'ISO 14031"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 a",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "Cohérents avec la politique environnementale et l'engagement d'amélioration continue (cf. § 10.3)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 b",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "Mesurables, si possible. Quand ce n'est pas réaliste de mesurer un aspect il faut savoir expliquer pourquoi"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 c",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "Et les surveiller"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 d",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "Et les communiquer"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 e",
+      "exigence": "Établir des objectifs environnementaux",
+      "commentaire": "Et les mettre à jour"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1",
+      "exigence": "Tenir à jour des informations documentées sur les objectifs environnementaux",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2",
+      "exigence": "Planification des actions",
+      "commentaire": "début"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 a",
+      "exigence": "Déterminer les actions à réaliser",
+      "commentaire": "Afin d'atteindre les objectifs environnementaux"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 b",
+      "exigence": "Déterminer les ressources nécessaires",
+      "commentaire": "Cf. § 7.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 c",
+      "exigence": "Déterminer les responsabilités",
+      "commentaire": "Cf. § 5.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 d",
+      "exigence": "Déterminer les délais",
+      "commentaire": "\"Tu peux ignorer sans problème les instructions sans délai. Jean-François Zobrist\""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 e",
+      "exigence": "Déterminer comment évaluer les résultats",
+      "commentaire": "Comparer les résultats et les objectifs fixés (cf. § 9.1.1). Surveiller les indicateurs d'avancement des objectifs environnementaux"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2",
+      "exigence": "Prendre en considération comment intégrer les actions dans les processus internes",
+      "commentaire": "Afin d'atteindre les objectifs environnementaux"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7",
+      "exigence": "Support",
+      "commentaire": "Dérouler (Do)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.1",
+      "exigence": "Ressources",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.1",
+      "exigence": "Fournir les ressources nécessaires",
+      "commentaire": "Afin d'établir, mettre en place et améliorer le SME (finances, personnel, infrastructures, savoir-faire)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2",
+      "exigence": "Compétences",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 a",
+      "exigence": "Déterminer les compétences nécessaires",
+      "commentaire": "Des personnes avec des responsabilités environnementales (cf. § 5.3) et des personnes dont les activités peuvent provoquer un impact environnemental significatif (cf. § 6.1.2)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 b",
+      "exigence": "Garantir ces compétences",
+      "commentaire": "Qui sont basées sur des formations ou expériences appropriées"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 c",
+      "exigence": "Identifier les besoins en formation",
+      "commentaire": "Formation et accompagnement (prestataires externes si besoin) sur les aspects environnementaux et le SME"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 d",
+      "exigence": "Réaliser des activités pour acquérir les compétences nécessaires",
+      "commentaire": "Évaluer l'efficacité des actions"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 d",
+      "exigence": "Conserver des informations documentées sur les compétences du personnel",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3",
+      "exigence": "Sensibilisation",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 a",
+      "exigence": "Sensibiliser le personnel à la politique environnementale",
+      "commentaire": "Y compris des personnes externes effectuant un travail sous le contrôle de l'entreprise. Cf. § 5.2"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 b",
+      "exigence": "Sensibiliser le personnel aux aspects et impacts environnementaux significatifs",
+      "commentaire": "Et l'impact sur le poste de travail. Cf. § 6.1.2"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 c",
+      "exigence": "Sensibiliser le personnel à la contribution de chacun",
+      "commentaire": "Afin d'améliorer la performance du SME"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 d",
+      "exigence": "Sensibiliser le personnel aux conséquences négatives potentielles",
+      "commentaire": "Quand les exigences du SME ne sont pas respectées y compris les obligations de conformité"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4",
+      "exigence": "Communication",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Généralités",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 a",
+      "exigence": "Planifier et mettre en place un processus de communication - sur quoi",
+      "commentaire": "\"Les bonnes nouvelles marchent, les mauvaises courent. Proverbe suédois\". Trouver plus d'information sur la communication environnementale dans l'ISO 14063. Informer et recevoir des informations sur :"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 b",
+      "exigence": "Planifier et mettre en place un processus de communication - quand",
+      "commentaire": "Réponse rapide aux plaintes et réclamations mais aussi aux recommandations et propositions d'amélioration"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 c",
+      "exigence": "Planifier et mettre en place un processus de communication - avec qui",
+      "commentaire": "En interne et en externe via les personnes responsables de la communication (cf. § 5.3)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 d",
+      "exigence": "Planifier et mettre en place un processus de communication - comment",
+      "commentaire": "Par écrit, par oral, Intranet, Internet, vidéo, présentation, rapport"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Prendre en compte les obligations de conformité",
+      "commentaire": "Cf. § 6.1.3"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "S'assurer de la cohérence de la communication",
+      "commentaire": "La communication est claire, transparente, appropriée, factuelle, de bonne foi"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Répondre aux communications du SME",
+      "commentaire": "Quand cela est approprié. Attention car \"Trop de communication tue la communication\""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Conserver des informations documentées sur la communication",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2",
+      "exigence": "Communication interne",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2 a",
+      "exigence": "Communiquer sur les modifications du SME",
+      "commentaire": "À tous les niveaux"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2 b",
+      "exigence": "S'assurer que la communication contribue à l'amélioration continue",
+      "commentaire": "Une personne informée et sensibilisée est beaucoup plus engagée dans les activités d'amélioration, cf. § 10.3"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.3",
+      "exigence": "Communication externe",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.3",
+      "exigence": "Communiquer des informations pertinentes sur le SME",
+      "commentaire": "Comme défini en interne et suivant les obligations de conformité, cf. § 6.1.3"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5",
+      "exigence": "Informations documentées",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1",
+      "exigence": "Généralités",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1 a",
+      "exigence": "Inclure dans le SME les informations documentées exigées par la norme ISO 14001",
+      "commentaire": "Informations documentées à tenir à jour (procédures documentées) :"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1 b",
+      "exigence": "Inclure les informations documentées jugées nécessaires pour l'efficacité du SME",
+      "commentaire": "Le but est d'assurer grâce au système documentaire un SME pertinent, adéquat et efficace. \"Les paroles s'envolent, les écrits restent. Proverbe latin\""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2",
+      "exigence": "Création et mise à jour",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 a",
+      "exigence": "Identifier et décrire les informations documentées",
+      "commentaire": "Codification, titre, auteur, sujet, produit"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 b",
+      "exigence": "Choisir le format et le support des informations documentées",
+      "commentaire": "Langue, figure, papier, électronique"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 c",
+      "exigence": "Passer en revue et approuver la pertinence des informations documentées",
+      "commentaire": "Qui vérifie, qui approuve"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtrise des informations documentées",
+      "commentaire": "début"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3 a",
+      "exigence": "Maîtriser la disponibilité des informations documentées",
+      "commentaire": "Où et quand c'est nécessaire sous une forme qui convient à l'utilisation"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3 b",
+      "exigence": "Maîtriser la protection des informations documentées",
+      "commentaire": "Perte de confidentialité, perte d'intégrité, utilisation inappropriée"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtriser la distribution, l'accès et l'utilisation des informations documentées",
+      "commentaire": "Qui est responsable, méthode à utiliser, règle à respecter"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtriser le stockage des informations documentées",
+      "commentaire": "Y compris la protection"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtriser les modifications des informations documentées",
+      "commentaire": "Utilisation des versions à jour, accès restreint des versions obsolètes"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtriser la conservation et l'élimination des informations documentées",
+      "commentaire": "Délai de conservation, méthode d'élimination"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtriser les informations documentées d'origine externe",
+      "commentaire": "Codification unique, accès, protection"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8",
+      "exigence": "Réalisation des activités opérationnelles",
+      "commentaire": "Dérouler (Do)"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Planification et maîtrise opérationnelles",
+      "commentaire": "début"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Planifier et maîtriser les processus pour satisfaire aux exigences du SME",
+      "commentaire": "Cf. §§ 6.1 et 6.2. Y compris les critères des processus"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Mettre en place les processus conformément aux critères",
+      "commentaire": "Afin d'éviter des écarts avec la politique, les objectifs et les obligations de conformité"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Maîtriser les modifications prévues et imprévues",
+      "commentaire": "Analyse des conséquences des modifications imprévues et si besoin actions pour réduire les impacts"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Maîtriser les processus externalisés",
+      "commentaire": "Et s'assurer qu'ils peuvent être influencés"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Définir le degré d'influence sur les processus externalisés",
+      "commentaire": "Le degré d'influence environnemental des processus externalisés est défini dans le SME. Ce degré peut être élevé mais aussi faible mais la responsabilité du respect des exigences est détenue par l'entreprise"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1 a",
+      "exigence": "Établir les moyens de maîtrise nécessaires",
+      "commentaire": "En relation avec chaque phase de cycle de vie"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1 b",
+      "exigence": "Déterminer les exigences environnementales des produits et services acquis",
+      "commentaire": "Afin de prendre en compte les exigences environnementales dans toutes les activités de l'entreprise. Prendre en compte :"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1 c",
+      "exigence": "Communiquer les exigences environnementales aux prestataires externes",
+      "commentaire": "Des produits et leur cycle de vie. Cf. § 7.4"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1 d",
+      "exigence": "Fournir des informations sur les impacts environnementaux significatifs potentiels",
+      "commentaire": "Pendant la livraison, l'utilisation et la fin de vie du produit"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Tenir à jour des informations documentées sur la maîtrise opérationnelle",
+      "commentaire": "Pour prouver que les processus ont été réalisés comme prévu et que les produits et services sont conformes. Cf. § 7.5"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2",
+      "exigence": "Préparation et réponse aux situations d'urgence",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2",
+      "exigence": "Tenir à jour le processus prévenir les situations d'urgence",
+      "commentaire": "Pour répondre aux situations d'urgence tenir compte de ce qui est identifié dans le § 6.1.1. Utiliser les méthodes les plus appropriées"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 a",
+      "exigence": "Planifier sa réponse aux situations d'urgence",
+      "commentaire": "Bien se préparer pour réduire les impacts environnementaux. Itinéraires d'évacuation à jour. Tenir à jour une liste des personnes et organismes de secours à contacter avec coordonnées (pompiers, service de dépollution). Prévoir une assistance mutuelle avec des voisins"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 b",
+      "exigence": "Savoir répondre aux situations d'urgence réelles",
+      "commentaire": "Et communiquer en amont en interne et en externe. Cf. § 7.4"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 c",
+      "exigence": "Entreprendre des actions pour réduire les impacts environnementaux potentiels",
+      "commentaire": "Les actions sont proportionnelles à la gravité des situations d'urgence et sont spécifiques à la situation"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 d",
+      "exigence": "Tester périodiquement la manière de répondre aux situations d'urgence",
+      "commentaire": "Former le personnel à répondre aux situations d'urgence et quand c'est possible simuler une situation d'urgence"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 e",
+      "exigence": "Passer en revue périodiquement le processus prévenir les situations d'urgence",
+      "commentaire": "Et actualiser si nécessaire surtout après des situations d'urgence réelles"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 f",
+      "exigence": "Communiquer le processus \"prévenir les situations d'urgence\" aux parties intéressées",
+      "commentaire": "Informations et même formations pertinentes, bien sûr de façon appropriée"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2",
+      "exigence": "Tenir à jour des informations documentées sur les situations d'urgence",
+      "commentaire": "Pour s'assurer que le processus sera réalisé comme prévu. Cf. § 7.5"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9",
+      "exigence": "Évaluation des performances",
+      "commentaire": "Comparer (Check)"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1",
+      "exigence": "Surveillance, mesure, analyse et évaluation",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Généralités",
+      "commentaire": "début"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Déterminer ce qui est nécessaire d'inspecter",
+      "commentaire": "Surveiller, mesurer, analyser et évaluer régulièrement la performance environnementale afin d'atteindre les objectifs environnementaux. \"Si vous ne pouvez le mesurer, vous ne pouvez le maîtriser. Peter Drucker\""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1  a",
+      "exigence": "Déterminer les opérations à risque",
+      "commentaire": "Surveiller et mesurer les activités pouvant avoir un impact environnemental significatif"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 b",
+      "exigence": "Déterminer les méthodes à utiliser",
+      "commentaire": "Choisir les méthodes d'inspection"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 c",
+      "exigence": "Déterminer les critères et indicateurs",
+      "commentaire": "Pour évaluer la performance environnementale utiliser des indicateurs appropriés qui découlent des objectifs environnementaux (cf. § 6.2.1)"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 d",
+      "exigence": "Déterminer quand inspecter",
+      "commentaire": "Surveiller et mesurer aux étapes essentielles pouvant avoir un impact environnemental significatif en relation avec l'analyse et l'évaluation"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 e",
+      "exigence": "Déterminer quand analyser et évaluer",
+      "commentaire": "Afin d'assurer la validité des résultats (les mesures sont fiables et reproductibles). Les résultats sont transmis aux personnes responsables pour entreprendre des actions"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "S'assurer que les équipements sont étalonnés ou vérifiés",
+      "commentaire": "L'utilisation et la maintenance des équipements est appropriée et conforme pour des résultats fiables et reproductibles"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Évaluer la performance environnementale de l'entreprise",
+      "commentaire": "Les résultats d'analyse et d'évaluation sont fiables et reproductibles. Ces résultats sont des éléments d'entrée pour la revue de direction (cf. § 9.3) sur l'efficacité du SME. Plus de détails sur l'évaluation de la performance environnementale se trouvent dans l'ISO 14031"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Communiquer sur la performance environnementale",
+      "commentaire": "En interne et en externe et en accord avec les obligations (de conformité). Cf. §§ 7.4 et 6.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Conserver des informations documentées sur les résultats d'inspection, d'analyse et d'évaluation",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2",
+      "exigence": "Évaluation de la conformité",
+      "commentaire": "début"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2",
+      "exigence": "Planifier et mettre en place le processus évaluer l'état des obligations de conformité",
+      "commentaire": "Passer en revue périodiquement toutes les obligations de conformité au moyen de :"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 a",
+      "exigence": "Déterminer quand évaluer la conformité",
+      "commentaire": "La fréquence d'évaluation est appropriée"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 b",
+      "exigence": "Évaluer la conformité",
+      "commentaire": "Et si besoin mener des actions pour rétablir la conformité à l'obligation légale"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 c",
+      "exigence": "Tenir à jour l'état des obligations de conformité",
+      "commentaire": "Maintenir à jour une veille réglementaire"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2",
+      "exigence": "Conserver des informations documentées sur les résultats de l'évaluation de la conformité",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2",
+      "exigence": "Audit interne",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1",
+      "exigence": "Généralités",
+      "commentaire": "début"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 a 1",
+      "exigence": "Réaliser régulièrement des audits internes planifiés",
+      "commentaire": "Afin de déterminer si le SME est conforme aux exigences internes de l'entreprise. Trouver plus d'information sur l'audit interne dans l'ISO 19011."
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 a 2",
+      "exigence": "Réaliser régulièrement des audits internes planifiés",
+      "commentaire": "Afin de déterminer si le SME est conforme aux exigences de la norme ISO 14001"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 b",
+      "exigence": "Réaliser régulièrement des audits internes planifiés",
+      "commentaire": "Afin de déterminer si le SME est efficace et tenu à jour"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2",
+      "exigence": "Programme d'audit interne",
+      "commentaire": "début"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2",
+      "exigence": "Planifier, établir, mettre en place et tenir à jour un programme d'audit",
+      "commentaire": "Inclure la fréquence, les méthodes, les responsabilités et l'obligation de rendre compte des résultats. Prendre en compte dans le programme d'audit :"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2",
+      "exigence": "Prendre en considération l'importance environnementale des processus",
+      "commentaire": "Ne pas oublier :"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 a",
+      "exigence": "Définir le périmètre et les critères d'audit",
+      "commentaire": "Limiter le domaine à auditer ; utiliser des critères précis et connus de l'audité"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 b",
+      "exigence": "Sélectionner les auditeurs",
+      "commentaire": "Ne pas auditer son département. \"Nul ne peut être à la fois juge et partie. Proverbe latin\""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 c",
+      "exigence": "Communiquer les résultats d'audit à la direction",
+      "commentaire": "Considérer toute non-conformité trouvée comme une opportunité d'amélioration. Cf. § 7.4"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2",
+      "exigence": "Conserver les informations documentées sur le programme d'audit et les rapports d'audit",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Revue de direction",
+      "commentaire": "début"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Réaliser au moins une fois par an la revue de direction",
+      "commentaire": "Afin de confirmer que le SME est toujours pertinent (le SME est entré dans la culture d'entreprise), adéquat (respecte les exigences de l'ISO 14001) et efficace (atteint les résultats escomptés). \"Aucun système n'est parfait\""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 a",
+      "exigence": "Prendre en compté l'état des actions de la revue précédente",
+      "commentaire": "Les résultats et leur efficacité"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 1",
+      "exigence": "Prendre en compte les modifications des enjeux externes et internes du SME",
+      "commentaire": "Cf. § 4.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 2",
+      "exigence": "Prendre en compte les modifications de l'état des obligations de conformité",
+      "commentaire": "Et les exigences des parties intéressées. Cf. §§ 4.2 et 6.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 3",
+      "exigence": "Prendre en compte les modifications des aspects environnementaux significatifs",
+      "commentaire": "Cf. § 6.1.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 4",
+      "exigence": "Prendre en compte les modifications des risques et opportunités",
+      "commentaire": "Cf. § 6.1.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 c",
+      "exigence": "Prendre en compte l'état des objectifs environnementaux",
+      "commentaire": "Cf. § 6.2.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 1",
+      "exigence": "Prendre en compte les informations sur les tendances des non-conformités",
+      "commentaire": "Cela fait partie de la performance environnementale. Y compris les actions correctives (cf. § 10.2)"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 2",
+      "exigence": "Prendre en compte les informations sur les tendances des résultats d'inspection",
+      "commentaire": "La surveillance et la mesure de la performance environnementale. Cf. § 9.1.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 3",
+      "exigence": "Prendre en compte les informations sur les tendances de l'état des obligations de conformité",
+      "commentaire": "Cf. § 6.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 4",
+      "exigence": "Prendre en compte les informations sur les tendances des résultats d'audit",
+      "commentaire": "Cf. § 9.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 e",
+      "exigence": "Prendre en compte la disponibilité des ressources",
+      "commentaire": "Cf. § 7.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 f",
+      "exigence": "Prendre en compte les retours d'information des parties intéressées",
+      "commentaire": "Y compris les plaintes, recommandations et suggestions"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 g",
+      "exigence": "Prendre en compte les opportunités d'amélioration apparues",
+      "commentaire": "Cf. § 10.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les conclusions sur l'état du SME",
+      "commentaire": "C'est un point essentiel de la revue de direction. Ce que l'on peut retenir sur la pertinence, l'adéquation et l'efficacité du SME"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions sur les opportunités d'amélioration",
+      "commentaire": "Cf. § 6.2.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions sur les possibles modifications à apporter au SME",
+      "commentaire": "Y compris les nouveaux besoins en ressources"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les actions à mener pour atteindre les objectifs",
+      "commentaire": "Cf. § 10.2 et les actions correctives à entreprendre"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les opportunités d'intégration du SME avec des processus internes",
+      "commentaire": "Le but est d'améliorer la mise en place du SME"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction la possible modification de la stratégie de l'entreprise",
+      "commentaire": "Priorité et responsabilité de la direction à son plus haut niveau"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Conserver les informations documentées sur les conclusions de la revue de direction",
+      "commentaire": "Cf. § 7.5"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10",
+      "exigence": "Amélioration",
+      "commentaire": "Agir (Act)"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.1",
+      "exigence": "Déterminer les opportunités d'amélioration et réaliser les actions appropriées",
+      "commentaire": "Y compris toute innovation. Cf. les §§ 9.1, 9.2, 9.3 et 10.3"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Non-conformité et actions correctives",
+      "commentaire": "début"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 a 1",
+      "exigence": "Réagir à la non-conformité et la corriger",
+      "commentaire": "Mener une action corrective"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 a 2",
+      "exigence": "Réduire les impacts environnementaux négatifs",
+      "commentaire": "En tenant compte du contexte de l'entreprise (cf. § 4.1) et en menant des actions face aux risques (cf. § 6.1)"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 1",
+      "exigence": "Évaluer si une action est nécessaire en réalisant une revue de la non-conformité",
+      "commentaire": "Le but est de trouver et d'éliminer les causes premières et empêcher la réapparition de la non-conformité"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 2",
+      "exigence": "Trouver les causes premières",
+      "commentaire": "Réaliser une analyse des causes premières"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 3",
+      "exigence": "Trouver si des non-conformités similaires ont déjà été répertoriées",
+      "commentaire": "Si oui en tirer les conséquences avec des actions appropriées"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 c",
+      "exigence": "Mettre en œuvre toutes les actions requises",
+      "commentaire": "Pour empêcher la réapparition de la non-conformité"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 d",
+      "exigence": "Passer en revue l'efficacité de l'action corrective",
+      "commentaire": "Afin de vérifier si l'action est finalisée"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 e",
+      "exigence": "Modifier le SME",
+      "commentaire": "Si besoin"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Choisir des actions correctives proportionnelles à l'importance des non-conformités",
+      "commentaire": "Y compris les impacts environnementaux"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Conserver des informations documentées sur la nature des non-conformités",
+      "commentaire": "Et des actions entreprises. Cf. § 7.5"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Conserver des informations documentées sur les résultats des actions correctives",
+      "commentaire": "Cf. § 7.5. Les actions, les résultats et la revue de l'efficacité des actions"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3",
+      "exigence": "Amélioration continue",
+      "commentaire": "début"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3",
+      "exigence": "Améliorer en continu la performance environnementale du SME",
+      "commentaire": "Avec des action bénéfiques au SME, aux processus et aux activités liés à l'environnement"
+    }
+  ]
+}

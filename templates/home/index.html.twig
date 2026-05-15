@@ -7,7 +7,13 @@
 
 {% block title %}Outils qualité gratuits : Ishikawa, 5 Pourquoi, Pareto{% endblock %}
 
-{% block meta_description %}6 outils QSE gratuits en ligne. Démarrez sans inscription, exportez en PDF, créez un compte pour sauvegarder. Cockpit QHSE optionnel pour audits, CAPA et risques.{% endblock %}
+{% block meta_description -%}
+    {%- if homepage_slots['seo_home_meta_description'] is defined and homepage_slots['seo_home_meta_description'] != '' -%}
+        {{- homepage_slots['seo_home_meta_description'] -}}
+    {%- else -%}
+        6 outils QSE gratuits en ligne. Démarrez sans inscription, exportez en PDF, créez un compte pour sauvegarder. Cockpit QHSE optionnel pour audits, CAPA et risques.
+    {%- endif -%}
+{%- endblock %}
 
 {% block meta_keywords %}
 outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP, AMDEC, 8D, amélioration continue, export PDF, QHSE, audit ISO, CAPA, cockpit QHSE,
@@ -15,7 +21,13 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP
 
 {% block og_title %}Outils qualité gratuits : Ishikawa, 5 Pourquoi, Pareto{% endblock %}
 
-{% block og_description %}6 outils QSE gratuits en ligne. Démarrez sans inscription, exportez en PDF. Cockpit QHSE optionnel pour structurer votre pilotage.{% endblock %}
+{% block og_description -%}
+    {%- if homepage_slots['seo_home_meta_description'] is defined and homepage_slots['seo_home_meta_description'] != '' -%}
+        {{- homepage_slots['seo_home_meta_description'] -}}
+    {%- else -%}
+        6 outils QSE gratuits en ligne. Démarrez sans inscription, exportez en PDF. Cockpit QHSE optionnel pour structurer votre pilotage.
+    {%- endif -%}
+{%- endblock %}
 
 {% block schema_type %}WebSite,SoftwareApplication{% endblock %}
 
@@ -41,13 +53,13 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP
 
 {% block body %}
     <div class="home-page">
-        {% include 'home/sections/_hero_tools_v2.html.twig' %}
+        {% include 'home/sections/_hero_tools_v2.html.twig' with { homepage_slots: homepage_slots|default({}) } %}
         {% include 'home/sections/_outils_gratuits.html.twig' %}
         {% include 'home/sections/_why_account.html.twig' %}
         {% include 'home/sections/_cockpit_upsell.html.twig' %}
         {% include 'home/sections/_social_proof_compact.html.twig' with { homepageTestimonials: homepageTestimonials|default([]) } %}
         {% include 'home/sections/_expertise_section.html.twig' %}
         {% include 'home/sections/_newsletter_section.html.twig' %}
-        {% include 'home/sections/_faq.html.twig' %}
+        {% include 'home/sections/_faq.html.twig' with { homepage_slots: homepage_slots|default({}) } %}
     </div>
 {% endblock %}

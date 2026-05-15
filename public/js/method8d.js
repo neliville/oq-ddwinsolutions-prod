@@ -631,7 +631,7 @@
         }
     };
 
-    const exportEightD = (format) => {
+    const exportEightD = async (format) => {
         if (!state.title.trim()) {
             notify('Renseignez le titre de l\'analyse 8D avant d\'exporter.', 'warning');
             return;
@@ -649,16 +649,21 @@
             ? payload.description.trim()
             : 'Rapport de résolution de problème selon la méthode 8D.';
 
+        const branding = window.OqExportBranding ? await window.OqExportBranding.load() : null;
+
         if (format === 'json') {
+            const metadataBase = {
+                title: titleText,
+                generatedAt: exportDate.toISOString(),
+                exportLocale,
+                tool: 'Méthode 8D',
+                version: '1.0',
+                source: 'OUTILS-QUALITÉ',
+            };
             const jsonPayload = {
-                metadata: {
-                    title: titleText,
-                    generatedAt: exportDate.toISOString(),
-                    exportLocale,
-                    tool: 'Méthode 8D',
-                    version: '1.0',
-                    source: 'OUTILS-QUALITÉ',
-                },
+                metadata: window.OqExportBranding
+                    ? window.OqExportBranding.enrichMetadata(metadataBase, branding)
+                    : metadataBase,
                 analysis: {
                     progress,
                     disciplinesCompleted: completed,
@@ -697,58 +702,23 @@
             `Équipe : ${teamCount} membre(s) · Pilote : ${leader || 'Non renseigné'}`,
         ];
 
-        const buildExportCanvas = (capturedCanvas) => {
-            const padding = 56;
-            const headerHeight = 108;
-            const footerHeight = 88;
-            const finalCanvas = document.createElement('canvas');
-            finalCanvas.width = capturedCanvas.width + padding * 2;
-            finalCanvas.height = capturedCanvas.height + padding * 2 + headerHeight + footerHeight;
-            const ctx = finalCanvas.getContext('2d');
-
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#1f2937';
-            ctx.font = 'bold 30px Inter, sans-serif';
-            ctx.fillText(titleText, finalCanvas.width / 2, headerHeight / 2 + 8);
-
-            ctx.font = '16px Inter, sans-serif';
-            ctx.fillStyle = '#475569';
-            ctx.fillText(`Exporté le ${exportLocale}`, finalCanvas.width / 2, headerHeight - 24);
-
-            ctx.font = '14px Inter, sans-serif';
-            ctx.fillStyle = '#334155';
-            ctx.fillText(descriptionText.substring(0, 160), finalCanvas.width / 2, headerHeight - 2);
-
-            const contentOffsetY = headerHeight + padding;
-            ctx.drawImage(capturedCanvas, padding, contentOffsetY);
-
-            ctx.save();
-            ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2);
-            ctx.rotate(-Math.PI / 6);
-            ctx.font = '26px Inter, sans-serif';
-            ctx.fillStyle = 'rgba(148, 163, 184, 0.18)';
-            ctx.fillText('OUTILS-QUALITÉ', 0, 0);
-            ctx.restore();
-
-            const summaryStart = contentOffsetY + capturedCanvas.height + padding;
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '15px Inter, sans-serif';
-            ctx.fillText(summaryLines[0], finalCanvas.width / 2, summaryStart);
-
-            ctx.fillStyle = '#475569';
-            ctx.font = '14px Inter, sans-serif';
-            ctx.fillText(summaryLines[1], finalCanvas.width / 2, summaryStart + 24);
-
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '12px Inter, sans-serif';
-            ctx.fillText('© OUTILS-QUALITÉ - www.outils-qualite.com', finalCanvas.width / 2, finalCanvas.height - footerHeight / 2);
-
-            return finalCanvas;
-        };
+        const buildExportCanvas = (capturedCanvas) =>
+            window.OqExportBranding.buildBrandedExportCanvas(capturedCanvas, {
+                branding,
+                titleText,
+                exportLocale,
+                descriptionText,
+                titleFont: 'bold 30px Inter, sans-serif',
+                summaryPainter: (ctx, summaryStart, width) => {
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#1f2937';
+                    ctx.font = '15px Inter, sans-serif';
+                    ctx.fillText(summaryLines[0], width / 2, summaryStart);
+                    ctx.fillStyle = '#475569';
+                    ctx.font = '14px Inter, sans-serif';
+                    ctx.fillText(summaryLines[1], width / 2, summaryStart + 24);
+                },
+            });
 
         if (format === 'pdf' || format === 'png' || format === 'jpeg') {
             const { jsPDF } = window.jspdf || {};

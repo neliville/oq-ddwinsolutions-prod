@@ -6,6 +6,7 @@ namespace App\Repository\Qse;
 
 use App\Entity\Qse\RiskMatrixEntry;
 use App\Entity\User;
+use App\Qse\Enum\RiskEntryStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,5 +48,44 @@ class RiskMatrixEntryRepository extends ServiceEntityRepository
             ->setParameter('to', $to)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function adminCountOpenNonClosed(): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.status != :cloture')
+            ->setParameter('cloture', RiskEntryStatus::CLOTURE)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function adminCountCriticalOrHighScore(): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.status != :cloture')
+            ->andWhere('r.status = :critStat OR (r.criticalityScore IS NOT NULL AND r.criticalityScore >= :score)')
+            ->setParameter('cloture', RiskEntryStatus::CLOTURE)
+            ->setParameter('critStat', RiskEntryStatus::CRITIQUE)
+            ->setParameter('score', 12)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<RiskMatrixEntry>
+     */
+    public function adminFindRecentOpen(int $limit = 25): array
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.owner', 'o')->addSelect('o')
+            ->where('r.status != :cloture')
+            ->setParameter('cloture', RiskEntryStatus::CLOTURE)
+            ->orderBy('r.criticalityScore', 'DESC')
+            ->addOrderBy('r.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Qse;
 
 use App\Entity\User;
+use App\Qse\Enum\AuditVerdict;
 use App\Repository\Qse\AuditEvaluationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,9 +31,13 @@ class AuditEvaluation
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?AuditRequirement $requirement = null;
 
-    /** Note 0–3 (0 = N/A, 1 = NC, 2 = partiel, 3 = conforme). */
+    /** Note 0–3 (0 = N/A, 1 = NC, 2 = partiel, 3 = conforme) — miroir du verdict pour compatibilité. */
     #[ORM\Column(nullable: true)]
     private ?int $score = null;
+
+    /** Verdict ISO étendu (source de vérité côté produit). */
+    #[ORM\Column(length: 32, nullable: true, enumType: AuditVerdict::class)]
+    private ?AuditVerdict $verdict = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $auditComment = null;
@@ -102,6 +107,18 @@ class AuditEvaluation
     public function setScore(?int $score): static
     {
         $this->score = $score;
+
+        return $this;
+    }
+
+    public function getVerdict(): ?AuditVerdict
+    {
+        return $this->verdict;
+    }
+
+    public function setVerdict(?AuditVerdict $verdict): static
+    {
+        $this->verdict = $verdict;
 
         return $this;
     }

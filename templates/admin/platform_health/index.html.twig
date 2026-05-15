@@ -1,0 +1,53 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Santé plateforme — Administration{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold tracking-tight text-foreground m-0">Santé &amp; intégrations</h1>
+        <p class="text-muted-foreground text-sm m-0">Contrôles vérifiables (pas un simple voyant vert). Version déployée : <strong>{{ app_version }}</strong>.</p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base flex items-center gap-2">
+                    <i data-lucide="send" width="18" height="18" aria-hidden="true"></i>
+                    Mautic (newsletter)
+                </twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content class="space-y-2 text-sm">
+                <p class="mb-0"><strong>Configuré :</strong> {{ summary.mautic_configured ? 'oui' : 'non' }}</p>
+                {% if summary.mautic_configured %}
+                    <p class="mb-0"><strong>API joignable :</strong>
+                        {% if summary.mautic_reachable is null %}non testé{% elseif summary.mautic_reachable %}oui{% else %}non{% endif %}
+                    </p>
+                {% endif %}
+                <p class="text-muted-foreground mb-0">{{ summary.mautic_detail }}</p>
+                <p class="text-xs text-muted-foreground mb-0">CLI : <code>php bin/console app:newsletter:test-mautic</code></p>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base flex items-center gap-2">
+                    <i data-lucide="plug-zap" width="18" height="18" aria-hidden="true"></i>
+                    Brevo &amp; Messenger
+                </twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content class="space-y-2 text-sm">
+                <p class="mb-0"><strong>Clé Brevo :</strong> {{ summary.brevo_configured ? 'présente (sync leads activable)' : 'absente — sync ignorée' }}</p>
+                <p class="mb-0"><strong>File « failed » :</strong>
+                    {% if summary.messenger_failed_count is null %}indisponible{% else %}{{ summary.messenger_failed_count }} message(s){% endif %}
+                </p>
+                <p class="text-muted-foreground mb-0">{{ summary.messenger_failed_detail }}</p>
+            </twig:Card:Content>
+        </twig:Card>
+    </div>
+
+    <twig:Button as="a" href="{{ path('app_admin_dashboard_index') }}" variant="outline" size="sm" class="no-underline">
+        Retour dashboard
+    </twig:Button>
+</div>
+{% endblock %}

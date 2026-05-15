@@ -3,61 +3,28 @@
 {% block title %}Insights exports | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Suivi des exports</h1>
-            <p class="text-muted-foreground mb-0">Formats téléchargés, outils sollicités et activité des utilisateurs.</p>
-        </div>
-        <a href="{{ path('app_admin_analytics_index') }}" class="inline-flex items-center justify-center gap-2 border border-primary text-primary px-3 py-1.5 text-sm rounded-md font-medium hover:bg-primary/5 transition-colors no-underline self-start">
-            <i data-lucide="arrow-left" width="16" height="16" class="mr-1"></i> Retour aux analytics
-        </a>
-    </div>
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <twig:DataPageHeader title="Suivi des exports" description="Formats téléchargés, outils sollicités et activité des utilisateurs.">
+        <twig:block name="actions">
+            <twig:Button as="a" href="{{ path('app_admin_analytics_index') }}" variant="outline" size="sm" class="no-underline gap-1.5">
+                <twig:ux:icon name="lucide:arrow-left" class="size-4 shrink-0" aria-hidden="true" />
+                Retour aux analytics
+            </twig:Button>
+        </twig:block>
+    </twig:DataPageHeader>
 
     {% set totalExports = totalsByFormat|reduce((carry, item) => carry + item.total, 0) %}
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Exports totaux</h6>
-                        <h3 class="font-bold mb-0">{{ totalExports|default(0)|number_format(0, ',', ' ') }}</h3>
-                    </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="download" width="24" height="24" class="text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Formats suivis</h6>
-                        <h3 class="font-bold mb-0">{{ totalsByFormat|length }}</h3>
-                        <small class="text-muted-foreground">PNG, PDF, JSON…</small>
-                    </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="layers" width="24" height="24" class="text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Utilisateurs actifs</h6>
-                        <h3 class="font-bold mb-0">{{ topUsers|length }}</h3>
-                        <small class="text-muted-foreground">Top 10 contributeurs</small>
-                    </div>
-                    <div class="bg-sky-100 rounded-full p-3">
-                        <i data-lucide="users" width="24" height="24" class="text-sky-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <twig:KpiStatCard label="Exports totaux" value="{{ totalExports|default(0)|number_format(0, ',', ' ') }}" tone="default">
+            <twig:block name="icon"><twig:ux:icon name="lucide:download" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Formats suivis" value="{{ totalsByFormat|length }}" tone="emerald" helper="PNG, PDF, JSON…">
+            <twig:block name="icon"><twig:ux:icon name="lucide:layers" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Utilisateurs (top liste)" value="{{ topUsers|length }}" tone="sky" helper="Jusqu’à 10 contributeurs affichés">
+            <twig:block name="icon"><twig:ux:icon name="lucide:users" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">

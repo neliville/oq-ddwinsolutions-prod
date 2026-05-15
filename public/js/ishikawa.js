@@ -1659,13 +1659,14 @@
     }
 
     // Export & Reset
-    function exportDiagram(format = 'png') {
+    async function exportDiagram(format = 'png') {
         if (!canvas) return;
 
+        const branding = window.OqExportBranding ? await window.OqExportBranding.load() : null;
         const filenameBase = 'diagramme-ishikawa-' + Date.now();
         const titleText = (document.querySelector('.page-title')?.innerText || 'Diagramme d\'Ishikawa').trim();
         const exportDate = new Date().toLocaleString('fr-FR');
-        const copyrightText = '© OUTILS-QUALITÉ - www.outils-qualite.com';
+        const copyrightText = branding?.system?.copyright || '© OUTILS-QUALITÉ - www.outils-qualite.com';
 
         if (format === 'png' || format === 'pdf') {
             try {
@@ -1688,43 +1689,28 @@
                 allowTaint: true,
                 backgroundColor: '#ffffff'
             }).then(canvasCapture => {
-                const finalCanvas = document.createElement('canvas');
-                const ctx = finalCanvas.getContext('2d');
-                const padding = 48;
-                const headerHeight = 80;
-                const footerHeight = 60;
-                finalCanvas.width = canvasCapture.width + padding * 2;
-                finalCanvas.height = canvasCapture.height + padding * 2 + headerHeight + footerHeight;
-
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-                ctx.font = '28px Inter, sans-serif';
-                ctx.fillStyle = '#1f2937';
-                ctx.textAlign = 'center';
-                ctx.fillText(titleText, finalCanvas.width / 2, headerHeight / 2 + 12);
-                ctx.font = '16px Inter, sans-serif';
-                ctx.fillStyle = '#475569';
-                ctx.fillText(`Exporté le ${exportDate}`, finalCanvas.width / 2, headerHeight - 12);
-
-                const contentOffsetY = headerHeight + padding;
-                ctx.drawImage(canvasCapture, padding, contentOffsetY);
-
-                ctx.font = '16px Arial';
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
-                ctx.save();
-                ctx.translate(finalCanvas.width / 2, finalCanvas.height / 2);
-                ctx.rotate(-Math.PI / 6);
-                ctx.textAlign = 'center';
-                ctx.fillText('OUTILS-QUALITÉ', 0, 0);
-                ctx.restore();
-
-                ctx.font = '14px Inter, sans-serif';
-                ctx.fillStyle = '#475569';
-                ctx.textAlign = 'center';
-                ctx.fillText(`Problème : ${problemInput ? problemInput.value : ''}`.trim().substring(0, 120), finalCanvas.width / 2, finalCanvas.height - footerHeight + 24);
-                ctx.font = '12px Inter, sans-serif';
-                ctx.fillText(copyrightText, finalCanvas.width / 2, finalCanvas.height - footerHeight / 2);
+                const problemLine = `Problème : ${problemInput ? problemInput.value : ''}`.trim().substring(0, 120);
+                const finalCanvas = window.OqExportBranding
+                    ? window.OqExportBranding.buildBrandedExportCanvas(canvasCapture, {
+                        branding,
+                        titleText,
+                        exportLocale: exportDate,
+                        descriptionText: '',
+                        titleFont: 'bold 28px Inter, sans-serif',
+                        padding: 48,
+                        footerHeight: 60,
+                        headerBaseHeight: 80,
+                        summaryPainter: (ctx, summaryStart, width) => {
+                            if (!problemLine || problemLine === 'Problème :') {
+                                return;
+                            }
+                            ctx.textAlign = 'center';
+                            ctx.font = '14px Inter, sans-serif';
+                            ctx.fillStyle = '#475569';
+                            ctx.fillText(problemLine, width / 2, summaryStart);
+                        },
+                    })
+                    : canvasCapture;
 
                 const link = document.createElement('a');
                 link.download = `${filenameBase}.png`;
@@ -1741,15 +1727,19 @@
         }
 
         if (format === 'json') {
+            const metadataBase = {
+                title: titleText,
+                generatedAt: new Date().toISOString(),
+                exportLocale: exportDate,
+                copyright: copyrightText,
+                tool: 'Diagramme d\'Ishikawa',
+                version: '1.0',
+                source: 'OUTILS-QUALITÉ',
+            };
             const data = {
-                metadata: {
-                    title: titleText,
-                    generatedAt: new Date().toISOString(),
-                    exportLocale: exportDate,
-                    copyright: copyrightText,
-                    tool: 'Diagramme d\'Ishikawa',
-                    version: '1.0'
-                },
+                metadata: window.OqExportBranding
+                    ? window.OqExportBranding.enrichMetadata(metadataBase, branding)
+                    : metadataBase,
                 diagram: {
                     problem: problemInput ? problemInput.value : '',
                     categories: categories.map(cat => ({
@@ -1811,18 +1801,25 @@
 
                 pdf.addImage(imgData, 'PNG', posX, posY, imgWidth * ratio, imgHeight * ratio);
 
-                pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(16);
-                pdf.setTextColor(31, 41, 55);
-                pdf.text(titleText, pageWidth / 2, 12, { align: 'center' });
-                pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(10);
-                pdf.setTextColor(71, 85, 105);
-                pdf.text(`Exporté le ${exportDate}`, pageWidth / 2, 18, { align: 'center' });
-
-                pdf.setFontSize(8);
-                pdf.setTextColor(150, 150, 150);
-                pdf.text(copyrightText, pageWidth / 2, pageHeight - 6, { align: 'center' });
+                if (window.OqExportBranding) {
+                    window.OqExportBranding.applyJsPdfHeader(pdf, branding, pageWidth, {
+                        titleText,
+                        exportLocale: exportDate,
+                    });
+                    window.OqExportBranding.applyJsPdfFooter(pdf, branding, pageHeight, pageWidth);
+                } else {
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(16);
+                    pdf.setTextColor(31, 41, 55);
+                    pdf.text(titleText, pageWidth / 2, 12, { align: 'center' });
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(71, 85, 105);
+                    pdf.text(`Exporté le ${exportDate}`, pageWidth / 2, 18, { align: 'center' });
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(150, 150, 150);
+                    pdf.text(copyrightText, pageWidth / 2, pageHeight - 6, { align: 'center' });
+                }
 
                 const problemTextPdf = problemInput ? problemInput.value : '';
                 if (problemTextPdf) {

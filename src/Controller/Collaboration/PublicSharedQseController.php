@@ -8,6 +8,7 @@ use App\Application\Analytics\TrackingEventRecorder;
 use App\Application\Analytics\TrackingEventType;
 use App\Collaboration\SharedAccessService;
 use App\Collaboration\SharedResourceType;
+use App\Qse\Audit\ViewModel\AuditCockpitViewModelFactory;
 use App\Repository\Qse\AuditRepository;
 use App\Repository\Qse\AuditRequirementRepository;
 use App\Repository\Qse\CAPAActionRepository;
@@ -23,6 +24,7 @@ final class PublicSharedQseController extends AbstractController
         private readonly CAPAActionRepository $capaRepository,
         private readonly AuditRequirementRepository $requirementRepository,
         private readonly TrackingEventRecorder $trackingEventRecorder,
+        private readonly AuditCockpitViewModelFactory $auditCockpitViewModelFactory,
     ) {
     }
 
@@ -86,11 +88,16 @@ final class PublicSharedQseController extends AbstractController
             }
         }
 
+        $cockpitMetrics = $this->auditCockpitViewModelFactory->build($audit);
+        $chartConfigJson = json_encode($cockpitMetrics->chartConfig, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE);
+
         return $this->render('collaboration/guest_audit_show.html.twig', [
             'audit' => $audit,
             'chapterBlocks' => $chapterBlocks,
             'evaluationsByReqId' => $evaluationsByReqId,
             'accessLevel' => 'lecture_seule',
+            'cockpitMetrics' => $cockpitMetrics,
+            'chartConfigJson' => $chartConfigJson,
         ]);
     }
 

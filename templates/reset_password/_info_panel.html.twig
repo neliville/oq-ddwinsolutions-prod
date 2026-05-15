@@ -1,0 +1,46 @@
+{# Panneau informatif droit (login/register pattern) #}
+<div class="relative">
+    <h2 class="auth-info__title">{{ title }}</h2>
+    <p class="auth-info__subtitle">{{ subtitle }}</p>
+
+    {% if timeline_steps is defined and timeline_steps %}
+        <ol class="reset-password-timeline" aria-label="Étapes de réinitialisation">
+            {% for step in timeline_steps %}
+                <li class="reset-password-timeline__item">
+                    <span class="reset-password-timeline__marker" aria-hidden="true">{{ loop.index }}</span>
+                    <div class="reset-password-timeline__content">
+                        <h3 class="reset-password-timeline__heading">{{ step.heading }}</h3>
+                        <p class="reset-password-timeline__text">{{ step.text }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% elseif benefits is defined and benefits %}
+        <ul class="auth-benefits">
+            {% for benefit in benefits %}
+                <li class="auth-benefits__item">
+                    <span class="auth-benefits__icon" aria-hidden="true">{{ benefit.icon }}</span>
+                    <div>
+                        <h3 class="auth-benefits__heading">{{ benefit.heading }}</h3>
+                        <p class="auth-benefits__description">{{ benefit.description|raw }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if highlights is defined and highlights %}
+        <div class="auth-highlights mt-6">
+            {% for highlight in highlights %}
+                <div class="auth-highlight">
+                    <span class="auth-highlight__value">{{ highlight.value|raw }}</span>
+                    <span class="auth-highlight__label">{{ highlight.label }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if meta is defined and meta %}
+        <p class="auth-meta mt-6">{{ meta|raw }}</p>
+    {% endif %}
+</div>

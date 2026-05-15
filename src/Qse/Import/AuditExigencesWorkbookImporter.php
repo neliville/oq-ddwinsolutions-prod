@@ -141,16 +141,41 @@ final class AuditExigencesWorkbookImporter
         }
         $highestRow = (int) $sheet->getHighestDataRow();
         $built = [];
+        $lastArticleRaw = '';
+        $lastMajorClause = null;
+        $standardCode = $standard->getCode();
+        $useIsoChapterLabels = \in_array($standardCode, ['iso_14001', 'iso_45001'], true);
+
         for ($r = $headerRowIndex + 1; $r <= $highestRow; ++$r) {
             $text = $this->cellStr($sheet, $colMap['requirement_text'], $r);
             if ($text === '') {
                 continue;
             }
-            $article = $this->cellStr($sheet, $colMap['article'], $r);
-            if ($article === '') {
-                $article = '—';
+            $articleRaw = $this->cellStr($sheet, $colMap['article'], $r);
+            if ($articleRaw === '') {
+                $articleRaw = $lastArticleRaw;
             }
-            $chapter = $this->inferChapter($article);
+            $article = $articleRaw !== '' ? $articleRaw : '—';
+            if ($articleRaw !== '') {
+                $lastArticleRaw = $articleRaw;
+            }
+
+            if ($useIsoChapterLabels) {
+                $major = AuditIsoManagementSystemChapterLabel::inferMajorClauseNumber($article);
+                if ($major === null) {
+                    $major = $lastMajorClause;
+                }
+                if ($major === null) {
+                    throw new \InvalidArgumentException(
+                        'Ligne ' . $r . ' de la feuille « ' . $sheet->getTitle()
+                        . ' » : impossible de déterminer le grand chapitre (colonne article/paragraphe vide ou invalide).',
+                    );
+                }
+                $lastMajorClause = $major;
+                $chapter = AuditIsoManagementSystemChapterLabel::chapterHeading($standardCode, $major);
+            } else {
+                $chapter = $this->inferChapter($article);
+            }
             $orderRaw = isset($colMap['display_order']) ? $this->cellStr($sheet, $colMap['display_order'], $r) : '';
             $displayOrder = is_numeric($orderRaw) ? (int) $orderRaw : 0;
             $comment = isset($colMap['iso_comment']) ? $this->cellStr($sheet, $colMap['iso_comment'], $r) : '';

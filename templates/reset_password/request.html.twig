@@ -7,89 +7,78 @@
 {% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-<div class="auth-page auth-page--forgot">
-    <div class="auth-page__container container">
-        <div class="auth-page__brand">
-            <div class="auth-brand">
-                <span class="auth-brand__icon">
-                    <i class="fas fa-key"></i>
-                </span>
-                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
-            </div>
-            <p class="auth-page__baseline">
-                Un lien sécurisé vous permet de définir un nouveau mot de passe et de retrouver l’accès à vos analyses en toute sérénité.
+{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'key-round' } only %}
+    {% block brand_baseline %}
+        Un lien sécurisé vous permet de définir un nouveau mot de passe et de retrouver l’accès à vos analyses en toute sérénité.
+    {% endblock %}
+
+    {% block form_panel %}
+        <header>
+            <h1 class="auth-card__title">Réinitialiser votre mot de passe</h1>
+            <p class="auth-card__subtitle">
+                Saisissez l’adresse email associée à votre compte. Nous vous enverrons un lien de réinitialisation valable 1 heure.
             </p>
-        </div>
+        </header>
 
-        <div class="auth-card">
-            <div class="lg:col-span-5 lg:order-1">
-                <section class="auth-card__panel auth-card__panel--form">
-                    <header>
-                        <h1 class="auth-card__title">Réinitialiser votre mot de passe</h1>
-                        <p class="auth-card__subtitle">Saisissez l’adresse email associée à votre compte. Nous vous enverrons un lien de réinitialisation valable 1 heure.</p>
-                    </header>
+        {% for message in app.flashes('reset_password_error') %}
+            <twig:Alert variant="destructive" class="mb-3 px-4 py-3 shadow-sm" role="alert">
+                <twig:Alert:Description class="!text-current text-sm self-center grow">
+                    {{ message }}
+                </twig:Alert:Description>
+                <twig:Alert:Action>
+                    <twig:Button variant="ghost" size="icon" type="button" class="text-current opacity-70 hover:opacity-100" onclick="this.closest('[data-slot=alert]').remove()" aria-label="Fermer le message">
+                        <i data-lucide="x" width="16" height="16" aria-hidden="true"></i>
+                    </twig:Button>
+                </twig:Alert:Action>
+            </twig:Alert>
+        {% endfor %}
 
-                    {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
-                        <div>
-                            {{ form_label(requestForm.email) }}
-                            {{ form_widget(requestForm.email) }}
-                            {{ form_errors(requestForm.email) }}
-                        </div>
-
-                        <p class="auth-form__hint">
-                            Vous recevrez immédiatement un email contenant un lien sécurisé. Pensez à vérifier votre dossier indésirables.
-                        </p>
-
-                        <button class="auth-form__submit" type="submit" name="reset_password_request_submit" value="1">
-                            <i class="fas fa-paper-plane"></i>
-                            Envoyer le lien sécurisé
-                        </button>
-                    {{ form_end(requestForm) }}
-
-                    <div class="auth-card__footer">
-                        Vous vous souvenez de votre mot de passe ?
-                        <a href="{{ path('app_login') }}">Retour à la connexion</a>
-                    </div>
-                </section>
+        {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
+            <div class="space-y-2">
+                {{ form_label(requestForm.email) }}
+                {{ form_widget(requestForm.email) }}
+                {{ form_errors(requestForm.email) }}
             </div>
 
-            <div class="lg:col-span-7 lg:order-2">
-                <section class="auth-card__panel auth-card__panel--info">
-                    <div class="relative">
-                        <h2 class="auth-info__title">Sécurité et assistance</h2>
-                        <p class="auth-info__subtitle">Notre équipe met tout en œuvre pour protéger vos données et vous aider à reprendre le contrôle rapidement.</p>
+            <p class="auth-form__hint">
+                Vous recevrez immédiatement un email contenant un lien sécurisé. Pensez à vérifier votre dossier indésirables.
+            </p>
 
-                        <ul class="auth-info__list">
-                            <li class="auth-info__list-item">
-                                <span class="auth-info__list-icon">🕒</span>
-                                <div class="auth-info__list-content">
-                                    <h3 class="auth-info__list-heading">Lien temporaire</h3>
-                                    <p class="auth-benefits__description">Chaque lien est valable 60 minutes afin de garantir la confidentialité de votre compte.</p>
-                                </div>
-                            </li>
-                            <li class="auth-info__list-item">
-                                <span class="auth-info__list-icon">🔐</span>
-                                <div class="auth-info__list-content">
-                                    <h3 class="auth-info__list-heading">Protection renforcée</h3>
-                                    <p class="auth-benefits__description">Les mots de passe sont chiffrés et ne sont jamais stockés en clair. Nous recommandons l’utilisation d’un gestionnaire de mots de passe.</p>
-                                </div>
-                            </li>
-                            <li class="auth-info__list-item">
-                                <span class="auth-info__list-icon">💬</span>
-                                <div class="auth-info__list-content">
-                                    <h3 class="auth-info__list-heading">Support réactif</h3>
-                                    <p class="auth-benefits__description">Besoin d’aide ? Contactez-nous à <a class="text-white font-semibold no-underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.</p>
-                                </div>
-                            </li>
-                        </ul>
+            <twig:Button type="submit" name="reset_password_request_submit" value="1" class="w-full min-h-[44px] gap-2">
+                <i data-lucide="send" width="18" height="18" aria-hidden="true"></i>
+                Envoyer le lien sécurisé
+            </twig:Button>
+        {{ form_end(requestForm) }}
 
-                        <p class="auth-meta mt-6">
-                            <i class="fas fa-shield-alt mr-2"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.
-                        </p>
-                    </div>
-                </section>
-            </div>
+        <div class="auth-card__footer">
+            Vous vous souvenez de votre mot de passe ?
+            <a href="{{ path('app_login') }}">Retour à la connexion</a>
         </div>
-    </div>
-</div>
+    {% endblock %}
+
+    {% block info_panel %}
+        {% include 'reset_password/_info_panel.html.twig' with {
+            title: 'Sécurité et assistance',
+            subtitle: 'Notre équipe met tout en œuvre pour protéger vos données et vous aider à reprendre le contrôle rapidement.',
+            benefits: [
+                {
+                    icon: '🕒',
+                    heading: 'Lien temporaire',
+                    description: 'Chaque lien est valable 60 minutes afin de garantir la confidentialité de votre compte.',
+                },
+                {
+                    icon: '🔐',
+                    heading: 'Protection renforcée',
+                    description: 'Les mots de passe sont chiffrés et ne sont jamais stockés en clair. Nous recommandons l’utilisation d’un gestionnaire de mots de passe.',
+                },
+                {
+                    icon: '💬',
+                    heading: 'Support réactif',
+                    description: 'Besoin d’aide ? Contactez-nous à <a class="text-white font-semibold no-underline hover:underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.',
+                },
+            ],
+            meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.',
+        } only %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}

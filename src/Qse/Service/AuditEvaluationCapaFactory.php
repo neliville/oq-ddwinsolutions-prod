@@ -7,6 +7,7 @@ namespace App\Qse\Service;
 use App\Entity\Qse\CAPAAction;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\User;
+use App\Qse\Enum\AuditVerdict;
 use App\Qse\Enum\CapaStatus;
 use App\Qse\Enum\CapaType;
 use App\Qse\Enum\PdcaPhase;
@@ -24,9 +25,9 @@ final class AuditEvaluationCapaFactory
 
     public function createDraftFromEvaluation(AuditEvaluation $evaluation, User $owner): CAPAAction
     {
-        $score = $evaluation->getScore();
-        if ($score !== 1 && $score !== 2) {
-            throw new \InvalidArgumentException('Suggestion CAPA réservée aux notes 1 (NC) ou 2 (partiel).');
+        $verdict = AuditEvaluationVerdictHelper::effectiveVerdict($evaluation);
+        if ($verdict === null || !$verdict->suggestsCapa()) {
+            throw new \InvalidArgumentException('Suggestion CAPA réservée aux écarts (NC, observation, à revoir).');
         }
         $req = $evaluation->getRequirement();
         if ($req === null) {
@@ -37,8 +38,16 @@ final class AuditEvaluationCapaFactory
             throw new \InvalidArgumentException('Audit manquant.');
         }
 
-        $priority = $score === 1 ? 'Haute' : 'Moyenne';
-        $criticality = $score === 1 ? 'high' : 'medium';
+        $priority = match ($verdict) {
+            AuditVerdict::MAJOR_NC => 'Haute',
+            AuditVerdict::MINOR_NC => 'Haute',
+            AuditVerdict::OBSERVATION, AuditVerdict::TO_REVIEW => 'Moyenne',
+            default => 'Moyenne',
+        };
+        $criticality = match ($verdict) {
+            AuditVerdict::MAJOR_NC, AuditVerdict::MINOR_NC => 'high',
+            default => 'medium',
+        };
 
         $title = sprintf('Action corrective — %s %s', $req->getIsoArticle(), $req->getChapter());
         $descriptionParts = [

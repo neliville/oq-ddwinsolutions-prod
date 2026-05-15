@@ -295,7 +295,7 @@
         notify('Diagramme de Pareto généré.', 'success');
     };
 
-    const exportPareto = (format) => {
+    const exportPareto = async (format) => {
         const dataset = buildDataset();
         if (!dataset.length) {
             notify('Ajoutez au moins une cause avec une fréquence positive avant d\'exporter.', 'warning');
@@ -307,6 +307,7 @@
         renderChart(dataset);
         showResults(true);
 
+        const branding = window.OqExportBranding ? await window.OqExportBranding.load() : null;
         const exportDate = new Date();
         const exportLocale = exportDate.toLocaleString('fr-FR');
         const filenameBase = `analyse-pareto-${Date.now()}`;
@@ -323,16 +324,20 @@
         const topCause = dataset[0];
 
         if (format === 'json') {
+            const metadataBase = {
+                title: titleText,
+                description: descriptionText,
+                generatedAt: exportDate.toISOString(),
+                exportLocale,
+                copyright: copyrightText,
+                tool: 'Analyse Pareto',
+                version: '1.0',
+                source: 'OUTILS-QUALITÉ',
+            };
             const payload = {
-                metadata: {
-                    title: titleText,
-                    description: descriptionText,
-                    generatedAt: exportDate.toISOString(),
-                    exportLocale,
-                    copyright: copyrightText,
-                    tool: 'Analyse Pareto',
-                    version: '1.0',
-                },
+                metadata: window.OqExportBranding
+                    ? window.OqExportBranding.enrichMetadata(metadataBase, branding)
+                    : metadataBase,
                 analysis: {
                     totalEntries: dataset.length,
                     totalFrequency,
@@ -375,66 +380,31 @@
             return;
         }
 
-        const buildExportCanvas = (capturedCanvas) => {
-            const padding = 56;
-            const headerHeight = 108;
-            const footerHeight = 88;
-            const finalCanvas = document.createElement('canvas');
-            finalCanvas.width = capturedCanvas.width + padding * 2;
-            finalCanvas.height = capturedCanvas.height + padding * 2 + headerHeight + footerHeight;
-            const ctx = finalCanvas.getContext('2d');
-
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#1f2937';
-            ctx.font = 'bold 30px Inter, sans-serif';
-            ctx.fillText(titleText, finalCanvas.width / 2, headerHeight / 2 + 8);
-
-            ctx.font = '16px Inter, sans-serif';
-            ctx.fillStyle = '#475569';
-            ctx.fillText(`Exporté le ${exportLocale}`, finalCanvas.width / 2, headerHeight - 22);
-
-            ctx.font = '14px Inter, sans-serif';
-            ctx.fillStyle = '#334155';
-            ctx.fillText(descriptionText.substring(0, 120), finalCanvas.width / 2, headerHeight - 4);
-
-            const contentOffsetY = headerHeight + padding;
-            ctx.drawImage(capturedCanvas, padding, contentOffsetY);
-
-            ctx.save();
-            ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2);
-            ctx.rotate(-Math.PI / 6);
-            ctx.font = '26px Inter, sans-serif';
-            ctx.fillStyle = 'rgba(148, 163, 184, 0.18)';
-            ctx.fillText('OUTILS-QUALITÉ', 0, 0);
-            ctx.restore();
-
-            const summaryStart = contentOffsetY + capturedCanvas.height + padding;
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '15px Inter, sans-serif';
-            ctx.fillText(
-                `Causes analysées : ${dataset.length} · Volume total : ${totalFrequency} · Cause principale : ${topCause ? topCause.name : 'N/A'}`,
-                finalCanvas.width / 2,
-                summaryStart
-            );
-
-            ctx.fillStyle = '#475569';
-            ctx.font = '14px Inter, sans-serif';
-            ctx.fillText(
-                `80/20 : ${causesIn80.length} cause(s) couvrent ${coverage80.toFixed(1)}% des effets`,
-                finalCanvas.width / 2,
-                summaryStart + 24
-            );
-
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '12px Inter, sans-serif';
-            ctx.fillText(copyrightText, finalCanvas.width / 2, finalCanvas.height - footerHeight / 2);
-
-            return finalCanvas;
-        };
+        const buildExportCanvas = (capturedCanvas) =>
+            window.OqExportBranding.buildBrandedExportCanvas(capturedCanvas, {
+                branding,
+                titleText,
+                exportLocale,
+                descriptionText,
+                titleFont: 'bold 30px Inter, sans-serif',
+                summaryPainter: (ctx, summaryStart, width) => {
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#1f2937';
+                    ctx.font = '15px Inter, sans-serif';
+                    ctx.fillText(
+                        `Causes analysées : ${dataset.length} · Volume total : ${totalFrequency} · Cause principale : ${topCause ? topCause.name : 'N/A'}`,
+                        width / 2,
+                        summaryStart
+                    );
+                    ctx.fillStyle = '#475569';
+                    ctx.font = '14px Inter, sans-serif';
+                    ctx.fillText(
+                        `80/20 : ${causesIn80.length} cause(s) couvrent ${coverage80.toFixed(1)}% des effets`,
+                        width / 2,
+                        summaryStart + 24
+                    );
+                },
+            });
 
         if (format === 'pdf' || format === 'png' || format === 'jpeg') {
             const { jsPDF } = window.jspdf || {};

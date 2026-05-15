@@ -1,0 +1,41 @@
+{% include 'preferences/_panel_header.html.twig' with {
+    title: 'Notifications',
+    description: 'Choisissez les alertes QHSE que vous souhaitez recevoir par email.',
+} only %}
+
+{{ form_start(notification_form, { attr: { class: 'pref-form' } }) }}
+    <div class="pref-settings-list">
+        {% include 'preferences/_setting_row.html.twig' with {
+            form: notification_form,
+            field: 'notifyOverdueActions',
+            description: 'Rappels pour les actions en retard (CAPA, plans d’audit).',
+        } %}
+        {% include 'preferences/_setting_row.html.twig' with {
+            form: notification_form,
+            field: 'notifyAuditsToPrepare',
+            description: 'Préparation des audits à venir.',
+        } %}
+        {% include 'preferences/_setting_row.html.twig' with {
+            form: notification_form,
+            field: 'notifyCapaVerification',
+            description: 'CAPA en attente de vérification d’efficacité.',
+        } %}
+        {% include 'preferences/_setting_row.html.twig' with {
+            form: notification_form,
+            field: 'notifyCriticalRisks',
+            description: 'Alertes sur les risques classés critiques.',
+        } %}
+        {% include 'preferences/_setting_row.html.twig' with {
+            form: notification_form,
+            field: 'notifyWeeklyDigest',
+            description: 'Résumé hebdomadaire de votre activité QHSE.',
+        } %}
+    </div>
+
+    <div class="pref-frequency-field pref-field-group">
+        {{ form_row(notification_form.notificationFrequency) }}
+    </div>
+
+    <p class="pref-form-hint">L’envoi d’e-mails automatiques sera branché progressivement ; vos choix sont déjà enregistrés.</p>
+    {% include 'preferences/_form_footer.html.twig' %}
+{{ form_end(notification_form) }}

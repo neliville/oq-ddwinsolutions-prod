@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository\Qse;
 
 use App\Entity\Qse\AuditRequirement;
+use App\Qse\Import\AuditRequirementChapterSort;
 use App\Entity\Qse\AuditStandard;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -53,11 +54,24 @@ class AuditRequirementRepository extends ServiceEntityRepository
             ->andWhere('r.auditStandard = :std')
             ->setParameter('a', true)
             ->setParameter('std', $standard)
-            ->orderBy('r.chapter', 'ASC')
             ->getQuery()
             ->getSingleColumnResult();
 
-        return array_values(array_map(static fn ($c): string => (string) $c, $chapters));
+        $labels = array_values(array_map(static fn ($c): string => (string) $c, $chapters));
+
+        return AuditRequirementChapterSort::sortDistinctChapters($labels);
+    }
+
+    public function countActiveForStandard(AuditStandard $standard): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.auditStandard = :std')
+            ->andWhere('r.active = :a')
+            ->setParameter('std', $standard)
+            ->setParameter('a', true)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function chapterExistsForStandard(string $chapter, AuditStandard $standard): bool
@@ -80,14 +94,31 @@ class AuditRequirementRepository extends ServiceEntityRepository
      */
     public function findAdminListingForStandard(AuditStandard $standard, int $limit = 500): array
     {
-        return $this->createQueryBuilder('r')
+        /** @var list<AuditRequirement> $rows */
+        $rows = $this->createQueryBuilder('r')
             ->where('r.auditStandard = :std')
             ->setParameter('std', $standard)
-            ->orderBy('r.chapter', 'ASC')
-            ->addOrderBy('r.displayOrder', 'ASC')
             ->addOrderBy('r.id', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+
+        usort(
+            $rows,
+            static function (AuditRequirement $a, AuditRequirement $b): int {
+                $ch = AuditRequirementChapterSort::compareChapterHeadings($a->getChapter(), $b->getChapter());
+                if ($ch !== 0) {
+                    return $ch;
+                }
+                $ord = $a->getDisplayOrder() <=> $b->getDisplayOrder();
+                if ($ord !== 0) {
+                    return $ord;
+                }
+
+                return ($a->getId() ?? 0) <=> ($b->getId() ?? 0);
+            },
+        );
+
+        return $rows;
     }
 }

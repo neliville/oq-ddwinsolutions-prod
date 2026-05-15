@@ -1,0 +1,1926 @@
+{
+  "norme": "ISO 45001",
+  "onglet": "45001",
+  "exigences": [
+    {
+      "article": "4",
+      "paragraphe": "4",
+      "exigence": "Contexte",
+      "commentaire": "Planifier (Plan)"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.1",
+      "exigence": "L'entreprise et son contexte",
+      "commentaire": ""
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.1",
+      "exigence": "Déterminer les enjeux externes et internes",
+      "commentaire": "Comprendre tout ce qui peut influencer sur la finalité et l'orientation stratégique de l'entreprise (culture d'entreprise, innovation, orientation stratégique, compétition, marché, obligations, temps de travail, conditions de travail). Cf. paragraphe 6.1"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2",
+      "exigence": "Parties intéressées",
+      "commentaire": ""
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 a",
+      "exigence": "Déterminer les parties intéressées",
+      "commentaire": "En plus des travailleurs. Tout ce qui est pertinent pour le SMSST (système de management de la santé et de la sécurité au travail)"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 b",
+      "exigence": "Déterminer les besoins et attentes",
+      "commentaire": "Des travailleurs et autres parties intéressées"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.2 c",
+      "exigence": "Déterminer les exigences légales",
+      "commentaire": "Des besoins et attentes actuelles ou potentielles"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Domaine d'application",
+      "commentaire": ""
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Déterminer le domaine d'application du SMSST",
+      "commentaire": "Limites administratives et applicabilité"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 a",
+      "exigence": "Prendre en considération les enjeux externes et internes",
+      "commentaire": "\"Identifier les dangers c'est diminuer les risques\". Cf. paragraphe 4.1"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 b",
+      "exigence": "Prendre en compte les exigences des parties intéressées",
+      "commentaire": "Lors de modifications des processus, des produits, des exigences, des infrastructures. Cf. paragraphe 4.2"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3 c",
+      "exigence": "Prendre en compte les activités professionnelles",
+      "commentaire": "\"Le risque zéro n'existe pas\". Activités actuelles ou planifiées"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Inclure toutes les activités sous l'influence de l'entreprise",
+      "commentaire": "Et produits et services pouvant avoir un impact sur le SMSST"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.3",
+      "exigence": "Conserver le domaine d'application comme information documentée",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.4",
+      "exigence": "Système de management de la SST",
+      "commentaire": ""
+    },
+    {
+      "article": "4",
+      "paragraphe": "4.4",
+      "exigence": "Établir, appliquer, tenir à jour et améliorer en continu le SMSST",
+      "commentaire": "\"Si vous ne pouvez pas décrire ce que vous faites en tant que processus, vous ne savez pas ce que vous faites\". Edwards Deming. Y compris les processus nécessaires et leurs interactions"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5",
+      "exigence": "Leadership et participation des travailleurs",
+      "commentaire": "Planifier, Dérouler, Comparer, Agir (Plan, Do, Check, Act)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1",
+      "exigence": "Leadership et engagement",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 a",
+      "exigence": "Assumer l'entière responsabilité et l'obligation de rendre des compte de la prévention",
+      "commentaire": "\"Un escalier se balaie en commençant par le haut. Proverbe roumain.\" Faire preuve de leadership. Prévention des traumatismes et pathologies  au travail. Mise à disposition du lieu de travail et d'activités sûrs et sains"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 b",
+      "exigence": "S'assurer que la politique et les objectifs SST sont établis",
+      "commentaire": "Faire preuve de leadership. Politique et objectifs entièrement compatibles avec l'orientation stratégique de l'entreprise"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 c",
+      "exigence": "S'assurer que les exigences du SMSST sont intégrés aux processus métier",
+      "commentaire": "Faire preuve de leadership. Cf. paragraphe 4.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 d",
+      "exigence": "S'assurer que les ressources nécessaires au SMSST sont disponibles",
+      "commentaire": "Faire preuve de leadership. Ressources pour établir, appliquer, tenir à jour et améliorer le SMSST"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 e",
+      "exigence": "Communiquer sur l'importance d'un SMSST efficace",
+      "commentaire": "Faire preuve de leadership. Respecter les exigences du SMSST"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 f",
+      "exigence": "S'assurer que le SMSST atteint les résultats attendus",
+      "commentaire": "Faire preuve de leadership. Engagement, réactivité et soutien actif de la direction"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 g",
+      "exigence": "Orienter et soutenir les personnes",
+      "commentaire": "Afin de contribuer à la performance du SMSST. Faire preuve de leadership"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 h",
+      "exigence": "Promouvoir l'amélioration continue",
+      "commentaire": "\"Les employés d'abord, les clients ensuite. Vineet Nayar.\" Faire preuve de leadership. Cf. article 10"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 i",
+      "exigence": "Soutenir les autres rôles managériaux pertinents",
+      "commentaire": "Afin qu'ils puissent faire preuve de leadership dans leurs domaines respectifs"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 j",
+      "exigence": "Promouvoir la culture SST",
+      "commentaire": "Faire preuve de leadership. En développant la culture SST afin de favoriser les résultats attendus du SMSST"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 k",
+      "exigence": "Protéger les travailleurs de représailles",
+      "commentaire": "Lors de signalements sur les incidents, dangers, risques et opportunités. Faire preuve de leadership"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 l",
+      "exigence": "Établir et appliquer un processus pour la consultation et la participation des travailleurs",
+      "commentaire": "Faire preuve de leadership. Cf. paragraphe 5.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.1 m",
+      "exigence": "Soutenir l'établissement et le fonctionnement des comités SST",
+      "commentaire": "Faire preuve de leadership"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Politique SST",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 a",
+      "exigence": "S'engager à procurer des conditions de travail sûres et saines",
+      "commentaire": "En établissant, appliquant et tenant à jour la politique SST pour la prévention des traumatismes et pathologies au travail. Les conditions de travail sont appropriées à la finalité, la taille et le contexte de l'entreprise ainsi qu'aux risques et opportunités SST spécifiques"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 b",
+      "exigence": "Fournir un cadre pour l'établissement des objectifs SST",
+      "commentaire": "Cf. paragraphe 6.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 c",
+      "exigence": "S'engager à respecter les exigences légales",
+      "commentaire": "Et autres exigences auxquelles l'entreprise s'est engagée, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 d",
+      "exigence": "S'engager à éliminer les dangers",
+      "commentaire": "Et réduire les risques professionnels, cf. paragraphe 8.1.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 e",
+      "exigence": "S'engager à améliorer en continu le SMSST",
+      "commentaire": "Cf. article 10"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2 f",
+      "exigence": "S'engager à consulter les travailleurs",
+      "commentaire": "Et solliciter la participation des travailleurs (ou leurs représentants), cf. paragraphe 5.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Conserver la politique SST comme information documentée",
+      "commentaire": "Et la tenir disponible, cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Communiquer la politique SST",
+      "commentaire": "A tous les niveaux de l'entreprise"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "Tenir la politique SST disponible aux parties intéressées",
+      "commentaire": "Le cas échéant"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.2",
+      "exigence": "S'assurer que la politique SST est pertinente et appropriée",
+      "commentaire": "En l'examinant périodiquement"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "Rôles, responsabilités et autorités",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "S'assurer que les responsabilité et autorités du SMSST sont attribuées",
+      "commentaire": "Et communiquées à tous les niveaux de l'entreprise. \"La responsabilité ne peut pas être partagée. Robert Heinlein\""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "Tenir à jour les responsabilités et autorités comme information documentée",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3",
+      "exigence": "Assumer par les travailleurs la responsabilité des éléments du SMSST dont ils ont la charge",
+      "commentaire": "A tous les niveaux de l'entreprise. Ne pas oublier qu'en fin de compte la direction est entièrement responsable (cf. paragraphe 5.1 a)"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3 a",
+      "exigence": "S'assurer que le SMSST respecte les exigences de la norme ISO 45001",
+      "commentaire": "En attribuant la responsabilité et l'autorité nominativement"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.3 b",
+      "exigence": "Présenter des rapports sur la performance du SMSST",
+      "commentaire": "A la direction, de manière régulière"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4",
+      "exigence": "Consultation et participation des travailleurs",
+      "commentaire": ""
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la consultation et la participation des travailleurs",
+      "commentaire": "A tous les niveaux de l'entreprise. Objectif : développer, planifier, appliquer, évaluer la performance et les actions pour améliorer le SMSST. Cf. le paragraphe 10.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 a",
+      "exigence": "Fournir les méthodes, le temps, la formation et les ressources nécessaires",
+      "commentaire": "Pour la consultation et la participation des travailleurs ou de leurs représentants"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 b",
+      "exigence": "Fournir à temps des informations claires, compréhensibles et pertinentes",
+      "commentaire": "Sur le SMSST"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 c",
+      "exigence": "Déterminer et supprimer les obstacles à la participation des travailleurs",
+      "commentaire": "Et réduire les obstacles qui ne peuvent être supprimés. Exemples d'obstacles : ne pas répondre aux suggestions du personnel, barrière de langue ou de langage, menaces ou représailles"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 1",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En déterminant les besoins et attentes des parties intéressées, cf. paragraphe 4.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 2",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En établissant la politique SST, cf. paragraphe 5.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 3",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En attribuant les rôles, responsabilités et autorités, cf. paragraphe 5.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 4",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En déterminant comment appliquer et respecter les exigences légales, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 5",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En établissant les objectifs SST, cf. paragraphe 6.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 6",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En déterminant les mesures de prévention concernant les prestataires externes, cf. paragraphe 8.1.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 7",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En déterminant ce qui est nécessaire de surveiller, mesurer et évaluer, cf. paragraphe 9.1"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 8",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En planifiant, appliquant et tenant à jour le programme d'audit, cf. paragraphe 9.2.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 d 9",
+      "exigence": "Souligner la consultation des travailleurs non cadres",
+      "commentaire": "En assurant l'amélioration continue, cf. paragraphe 10.3"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 1",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En déterminant les méthodes de consultation et de participation"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 2",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En identifiant les dangers et en évaluant les risques et opportunités, cf. paragraphes 6.1.1 et 6.1.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 3",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En déterminant les actions pour éliminer les dangers et réduire les risques SST, cf. paragraphe 6.1.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 4",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En déterminant les exigences en termes de compétence, des besoins en formation, des formations et en évaluation des formations, cf. paragraphe 7.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 5",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En déterminant ce qu'il est nécessaire de communiquer et comment le faire, cf. paragraphe 7.4"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 6",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En déterminant les mesures de prévention, leurs application et utilisation effectives, cf. paragraphes 8.1, 8.1.3 et 8.2"
+    },
+    {
+      "article": "5",
+      "paragraphe": "5.4 e 7",
+      "exigence": "Souligner la participation des travailleurs non cadres",
+      "commentaire": "En enquêtant sur les incidents, non-conformités et en déterminant les actions correctives, cf. paragraphe 10.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6",
+      "exigence": "Planification",
+      "commentaire": "Planifier (Plan)"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1",
+      "exigence": "Actions face aux risques et opportunités",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1 a",
+      "exigence": "Déterminer les risques et opportunités",
+      "commentaire": "Afin de s'assurer que le SMSST peut atteindre les résultats prévus. Cf. le paragraphe 4.1 pour les enjeux, le paragraphe 4.2 pour les exigences et le paragraphe 4.3 pour le domaine d'application. Un état des lieux est toujours utile avant la planification. \"Toute décision comporte un risque. Peter Barge\""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1 b",
+      "exigence": "Déterminer les risques et opportunités",
+      "commentaire": "Afin d'anticiper ou de réduire les effets indésirables comme traumatismes et pathologies"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1 c",
+      "exigence": "Déterminer les risques et opportunités",
+      "commentaire": "Afin de s'inscrire dans la démarche d'amélioration continue, cf. article 10"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Prendre en compte les dangers",
+      "commentaire": "Lors de la détermination des risques et opportunités du SMSST et des résultats escomptés auxquels il faut répondre, cf. paragraphe 6.1.2.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Prendre en compte les risques professionnels et autres risques",
+      "commentaire": "Lors de la détermination des risques et opportunités du SMSST et des résultats escomptés auxquels il faut répondre, cf. paragraphe 6.1.2.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Prendre en compte les opportunités SST et autres opportunités",
+      "commentaire": "Lors de la détermination des risques et opportunités du SMSST et des résultats escomptés auxquels il faut répondre, cf. paragraphe 6.1.2.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Prendre en compte les exigences légales et autres exigences",
+      "commentaire": "Lors de la détermination des risques et opportunités du SMSST et des résultats escomptés auxquels il faut répondre, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Déterminer et évaluer les risques et les opportunités pour atteindre les résultats prévus du SMSST",
+      "commentaire": "Lors de modifications de l'entreprise, des processus ou du SMSST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Évaluer les risques et les opportunités avant d'appliquer les modifications",
+      "commentaire": "Lors de modifications planifiées, permanentes ou temporaires, cf. paragraphe 8.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.1",
+      "exigence": "Tenir à jour une information documentée sur les risques et opportunités",
+      "commentaire": "Y compris sur les processus et actions pour faire face aux risques et opportunités, cf. paragraphes 6.1.2 à 6.1.4. Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2",
+      "exigence": "Objectifs SST",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1",
+      "exigence": "Identification des dangers",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1",
+      "exigence": "Établir, appliquer et tenir à jour un processus d'identification des dangers",
+      "commentaire": "Processus dynamique et proactif. Identifier les dangers, les sources et les situations. \"Identifier les dangers, c'est diminuer les risques\". Identifier, hiérarchiser, réduire ou supprimer les risques professionnels"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 a",
+      "exigence": "Prendre en compte dans le processus l'organisation du travail, les facteurs sociaux, le leadership et la culture d'entreprise",
+      "commentaire": "Facteurs sociaux comme la charge de travail, les heures de travail, la maltraitance, le harcèlement et l'intimidation"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 b 1",
+      "exigence": "Prendre en compte dans le processus les activités et situations habituelles et inhabituelles et les dangers",
+      "commentaire": "Dangers liés aux infrastructures, aux équipements, aux matériaux, aux substances et aux conditions physiques du lieu de travail"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 b 2",
+      "exigence": "Prendre en compte dans le processus les activités et situations habituelles et inhabituelles et les dangers",
+      "commentaire": "Dangers liés à la conception, la recherche, le développement, les essais, la production, l'assemblage, la construction, la prestation de service, la maintenance et l'élimination du produit et du service"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 b 3",
+      "exigence": "Prendre en compte dans le processus les activités et situations habituelles et inhabituelles et les dangers",
+      "commentaire": "Dangers liés au facteur humain"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 b 4",
+      "exigence": "Prendre en compte dans le processus les activités et situations habituelles et inhabituelles et les dangers",
+      "commentaire": "Dangers liés à la manière comment le travail est réalisé"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 c",
+      "exigence": "Prendre en compte dans le processus les incidents du passé",
+      "commentaire": "Y compris les situations d'urgence et leurs causes. Les incidents peuvent être internes ou externes par rapport à l'entreprise"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 d",
+      "exigence": "Prendre en compte dans le processus les situations d'urgence potentielles",
+      "commentaire": "Cf. paragraphe 8.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 e 1",
+      "exigence": "Prendre en compte dans le processus les personnes ayant accès au lieu de travail",
+      "commentaire": "Et leurs activités. Personnes comme travailleurs et prestataires externes, visiteurs"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 e 2",
+      "exigence": "Prendre en compte dans le processus les personnes à proximité du lieu de travail",
+      "commentaire": "Qui peuvent être affectés par les activités de l'entreprise"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 e 3",
+      "exigence": "Prendre en compte dans le processus les travailleurs sur un autre lieu de travail",
+      "commentaire": "Non sous l'autorité directe de l'entreprise"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 f 1",
+      "exigence": "Prendre en compte dans le processus d'autres aspects",
+      "commentaire": "Comme la conception des lieux de travail, des processus, des installations, des machines, des équipements, des procédures de travail, de l'organisation du travail, y compris leur adaptation aux besoins et capacités des travailleurs impliqués"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 f 2",
+      "exigence": "Prendre en compte dans le processus d'autres aspects",
+      "commentaire": "Comme des situations à proximité du lieu de travail causés par des activités sous l'autorité de l'entreprise"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 f 3",
+      "exigence": "Prendre en compte dans le processus d'autres aspects non sous l'autorité de l'entreprise",
+      "commentaire": "Comme des situations à proximité du lieu de travail pouvant causer des traumatismes et pathologies chez les travailleurs sur le lieu de travail"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 g",
+      "exigence": "Prendre en compte dans le processus les modifications actuelles ou envisagées",
+      "commentaire": "Comme modifications sur l'organisation, les opérations, les processus, activités et le SMSST, cf. paragraphe 8.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.1 h",
+      "exigence": "Prendre en compte dans le processus l'évolution des connaissances sur les dangers",
+      "commentaire": "Et les informations liées"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.2",
+      "exigence": "Evaluation des risques professionnels et ceux liés au SMSST",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.2 a",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour évaluer les risques professionnels",
+      "commentaire": "Par rapport aux dangers identifiés. En tenant compte de l'efficacité des mesures existantes de prévention et de protection"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.2 b",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour déterminer et évaluer les autres risques",
+      "commentaire": "Par rapport à l'établissement, l'application, le fonctionnement et la tenue à jour du SMSST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.2",
+      "exigence": "Déterminer les méthodes et critères d'évaluation des risques professionnels",
+      "commentaire": "Par rapport au domaine d'application, leur nature, le calendrier. En s'assurant que les méthodes et critères sont proactifs et appliqués systématiquement"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.2",
+      "exigence": "Tenir à jour et conserver des informations documentées sur les méthodes et critères d'évaluation",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.3",
+      "exigence": "Evaluation des opportunités SST et ceux liés au SMSST",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.3 a 1",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour évaluer les opportunités d'amélioration de la performance du SMSST et les modifications planifiées",
+      "commentaire": "En prenant en compte les opportunités d'adapter le travail, son organisation et son environnement aux travailleurs. Les modifications relatives à l'entreprise, la politique, les processus ou les activités"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.3 a 2",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour évaluer les opportunités d'amélioration de la performance du SMSST et les modifications planifiées",
+      "commentaire": "En prenant en compte les opportunités d'éliminer les dangers et de réduire les risques SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.2.3 b",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour évaluer les opportunités d'amélioration du SMSST",
+      "commentaire": "Cf. article 10"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3",
+      "exigence": "Détermination des exigences légales",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 a",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour déterminer et accéder aux exigences légales actualisées",
+      "commentaire": "Exigences applicables aux dangers, aux risques professionnels et au SMSTT. Un engagement volontaire que l'entreprise souscrit auprès de parties intéressées devient une exigence interne. \"Nul n'est censé ignorer la loi. Proverbe latin\""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 b",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour déterminer comment ces exigences légales s'appliquent à l'entreprise",
+      "commentaire": "Et les informations qu'il est nécessaire de communiquer, cf. paragraphe 7.4"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3 c",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour prendre en compte les exigences légales",
+      "commentaire": "Lors de l'établissement, l'application, la tenue à jour et l'amélioration continue du SMSST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3",
+      "exigence": "Tenir à jour et conserver des informations documentées sur ses exigences légales",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.3",
+      "exigence": "S'assurer que les exigences légales sont mises à jour",
+      "commentaire": "En tenant compte de toute modification, cf. paragraphe 8.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Planification des actions",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 a 1",
+      "exigence": "Planifier les actions pour faire face aux risques et opportunités",
+      "commentaire": "Cf. paragraphes 6.1.2.2 et 6.1.2.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 a 2",
+      "exigence": "Planifier les actions pour répondre aux exigences légales",
+      "commentaire": "Cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 a 3",
+      "exigence": "Planifier les actions pour anticiper et faire face aux situations d'urgence",
+      "commentaire": "Cf. paragraphe 8.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 b 1",
+      "exigence": "Planifier comment intégrer et appliquer les actions dans les processus du SMSST",
+      "commentaire": "Et dans les processus métier"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4 b 2",
+      "exigence": "Planifier comment évaluer l'efficacité de ces actions",
+      "commentaire": "Efficacité : capacité de réalisation des activités planifiées avec le minimum d'efforts"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Prendre en compte la hiérarchie des mesures de prévention lors de la planification des actions",
+      "commentaire": "Y compris les éléments de sortie du SMSST, cf. paragraphe 8.1.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.1.4",
+      "exigence": "Prendre en considération les bonnes pratiques, les options technologiques",
+      "commentaire": "Et les exigences financières, opérationnelles et économiques"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2",
+      "exigence": "Objectifs SST et planification",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1",
+      "exigence": "Objectifs SST",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1",
+      "exigence": "Établir les objectifs SST",
+      "commentaire": "Aux niveaux concernés. Le but étant de tenir à jour et d'améliorer la performance du SMSST, cf. paragraphe 10.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 a",
+      "exigence": "Choisir des objectifs cohérents avec la politique SST",
+      "commentaire": "Cf. paragraphe 5.2"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 b",
+      "exigence": "Utiliser des objectifs mesurables",
+      "commentaire": "Ou capables d'évaluer la performance"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 c 1",
+      "exigence": "Prendre en compte les exigences applicables",
+      "commentaire": "Cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 c 2",
+      "exigence": "Prendre en compte les résultats des évaluations",
+      "commentaire": "Des risques et des opportunités, cf. paragraphes 6.1.2.2 et 6.1.2.3"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 c 3",
+      "exigence": "Prendre en compte les résultats des consultations",
+      "commentaire": "Avec les travailleurs ou leurs représentants, cf. paragraphe 5.4"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 d",
+      "exigence": "Surveiller les objectifs",
+      "commentaire": "De manière appropriée et régulièrement"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 e",
+      "exigence": "Communiquer sur les objectifs",
+      "commentaire": "Cf. paragraphe 7.4"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.1 f",
+      "exigence": "Tenir à jour les objectifs",
+      "commentaire": "Quand cela est approprié"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2",
+      "exigence": "Planification pour atteindre les objectifs",
+      "commentaire": ""
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 a",
+      "exigence": "Déterminer ce qui sera fait",
+      "commentaire": "Lors de la planification de la façon d'atteindre les objectifs SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 b",
+      "exigence": "Déterminer les ressources nécessaires",
+      "commentaire": "Lors de la planification de la façon d'atteindre les objectifs SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 c",
+      "exigence": "Déterminer qui sera responsable",
+      "commentaire": "Lors de la planification de la façon d'atteindre les objectifs SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 d",
+      "exigence": "Déterminer le calendrier de la planification",
+      "commentaire": "Lors de la planification de la façon d'atteindre les objectifs SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 e",
+      "exigence": "Déterminer comment les résultats seront évalués",
+      "commentaire": "Y compris les indicateurs de surveillance"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2 f",
+      "exigence": "Déterminer comment intégrer les actions dans les processus métier",
+      "commentaire": "Afin d'atteindre les objectifs SST"
+    },
+    {
+      "article": "6",
+      "paragraphe": "6.2.2",
+      "exigence": "Tenir à jour et conserver des informations documentées sur les objectifs",
+      "commentaire": "Et les plans d'actions pour les atteindre, cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7",
+      "exigence": "Support",
+      "commentaire": "Dérouler (Do)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.1",
+      "exigence": "Ressources",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.1",
+      "exigence": "Déterminer et fournir les ressources nécessaires",
+      "commentaire": "Afin d'établir, appliquer, tenir à jour et améliorer le SMSST"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2",
+      "exigence": "Compétences",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 a",
+      "exigence": "Déterminer les compétences nécessaires des travailleurs",
+      "commentaire": "Travailleurs qui peuvent influencer ou être influencés par la performance SST"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 b",
+      "exigence": "S'assurer que les travailleurs sont compétents y compris l'aptitude à identifier les dangers",
+      "commentaire": "Sur la base d'éducation, de formation initiale et professionnelle et d'expérience"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 c",
+      "exigence": "Mener des actions pour acquérir et tenir à jour les compétences nécessaires",
+      "commentaire": "Et évaluer l'efficacité de ces actions"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.2 d",
+      "exigence": "Conserver des informations documentées sur les compétences",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3",
+      "exigence": "Sensibilisation",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 a",
+      "exigence": "Sensibiliser les travailleurs à la politique et aux objectifs SST",
+      "commentaire": "Cf. paragraphes 5.2 et 6.2"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 b",
+      "exigence": "Sensibiliser les travailleurs à l'importance de leur contribution à l'efficacité du SMSST",
+      "commentaire": "Et des effets bénéfiques de la performance améliorée du SMSST"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 c",
+      "exigence": "Sensibiliser les travailleurs aux répercussions et aux conséquences du non-respect des exigences du SMSST",
+      "commentaire": "Ne pas oublier les conséquences potentielles sur les activités professionnelles"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 d",
+      "exigence": "Sensibiliser les travailleurs aux incidents",
+      "commentaire": "Et aux résultats des enquêtes des incidents"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 e",
+      "exigence": "Sensibiliser les travailleurs aux dangers et aux risques professionnels",
+      "commentaire": "Et aussi aux actions menées pour éliminer les dangers et réduire les risques"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.3 f",
+      "exigence": "Sensibiliser les travailleurs aux dispositions de leur droit de retrait",
+      "commentaire": "Face à des situations présentant un danger grave et imminent. Savoir que des pénalités pour les travailleurs ne peuvent être appliquées"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4",
+      "exigence": "Communication",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 a",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant sur quels sujets communiquer. \"Les bonnes nouvelles marchent et le mauvaises courent. Proverbe suédois\""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 b",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant quand communiquer"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 c 1",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant avec qui communiquer aux différents niveaux de l'entreprise"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 c 2",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant avec qui communiquer (prestataires externes et visiteurs)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 c 3",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant avec qui communiquer (autres parties intéressées)"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1 d",
+      "exigence": "Établir, appliquer et tenir à jour un processus de communication",
+      "commentaire": "Y compris en déterminant comment communiquer"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Prendre en compte les aspects relatifs à la diversité lors de l'analyse des besoins en communication",
+      "commentaire": "Comme sexe, langue, culture, degré d'alphabétisation, handicap"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "S'assurer que l'opinion des parties intéressées externes est prise en compte",
+      "commentaire": "Opinions relatives au SMSST"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Prendre en compte ses exigences légales",
+      "commentaire": "Lors de l'établissement du processus de communication"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "S'assurer que les informations à communiquer sont cohérentes et fiables par rapport au SMSST",
+      "commentaire": "Lors de l'établissement du processus de communication"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Répondre aux communications pertinentes",
+      "commentaire": "Concernant le SMSST"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.1",
+      "exigence": "Conserver des informations documentées pertinentes sur sa communication",
+      "commentaire": "Selon le cas. Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2",
+      "exigence": "Communication interne",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2 a",
+      "exigence": "Communiquer en interne les informations pertinentes du SMSST",
+      "commentaire": "Aux différents niveaux de l'entreprise, y compris les modifications adoptées"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.2 b",
+      "exigence": "S'assurer que le processus de communication permet aux travailleurs de contribuer à l'amélioration continue",
+      "commentaire": "Cf. article 10"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.3",
+      "exigence": "Communication externe",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.4.3",
+      "exigence": "Communiquer en externe les informations pertinentes du SMSST",
+      "commentaire": "Comme établi par le processus de communication et en tenant compte des exigences légales, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5",
+      "exigence": "Informations documentées",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1 a",
+      "exigence": "Inclure dans le SMSST les informations documentées exigées par l'ISO 45001",
+      "commentaire": "Tenir à jour des informations documentées (procédures) :"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.1 b",
+      "exigence": "Inclure dans le SMSST les informations documentées jugées nécessaires à l'efficacité du SMSST",
+      "commentaire": "Ces informations documentées sont spécifiques par rapport à la taille de l'entreprise, au domaine d'activité, à la complexité des processus, aux produits et services, à l'obligation de respecter des exigences légales, à la compétence des travailleurs. Processus du SMSST :"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2",
+      "exigence": "Création et mise à jour des informations documentées",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 a",
+      "exigence": "Identifier et décrire les informations documentées de façon appropriée",
+      "commentaire": "Lors de leur création et mise à jour. Comme titre, auteur, date, codification"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 b",
+      "exigence": "S'assurer que le format et le support des informations documentées sont appropriés",
+      "commentaire": "Exemples de formats : langue, version du logiciel et des graphiques. Exemples de supports : papier, électronique"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.2 c",
+      "exigence": "Passer en revue et valider les informations documentées de façon appropriée",
+      "commentaire": "Afin de déterminer la pertinence et l'adéquation"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Maîtrise des informations documentées",
+      "commentaire": ""
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3 a",
+      "exigence": "Maîtriser les informations documentées pour qu'elles soient disponibles et conviennent à l'utilisation",
+      "commentaire": "Quand nécessaire et à l'endroit voulu. Selon les exigences du SMSST et de la norme ISO 45001"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3 b",
+      "exigence": "Maîtriser les informations documentées pour qu'elles soient convenablement protégées",
+      "commentaire": "Comme perte de confidentialité, utilisation inappropriée ou perte d'intégrité"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Appliquer des activités de distribution, d'accès, de récupération et d'utilisation",
+      "commentaire": "Afin de maîtriser les informations documentées"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Appliquer des activités de stockage et de protection",
+      "commentaire": "Y compris la préservation de lisibilité"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Appliquer des activités de maîtrise des modifications",
+      "commentaire": "Comme la maîtrise des versions"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Appliquer des activités de conservation et d'élimination",
+      "commentaire": "En déterminant pour chaque information documentée le délai de conservation et la manière d'élimination"
+    },
+    {
+      "article": "7",
+      "paragraphe": "7.5.3",
+      "exigence": "Identifier et maîtriser les informations documentées d'origine externe",
+      "commentaire": "Informations documentées jugées nécessaires à la planification et au fonctionnement du SMSST"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8",
+      "exigence": "Réalisation",
+      "commentaire": "Dérouler (Do)"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1",
+      "exigence": "Planification et maîtrise opérationnelle",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1 a",
+      "exigence": "Planifier, appliquer, maîtriser et tenir à jour des processus nécessaires pour respecter les exigences du SMSST",
+      "commentaire": "En établissant des critères pour ces processus et en réalisant des actions déterminées dans l'article 6"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1 b",
+      "exigence": "Planifier, appliquer, maîtriser et tenir à jour des processus nécessaires pour respecter les exigences du SMSST",
+      "commentaire": "En maîtrisant ces processus conformément aux critères"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1 c",
+      "exigence": "Planifier, appliquer, maîtriser et tenir à jour des processus nécessaires pour respecter les exigences du SMSST",
+      "commentaire": "En tenant à jour et en conservant des informations documentées afin de s'assurer que les processus sont réalisés comme prévu. Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1 d",
+      "exigence": "Planifier, appliquer, maîtriser et tenir à jour des processus nécessaires pour respecter les exigences du SMSST",
+      "commentaire": "En adaptant le travail aux travailleurs"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.1",
+      "exigence": "Coordonner les parties pertinentes du SMSST avec les autres entreprises",
+      "commentaire": "Pour les lieux de travail comptant plusieurs employeurs"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2",
+      "exigence": "Elimination des dangers et réduction des risques",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2 a",
+      "exigence": "Éliminer les dangers",
+      "commentaire": "En établissant, appliquant et tenant à jour un processus pour l'élimination des dangers et la réduction des risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2 b",
+      "exigence": "Remplacer par des matériaux, processus, opérations ou équipements moins dangereux",
+      "commentaire": "En établissant, appliquant et tenant à jour un processus pour l'élimination des dangers et la réduction des risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2 c",
+      "exigence": "Appliquer des protections collectives ou réorganiser le travail",
+      "commentaire": "En établissant, appliquant et tenant à jour un processus pour l'élimination des dangers et la réduction des risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2 d",
+      "exigence": "Appliquer des mesures de prévention administratives y compris la formation",
+      "commentaire": "En établissant, appliquant et tenant à jour un processus pour l'élimination des dangers et la réduction des risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.2 e",
+      "exigence": "Utiliser des équipements de protection individuelle adéquats",
+      "commentaire": "En établissant, appliquant et tenant à jour un processus pour l'élimination des dangers et la réduction des risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3",
+      "exigence": "Pilotage du changement",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3 a",
+      "exigence": "Établir un processus pour l'application et la maîtrise des changements temporaires ou permanents planifiés, y compris pour de nouveaux produits, services et processus ou leurs modifications",
+      "commentaire": "Changement qui peuvent avoir une incidence sur la performance SST. Y compris les lieux et environnements de travail, l'organisation du travail, les conditions de travail, les équipements et le personnel"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3 b",
+      "exigence": "Établir un processus pour l'application et la maîtrise des changements temporaires ou permanents planifiés",
+      "commentaire": "Y compris relatifs aux exigences légales et autres exigences"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3 c",
+      "exigence": "Établir un processus pour l'application et la maîtrise des changements temporaires ou permanents planifiés",
+      "commentaire": "Y compris relatifs à l'évolution des informations sur les dangers ou les risques professionnels"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3 d",
+      "exigence": "Établir un processus pour l'application et la maîtrise des changements temporaires ou permanents planifiés",
+      "commentaire": "Y compris relatifs à l'évolution des connaissances et de la technologie"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.3",
+      "exigence": "Analyser les conséquences des changements imprévus",
+      "commentaire": "Et mener des actions pour limiter tout effet négatif"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4",
+      "exigence": "Acquisition",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.1",
+      "exigence": "Établir, appliquer et tenir à jour un processus de maîtrise d'acquisition de produits et services",
+      "commentaire": "Afin de garantir leur conformité par rapport au SMSST"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2",
+      "exigence": "Prestataires externes",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2 a",
+      "exigence": "Coordonner son processus d'acquisition avec les prestataires externes",
+      "commentaire": "Afin d'identifier les dangers et d'évaluer et de maîtriser les risques professionnels relatifs aux activités et opérations des prestataires externes pouvant influencer l'entreprise"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2 b",
+      "exigence": "Coordonner son processus d'acquisition avec les prestataires externes",
+      "commentaire": "Afin d'identifier les dangers et d'évaluer et de maîtriser les risques professionnels relatifs aux activités et opérations de l'entreprise pouvant influencer les travailleurs des prestataires externes"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2 c",
+      "exigence": "Coordonner son processus d'acquisition avec les prestataires externes",
+      "commentaire": "Afin d'identifier les dangers et d'évaluer et de maîtriser les risques professionnels relatifs aux activités et opérations des prestataires externes pouvant influencer d'autres parties intéressées sur le lieu de travail"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2",
+      "exigence": "S'assurer que les exigences du SMSST sont respectées par les prestataires externes",
+      "commentaire": "Et leurs travailleurs"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.2",
+      "exigence": "Définir et appliquer les critères SST pour sélectionner les prestataires externes",
+      "commentaire": "Critères inclus dans le processus lié aux prestataires externes (maîtrise d'acquisition), cf. paragraphe 8.1.4.1"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.3",
+      "exigence": "Externalisation",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.3",
+      "exigence": "S'assurer que les fonctions et processus externalisés sont maîtrisés",
+      "commentaire": "\"Les fournisseurs font partie du processus. Frank Ostroff\""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.3",
+      "exigence": "S'assurer que ses dispositions d'externalisation respectent les exigences légales",
+      "commentaire": "Et qu'elles permettent d'atteindre les résultats attendus du SMSST"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.1.4.3",
+      "exigence": "Définir dans le SMSST le type et le degré de maîtrise à appliquer",
+      "commentaire": "Concernant les processus externalisés"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2",
+      "exigence": "Situations d'urgence, préparation et réponse",
+      "commentaire": ""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 a",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "Cf. le paragraphe 6.1.2.1. En établissant une réponse planifiée aux situations d'urgence y compris l'administration des premiers secours. \"Diriger c'est anticiper\""
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 b",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En fournissant des formations sur la réponse planifiée"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 c",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En réalisant périodiquement des tests et des exercices pour évaluer la capacité planifiée à répondre"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 d",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En évaluant la performance et, si nécessaire, la révision de la réponse planifiée, y compris après un test et surtout après l'apparition d'une situation d'urgence"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 e",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En communiquant et fournissant des informations pertinentes à tous les travailleurs sur leurs obligations et responsabilités"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 f",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En communiquer des informations pertinentes à toutes les parties intéressées"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2 g",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour la préparation et la réponse aux situations d'urgence potentielles",
+      "commentaire": "En prenant en compte les besoins et les capacités de toutes les parties intéressées pertinentes et en assurant leur implication dans l'élaboration de la réponse planifiée"
+    },
+    {
+      "article": "8",
+      "paragraphe": "8.2",
+      "exigence": "Tenir à jour et conserver des informations documentées sur les processus et sur les plans de réponse aux situations d'urgence potentielles",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9",
+      "exigence": "Performance",
+      "commentaire": "Comparer (Check)"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1",
+      "exigence": "Inspection",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour l'inspection, l'analyse et l'évaluation de la performance",
+      "commentaire": "Dans l'inspection (surveillance et mesure) ne pas oublier les équipements de mesure"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 a 1",
+      "exigence": "Déterminer ce qu'il est nécessaire d'inspecter",
+      "commentaire": "Y compris le degré de respect des exigences légales"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 a 2",
+      "exigence": "Déterminer ce qu'il est nécessaire d'inspecter",
+      "commentaire": "Y compris les activités concernées par les dangers, les risques et les opportunités identifiés"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 a 3",
+      "exigence": "Déterminer ce qu'il est nécessaire d'inspecter",
+      "commentaire": "Y compris l'avancement vers l'atteinte des objectifs SST"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 a 4",
+      "exigence": "Déterminer ce qu'il est nécessaire d'inspecter",
+      "commentaire": "Y compris l'efficacité des mesures de prévention"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 b",
+      "exigence": "Déterminer les méthodes utilisées",
+      "commentaire": "Pour l'inspection, l'analyse et l'évaluation de la performance"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 c",
+      "exigence": "Déterminer les critères utilisés",
+      "commentaire": "Afin d'évaluer la performance SST"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 d",
+      "exigence": "Déterminer quand l'inspection sera réalisée",
+      "commentaire": "Critères à prendre en compte : fréquence, échantillonnage, étape du processus"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1 e",
+      "exigence": "Déterminer quand utiliser les résultats de l'inspection",
+      "commentaire": "Afin de les analyser, évaluer et communiquer"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Évaluer la performance SST",
+      "commentaire": "Et déterminer l'efficacité du SMSST"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "S'assurer que les équipements dl'inspection sont étalonnés ou vérifiés",
+      "commentaire": "Et qu'ils soient correctement utilisés et entretenus. Des exigences légales peuvent concerner l'étalonnage ou la vérification des équipements"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Conserver des informations documentées appropriées",
+      "commentaire": "Comme preuves des résultats d'inspection, d'analyse et d'évaluation de la performance. Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.1",
+      "exigence": "Conserver des informations documentées appropriées",
+      "commentaire": "Sur la maintenance, l'étalonnage ou la vérification des équipements de mesure. Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2",
+      "exigence": "Evaluation de la conformité",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour évaluer le respect des exigences légales",
+      "commentaire": "Cf. paragraphe 6.1.3. \"La sécurité n'est jamais un acquis\""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 a",
+      "exigence": "Déterminer la méthode et la fréquence de l'évaluation",
+      "commentaire": "Afin d'évaluer la conformité"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 b",
+      "exigence": "Evaluer la conformité",
+      "commentaire": "Et mener des actions, si nécessaire. Cf. paragraphe 10.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 c",
+      "exigence": "Maintenir la connaissance et la compréhension de sa conformité",
+      "commentaire": "Par rapport au respect des exigences légales"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.1.2 d",
+      "exigence": "Conserver des informations documentées sur les résultats des évaluations de conformité",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2",
+      "exigence": "Audit interne",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 a 1",
+      "exigence": "Réaliser des audits internes à des intervalles planifiés pour fournir des informations permettant de déterminer si le SMSST respecte les exigences de l'entreprise",
+      "commentaire": "Y compris à la politique et aux objectifs SST"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 a 2",
+      "exigence": "Réaliser des audits internes à des intervalles planifiés pour fournir des informations permettant de déterminer si le SMSST respecte les exigences de la norme ISO 45001",
+      "commentaire": "Exigences dans les articles 4 à 10 de la norme"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.1 b",
+      "exigence": "Réaliser des audits internes à des intervalles planifiés afin de fournir des informations permettant de déterminer si le SMSST est appliqué effectivement",
+      "commentaire": "Et de déterminer si le SMSST est tenu à jour"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2",
+      "exigence": "Programme d'audit interne",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 a",
+      "exigence": "Planifier, établir, appliquer et tenir à jour un programme d'audit interne",
+      "commentaire": "Incluant la fréquence, les méthodes, les responsabilités, la consultation, les exigences de planification et le compte rendu. Toutes ces activités peuvent être décrites dans un guide pour l'application du programme d'audit"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 a",
+      "exigence": "Prendre en considération dans le programme d'audit l'importance des processus concernés",
+      "commentaire": "Et les résultats des audits précédents. Suivre les recommandation de l'ISO 19011"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 b",
+      "exigence": "Définir les critères d'audit",
+      "commentaire": "Et le domaine d'application"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 c",
+      "exigence": "Sélectionner les auditeurs",
+      "commentaire": "Afin de réaliser des audits objectifs et impartiaux"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 d",
+      "exigence": "S'assurer que les résultats des audits sont communiqués aux cadres concernés",
+      "commentaire": "Et aux travailleurs impliqués et autres parties intéressées"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 e",
+      "exigence": "Mener des actions pour remédier aux non-conformités",
+      "commentaire": "Et améliorer la performance du SMSST, cf. article 10"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.2.2 f",
+      "exigence": "Conserver les informations documentées sur l'application du programme d'audit",
+      "commentaire": "Et les résultats d'audit, cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Revue de direction",
+      "commentaire": ""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Passer en revue le SMSST à des intervalles planifiés",
+      "commentaire": "Afin de s'assurer que le SMSST est toujours approprié, adéquat et efficace. \"Aucun système n'est parfait\""
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 a",
+      "exigence": "Prendre en considération l'avancement des actions décidées au cours de la revue de direction précédente",
+      "commentaire": "Utiliser le dernier rapport de revue de direction"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 1",
+      "exigence": "Prendre en considération les modifications des enjeux pertinents pour le SMSST",
+      "commentaire": "Comme les besoins et attentes des parties intéressées, cf. paragraphe 4.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 2",
+      "exigence": "Prendre en considération les modifications des enjeux pertinents pour le SMSST",
+      "commentaire": "Comme les exigences légales, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 b 3",
+      "exigence": "Prendre en considération les modifications des enjeux pertinents pour le SMSST",
+      "commentaire": "Comme les risques et opportunités, cf. paragraphe 6.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 c",
+      "exigence": "Prendre en considération le degré de réalisation de la politique SST",
+      "commentaire": "Et d'atteinte des objectifs SST, cf. paragraphes 5.2 et 6.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 1",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur les incidents, les non-conformités, les actions correctives et l'amélioration continue, cf. paragraphes 10.2 et 10.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 2",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur les résultats de l'inspection, cf. paragraphe 9.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 3",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur les résultats de l'évaluation du respect des exigences légales, cf. paragraphe 6.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 4",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur les résultats des audits, cf. paragraphe 9.2"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 5",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur la consultation et la participation des travailleurs, cf. paragraphe 5.4"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 d 6",
+      "exigence": "Prendre en considération les informations sur la performance SST",
+      "commentaire": "Et les tendances sur les risques et opportunités, cf. paragraphe 6.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 e",
+      "exigence": "Prendre en considération l'adéquation des ressources nécessaires",
+      "commentaire": "Pour tenir à jour le SMSST, cf. paragraphe 7.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 f",
+      "exigence": "Prendre en considération la communication pertinente",
+      "commentaire": "Avec toutes les parties intéressées, cf. paragraphe 7.4"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3 g",
+      "exigence": "Prendre en considération les opportunités d'amélioration continue",
+      "commentaire": "Qu'il faut saisir"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction des décisions",
+      "commentaire": "Sur l'adéquation, la pertinence et l'efficacité continues du SMSST pour atteindre les résultats prévus"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur les opportunités d'amélioration continue, cf. article 10"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur les modifications à apporter au SMSST, cf. paragraphe 8.1.3"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur les ressources nécessaires, cf. paragraphe 7.1"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur les actions éventuelles à réaliser"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur l'amélioration de l'intégration du SMSST avec les processus métier"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Inclure dans les éléments de sortie de la revue de direction les décisions",
+      "commentaire": "Sur toute implication relative à l'orientation stratégique de l'entreprise"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Communiquer les éléments de sortie de la revue de direction aux travailleurs",
+      "commentaire": "Et aux représentants des travailleurs, si ceux-ci existent"
+    },
+    {
+      "article": "9",
+      "paragraphe": "9.3",
+      "exigence": "Conserver les informations documentées sur les résultats de la revue de direction",
+      "commentaire": "Cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10",
+      "exigence": "Amélioration",
+      "commentaire": "Agir (Act)"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.1",
+      "exigence": "Généralités",
+      "commentaire": ""
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.1",
+      "exigence": "Déterminer les opportunités d'amélioration",
+      "commentaire": "Cf. paragraphes 9.1, 9.2 et 9.3"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.1",
+      "exigence": "Mener des actions",
+      "commentaire": "Afin d'obtenir les résultats prévus du SMSST"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Incidents, non-conformités et actions correctives",
+      "commentaire": ""
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Établir, appliquer et tenir à jour un processus pour déterminer et gérer les incidents et les non-conformités",
+      "commentaire": "Incluant le compte rendu, l'enquête et le plan d'action"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 a 1",
+      "exigence": "Réagir rapidement lorsqu'un incident ou une non-conformité apparaissent",
+      "commentaire": "Afin de pouvoir maîtriser et corriger"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 a 2",
+      "exigence": "Réagir rapidement lorsqu'un incident ou une non-conformité apparaissent",
+      "commentaire": "Afin de faire face aux conséquences"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 1",
+      "exigence": "Évaluer la nécessité de mener une action corrective en enquêtant l'incident ou en passant en revue la non-conformité",
+      "commentaire": "Inclure la participation de travailleurs (cf. paragraphe 5.4) et autres parties intéressées pertinentes. Action corrective afin d'éliminer les causes premières pour que cela ne se reproduise pas"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 2",
+      "exigence": "Évaluer la nécessité de mener une action corrective en recherchant et analysant les causes de l'incident",
+      "commentaire": "Ou les causes de la non-conformité"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 b 3",
+      "exigence": "Évaluer la nécessité de mener une action corrective en recherchant si des incidents et non-conformités similaires se sont produits",
+      "commentaire": "Ou pourraient se produire"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 c",
+      "exigence": "Passer en revue les évaluations existantes des risques SST ou autres risques, si approprié",
+      "commentaire": "Cf. paragraphe 6.1"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 d",
+      "exigence": "Déterminer et appliquer toutes les actions nécessaires y compris des actions correctives",
+      "commentaire": "Conformément à la hiérarchie des mesures de prévention (cf. paragraphe 8.1.2) et au pilotage du changement (cf. paragraphe 8.1.3)"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 e",
+      "exigence": "Evaluer les risques SST avant de mener des actions",
+      "commentaire": "Actions qui pourraient générer de nouveaux dangers ou modifier les dangers déjà identifiés"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 f",
+      "exigence": "Passer en revue l'efficacité de toute action menée",
+      "commentaire": "Y compris toute action corrective"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2 g",
+      "exigence": "Modifier le SMSST",
+      "commentaire": "Si cela est nécessaire"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Mener des actions correctives appropriées aux conséquences réelles ou potentielles",
+      "commentaire": "Par rapport aux incidents et aux non-conformités apparues"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Conserver les informations documentées sur la nature des incidents ou des non-conformités",
+      "commentaire": "Et de toute action menée, cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Conserver les informations documentées sur la nature des incidents ou des non-conformités",
+      "commentaire": "Et des résultats de toute action menée et de son efficacité, cf. paragraphe 7.5.1"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.2",
+      "exigence": "Communiquer ces informations documentées aux travailleurs et à leurs représentant",
+      "commentaire": "Et à toute autre partie intéressée"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3",
+      "exigence": "Amélioration continue",
+      "commentaire": ""
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3 a",
+      "exigence": "Améliorer en continue la pertinence, l'adéquation et l'efficacité du SMSST",
+      "commentaire": "En améliorant la performance SST"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3 b",
+      "exigence": "Améliorer en continue la pertinence, l'adéquation et l'efficacité du SMSST",
+      "commentaire": "En promouvant une culture favorable au SMSST"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3 c",
+      "exigence": "Améliorer en continue la pertinence, l'adéquation et l'efficacité du SMSST",
+      "commentaire": "En promouvant la participation des travailleurs dans l'amélioration continue du SMSST"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3 d",
+      "exigence": "Améliorer en continue la pertinence, l'adéquation et l'efficacité du SMSST",
+      "commentaire": "En communiquant les résultats de l'amélioration continue aux travailleurs et leurs représentants"
+    },
+    {
+      "article": "10",
+      "paragraphe": "10.3 e",
+      "exigence": "Améliorer en continue la pertinence, l'adéquation et l'efficacité du SMSST",
+      "commentaire": "En tenant à jour et en conservant les informations documentées de l'amélioration continue, cf. paragraphe 7.5.1"
+    }
+  ]
+}

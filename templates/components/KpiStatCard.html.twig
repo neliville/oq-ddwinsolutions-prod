@@ -1,0 +1,44 @@
+{# @prop label string Libellé court (souvent uppercase) #}
+{# @prop value string|number Valeur affichée #}
+{# @prop tone 'default'|'destructive'|'emerald'|'amber'|'sky' Couleur de l’icône #}
+{# @prop delta string|null Variation affichée sous la valeur (+12 %, etc.) #}
+{# @prop helper string|null Texte d’aide discret #}
+{# @prop withIcon bool Afficher l’emplacement icône à droite #}
+{# @block icon Icône (Lucide, ux:icon) — uniquement si withIcon #}
+{%- props
+    label = '',
+    value = '',
+    tone = 'default',
+    delta = null,
+    helper = null,
+    withIcon = true,
+-%}
+{%- set toneClasses = {
+    default: 'bg-primary/10 text-primary',
+    destructive: 'bg-destructive/10 text-destructive',
+    emerald: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+    amber: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+    sky: 'bg-sky-500/10 text-sky-700 dark:text-sky-400',
+} -%}
+{%- set iconWrap = toneClasses[tone] ?? toneClasses.default -%}
+<twig:Card class="{{ ('border-border/80 shadow-sm ring-1 ring-border/40 ' ~ attributes.render('class'))|tailwind_merge }}">
+    <twig:Card:Content class="p-5 sm:p-6">
+        <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+                <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ label }}</p>
+                <p class="m-0 text-2xl font-bold tabular-nums text-foreground">{{ value }}</p>
+                {% if delta %}
+                    <p class="mt-1 mb-0 text-xs font-medium tabular-nums text-muted-foreground">{{ delta }}</p>
+                {% endif %}
+                {% if helper %}
+                    <p class="mt-1 mb-0 text-xs text-muted-foreground">{{ helper }}</p>
+                {% endif %}
+            </div>
+            {% if withIcon %}
+                <div class="flex size-11 shrink-0 items-center justify-center rounded-full {{ iconWrap }}" aria-hidden="true">
+                    {%- block icon %}{% endblock -%}
+                </div>
+            {% endif %}
+        </div>
+    </twig:Card:Content>
+</twig:Card>

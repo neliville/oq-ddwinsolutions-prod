@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tools\Api;
 
 use App\Entity\User;
-use App\Repository\UserPreferencesRepository;
+use App\Service\Export\ExportBrandingResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class UserExportBrandingController extends AbstractController
 {
     public function __construct(
-        private readonly UserPreferencesRepository $userPreferencesRepository,
+        private readonly ExportBrandingResolver $exportBrandingResolver,
     ) {
     }
 
@@ -31,15 +31,8 @@ final class UserExportBrandingController extends AbstractController
             return new JsonResponse(['error' => 'not_authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        $prefs = $this->userPreferencesRepository->getOrCreateForUser($user);
+        $view = $this->exportBrandingResolver->resolveForUser($user);
 
-        return new JsonResponse([
-            'exportDisplayName' => $prefs->getExportDisplayName(),
-            'exportJobTitle' => $prefs->getExportJobTitle(),
-            'exportCompanyName' => $prefs->getExportCompanyName(),
-            'exportPdfFooter' => $prefs->getExportPdfFooter(),
-            'exportLogoFilename' => $prefs->getExportLogoFilename(),
-            'profileDisplayName' => $prefs->getProfileDisplayName(),
-        ]);
+        return new JsonResponse($view->toApiArray());
     }
 }

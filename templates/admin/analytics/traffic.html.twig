@@ -3,298 +3,158 @@
 {% block title %}Trafic & audiences | Analytics{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Trafic et audiences</h1>
-            <p class="text-muted-foreground mb-0">Analyse du trafic sur la période sélectionnée</p>
-        </div>
-        <div>
-            <div class="flex flex-wrap gap-1" role="group" aria-label="Période">
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'today'}) }}" class="{{ period == 'today' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">Aujourd'hui</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'week'}) }}" class="{{ period == 'week' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">7 jours</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'month'}) }}" class="{{ period == 'month' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">30 jours</a>
-                <a href="{{ path('app_admin_analytics_traffic', {period: 'year'}) }}" class="{{ period == 'year' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">1 an</a>
+{# Graphiques Chart.js pilotés par Stimulus (`analytics-charts`) — données : `trafficCharts` #}
+<div
+    class="analytics-traffic-page w-full max-w-[100rem] mx-auto space-y-6"
+    data-controller="analytics-charts"
+    data-analytics-charts-config-value="{{ trafficCharts|json_encode|e('html_attr') }}"
+>
+    <twig:DataPageHeader title="Trafic et audiences" description="Analyse du trafic et des audiences sur la période sélectionnée. La courbe reflète les vues enregistrées jour par jour.">
+        <twig:block name="actions">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Période d'analyse">
+                <twig:Button as="a" href="{{ path('app_admin_analytics_traffic', {period: 'today'}) }}" variant="{{ period == 'today' ? 'default' : 'outline' }}" size="sm" class="no-underline">
+                    Aujourd'hui
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_traffic', {period: 'week'}) }}" variant="{{ period == 'week' ? 'default' : 'outline' }}" size="sm" class="no-underline">
+                    7 jours
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_traffic', {period: 'month'}) }}" variant="{{ period == 'month' ? 'default' : 'outline' }}" size="sm" class="no-underline">
+                    30 jours
+                </twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_traffic', {period: 'year'}) }}" variant="{{ period == 'year' ? 'default' : 'outline' }}" size="sm" class="no-underline">
+                    1 an
+                </twig:Button>
             </div>
-        </div>
+        </twig:block>
+    </twig:DataPageHeader>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <twig:KpiStatCard label="Visites totales" value="{{ totalVisits|number_format(0, ',', ' ') }}" tone="default" helper="{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}">
+            <twig:block name="icon"><twig:ux:icon name="lucide:activity" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Vues — jour en cours" value="{{ todayVisits|number_format(0, ',', ' ') }}" tone="emerald" delta="Hier : {{ yesterdayVisits|number_format(0, ',', ' ') }}">
+            <twig:block name="icon"><twig:ux:icon name="lucide:trending-up" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Visites utilisateurs connectés" value="{{ authenticatedVisits|number_format(0, ',', ' ') }}" tone="sky" helper="Semaine préc. (7 j.) : {{ authenticatedLastWeek|number_format(0, ',', ' ') }} vues connectées">
+            <twig:block name="icon"><twig:ux:icon name="lucide:users" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Visites anonymes" value="{{ anonymousVisits|number_format(0, ',', ' ') }}" tone="amber" helper="Mois préc. (30 j.) : {{ anonymousLastMonth|number_format(0, ',', ' ') }} vues anonymes">
+            <twig:block name="icon"><twig:ux:icon name="lucide:user" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Visites totales</h6>
-                        <h3 class="font-bold mb-1">{{ totalVisits|number_format(0, ',', ' ') }}</h3>
-                        <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
-                    </div>
-                    <div class="bg-primary/10 rounded-full p-3">
-                        <i data-lucide="activity" width="24" height="24" class="text-primary"></i>
-                    </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <twig:Card class="lg:col-span-7 border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Visites quotidiennes</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <p class="text-xs text-muted-foreground mb-3 m-0">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }} — série temporelle agrégée par jour.</p>
+                <div class="relative h-[220px] w-full min-h-[13rem]" data-chart-wrap>
+                    <canvas data-analytics-charts-ref="traffic-daily" class="block h-full w-full" role="img" aria-label="Courbe des visites quotidiennes"></canvas>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Aujourd'hui</h6>
-                        <h3 class="font-bold mb-1">{{ todayVisits|number_format(0, ',', ' ') }}</h3>
-                        <small class="text-muted-foreground">Hier : {{ yesterdayVisits|number_format(0, ',', ' ') }}</small>
-                    </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i data-lucide="trending-up" width="24" height="24" class="text-green-600"></i>
-                    </div>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="lg:col-span-5 border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Visites mensuelles</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <p class="text-xs text-muted-foreground mb-3 m-0">12 derniers mois — tendance globale hors filtre courte période.</p>
+                <div class="relative h-[220px] w-full min-h-[13rem]" data-chart-wrap>
+                    <canvas data-analytics-charts-ref="traffic-monthly" class="block h-full w-full" role="img" aria-label="Histogramme des visites mensuelles"></canvas>
                 </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Utilisateurs connectés</h6>
-                        <h3 class="font-bold mb-1">{{ authenticatedVisits|number_format(0, ',', ' ') }}</h3>
-                        <small class="text-muted-foreground">Semaine préc. : {{ authenticatedLastWeek|number_format(0, ',', ' ') }}</small>
-                    </div>
-                    <div class="bg-sky-100 rounded-full p-3">
-                        <i data-lucide="users" width="24" height="24" class="text-sky-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h6 class="text-muted-foreground uppercase text-sm mb-2">Visiteurs anonymes</h6>
-                        <h3 class="font-bold mb-1">{{ anonymousVisits|number_format(0, ',', ' ') }}</h3>
-                        <small class="text-muted-foreground">Mois préc. : {{ anonymousLastMonth|number_format(0, ',', ' ') }}</small>
-                    </div>
-                    <div class="bg-amber-100 rounded-full p-3">
-                        <i data-lucide="user" width="24" height="24" class="text-amber-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-        <div class="lg:col-span-7 col-span-12">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                    <h5 class="mb-0">Visites quotidiennes</h5>
-                    <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <twig:Card class="overflow-hidden border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Pages les plus visitées</twig:Card:Title>
+                <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Top 5</span>
+            </twig:Card:Header>
+            <twig:Card:Content class="p-0 sm:p-0">
+                <div class="overflow-x-auto">
+                    <twig:Table class="[&_caption]:sr-only">
+                        <twig:Table:Caption>Classement des URLs les plus vues</twig:Table:Caption>
+                        <twig:Table:Header>
+                            <twig:Table:Row>
+                                <twig:Table:Head scope="col" class="min-w-[12rem] whitespace-normal">Page</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="w-[1%] whitespace-nowrap text-end">Visites</twig:Table:Head>
+                            </twig:Table:Row>
+                        </twig:Table:Header>
+                        <twig:Table:Body>
+                            {% for page in mostVisitedPages %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell class="max-w-[min(24rem,70vw)] whitespace-normal">
+                                        <code class="break-all text-xs">{{ page.url }}</code>
+                                    </twig:Table:Cell>
+                                    <twig:Table:Cell class="text-end tabular-nums font-semibold text-foreground">{{ page.visitCount|number_format(0, ',', ' ') }}</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% else %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell colspan="2" class="py-8 text-center text-sm text-muted-foreground">Aucune donnée disponible</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endfor %}
+                        </twig:Table:Body>
+                    </twig:Table>
                 </div>
-                <div class="p-6">
-                    <canvas id="trafficDailyChart" height="220" aria-label="Courbe des visites quotidiennes" role="img"></canvas>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Répartition par pays</twig:Card:Title>
+                <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Top 5</span>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <div class="relative h-[220px] w-full min-h-[13rem]">
+                    <canvas data-analytics-charts-ref="traffic-countries" class="block h-full w-full" role="img" aria-label="Répartition des visites par pays"></canvas>
                 </div>
-            </div>
-        </div>
-        <div class="lg:col-span-5 col-span-12">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                    <h5 class="mb-0">Visites mensuelles</h5>
-                    <small class="text-muted-foreground">12 derniers mois</small>
-                </div>
-                <div class="p-6">
-                    <canvas id="trafficMonthlyChart" height="220" aria-label="Histogramme des visites mensuelles" role="img"></canvas>
-                </div>
-            </div>
-        </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
-                <h5 class="mb-0">Pages les plus visitées</h5>
-                <small class="text-muted-foreground">Top 5</small>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium">Page</th>
-                            <th class="px-4 py-3 text-right font-medium">Visites</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for page in mostVisitedPages %}
-                        <tr>
-                            <td class="px-4 py-3 truncate" style="max-width: 320px;">
-                                <code>{{ page.url }}</code>
-                            </td>
-                            <td class="px-4 py-3 text-right font-semibold">{{ page.visitCount|number_format(0, ',', ' ') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucune donnée disponible</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
-                <h5 class="mb-0">Répartition par pays</h5>
-                <small class="text-muted-foreground">Top 5</small>
-            </div>
-            <div class="p-6">
-                <canvas id="trafficCountryChart" height="220" role="img" aria-label="Répartition par pays"></canvas>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <twig:Card class="lg:col-span-5 border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Type d'appareils</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <div class="relative mx-auto h-[220px] w-full max-w-sm min-h-[13rem]">
+                    <canvas data-analytics-charts-ref="traffic-devices" class="block h-full w-full" role="img" aria-label="Répartition par type d'appareil"></canvas>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="lg:col-span-7 border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Synthèse rapide</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                {% set totalAudience = authenticatedVisits + anonymousVisits %}
+                <ul class="m-0 list-none space-y-0 divide-y divide-border p-0">
+                    <li class="flex items-center justify-between gap-3 py-3 first:pt-0">
+                        <span class="text-sm text-muted-foreground">Période analysée</span>
+                        <strong class="text-sm tabular-nums text-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-3 py-3">
+                        <span class="text-sm text-muted-foreground">Part visiteurs connectés</span>
+                        <strong class="text-sm tabular-nums text-foreground">{{ totalAudience > 0 ? ((authenticatedVisits / totalAudience) * 100)|round(1) : 0 }}%</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-3 py-3 last:pb-0">
+                        <span class="text-sm text-muted-foreground">Visites moyennes / jour</span>
+                        {% set dayCount = visitsDailyChart.data|length > 0 ? visitsDailyChart.data|length : 1 %}
+                        {% set sumVisits = visitsDailyChart.data|reduce((carry, item) => carry + item, 0) %}
+                        <strong class="text-sm tabular-nums text-foreground">{{ (sumVisits / dayCount)|round(1) }}</strong>
+                    </li>
+                </ul>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-5 col-span-12">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                    <h5 class="mb-0">Type d'appareils</h5>
-                </div>
-                <div class="p-6">
-                    <canvas id="trafficDeviceChart" height="220" role="img" aria-label="Répartition des appareils"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="lg:col-span-7 col-span-12">
-            <div class="rounded-lg bg-card shadow-sm h-full">
-                <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                    <h5 class="mb-0">Synthèse rapide</h5>
-                </div>
-                <div class="p-6">
-                    <ul class="list-none mb-0 p-0">
-                        <li class="flex justify-between items-center py-2 border-b border-border">
-                            <span class="text-muted-foreground">Période analysée</span>
-                            <strong>{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</strong>
-                        </li>
-                        <li class="flex justify-between items-center py-2 border-b border-border">
-                            <span class="text-muted-foreground">Part des visiteurs connectés</span>
-                            {% set totalAudience = authenticatedVisits + anonymousVisits %}
-                            <strong>{{ totalAudience > 0 ? ((authenticatedVisits / totalAudience) * 100)|round(1) : 0 }}%</strong>
-                        </li>
-                        <li class="flex justify-between items-center py-2">
-                            <span class="text-muted-foreground">Visites moyennes / jour</span>
-                            {% set dayCount = visitsDailyChart.data|length > 0 ? visitsDailyChart.data|length : 1 %}
-                            {% set sumVisits = visitsDailyChart.data|reduce((carry, item) => carry + item, 0) %}
-                            <strong>{{ (sumVisits / dayCount)|round(1) }}</strong>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tableau des logs de navigation (chargé via Turbo Frame) -->
     {{ render(path('app_admin_analytics_logs')) }}
 </div>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" integrity="sha384-1+OxzI1+28HqkKqmXda3IIZeF1P0uohsEiL41Z8nfdXbra+XUl3Bd4Kp9Ezg4L7g" crossorigin="anonymous" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    const dailyCtx = document.getElementById('trafficDailyChart');
-    const monthlyCtx = document.getElementById('trafficMonthlyChart');
-    const deviceCtx = document.getElementById('trafficDeviceChart');
-    const countryCtx = document.getElementById('trafficCountryChart');
-
-    const dailyData = {{ visitsDailyChart|json_encode|raw }};
-    const monthlyData = {{ visitsMonthlyChart|json_encode|raw }};
-    const deviceData = {{ deviceChart|json_encode|raw }};
-    const countryData = {{ countryChart|json_encode|raw }};
-
-    if (dailyCtx && dailyData.labels.length) {
-        new Chart(dailyCtx, {
-            type: 'line',
-            data: {
-                labels: dailyData.labels,
-                datasets: [{
-                    label: 'Visites',
-                    data: dailyData.data,
-                    fill: false,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.15)',
-                    tension: 0.3,
-                    pointRadius: 3,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    }
-
-    if (monthlyCtx && monthlyData.labels.length) {
-        new Chart(monthlyCtx, {
-            type: 'bar',
-            data: {
-                labels: monthlyData.labels,
-                datasets: [{
-                    label: 'Visites',
-                    data: monthlyData.data,
-                    backgroundColor: 'rgba(14, 165, 233, 0.55)',
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    }
-
-    if (deviceCtx && deviceData.labels.length) {
-        new Chart(deviceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: deviceData.labels,
-                datasets: [{
-                    data: deviceData.data,
-                    backgroundColor: ['#4f46e5', '#0ea5e9', '#f97316', '#22c55e', '#6366f1'],
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-    }
-
-    if (countryCtx && countryData.labels.length) {
-        new Chart(countryCtx, {
-            type: 'polarArea',
-            data: {
-                labels: countryData.labels,
-                datasets: [{
-                    data: countryData.data,
-                    backgroundColor: ['rgba(59,130,246,0.6)', 'rgba(16,185,129,0.6)', 'rgba(249,115,22,0.6)', 'rgba(168,85,247,0.6)', 'rgba(14,165,233,0.6)'],
-                    borderWidth: 1,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-    }
-});
-</script>
 {% endblock %}

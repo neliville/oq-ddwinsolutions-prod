@@ -1,0 +1,6 @@
+<header class="pref-panel-header">
+    <h2 class="pref-panel-header__title">{{ title }}</h2>
+    {% if description is defined and description %}
+        <p class="pref-panel-header__description">{{ description|raw }}</p>
+    {% endif %}
+</header>

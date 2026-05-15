@@ -1,0 +1,19 @@
+{# Ligne réglage : label + description à gauche, toggle à droite #}
+{% set child = attribute(form, field) %}
+<div class="pref-setting-row">
+    <div class="pref-setting-row__text">
+        <span class="pref-setting-row__label">{{ child.vars.label }}</span>
+        {% if description is defined and description %}
+            <p class="pref-setting-row__description">{{ description }}</p>
+        {% endif %}
+    </div>
+    <div class="pref-setting-row__control">
+        <label class="pref-switch" for="{{ child.vars.id }}">
+            {{ form_widget(child, { label: false, attr: { class: 'pref-switch__input' } }) }}
+            <span class="pref-switch__track" aria-hidden="true"></span>
+        </label>
+    </div>
+    {% if child.vars.errors|length > 0 %}
+        <div class="pref-setting-row__errors">{{ form_errors(child) }}</div>
+    {% endif %}
+</div>

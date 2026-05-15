@@ -59,6 +59,10 @@ class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
 
         $crawlerCh = $this->client->request('GET', '/dashboard/qse/audit/' . $audit->getId() . '?chapter=' . rawurlencode($chapter));
         $this->assertResponseIsSuccessful();
+        $html = $this->client->getResponse()->getContent();
+        $this->assertCount(1, $crawlerCh->filter('#audit-chapter-form'));
+        $this->assertStringContainsString('form="audit-chapter-form"', $html, 'Le bouton d’enregistrement doit référencer le formulaire via l’attribut HTML form.');
+        $this->assertGreaterThan(0, $crawlerCh->filter('.audit-req-card')->count());
         $csrfCh = $crawlerCh->filter('form input[name="_token"]')->first()->attr('value');
         $this->assertNotEmpty($csrfCh);
         $this->client->request('POST', '/dashboard/qse/audit/' . $audit->getId() . '/chapter', [
@@ -66,7 +70,7 @@ class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
             'chapter' => $chapter,
             'eval' => [
                 (string) $req->getId() => [
-                    'score' => '2',
+                    'verdict' => 'observation',
                     'comment' => 'Écart test',
                     'evidence' => 'DOC-1',
                 ],

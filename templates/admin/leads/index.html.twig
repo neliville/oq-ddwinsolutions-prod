@@ -3,99 +3,88 @@
 {% block title %}Leads | Administration{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Leads</h1>
-            <p class="text-muted-foreground mb-0">Prospects issus de l'utilisation des outils et formulaires</p>
-        </div>
+<div class="mx-auto w-full max-w-[100rem] space-y-6">
+    <twig:DataPageHeader title="Leads" description="Prospects issus de l’utilisation des outils et formulaires" />
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <twig:KpiStatCard label="Total" value="{{ total }}" tone="default">
+            <twig:block name="icon"><twig:ux:icon name="lucide:users" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Source : outil" value="{{ bySource.tool }}" tone="sky">
+            <twig:block name="icon"><twig:ux:icon name="lucide:wrench" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Ishikawa / 5 Pourquoi" value="{{ byTool.ishikawa ~ ' / ' ~ byTool.fivewhy }}" tone="amber" helper="Répartition par outil">
+            <twig:block name="icon"><twig:ux:icon name="lucide:split" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-1">Total</h6>
-                <h3 class="font-bold mb-0">{{ total }}</h3>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-1">Source : outil</h6>
-                <h3 class="font-bold mb-0">{{ bySource.tool }}</h3>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-1">Par outil (Ishikawa / 5 Pourquoi)</h6>
-                <p class="mb-0">{{ byTool.ishikawa }} / {{ byTool.fivewhy }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Liste -->
     {% if leads|length > 0 %}
-    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-leads', list_caption: 'Leads' } %}
-        {% block list_table %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Email</th>
-                            <th>Source</th>
-                            <th>Outil</th>
-                            <th>Type</th>
-                            <th>Score</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-leads', list_caption: 'Leads' } %}
+            {% block list_table %}
+                <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
+                    <twig:Table:Caption class="sr-only">Liste des leads</twig:Table:Caption>
+                    <twig:Table:Header>
+                        <twig:Table:Row class="border-b border-border bg-muted/40 hover:bg-muted/40">
+                            <twig:Table:Head scope="col" class="font-medium">Email</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Source</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Outil</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Type</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="font-medium">Score</twig:Table:Head>
+                            <twig:Table:Head scope="col" class="whitespace-nowrap font-medium">Date</twig:Table:Head>
+                        </twig:Table:Row>
+                    </twig:Table:Header>
+                    <twig:Table:Body>
                         {% for lead in leads %}
-                        <tr>
-                            <td>{{ lead.email ?? '—' }}</td>
-                            <td><span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ lead.source ?? '—' }}</span></td>
-                            <td>{{ lead.tool ?? '—' }}</td>
-                            <td>{{ lead.type ?? '—' }}</td>
-                            <td>{{ lead.score ?? '—' }}</td>
-                            <td>{{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}</td>
-                        </tr>
+                            <twig:Table:Row class="border-b border-border/60">
+                                <twig:Table:Cell class="max-w-[min(20rem,50vw)] break-all font-medium">{{ lead.email ?? '—' }}</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    <twig:Badge variant="secondary">{{ lead.source ?? '—' }}</twig:Badge>
+                                </twig:Table:Cell>
+                                <twig:Table:Cell class="text-muted-foreground">{{ lead.tool ?? '—' }}</twig:Table:Cell>
+                                <twig:Table:Cell class="text-muted-foreground">{{ lead.type ?? '—' }}</twig:Table:Cell>
+                                <twig:Table:Cell class="tabular-nums">{{ lead.score ?? '—' }}</twig:Table:Cell>
+                                <twig:Table:Cell class="whitespace-nowrap text-xs text-muted-foreground tabular-nums">
+                                    {{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block list_cards %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for lead in leads %}
-                <article class="rounded-lg bg-card shadow-sm admin-list-item-card h-full">
-                    <div class="p-6">
-                        <h2 class="text-base font-semibold mb-2 break-all">{{ lead.email ?? '—' }}</h2>
-                        <dl class="grid grid-cols-2 text-sm gap-1 mb-0">
-                            <dt class="text-muted-foreground">Source</dt>
-                            <dd class="mb-0"><span class="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">{{ lead.source ?? '—' }}</span></dd>
-                            <dt class="text-muted-foreground">Outil</dt>
-                            <dd class="mb-0">{{ lead.tool ?? '—' }}</dd>
-                            <dt class="text-muted-foreground">Type</dt>
-                            <dd class="mb-0">{{ lead.type ?? '—' }}</dd>
-                            <dt class="text-muted-foreground">Score</dt>
-                            <dd class="mb-0">{{ lead.score ?? '—' }}</dd>
-                            <dt class="text-muted-foreground">Date</dt>
-                            <dd class="mb-0">{{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}</dd>
-                        </dl>
-                    </div>
-                </article>
-                {% endfor %}
-            </div>
-        {% endblock %}
-        {% block list_footer %}{% endblock %}
-    {% endembed %}
+                    </twig:Table:Body>
+                </twig:Table>
+            {% endblock %}
+            {% block list_cards %}
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {% for lead in leads %}
+                        <twig:Card class="admin-list-item-card h-full border-border/80 shadow-sm ring-1 ring-border/40">
+                            <twig:Card:Content class="flex flex-col gap-2 p-5 sm:p-6">
+                                <h2 class="m-0 break-all text-base font-semibold">{{ lead.email ?? '—' }}</h2>
+                                <dl class="m-0 grid grid-cols-2 gap-x-2 gap-y-2 text-sm">
+                                    <dt class="text-muted-foreground">Source</dt>
+                                    <dd class="m-0 justify-self-end">
+                                        <twig:Badge variant="secondary">{{ lead.source ?? '—' }}</twig:Badge>
+                                    </dd>
+                                    <dt class="text-muted-foreground">Outil</dt>
+                                    <dd class="m-0 text-end">{{ lead.tool ?? '—' }}</dd>
+                                    <dt class="text-muted-foreground">Type</dt>
+                                    <dd class="m-0 text-end">{{ lead.type ?? '—' }}</dd>
+                                    <dt class="text-muted-foreground">Score</dt>
+                                    <dd class="m-0 text-end tabular-nums">{{ lead.score ?? '—' }}</dd>
+                                    <dt class="text-muted-foreground">Date</dt>
+                                    <dd class="m-0 text-end text-xs tabular-nums">{{ lead.createdAt ? lead.createdAt|date('d/m/Y H:i') : '—' }}</dd>
+                                </dl>
+                            </twig:Card:Content>
+                        </twig:Card>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+            {% block list_footer %}{% endblock %}
+        {% endembed %}
     {% else %}
-    <div class="rounded-lg bg-card shadow-sm">
-        <div class="p-6 text-center py-12 text-muted-foreground">
-            <i data-lucide="users" width="48" height="48" class="mb-2"></i>
-            <p class="mb-0">Aucun lead enregistré</p>
-        </div>
-    </div>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Content class="flex flex-col items-center justify-center gap-3 py-14 text-center text-muted-foreground">
+                <twig:ux:icon name="lucide:users" class="size-12 shrink-0 opacity-70" aria-hidden="true" />
+                <p class="m-0 text-sm">Aucun lead enregistré</p>
+            </twig:Card:Content>
+        </twig:Card>
     {% endif %}
 </div>
 

@@ -9,6 +9,17 @@
         <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="link" class="text-sm h-auto p-0 no-underline">Liste</twig:Button>
     </div>
     <p class="text-sm text-muted-foreground mb-2">Conformité moyenne (audits calculés)&nbsp;: <strong class="text-foreground">{% if cockpit.avgAuditCompliancePercent is not null %}{{ cockpit.avgAuditCompliancePercent }}&nbsp;%{% else %}—{% endif %}</strong></p>
+    {% if cockpit.avgAuditCompliancePercent is not null %}
+    <div class="mb-4" role="region" aria-label="Synthèse visuelle conformité audits">
+        <div class="mb-1.5 flex items-center justify-between gap-2 text-xs">
+            <span class="text-muted-foreground">Niveau de conformité agrégée</span>
+            <span class="font-semibold tabular-nums text-foreground">{{ cockpit.avgAuditCompliancePercent }}&nbsp;%</span>
+        </div>
+        <div class="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+            <div class="h-full rounded-full bg-primary duration-500" style="width: {{ min(cockpit.avgAuditCompliancePercent, 100) }}%"></div>
+        </div>
+    </div>
+    {% endif %}
     <h4 class="text-xs font-semibold text-muted-foreground mb-1">Chapitres avec le plus d’écarts (1–2)</h4>
     <ul class="text-sm space-y-1 list-none m-0 p-0 mb-4">
         {% for row in managerDashboard.weak_chapters %}

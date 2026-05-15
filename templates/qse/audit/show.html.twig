@@ -3,76 +3,162 @@
 {% block title %}Audit #{{ audit.id }} | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-6xl mx-auto px-4 py-6">
+<div
+    class="w-full max-w-6xl mx-auto px-4 py-6 pb-28 lg:pb-10"
+    data-controller="audit-cockpit audit-save-bar"
+    data-audit-cockpit-chart-config-value="{{ chartConfigJson|e('html_attr') }}"
+    data-audit-save-bar-form-id-value="audit-chapter-form"
+>
     <div class="mb-6">
         <a href="{{ path('app_qse_audit_index') }}" class="text-sm app-inline-link app-inline-link--muted">← Audits</a>
-        <h1 class="text-2xl font-bold mt-2">{{ audit.companyName|default('Audit') }}</h1>
-        <p class="text-muted-foreground text-sm mt-1">
-            {{ audit.auditStandard ? audit.auditStandard.name : '—' }}
-            · {{ audit.auditedAt|date('d/m/Y') }} · Auditeur : {{ audit.mainAuditor|default('—') }}
-            · Conformité globale : {{ audit.globalComplianceRate is not null ? audit.globalComplianceRate ~ '%' : '—' }}
-        </p>
-        <div class="mt-3 flex flex-wrap items-center gap-2">
-            <a href="{{ path('app_qse_audit_export_json', { id: audit.id }) }}" class="text-sm app-inline-link">Exporter JSON</a>
-            {% include 'collaboration/_share_dialog.html.twig' with { dialog_id: 'collab_share_audit_' ~ audit.id, target_type: 'audit', target_id: audit.id } %}
-            {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_audit_' ~ audit.id, source: 'audit', audit_id: audit.id, trigger_label: 'Inviter un collaborateur' } %}
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mt-2">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">{{ audit.companyName|default('Audit') }}</h1>
+                <p class="text-muted-foreground text-sm mt-1">
+                    {{ audit.auditStandard ? audit.auditStandard.name : '—' }}
+                    · {{ audit.auditedAt|date('d/m/Y') }} · {{ audit.mainAuditor|default('—') }}
+                    {% if audit.concernedSite %}· {{ audit.concernedSite }}{% endif %}
+                </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+                {% include 'collaboration/_share_dialog.html.twig' with { dialog_id: 'collab_share_audit_' ~ audit.id, target_type: 'audit', target_id: audit.id } %}
+                {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_audit_' ~ audit.id, source: 'audit', audit_id: audit.id, trigger_label: 'Inviter' } %}
+                <details class="relative group">
+                    <summary class="list-none cursor-pointer inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-muted/60 [&::-webkit-details-marker]:hidden">
+                        Exporter
+                        <twig:ux:icon name="lucide:chevron-down" class="size-4 opacity-70" aria-hidden="true" />
+                    </summary>
+                    <div class="absolute right-0 mt-1 min-w-[12rem] rounded-md border border-border bg-popover text-popover-foreground shadow-md py-1 z-40">
+                        <a href="{{ path('app_qse_audit_export_xlsx', { id: audit.id }) }}" class="block px-3 py-2 text-sm hover:bg-muted no-underline text-foreground">Excel (.xlsx)</a>
+                        <a href="{{ path('app_qse_audit_export_docx', { id: audit.id, variant: 'direction' }) }}" class="block px-3 py-2 text-sm hover:bg-muted no-underline text-foreground">Word — direction</a>
+                        <a href="{{ path('app_qse_audit_export_docx', { id: audit.id, variant: 'terrain' }) }}" class="block px-3 py-2 text-sm hover:bg-muted no-underline text-foreground">Word — terrain</a>
+                        <a href="{{ path('app_qse_audit_export_docx', { id: audit.id, variant: 'certification' }) }}" class="block px-3 py-2 text-sm hover:bg-muted no-underline text-foreground">Word — certification</a>
+                    </div>
+                </details>
+            </div>
         </div>
     </div>
 
-    <nav class="flex flex-wrap gap-2 mb-6" aria-label="Chapitres">
-        {% for ch in chapters %}
-            <a href="{{ path('app_qse_audit_show', { id: audit.id, chapter: ch }) }}"
-               class="px-3 py-1.5 rounded-md text-sm border {{ ch == currentChapter ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted' }}">
-                {{ ch }}
-            </a>
-        {% endfor %}
-    </nav>
-
-    {% if currentChapter %}
-        <form method="post" action="{{ path('app_qse_audit_save_chapter', { id: audit.id }) }}" class="space-y-6">
-            <input type="hidden" name="_token" value="{{ csrf_token('qse_audit_chapter') }}">
-            <input type="hidden" name="chapter" value="{{ currentChapter }}">
-
-            {% for req in requirements %}
-                {% set ev = evaluationsByReqId[req.id] ?? null %}
-                <div class="rounded-lg border border-border bg-card p-4">
-                    <div class="flex flex-wrap gap-2 items-start mb-3">
-                        <span class="text-xs font-mono bg-muted px-2 py-0.5 rounded">{{ req.isoArticle }}</span>
-                        <span class="font-medium">{{ req.requirementText }}</span>
-                    </div>
-                    {% if req.isoComment %}
-                        <p class="text-sm text-amber-900 dark:text-amber-200/90 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded p-2 mb-3">{{ req.isoComment }}</p>
-                    {% endif %}
-                    <div class="grid sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-medium mb-1">Note</label>
-                            <select name="eval[{{ req.id }}][score]" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">
-                                <option value="" {{ ev and ev.score is null ? 'selected' : '' }}>Non évalué</option>
-                                <option value="3" {{ ev and ev.score == 3 ? 'selected' : '' }}>3 — Conforme</option>
-                                <option value="2" {{ ev and ev.score == 2 ? 'selected' : '' }}>2 — Partiel</option>
-                                <option value="1" {{ ev and ev.score == 1 ? 'selected' : '' }}>1 — NC</option>
-                                <option value="0" {{ ev and ev.score == 0 ? 'selected' : '' }}>0 — N/A</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium mb-1">Preuves</label>
-                            <input type="text" name="eval[{{ req.id }}][evidence]" value="{{ ev ? ev.evidence|default('') : '' }}" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm" placeholder="Références documents">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-medium mb-1">Commentaire d’audit</label>
-                            <textarea name="eval[{{ req.id }}][comment]" rows="2" class="w-full rounded-md border border-input bg-background px-2 py-2 text-sm">{{ ev ? ev.auditComment|default('') : '' }}</textarea>
-                        </div>
-                    </div>
-                    {% if ev and ev.id and (ev.score == 1 or ev.score == 2) %}
-                        <p class="mt-3">
-                            <a href="{{ path('app_qse_audit_suggest_capa', { id: audit.id, evaluationId: ev.id }) }}" class="text-sm font-medium app-inline-link">Créer une CAPA (brouillon)</a>
-                        </p>
-                    {% endif %}
+    {% if showRequirementsForm %}
+        <div class="sticky top-0 z-30 -mx-4 px-4 py-3 mb-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-wrap gap-2 lg:gap-3">
+                    <twig:Card class="flex-1 min-w-[8rem] border-border/80 py-2 px-3 shadow-none">
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">Conformité</p>
+                        <p class="text-lg font-bold tabular-nums m-0">{{ cockpitMetrics.globalComplianceRate is not null ? cockpitMetrics.globalComplianceRate ~ ' %' : '—' }}</p>
+                    </twig:Card>
+                    <twig:Card class="flex-1 min-w-[8rem] border-border/80 py-2 px-3 shadow-none">
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">Progression</p>
+                        <p class="text-lg font-bold tabular-nums m-0">{{ cockpitMetrics.answeredRequirements }}/{{ cockpitMetrics.totalRequirements }}</p>
+                    </twig:Card>
+                    <twig:Card class="flex-1 min-w-[8rem] border-border/80 py-2 px-3 shadow-none">
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">NC maj. / min.</p>
+                        <p class="text-lg font-bold tabular-nums m-0">{{ cockpitMetrics.majorNc }} / {{ cockpitMetrics.minorNc }}</p>
+                    </twig:Card>
+                    <twig:Card class="flex-1 min-w-[8rem] border-border/80 py-2 px-3 shadow-none">
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0">Preuves manq.</p>
+                        <p class="text-lg font-bold tabular-nums m-0">{{ cockpitMetrics.evidenceMissing }}</p>
+                    </twig:Card>
                 </div>
-            {% endfor %}
+                <div class="h-2 rounded-full bg-muted overflow-hidden" role="progressbar" aria-valuenow="{{ cockpitMetrics.progressPercent|round }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progression saisie">
+                    <div class="h-full rounded-full bg-primary transition-all duration-500" style="width: {{ cockpitMetrics.progressPercent }}%"></div>
+                </div>
+            </div>
+        </div>
 
-            <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold text-sm">Enregistrer le chapitre</button>
-        </form>
+        <div class="grid lg:grid-cols-12 gap-6 items-start">
+            <aside class="lg:col-span-4 space-y-4 order-2 lg:order-1">
+                <twig:Card class="border-border/80">
+                    <twig:Card:Header class="pb-2">
+                        <twig:Card:Title class="text-base">Pilotage</twig:Card:Title>
+                        <twig:Card:Description class="text-xs">Filtrez les exigences du chapitre courant.</twig:Card:Description>
+                    </twig:Card:Header>
+                    <twig:Card:Content class="space-y-3">
+                        <div>
+                            <label class="text-xs font-medium text-muted-foreground" for="audit-req-search">Recherche</label>
+                            <input id="audit-req-search" type="search" class="mt-1 w-full rounded-md border border-input bg-background px-2 py-2 text-sm" placeholder="Article, texte…" data-audit-cockpit-target="searchInput" data-action="input->audit-cockpit#search" autocomplete="off">
+                        </div>
+                        <div class="flex flex-wrap gap-1.5" role="toolbar" aria-label="Filtres verdict">
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-primary bg-primary text-primary-foreground" data-audit-cockpit-target="filterBtn" data-filter="all" data-action="audit-cockpit#filter">Tous</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="not_evaluated" data-action="audit-cockpit#filter">Non évalué</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="conform" data-action="audit-cockpit#filter">Conforme</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="observation" data-action="audit-cockpit#filter">Obs.</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="to_review" data-action="audit-cockpit#filter">À revoir</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="minor_nc" data-action="audit-cockpit#filter">NC min.</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="major_nc" data-action="audit-cockpit#filter">NC maj.</button>
+                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="not_applicable" data-action="audit-cockpit#filter">N/A</button>
+                        </div>
+                    </twig:Card:Content>
+                </twig:Card>
+
+                <twig:Card class="border-border/80">
+                    <twig:Card:Header class="pb-2">
+                        <twig:Card:Title class="text-base">Chapitres</twig:Card:Title>
+                    </twig:Card:Header>
+                    <twig:Card:Content class="space-y-1 max-h-[22rem] overflow-y-auto pr-1">
+                        {% for ch in chapters %}
+                            {% set sum = cockpitMetrics.chapterSummaries[ch] ?? null %}
+                            <a href="{{ path('app_qse_audit_show', { id: audit.id, chapter: ch }) }}"
+                               class="flex items-center justify-between gap-2 rounded-md px-2 py-2 text-sm border {{ ch == currentChapter ? 'bg-primary text-primary-foreground border-primary' : 'border-transparent hover:bg-muted' }}">
+                                <span class="truncate font-medium">{{ ch }}</span>
+                                {% if sum %}
+                                    <span class="text-xs tabular-nums shrink-0 opacity-90">{{ sum.answered }}/{{ sum.total }}</span>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </twig:Card:Content>
+                </twig:Card>
+
+                {% if cockpitMetrics.timelinePreview is not empty %}
+                <twig:Card class="border-border/80">
+                    <twig:Card:Header class="pb-2">
+                        <twig:Card:Title class="text-base">Activité récente</twig:Card:Title>
+                    </twig:Card:Header>
+                    <twig:Card:Content class="text-xs space-y-2 text-muted-foreground">
+                        {% for row in cockpitMetrics.timelinePreview %}
+                            <p class="m-0"><span class="font-mono text-foreground/80">{{ row.time }}</span> — {{ row.label }}</p>
+                        {% endfor %}
+                    </twig:Card:Content>
+                </twig:Card>
+                {% endif %}
+
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="rounded-lg border border-border bg-card p-2">
+                        <p class="text-xs font-medium text-muted-foreground mb-1">Conformité par chapitre</p>
+                        <div class="h-48">
+                            <canvas data-audit-cockpit-chart-ref="radar" class="max-h-full w-full"></canvas>
+                        </div>
+                    </div>
+                    <div class="rounded-lg border border-border bg-card p-2">
+                        <p class="text-xs font-medium text-muted-foreground mb-1">Répartition des verdicts</p>
+                        <div class="h-52">
+                            <canvas data-audit-cockpit-chart-ref="distribution" class="max-h-full w-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-8 space-y-4 order-1 lg:order-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <h2 class="text-lg font-semibold m-0">Chapitre {{ currentChapter }}</h2>
+                    <p class="text-xs text-muted-foreground m-0">{{ requirements|length }} exigence(s) affichée(s)</p>
+                </div>
+
+                <twig:AuditSaveActionBar placement="desktop" />
+
+                <form method="post" action="{{ path('app_qse_audit_save_chapter', { id: audit.id }) }}" id="audit-chapter-form" class="space-y-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token('qse_audit_chapter') }}">
+                    <input type="hidden" name="chapter" value="{{ currentChapter }}">
+
+                    {% for req in requirements %}
+                        {% set ev = evaluationsByReqId[req.id] ?? null %}
+                        <twig:AuditRequirementCard :requirement="req" :evaluation="ev" :audit="audit" :read-only="false" :expanded="loop.first" />
+                    {% endfor %}
+                </form>
+
+                <twig:AuditSaveActionBar placement="mobile" />
+            </div>
+        </div>
     {% else %}
         <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-50">
             <p class="font-semibold m-0 mb-2">Aucune exigence n’est chargée pour ce référentiel</p>

@@ -15,9 +15,9 @@
     <div class="sidebar-overlay" id="sidebarOverlay" style="display: none;" aria-hidden="true"></div>
     {% endif %}
 
-    <!-- Sidebar dashboard (une seule balise aside — voir admin-sidebar.html.twig) -->
+    <!-- Sidebar utilisateur : components/user_dashboard_sidebar.html.twig -->
     {% if app.user %}
-        {% include 'components/admin-sidebar.html.twig' %}
+        {% include 'components/user_dashboard_sidebar.html.twig' %}
     {% endif %}
 
     {# Colonne de contenu : pas de second <main> (déjà enveloppé par base.html.twig). #}

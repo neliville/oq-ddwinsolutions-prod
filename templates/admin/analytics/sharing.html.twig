@@ -3,256 +3,190 @@
 {% block title %}Partages Ishikawa | Analytics{% endblock %}
 
 {% block content %}
-<div class="w-full">
-    <div class="flex flex-col lg:flex-row justify-between lg:items-center mb-6 gap-3">
-        <div>
-            <h1 class="text-2xl font-bold mb-1">Partages et collaboration</h1>
-            <p class="text-muted-foreground mb-0">Suivi des liens Ishikawa partagés et visites associées</p>
-        </div>
-        <div>
-            <div class="flex flex-wrap gap-1" role="group" aria-label="Période">
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'today'}) }}" class="{{ period == 'today' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">Aujourd'hui</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'week'}) }}" class="{{ period == 'week' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">7 jours</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'month'}) }}" class="{{ period == 'month' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">30 jours</a>
-                <a href="{{ path('app_admin_analytics_sharing', {period: 'year'}) }}" class="{{ period == 'year' ? 'inline-flex items-center px-2.5 py-1 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity no-underline' : 'inline-flex items-center px-2.5 py-1 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors no-underline' }}">1 an</a>
+<div
+    class="analytics-sharing-page w-full max-w-[100rem] mx-auto space-y-6"
+    data-controller="analytics-charts"
+    data-analytics-charts-config-value="{{ sharingCharts|json_encode|e('html_attr') }}"
+>
+    <twig:DataPageHeader title="Partages et collaboration" description="Liens Ishikawa partagés, visites agrégées et séries sur la période choisie.">
+        <twig:block name="actions">
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Période d'analyse">
+                <twig:Button as="a" href="{{ path('app_admin_analytics_sharing', {period: 'today'}) }}" variant="{{ period == 'today' ? 'default' : 'outline' }}" size="sm" class="no-underline">Aujourd'hui</twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_sharing', {period: 'week'}) }}" variant="{{ period == 'week' ? 'default' : 'outline' }}" size="sm" class="no-underline">7 jours</twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_sharing', {period: 'month'}) }}" variant="{{ period == 'month' ? 'default' : 'outline' }}" size="sm" class="no-underline">30 jours</twig:Button>
+                <twig:Button as="a" href="{{ path('app_admin_analytics_sharing', {period: 'year'}) }}" variant="{{ period == 'year' ? 'default' : 'outline' }}" size="sm" class="no-underline">1 an</twig:Button>
             </div>
-        </div>
+        </twig:block>
+    </twig:DataPageHeader>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <twig:KpiStatCard label="Liens partagés (total)" value="{{ shareTotals.totalShares|number_format(0, ',', ' ') }}" tone="default" helper="Depuis le lancement">
+            <twig:block name="icon"><twig:ux:icon name="lucide:link" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Liens actifs" value="{{ shareTotals.activeShares|number_format(0, ',', ' ') }}" tone="emerald" helper="Non expirés à date">
+            <twig:block name="icon"><twig:ux:icon name="lucide:check-circle-2" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Partages (période)" value="{{ shareTotals.sharesThisPeriod|number_format(0, ',', ' ') }}" tone="sky" helper="{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}">
+            <twig:block name="icon"><twig:ux:icon name="lucide:share-2" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Visites via partage" value="{{ shareTotals.shareVisitsThisPeriod|number_format(0, ',', ' ') }}" tone="amber" helper="Cumul global : {{ shareTotals.totalShareVisits|number_format(0, ',', ' ') }}">
+            <twig:block name="icon"><twig:ux:icon name="lucide:line-chart" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+        </twig:KpiStatCard>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Liens partagés (total)</h6>
-                <h3 class="font-bold mb-1">{{ shareTotals.totalShares|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">Depuis le lancement</small>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Liens actifs</h6>
-                <h3 class="font-bold mb-1">{{ shareTotals.activeShares|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">Liens non expirés</small>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Partages (période)</h6>
-                <h3 class="font-bold mb-1">{{ shareTotals.sharesThisPeriod|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">{{ startDate|date('d/m/Y') }} → {{ endDate|date('d/m/Y') }}</small>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="p-6">
-                <h6 class="text-muted-foreground uppercase text-sm mb-2">Visites via partage</h6>
-                <h3 class="font-bold mb-1">{{ shareTotals.shareVisitsThisPeriod|number_format(0, ',', ' ') }}</h3>
-                <small class="text-muted-foreground">Cumul : {{ shareTotals.totalShareVisits|number_format(0, ',', ' ') }}</small>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Créations de liens</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <div class="relative h-[220px] w-full min-h-[13rem]">
+                    <canvas data-analytics-charts-ref="share-creation" class="block h-full w-full" role="img" aria-label="Évolution des créations de liens partagés"></canvas>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
+        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Visites issues des partages</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content>
+                <div class="relative h-[220px] w-full min-h-[13rem]">
+                    <canvas data-analytics-charts-ref="share-visits" class="block h-full w-full" role="img" aria-label="Évolution des visites via lien partagé"></canvas>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                <h5 class="mb-0">Créations de liens</h5>
-            </div>
-            <div class="p-6">
-                <canvas id="shareCreationChart" height="220" aria-label="Évolution des partages"></canvas>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                <h5 class="mb-0">Visites issues des partages</h5>
-            </div>
-            <div class="p-6">
-                <canvas id="shareVisitChart" height="220" aria-label="Évolution des visites provenant des partages"></canvas>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <twig:Card class="overflow-hidden border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Top contributeurs</twig:Card:Title>
+                <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Top 5</span>
+            </twig:Card:Header>
+            <twig:Card:Content class="p-0 sm:p-0">
+                <div class="overflow-x-auto">
+                    <twig:Table>
+                        <twig:Table:Header>
+                            <twig:Table:Row>
+                                <twig:Table:Head scope="col" class="min-w-[12rem]">Utilisateur</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="w-[1%] whitespace-nowrap text-end">Partages</twig:Table:Head>
+                            </twig:Table:Row>
+                        </twig:Table:Header>
+                        <twig:Table:Body>
+                            {% for sharer in topSharers %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell class="whitespace-normal">{{ sharer.email }}</twig:Table:Cell>
+                                    <twig:Table:Cell class="text-end tabular-nums font-semibold">{{ sharer.shareCount|number_format(0, ',', ' ') }}</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% else %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell colspan="2" class="py-8 text-center text-sm text-muted-foreground">Aucun partage enregistré</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endfor %}
+                        </twig:Table:Body>
+                    </twig:Table>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
+
+        <twig:Card class="overflow-hidden border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Analyses les plus consultées</twig:Card:Title>
+                <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Via partage</span>
+            </twig:Card:Header>
+            <twig:Card:Content class="p-0 sm:p-0">
+                <div class="overflow-x-auto">
+                    <twig:Table>
+                        <twig:Table:Header>
+                            <twig:Table:Row>
+                                <twig:Table:Head scope="col" class="min-w-[10rem]">Analyse</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="w-[1%] whitespace-nowrap text-end">Visites</twig:Table:Head>
+                            </twig:Table:Row>
+                        </twig:Table:Header>
+                        <twig:Table:Body>
+                            {% for analysis in topSharedAnalyses %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell class="whitespace-normal">{{ analysis.title }}</twig:Table:Cell>
+                                    <twig:Table:Cell class="text-end tabular-nums font-semibold">{{ analysis.visitCount|number_format(0, ',', ' ') }}</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% else %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell colspan="2" class="py-8 text-center text-sm text-muted-foreground">Aucune donnée</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endfor %}
+                        </twig:Table:Body>
+                    </twig:Table>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
-                <h5 class="mb-0">Top contributeurs</h5>
-                <small class="text-muted-foreground">Top 5</small>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium">Utilisateur</th>
-                            <th class="px-4 py-3 text-right font-medium">Partages</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for sharer in topSharers %}
-                        <tr>
-                            <td class="px-4 py-3">{{ sharer.email }}</td>
-                            <td class="px-4 py-3 text-right font-semibold">{{ sharer.shareCount|number_format(0, ',', ' ') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucun partage enregistré</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg flex justify-between items-center">
-                <h5 class="mb-0">Analyses les plus consultées</h5>
-                <small class="text-muted-foreground">Via des liens partagés</small>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
-                            <th class="px-4 py-3 text-right font-medium">Visites</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for analysis in topSharedAnalyses %}
-                        <tr>
-                            <td class="px-4 py-3">{{ analysis.title }}</td>
-                            <td class="px-4 py-3 text-right font-semibold">{{ analysis.visitCount|number_format(0, ',', ' ') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="px-4 py-4 text-center text-muted-foreground">Aucune donnée</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <twig:Card class="overflow-hidden border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Partages récents</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content class="p-0 sm:p-0">
+                <div class="overflow-x-auto">
+                    <twig:Table>
+                        <twig:Table:Header>
+                            <twig:Table:Row>
+                                <twig:Table:Head scope="col">Analyse</twig:Table:Head>
+                                <twig:Table:Head scope="col">Créé par</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="whitespace-nowrap">Créé le</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="whitespace-nowrap">Expire le</twig:Table:Head>
+                            </twig:Table:Row>
+                        </twig:Table:Header>
+                        <twig:Table:Body>
+                            {% for share in recentShares %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell class="whitespace-normal">{{ share.title }}</twig:Table:Cell>
+                                    <twig:Table:Cell class="whitespace-normal">{{ share.owner }}</twig:Table:Cell>
+                                    <twig:Table:Cell class="tabular-nums text-xs text-muted-foreground">{{ share.createdAt|date('d/m/Y H:i') }}</twig:Table:Cell>
+                                    <twig:Table:Cell class="tabular-nums text-xs text-muted-foreground">{{ share.expiresAt|date('d/m/Y H:i') }}</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% else %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell colspan="4" class="py-8 text-center text-sm text-muted-foreground">Aucun partage récent</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endfor %}
+                        </twig:Table:Body>
+                    </twig:Table>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                <h5 class="mb-0">Partages récents</h5>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
-                            <th class="px-4 py-3 text-left font-medium">Créé par</th>
-                            <th class="px-4 py-3 text-left font-medium">Créé le</th>
-                            <th class="px-4 py-3 text-left font-medium">Expire le</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for share in recentShares %}
-                        <tr>
-                            <td class="px-4 py-3">{{ share.title }}</td>
-                            <td class="px-4 py-3">{{ share.owner }}</td>
-                            <td class="px-4 py-3">{{ share.createdAt|date('d/m/Y H:i') }}</td>
-                            <td class="px-4 py-3">{{ share.expiresAt|date('d/m/Y H:i') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="px-4 py-4 text-center text-muted-foreground">Aucun partage récent</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="rounded-lg bg-card shadow-sm h-full">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg">
-                <h5 class="mb-0">Visites récentes</h5>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-medium">Analyse</th>
-                            <th class="px-4 py-3 text-left font-medium">Token</th>
-                            <th class="px-4 py-3 text-left font-medium">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for visit in recentShareVisits %}
-                        <tr>
-                            <td class="px-4 py-3">{{ visit.title }}</td>
-                            <td class="px-4 py-3"><code>{{ visit.token }}</code></td>
-                            <td class="px-4 py-3">{{ visit.visitedAt|date('d/m/Y H:i') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="3" class="px-4 py-4 text-center text-muted-foreground">Aucune visite récente</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <twig:Card class="overflow-hidden border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card:Header class="pb-2">
+                <twig:Card:Title class="text-base font-semibold tracking-tight">Visites récentes</twig:Card:Title>
+            </twig:Card:Header>
+            <twig:Card:Content class="p-0 sm:p-0">
+                <div class="overflow-x-auto">
+                    <twig:Table>
+                        <twig:Table:Header>
+                            <twig:Table:Row>
+                                <twig:Table:Head scope="col">Analyse</twig:Table:Head>
+                                <twig:Table:Head scope="col">Token</twig:Table:Head>
+                                <twig:Table:Head scope="col" class="whitespace-nowrap">Date</twig:Table:Head>
+                            </twig:Table:Row>
+                        </twig:Table:Header>
+                        <twig:Table:Body>
+                            {% for visit in recentShareVisits %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell class="whitespace-normal">{{ visit.title }}</twig:Table:Cell>
+                                    <twig:Table:Cell><code class="text-xs">{{ visit.token }}</code></twig:Table:Cell>
+                                    <twig:Table:Cell class="tabular-nums text-xs text-muted-foreground">{{ visit.visitedAt|date('d/m/Y H:i') }}</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% else %}
+                                <twig:Table:Row>
+                                    <twig:Table:Cell colspan="3" class="py-8 text-center text-sm text-muted-foreground">Aucune visite récente</twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endfor %}
+                        </twig:Table:Body>
+                    </twig:Table>
+                </div>
+            </twig:Card:Content>
+        </twig:Card>
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" integrity="sha384-1+OxzI1+28HqkKqmXda3IIZeF1P0uohsEiL41Z8nfdXbra+XUl3Bd4Kp9Ezg4L7g" crossorigin="anonymous" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    const shareChartData = {{ shareChart|json_encode|raw }};
-    const shareVisitChartData = {{ shareVisitChart|json_encode|raw }};
-
-    const shareCanvas = document.getElementById('shareCreationChart');
-    const shareVisitCanvas = document.getElementById('shareVisitChart');
-
-    if (shareCanvas && shareChartData.labels.length) {
-        new Chart(shareCanvas, {
-            type: 'bar',
-            data: {
-                labels: shareChartData.labels,
-                datasets: [{
-                    label: 'Partages créés',
-                    data: shareChartData.data,
-                    backgroundColor: 'rgba(99, 102, 241, 0.6)',
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    }
-
-    if (shareVisitCanvas && shareVisitChartData.labels.length) {
-        new Chart(shareVisitCanvas, {
-            type: 'line',
-            data: {
-                labels: shareVisitChartData.labels,
-                datasets: [{
-                    label: 'Visites via partage',
-                    data: shareVisitChartData.data,
-                    borderColor: '#0ea5e9',
-                    backgroundColor: 'rgba(14, 165, 233, 0.15)',
-                    tension: 0.3,
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    }
-});
-</script>
 {% endblock %}

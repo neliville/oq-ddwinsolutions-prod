@@ -591,9 +591,12 @@ function buildFiveWhyExportData() {
   }
 }
 
-function buildFiveWhyCanvas(capturedCanvas, context) {
+function buildFiveWhyCanvas(capturedCanvas, context, branding) {
+  const Oq = window.OqExportBranding
+  const extraLines = Oq ? Oq.getUserLines(branding).length : 0
+  const extraHeight = Oq ? Oq.measureHeaderExtraHeight(extraLines) : 0
   const padding = 56
-  const headerHeight = 108
+  const headerHeight = 108 + extraHeight
   const footerHeight = 88
   const finalCanvas = document.createElement("canvas")
   finalCanvas.width = capturedCanvas.width + padding * 2
@@ -606,11 +609,17 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
   ctx.textAlign = "center"
   ctx.fillStyle = "#1f2937"
   ctx.font = "bold 30px Arial, sans-serif"
-  ctx.fillText(context.titleText, finalCanvas.width / 2, headerHeight / 2 + 8)
+  ctx.fillText(context.titleText, finalCanvas.width / 2, 44)
+
+  let headerCursor = 62
+  if (Oq) {
+    headerCursor = Oq.paintCanvasHeaderExtras(ctx, finalCanvas.width, headerCursor, branding)
+  }
 
   ctx.font = "16px Arial, sans-serif"
   ctx.fillStyle = "#475569"
-  ctx.fillText(`Exporté le ${context.exportLocale}`, finalCanvas.width / 2, headerHeight - 24)
+  const dateY = Math.max(headerHeight - 24, headerCursor + 8)
+  ctx.fillText(`Exporté le ${context.exportLocale}`, finalCanvas.width / 2, dateY)
 
   ctx.font = "14px Arial, sans-serif"
   ctx.fillStyle = "#334155"
@@ -619,13 +628,17 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
   const contentOffsetY = headerHeight + padding
   ctx.drawImage(capturedCanvas, padding, contentOffsetY)
 
-  ctx.save()
-  ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2)
-  ctx.rotate(-Math.PI / 6)
-  ctx.font = "26px Arial, sans-serif"
-  ctx.fillStyle = "rgba(148, 163, 184, 0.18)"
-  ctx.fillText("OUTILS-QUALITÉ", 0, 0)
-  ctx.restore()
+  if (Oq) {
+    Oq.paintWatermark(ctx, finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2, branding)
+  } else {
+    ctx.save()
+    ctx.translate(finalCanvas.width / 2, contentOffsetY + capturedCanvas.height / 2)
+    ctx.rotate(-Math.PI / 6)
+    ctx.font = "26px Arial, sans-serif"
+    ctx.fillStyle = "rgba(148, 163, 184, 0.18)"
+    ctx.fillText("OUTILS-QUALITÉ", 0, 0)
+    ctx.restore()
+  }
 
   const summaryStart = contentOffsetY + capturedCanvas.height + padding
   ctx.textAlign = "center"
@@ -650,14 +663,18 @@ function buildFiveWhyCanvas(capturedCanvas, context) {
     ctx.fillText(planLabel, finalCanvas.width / 2, summaryStart + 44)
   }
 
-  ctx.fillStyle = "#94a3b8"
-  ctx.font = "12px Arial, sans-serif"
-  ctx.fillText("© OUTILS-QUALITÉ - www.outils-qualite.com", finalCanvas.width / 2, finalCanvas.height - footerHeight / 2)
+  if (Oq) {
+    Oq.paintCanvasFooter(ctx, finalCanvas.width, finalCanvas.height, footerHeight, branding)
+  } else {
+    ctx.fillStyle = "#94a3b8"
+    ctx.font = "12px Arial, sans-serif"
+    ctx.fillText("© OUTILS-QUALITÉ - www.outils-qualite.com", finalCanvas.width / 2, finalCanvas.height - footerHeight / 2)
+  }
 
   return finalCanvas
 }
 
-function exportFiveWhy(format) {
+async function exportFiveWhy(format) {
   let context
   try {
     context = buildFiveWhyExportData()
@@ -666,6 +683,7 @@ function exportFiveWhy(format) {
     return
   }
 
+  const branding = window.OqExportBranding ? await window.OqExportBranding.load() : null
   const baseMetadata = {
     steps: context.totalSteps,
     completedSteps: context.completedSteps,
@@ -673,15 +691,18 @@ function exportFiveWhy(format) {
   }
 
   if (format === "json") {
+    const metadataBase = {
+      tool: "Méthode des 5 Pourquoi",
+      version: "1.1",
+      exportDate: context.exportDate.toISOString(),
+      exportLocale: context.exportLocale,
+      source: "OUTILS-QUALITÉ",
+      title: context.problem.slice(0, 120),
+    }
     const payload = {
-      metadata: {
-        tool: "Méthode des 5 Pourquoi",
-        version: "1.1",
-        exportDate: context.exportDate.toISOString(),
-        exportLocale: context.exportLocale,
-        source: "OUTILS-QUALITÉ",
-        title: context.problem.slice(0, 120),
-      },
+      metadata: window.OqExportBranding
+        ? window.OqExportBranding.enrichMetadata(metadataBase, branding)
+        : metadataBase,
       analysis: {
         problem: context.problem,
         totalSteps: context.totalSteps,
@@ -738,7 +759,7 @@ function exportFiveWhy(format) {
     })
     .then((canvas) => {
       try {
-        const exportCanvas = buildFiveWhyCanvas(canvas, context)
+        const exportCanvas = buildFiveWhyCanvas(canvas, context, branding)
 
         if (format === "pdf") {
           const pdf = new jsPDF("portrait")

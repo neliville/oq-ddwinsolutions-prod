@@ -1,0 +1,34 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Homepage — slots éditoriaux{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[100rem] mx-auto space-y-6">
+    <div class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold tracking-tight text-foreground m-0">Slots homepage</h1>
+        <p class="text-muted-foreground text-sm m-0">Textes optionnels : laissez vide pour garder les valeurs par défaut du site.</p>
+    </div>
+
+    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card:Content class="p-0 sm:p-0 divide-y divide-border">
+            {% for slot in slots %}
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-4">
+                    <div class="min-w-0">
+                        <p class="font-medium text-foreground m-0">{{ slot.label }}</p>
+                        <p class="text-xs text-muted-foreground font-mono m-0 mt-0.5">{{ slot.slotKey }}</p>
+                        <p class="text-xs text-muted-foreground m-0 mt-1">
+                            {% if slot.active %}Actif{% else %}Inactif{% endif %}
+                            · MAJ {{ slot.updatedAt|date('d/m/Y H:i') }}
+                        </p>
+                    </div>
+                    <twig:Button as="a" href="{{ path('app_admin_homepage_slots_edit', { id: slot.id }) }}" variant="outline" size="sm" class="no-underline shrink-0">
+                        Modifier
+                    </twig:Button>
+                </div>
+            {% else %}
+                <p class="text-sm text-muted-foreground p-6 mb-0">Aucun slot — exécutez les migrations.</p>
+            {% endfor %}
+        </twig:Card:Content>
+    </twig:Card>
+</div>
+{% endblock %}

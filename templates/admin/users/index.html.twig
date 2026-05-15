@@ -4,55 +4,22 @@
 
 {% block content %}
 <div class="w-full max-w-[100rem] mx-auto space-y-6">
-    <div>
-        <h1 class="text-2xl font-bold tracking-tight text-foreground mb-1">Gestion des utilisateurs</h1>
-        <p class="text-muted-foreground text-sm mb-0">Gérer les utilisateurs et leurs rôles</p>
-    </div>
+    <twig:DataPageHeader title="Gestion des utilisateurs" description="Gérer les utilisateurs et leurs rôles" />
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
-            <twig:Card:Content class="p-5 sm:p-6">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Total utilisateurs</p>
-                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ allCount }}</p>
-                    </div>
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <i data-lucide="users" width="22" height="22" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
-        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
-            <twig:Card:Content class="p-5 sm:p-6">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Administrateurs</p>
-                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ adminCount }}</p>
-                    </div>
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-                        <i data-lucide="shield" width="22" height="22" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
-        <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
-            <twig:Card:Content class="p-5 sm:p-6">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Utilisateurs</p>
-                        <p class="text-2xl font-bold tabular-nums text-foreground m-0">{{ userCount }}</p>
-                    </div>
-                    <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
-                        <i data-lucide="user" width="22" height="22" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
+        <twig:KpiStatCard label="Total utilisateurs" value="{{ allCount }}" tone="default">
+            <twig:block name="icon"><i data-lucide="users" width="22" height="22" aria-hidden="true"></i></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Administrateurs" value="{{ adminCount }}" tone="destructive">
+            <twig:block name="icon"><i data-lucide="shield" width="22" height="22" aria-hidden="true"></i></twig:block>
+        </twig:KpiStatCard>
+        <twig:KpiStatCard label="Utilisateurs" value="{{ userCount }}" tone="emerald">
+            <twig:block name="icon"><i data-lucide="user" width="22" height="22" aria-hidden="true"></i></twig:block>
+        </twig:KpiStatCard>
     </div>
 
-    <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
-        <twig:Card:Content class="p-4 sm:p-5">
+    <twig:DataToolbar ariaLabel="Filtrer la liste des utilisateurs">
+        <twig:block name="content">
             <div class="flex flex-wrap gap-2" role="group" aria-label="Filtres">
                 <twig:Button as="a" href="{{ path('app_admin_users_index', {filter: 'all'}) }}" variant="{{ currentFilter == 'all' ? 'default' : 'outline' }}" size="sm" class="no-underline">
                     Tous ({{ allCount }})
@@ -64,13 +31,14 @@
                     Utilisateurs ({{ userCount }})
                 </twig:Button>
             </div>
-        </twig:Card:Content>
-    </twig:Card>
+        </twig:block>
+    </twig:DataToolbar>
 
     {% if users|length > 0 %}
     {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-users', list_caption: 'Comptes utilisateurs' } %}
         {% block list_table %}
-            <div data-controller="checkbox-select-all users-bulk-actions"
+            <div data-controller="checkbox-select-all users-bulk-actions data-table-columns"
+                 data-data-table-columns-storage-key-value="admin-users-table"
                  data-action="change->users-bulk-actions#refresh">
                 <form id="bulk-users-form"
                       method="post"
@@ -106,6 +74,19 @@
                     </div>
                 </form>
 
+                    <details class="mb-3 rounded-lg border border-border/70 bg-muted/15 open:bg-muted/25">
+                        <summary class="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-foreground [&::-webkit-details-marker]:hidden">
+                            <twig:ux:icon name="lucide:columns-2" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                            Colonnes affichées
+                        </summary>
+                        <div class="flex flex-wrap gap-x-8 gap-y-2 border-t border-border/60 px-4 py-3 text-sm text-foreground" role="group" aria-label="Colonnes du tableau utilisateurs">
+                            <label class="inline-flex cursor-pointer items-center gap-2 font-normal"><input type="checkbox" checked class="size-4 rounded border-input accent-primary" data-table-col-toggle="roles" data-action="change->data-table-columns#toggle" />Rôles</label>
+                            <label class="inline-flex cursor-pointer items-center gap-2 font-normal"><input type="checkbox" checked class="size-4 rounded border-input accent-primary" data-table-col-toggle="created" data-action="change->data-table-columns#toggle" />Création</label>
+                            <label class="inline-flex cursor-pointer items-center gap-2 font-normal"><input type="checkbox" checked class="size-4 rounded border-input accent-primary" data-table-col-toggle="lastLogin" data-action="change->data-table-columns#toggle" />Dernière connexion</label>
+                            <label class="inline-flex cursor-pointer items-center gap-2 font-normal"><input type="checkbox" checked class="size-4 rounded border-input accent-primary" data-table-col-toggle="lastActivity" data-action="change->data-table-columns#toggle" />Dernière activité</label>
+                        </div>
+                    </details>
+
                 <twig:Table>
                     <twig:Table:Header>
                         <twig:Table:Row>
@@ -117,10 +98,10 @@
                                        data-action="change->users-bulk-actions#refresh">
                             </twig:Table:Head>
                             <twig:Table:Head class="min-w-[14rem]">Email</twig:Table:Head>
-                            <twig:Table:Head class="min-w-[8rem]">Rôles</twig:Table:Head>
-                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Création</twig:Table:Head>
-                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Dernière connexion</twig:Table:Head>
-                            <twig:Table:Head class="w-[9.5rem] whitespace-normal">Dernière activité</twig:Table:Head>
+                            <twig:Table:Head class="min-w-[8rem]" data-table-col="roles">Rôles</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal" data-table-col="created">Création</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal" data-table-col="lastLogin">Dernière connexion</twig:Table:Head>
+                            <twig:Table:Head class="w-[9.5rem] whitespace-normal" data-table-col="lastActivity">Dernière activité</twig:Table:Head>
                             <twig:Table:Head class="w-[1%] text-end whitespace-nowrap">Actions</twig:Table:Head>
                         </twig:Table:Row>
                     </twig:Table:Header>
@@ -144,7 +125,7 @@
                                     <span class="truncate font-medium text-foreground">{{ user.email }}</span>
                                 </div>
                             </twig:Table:Cell>
-                            <twig:Table:Cell class="whitespace-normal">
+                            <twig:Table:Cell class="whitespace-normal" data-table-col="roles">
                                 <div class="flex flex-wrap gap-1">
                                     {% for role in user.roles %}
                                         {% if role == 'ROLE_ADMIN' %}
@@ -160,17 +141,17 @@
                                     {% endfor %}
                                 </div>
                             </twig:Table:Cell>
-                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums" data-table-col="created">
                                 {{ user.createdAt|date('d/m/Y H:i') }}
                             </twig:Table:Cell>
-                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums" data-table-col="lastLogin">
                                 {% if user.lastLoginAt %}
                                     {{ user.lastLoginAt|date('d/m/Y H:i') }}
                                 {% else %}
                                     —
                                 {% endif %}
                             </twig:Table:Cell>
-                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums">
+                            <twig:Table:Cell class="whitespace-normal text-xs text-muted-foreground tabular-nums" data-table-col="lastActivity">
                                 {% if user.lastActivityAt %}
                                     {{ user.lastActivityAt|date('d/m/Y H:i') }}
                                 {% else %}
@@ -178,25 +159,33 @@
                                 {% endif %}
                             </twig:Table:Cell>
                             <twig:Table:Cell class="text-end">
-                                <div class="inline-flex flex-nowrap items-center justify-end gap-1" role="group" aria-label="Actions pour {{ user.email|e('html_attr') }}">
-                                    <twig:Button as="a" href="{{ path('app_admin_users_show', {id: user.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Voir">
-                                        <twig:ux:icon name="lucide:eye" class="size-4" aria-hidden="true" />
-                                        <span class="sr-only">Voir {{ user.email }}</span>
-                                    </twig:Button>
-                                    <twig:Button as="a" href="{{ path('app_admin_users_edit', {id: user.id}) }}" variant="outline" size="icon" class="no-underline size-9 shrink-0" title="Modifier">
-                                        <twig:ux:icon name="lucide:pencil" class="size-4" aria-hidden="true" />
-                                        <span class="sr-only">Modifier {{ user.email }}</span>
-                                    </twig:Button>
-                                    {% if user.id != app.user.id %}
-                                    <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="inline-flex" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                        <twig:Button type="submit" variant="outline" size="icon" class="size-9 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive" title="Supprimer">
-                                            <twig:ux:icon name="lucide:trash-2" class="size-4" aria-hidden="true" />
-                                            <span class="sr-only">Supprimer {{ user.email }}</span>
-                                        </twig:Button>
-                                    </form>
-                                    {% endif %}
-                                </div>
+                                <details class="relative inline-block text-end">
+                                    <summary class="inline-flex size-9 cursor-pointer list-none items-center justify-center rounded-md border border-input bg-background text-foreground shadow-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden" aria-haspopup="menu" aria-label="Menu actions pour {{ user.email|e('html_attr') }}">
+                                        <twig:ux:icon name="lucide:more-horizontal" class="size-4" aria-hidden="true" />
+                                        <span class="sr-only">Ouvrir le menu actions</span>
+                                    </summary>
+                                    <div class="absolute right-0 z-50 mt-1 w-48 rounded-md border border-border bg-popover p-2 text-start shadow-xl" role="menu">
+                                        <div class="flex flex-col gap-1">
+                                            <twig:Button as="a" href="{{ path('app_admin_users_show', {id: user.id}) }}" variant="ghost" size="sm" class="w-full justify-start gap-2 border border-transparent no-underline hover:bg-muted focus-visible:ring-offset-2" role="menuitem">
+                                                <twig:ux:icon name="lucide:eye" class="size-4 shrink-0" aria-hidden="true" />
+                                                Voir
+                                            </twig:Button>
+                                            <twig:Button as="a" href="{{ path('app_admin_users_edit', {id: user.id}) }}" variant="ghost" size="sm" class="w-full justify-start gap-2 border border-transparent no-underline hover:bg-muted focus-visible:ring-offset-2" role="menuitem">
+                                                <twig:ux:icon name="lucide:pencil" class="size-4 shrink-0" aria-hidden="true" />
+                                                Modifier
+                                            </twig:Button>
+                                            {% if user.id != app.user.id %}
+                                                <form method="post" action="{{ path('app_admin_users_delete', {id: user.id}) }}" class="m-0" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');" role="none">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                                    <twig:Button type="submit" variant="ghost" size="sm" class="w-full justify-start gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive" role="menuitem">
+                                                        <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0" aria-hidden="true" />
+                                                        Supprimer
+                                                    </twig:Button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </details>
                             </twig:Table:Cell>
                         </twig:Table:Row>
                         {% endfor %}
