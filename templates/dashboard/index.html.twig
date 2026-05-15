@@ -5,7 +5,12 @@
 {% block meta_description %}Tableau de bord utilisateur — accédez à vos outils qualité — OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full dashboard-page">
+<div
+    class="w-full dashboard-page"
+    data-controller="dashboard-personalize"
+    data-dashboard-personalize-patch-url-value="{{ path('app_api_preferences_dashboard_layout_update') }}"
+    data-dashboard-personalize-csrf-token-value="{{ csrf_token('dashboard_layout') }}"
+>
     <div id="app-collaboration-csrf" data-csrf="{{ csrf_token('collaboration') }}" class="sr-only" aria-hidden="true"></div>
 
     {# ── Header ─────────────────────────────────────────────────────────────── #}
@@ -13,7 +18,7 @@
         <div class="min-w-0">
             <h1 class="text-xl sm:text-2xl font-bold mb-1">Tableau de bord</h1>
             <p class="text-muted-foreground mb-0 text-sm sm:text-base">Bienvenue, <span class="font-medium break-words">{{ dashboard_welcome_name }}</span></p>
-            <p class="text-xs text-muted-foreground mt-1 mb-0">Pilotage : <span class="font-medium text-foreground">{{ piloting_focus_label }}</span> — axe QHSE : <span class="font-medium text-foreground">{{ qhse_priority_label }}</span> — <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="app-inline-link">Ajuster dans les préférences</a></p>
+            <p class="text-xs text-muted-foreground mt-1 mb-0">Pilotage : <span class="font-medium text-foreground">{{ piloting_focus_label }}</span> — axe QHSE : <span class="font-medium text-foreground">{{ qhse_priority_label }}</span> — <a href="{{ path('app_preferences_index', { tab: 'qhse' }) }}" class="app-inline-link">Ajuster dans les préférences</a> — <a href="{{ path('app_preferences_index', { tab: 'dashboard' }) }}" class="app-inline-link">Blocs du tableau de bord</a></p>
         </div>
         <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto sm:justify-end">
             {% include 'collaboration/_invite_dialog.html.twig' with {
@@ -22,6 +27,16 @@
                 trigger_label: 'Inviter un collaborateur',
                 trigger_variant: 'outline',
             } %}
+            <twig:Button
+                type="button"
+                variant="outline"
+                class="w-full sm:w-auto min-h-[48px] sm:min-h-8 gap-2"
+                data-dashboard-personalize-target="editToggle"
+                data-action="dashboard-personalize#startEdit"
+            >
+                <i data-lucide="layout-grid" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
+                Personnaliser
+            </twig:Button>
             <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" variant="default" class="no-underline w-full sm:w-auto min-h-[48px] sm:min-h-8 gap-2">
                 <i data-lucide="plus" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
                 Nouvelle analyse
@@ -89,29 +104,7 @@
     {% set hl_audit = pf in ['audit', 'certification_prep'] or activation_highlight == 'audit' %}
     {% set hl_risk = pf == 'risk' or activation_highlight == 'risk' %}
     {% set hl_ishikawa = activation_highlight == 'ishikawa' %}
-    <p class="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-3xl">Qu’est-ce qui nécessite mon attention aujourd’hui&nbsp;?</p>
-    <div class="space-y-6 mb-8 sm:mb-10" aria-labelledby="dashboard-attention-heading">
-        <h2 id="dashboard-attention-heading" class="sr-only">Priorités et pilotage QSE</h2>
-
-        {% for widgetId in dashboard_widgets.before_grid %}
-            {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
-        {% endfor %}
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {% for widgetId in dashboard_widgets.grid %}
-            {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
-        {% endfor %}
-        </div>
-
-        {% for widgetId in dashboard_widgets.after_grid_attention %}
-            {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
-        {% endfor %}
-    </div>
-
-    {# ── Stats (KPI) : lisibles au pouce, titres masqués pour lecteurs d’écran ─ #}
-    {% for widgetId in dashboard_widgets.stats_section %}
-        {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
-    {% endfor %}
+    {% include 'dashboard/_cockpit_personalize.html.twig' %}
 
     {# ── Corps principal ─────────────────────────────────────────────────────── #}
     <div class="grid grid-cols-12 gap-4 sm:gap-6">

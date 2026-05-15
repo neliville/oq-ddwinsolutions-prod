@@ -1,0 +1,23 @@
+{# Vue lecture cockpit (grille actuelle, widgets visibles uniquement) #}
+<p class="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-3xl">Qu’est-ce qui nécessite mon attention aujourd’hui&nbsp;?</p>
+<div class="space-y-6 mb-8 sm:mb-10" aria-labelledby="dashboard-attention-heading">
+    <h2 id="dashboard-attention-heading" class="sr-only">Priorités et pilotage QSE</h2>
+
+    {% for widgetId in dashboard_widgets.before_grid %}
+        {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
+    {% endfor %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        {% for widgetId in dashboard_widgets.grid %}
+            {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
+        {% endfor %}
+    </div>
+
+    {% for widgetId in dashboard_widgets.after_grid_attention %}
+        {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
+    {% endfor %}
+</div>
+
+{% for widgetId in dashboard_widgets.stats_section %}
+    {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
+{% endfor %}

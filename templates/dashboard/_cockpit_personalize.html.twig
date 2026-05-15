@@ -1,0 +1,35 @@
+{# Mode édition + inclusion vue lecture (contrôleur sur .dashboard-page) #}
+<div data-dashboard-personalize-target="toolbar" class="hidden mb-4 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <p class="text-sm mb-0 text-foreground"><span class="font-semibold">Mode personnalisation</span> — réordonnez ou masquez les blocs, puis enregistrez.</p>
+    <div class="flex flex-wrap gap-2">
+        <twig:Button type="button" variant="outline" size="sm" data-action="dashboard-personalize#cancelEdit" data-dashboard-personalize-target="cancelBtn">Annuler</twig:Button>
+        <twig:Button type="button" variant="default" size="sm" data-action="dashboard-personalize#save" data-dashboard-personalize-target="saveBtn">Enregistrer</twig:Button>
+    </div>
+</div>
+
+<div data-dashboard-personalize-target="editView" class="hidden mb-8 sm:mb-10">
+    <p class="text-muted-foreground text-sm sm:text-base mb-4 max-w-3xl">Réorganisez les blocs du cockpit QSE. Les blocs masqués restent listés ici.</p>
+    <ul data-dashboard-personalize-target="sortableList" class="space-y-2 list-none m-0 p-0 max-w-3xl">
+        {% for widget in dashboard_widget_entries %}
+            <li
+                data-widget-id="{{ widget.id }}"
+                data-visible="{{ widget.visible ? '1' : '0' }}"
+                class="flex items-center gap-3 rounded-lg border border-border/80 bg-card px-3 py-3 shadow-sm{% if not widget.visible %} opacity-50{% endif %}"
+            >
+                <button type="button" class="cursor-grab text-muted-foreground hover:text-foreground shrink-0 p-1 rounded-md hover:bg-muted/60" data-drag-handle aria-label="Déplacer {{ widget.label }}">
+                    <i data-lucide="grip-vertical" width="18" height="18" aria-hidden="true"></i>
+                </button>
+                <span class="flex-1 text-sm font-medium">{{ widget.label }}</span>
+                {% if widget.visible %}
+                    <twig:Button type="button" variant="ghost" size="sm" data-action="dashboard-personalize#hideWidget">Masquer</twig:Button>
+                {% else %}
+                    <twig:Button type="button" variant="ghost" size="sm" data-action="dashboard-personalize#showWidget">Afficher</twig:Button>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div data-dashboard-personalize-target="readView">
+    {% include 'dashboard/_cockpit_read_view.html.twig' %}
+</div>

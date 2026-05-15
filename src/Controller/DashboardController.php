@@ -121,6 +121,7 @@ final class DashboardController extends AbstractController
             'cockpitAudits' => $cockpitAudits,
             'user_preferences' => $userPreferences,
             'dashboard_widgets' => $this->dashboardPreferencesService->getVisibleWidgetsByPlacementZone($userPreferences),
+            'dashboard_widget_entries' => $this->dashboardPreferencesService->getWidgetEntriesForUi($userPreferences),
             'dashboard_welcome_name' => $userPreferences->getProfileDisplayName(),
             'qhse_priority_label' => $userPreferences->getQhsePriorityLabel(),
             'piloting_focus_label' => $userPreferences->getPilotingFocusLabel(),
