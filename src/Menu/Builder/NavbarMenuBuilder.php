@@ -35,9 +35,9 @@ final class NavbarMenuBuilder
 
         $this->addAnchorItem($menu, 'Accueil', 'app_home_index', 'hero', $currentRoute);
         $this->addAnchorItem($menu, 'Outils', 'app_home_index', 'outils', $currentRoute);
-        $this->addAnchorItem($menu, 'Fonctionnalités', 'app_home_index', 'fonctionnalites', $currentRoute);
+        $this->addAnchorItem($menu, 'Cockpit QHSE', 'app_home_index', 'cockpit-qhse', $currentRoute);
         $this->addAnchorItem($menu, 'FAQ', 'app_home_index', 'faq', $currentRoute);
-        $this->addAnchorItem($menu, 'Expertise', 'app_home_index', 'expertise', $currentRoute);
+        $this->addAnchorItem($menu, 'Accompagnement', 'app_home_index', 'accompagnement', $currentRoute);
 
         $this->addRouteItem($menu, 'Ressources', 'app_ressources_index', $currentRoute, ['app_ressources']);
         $this->addRouteItem($menu, 'Blog', 'app_blog_index', $currentRoute, ['app_blog']);
@@ -95,5 +95,3 @@ final class NavbarMenuBuilder
         ]);
     }
 }
-
-

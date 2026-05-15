@@ -52,8 +52,9 @@
             </div>
 
             {% if not app.user %}
-            <div class="lg:hidden mt-6 pt-5 border-t border-slate-200/80">
-                <a class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full max-w-sm mx-auto" href="{{ path('app_login') }}">Connexion</a>
+            <div class="lg:hidden mt-6 pt-5 border-t border-slate-200/80 flex flex-col items-center">
+                <a class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-3 rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full max-w-sm mx-auto mb-2" href="{{ path('app_ishikawa_index') }}">Essayer gratuitement</a>
+                <a class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2.5 rounded-md font-medium hover:bg-muted/60 transition-colors no-underline w-full max-w-sm text-sm" href="{{ path('app_login') }}">Connexion</a>
             </div>
             {% endif %}
         </div>
@@ -173,8 +174,10 @@
 
         </div>
         {% else %}
-        <a class="hidden lg:inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline ml-auto"
+        <a class="hidden lg:inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-muted/60 transition-colors no-underline ml-2"
            href="{{ path('app_login') }}">Connexion</a>
+        <a class="hidden lg:inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity no-underline ml-auto"
+           href="{{ path('app_ishikawa_index') }}">Essayer gratuitement</a>
         {% endif %}
 
     </div>

@@ -2,8 +2,8 @@
 {% set ctx = context|default('marketing') %}
 <div
     data-controller="guest-signup-prompt"
-    data-guest-signup-prompt-delay-ms-value="14000"
-    data-guest-signup-prompt-scroll-ratio-value="0.88"
+    data-guest-signup-prompt-delay-ms-value="28000"
+    data-guest-signup-prompt-scroll-ratio-value="0.92"
 >
     <twig:Dialog id="guest-signup-prompt">
         {# Déclencheur caché requis par ux-dialog (ouverture programmatique). #}
@@ -28,14 +28,14 @@
                         {% if ctx == 'tool' %}
                             Enregistrez vos analyses sur cet outil
                         {% else %}
-                            Passez à l’espace complet Outils-Qualite.com
+                            Sauvegardez vos analyses en ligne
                         {% endif %}
                     </twig:Dialog:Title>
                     <twig:Dialog:Description class="text-pretty text-sm leading-relaxed text-muted-foreground">
                         {% if ctx == 'tool' %}
                             Un compte gratuit vous permet de <strong class="font-semibold text-foreground">sauvegarder</strong> vos travaux, de les retrouver sur tous vos appareils et d’<strong class="font-semibold text-foreground">exporter en PDF</strong> pour vos dossiers et audits.
                         {% else %}
-                            Créez un compte pour <strong class="font-semibold text-foreground">sauvegarder</strong> vos analyses, lancer des audits ISO, suivre des CAPA et piloter risques et actions depuis un <strong class="font-semibold text-foreground">dashboard</strong> — toujours gratuit pour démarrer.
+                            Un compte gratuit vous permet de <strong class="font-semibold text-foreground">sauvegarder</strong> vos analyses dans le cloud, de les retrouver partout et d’<strong class="font-semibold text-foreground">exporter en PDF</strong>. Le cockpit QHSE reste optionnel.
                         {% endif %}
                     </twig:Dialog:Description>
                 </twig:Dialog:Header>
@@ -60,16 +60,21 @@
                         <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
                             <twig:ux:icon name="lucide:check" class="size-3" />
                         </span>
-                        <span>{% if ctx == 'tool' %}Même compte : outils gratuits, CAPA, audits ISO et risques{% else %}Accès au cockpit : audits, CAPA, risques{% endif %}</span>
+                        <span>{% if ctx == 'tool' %}Même compte : outils gratuits, CAPA, audits ISO et risques{% else %}6 outils gratuits + cockpit QHSE quand vous êtes prêt{% endif %}</span>
                     </li>
                 </ul>
             </div>
 
-            <twig:Dialog:Footer class="flex flex-col-reverse gap-2 border-t border-border/60 bg-muted/30 px-6 py-4 sm:flex-row sm:justify-end sm:px-8">
-                <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" class="no-underline w-full sm:w-auto justify-center">
+            <twig:Dialog:Footer class="flex flex-col-reverse gap-2 border-t border-border/60 bg-muted/30 px-6 py-4 sm:flex-col sm:items-stretch sm:px-8">
+                {% if ctx == 'marketing' %}
+                    <twig:Button type="button" variant="ghost" class="w-full sm:w-auto justify-center order-3 sm:order-1" data-action="click->ux-dialog#close">
+                        Continuer sans compte
+                    </twig:Button>
+                {% endif %}
+                <twig:Button as="a" href="{{ path('app_login') }}" variant="outline" class="no-underline w-full sm:w-auto justify-center {% if ctx == 'marketing' %}order-2{% endif %}">
                     Se connecter
                 </twig:Button>
-                <twig:Button as="a" href="{{ path('app_register') }}" variant="default" class="no-underline w-full sm:w-auto justify-center shadow-md">
+                <twig:Button as="a" href="{{ path('app_register') }}" variant="default" class="no-underline w-full sm:w-auto justify-center shadow-md {% if ctx == 'marketing' %}order-1 sm:order-3{% endif %}">
                     Créer un compte gratuit
                 </twig:Button>
             </twig:Dialog:Footer>

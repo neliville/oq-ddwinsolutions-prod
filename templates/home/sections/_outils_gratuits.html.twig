@@ -1,14 +1,15 @@
-<section id="outils" class="tools-section py-14 sm:py-16 bg-muted/20" aria-labelledby="home-outils-heading">
+<section id="outils" class="tools-section bg-muted/20" aria-labelledby="home-outils-heading">
     <div class="container">
         <div class="section-header max-w-3xl mx-auto text-center">
-            <span class="section-badge">Entrée simple</span>
-            <h2 id="home-outils-heading">Des outils gratuits pour un premier besoin</h2>
-            <p>Pour un besoin isolé, ces outils gratuits offrent une porte d’entrée simple vers la plateforme avant de structurer votre pilotage complet dans le cockpit QHSE.</p>
+            <span class="section-badge">Outils gratuits</span>
+            <h2 id="home-outils-heading">Choisissez votre outil et démarrez en 30 secondes</h2>
+            <p>6 méthodes QSE en ligne : gratuit, export PDF, sans inscription obligatoire pour commencer.</p>
         </div>
 
         <div class="tools-showcase max-w-6xl mx-auto">
             <div class="tools-grid">
-                <div class="tool-card">
+                <div class="tool-card tool-card--featured">
+                    <span class="tool-card__featured-badge">Le plus utilisé</span>
                     <div class="tool-card-icon primary">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                             <line x1="6" y1="20" x2="34" y2="20" stroke="currentColor" stroke-width="2.5" />
@@ -20,14 +21,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme d'Ishikawa</h3>
-                    <p>Structurez rapidement vos causes possibles avec un cadre visuel simple pour un premier besoin d’analyse.</p>
+                    <p>Structurez vos causes possibles avec un cadre visuel 5M / 6M, prêt pour vos revues d'écart.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">5M / 6M</span>
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Export PDF</span>
                         <span class="badge">Démarrage immédiat</span>
                     </div>
-                    <a href="{{ path('app_ishikawa_index') }}" aria-label="Créer un diagramme d'Ishikawa" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_ishikawa_index') }}" aria-label="Créer un diagramme d'Ishikawa" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
 
@@ -38,14 +40,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 5 Pourquoi</h3>
-                    <p>Remontez rapidement à l'origine d'un problème avec un questionnement simple et directement exploitable.</p>
+                    <p>Remontez à l'origine d'un problème avec un questionnement simple et directement exploitable.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Analyse des causes</span>
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Export PDF</span>
                         <span class="badge">Guide intégré</span>
                     </div>
-                    <a href="{{ path('app_fivewhy_index') }}" aria-label="Utiliser la méthode 5 Pourquoi" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_fivewhy_index') }}" aria-label="Utiliser la méthode 5 Pourquoi" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
 
@@ -59,14 +62,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Analyse QQOQCCP</h3>
-                    <p>Cadrez un diagnostic avec les 7 questions essentielles pour formaliser rapidement une première analyse.</p>
+                    <p>Cadrez un diagnostic avec les 7 questions essentielles pour formaliser une première analyse.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Questionnement 5W2H</span>
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Rapport généré</span>
-                        <span class="badge">Sauvegarde sécurisée</span>
+                        <span class="badge">Export PDF</span>
                     </div>
-                    <a href="{{ path('app_qqoqccp_index') }}" aria-label="Utiliser l'analyse QQOQCCP" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_qqoqccp_index') }}" aria-label="Utiliser l'analyse QQOQCCP" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
 
@@ -79,14 +83,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Analyse AMDEC</h3>
-                    <p>Repérez vos risques prioritaires et posez une première hiérarchisation d’actions sur un cas concret.</p>
+                    <p>Repérez vos risques prioritaires et hiérarchisez vos actions sur un cas concret.</p>
                     <div class="tool-card__tags">
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Risque & NPR</span>
-                        <span class="badge">Rapport intelligent</span>
-                        <span class="badge">Sauvegarde sécurisée</span>
+                        <span class="badge">Export PDF</span>
                     </div>
-                    <a href="{{ path('app_amdec_index') }}" aria-label="Utiliser l'analyse AMDEC" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_amdec_index') }}" aria-label="Utiliser l'analyse AMDEC" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
 
@@ -100,14 +105,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 8D</h3>
-                    <p>Suivez une résolution structurée en 8 étapes quand vous avez besoin d’un cadre plus formel dès le départ.</p>
+                    <p>Suivez une résolution structurée en 8 étapes pour un cadre formel dès le départ.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Structure 8 disciplines</span>
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Suivi progression</span>
                         <span class="badge">Export PDF & JSON</span>
                     </div>
-                    <a href="{{ path('app_eightd_index') }}" aria-label="Utiliser la méthode 8D" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_eightd_index') }}" aria-label="Utiliser la méthode 8D" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
 
@@ -121,14 +127,15 @@
                         </svg>
                     </div>
                     <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme de Pareto</h3>
-                    <p>Visualisez les causes qui concentrent l’essentiel de vos problèmes pour prioriser un premier plan d’action.</p>
+                    <p>Visualisez les causes qui concentrent l'essentiel de vos problèmes pour prioriser vos actions.</p>
                     <div class="tool-card__tags">
+                        <span class="badge">Sans inscription</span>
                         <span class="badge">Analyse 80/20</span>
-                        <span class="badge">Graphique interactif</span>
                         <span class="badge">Export PDF & JSON</span>
                     </div>
-                    <a href="{{ path('app_pareto_index') }}" aria-label="Utiliser le diagramme de Pareto" class="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
-                        Ouvrir l'outil
+                    <a href="{{ path('app_pareto_index') }}" aria-label="Utiliser le diagramme de Pareto" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                        <span>Utiliser gratuitement</span>
+                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
                     </a>
                 </div>
             </div>

@@ -1,0 +1,198 @@
+<section id="hero" class="hero hero--tools-v2" aria-labelledby="home-hero-heading">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="home-hero-badges mb-4 flex flex-wrap items-center gap-2">
+                    <span class="badge-dot shrink-0" aria-hidden="true"></span>
+                    <twig:Badge variant="secondary" class="font-normal">6 outils qualité</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Gratuits</twig:Badge>
+                    <twig:Badge variant="secondary" class="font-normal">Sans inscription pour démarrer</twig:Badge>
+                </div>
+                <h1 id="home-hero-heading" class="hero-title js-hero-title">Analysez vos problèmes qualité en ligne, gratuitement et tout de suite</h1>
+                <p class="hero-subtitle js-hero-subtitle">
+                    Ishikawa, 5 Pourquoi, Pareto, AMDEC… Créez, exportez en PDF et retrouvez vos analyses quand vous créez un compte gratuit.
+                </p>
+                <p class="hero-usp-note m-0 mt-3 text-sm text-muted-foreground">
+                    Sans inscription pour essayer · Export PDF · Compte gratuit pour sauvegarder en ligne
+                </p>
+
+                <div class="hero-actions">
+                <div class="hero-cta js-hero-cta flex flex-col sm:flex-row flex-wrap gap-3">
+                    {% if is_granted('ROLE_USER') %}
+                        <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
+                            Continuer sur Ishikawa
+                        </twig:Button>
+                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" variant="outline" size="lg" class="no-underline h-11 px-5 sm:h-10 bg-background/80">
+                            Ouvrir mon cockpit QHSE
+                        </twig:Button>
+                    {% else %}
+                        <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" size="lg" class="no-underline h-11 px-5 sm:h-10">
+                            Essayer Ishikawa gratuitement
+                        </twig:Button>
+                        <twig:Button as="a" href="#outils" variant="outline" size="lg" class="no-underline h-11 px-5 sm:h-10 bg-background/80">
+                            Voir les 6 outils
+                        </twig:Button>
+                    {% endif %}
+                </div>
+                {% if not is_granted('ROLE_USER') %}
+                    <p class="hero-login-hint m-0 text-sm">
+                        <a href="{{ path('app_register') }}" class="font-medium text-primary underline underline-offset-4">Créer un compte gratuit</a>
+                        <span class="text-muted-foreground"> · </span>
+                        <a href="{{ path('app_login') }}" class="text-muted-foreground underline underline-offset-4">Déjà un compte ? Se connecter</a>
+                    </p>
+                {% endif %}
+                </div>
+
+                <div class="hero-stats js-kpi-card mt-8">
+                    <div class="stat-item">
+                        <span class="stat-value">6 outils</span>
+                        <span class="stat-label">Méthodes terrain QSE</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">0 €</span>
+                        <span class="stat-label">Pas de carte bancaire</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">PDF</span>
+                        <span class="stat-label">Exports prêts pour l'audit</span>
+                    </div>
+                </div>
+
+                <nav class="hero-tools-strip mt-8" aria-label="Accès rapide aux outils">
+                    <ul class="hero-tools-strip__list m-0 p-0 list-none flex flex-wrap gap-2">
+                        <li><a href="{{ path('app_ishikawa_index') }}" class="hero-tools-strip__link">Ishikawa</a></li>
+                        <li><a href="{{ path('app_fivewhy_index') }}" class="hero-tools-strip__link">5 Pourquoi</a></li>
+                        <li><a href="{{ path('app_pareto_index') }}" class="hero-tools-strip__link">Pareto</a></li>
+                        <li><a href="{{ path('app_qqoqccp_index') }}" class="hero-tools-strip__link">QQOQCCP</a></li>
+                        <li><a href="{{ path('app_amdec_index') }}" class="hero-tools-strip__link">AMDEC</a></li>
+                        <li><a href="{{ path('app_eightd_index') }}" class="hero-tools-strip__link">8D</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="hero-tool-preview js-hero-preview home-hero-tool-preview" data-aos="fade-up" data-aos-delay="80" aria-hidden="true">
+                <div class="home-hero-preview__browser home-hero-tool-preview__shell">
+                    <div class="home-hero-preview__browser-bar">
+                        <span class="home-hero-preview__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+                        <span class="home-hero-preview__url text-muted-foreground text-xs truncate">outils-qualite.com/ishikawa</span>
+                    </div>
+                    <article class="home-hero-tool-preview__canvas">
+                        <header class="home-hero-tool-preview__chrome">
+                            <div class="home-hero-tool-preview__chrome-title">
+                                <span class="home-hero-tool-preview__chrome-dot" aria-hidden="true"></span>
+                                <span class="home-hero-tool-preview__chrome-name">Diagramme d'Ishikawa</span>
+                                <span class="home-hero-tool-preview__chrome-meta">Analyse des causes</span>
+                            </div>
+                            <div class="home-hero-tool-preview__chrome-actions" aria-hidden="true">
+                                <span class="home-hero-tool-preview__pill">5M / 6M</span>
+                                <span class="home-hero-tool-preview__pill home-hero-tool-preview__pill--primary">Export PDF</span>
+                            </div>
+                        </header>
+                        <div class="home-hero-tool-preview__diagram-wrap">
+                            <svg class="home-hero-tool-preview__diagram" viewBox="0 0 520 272" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aperçu diagramme Ishikawa 6M">
+                                <defs>
+                                    <linearGradient id="home-ishikawa-spine" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#6366f1"/>
+                                        <stop offset="55%" stop-color="#4f46e5"/>
+                                        <stop offset="100%" stop-color="#3730a3"/>
+                                    </linearGradient>
+                                    <filter id="home-ishikawa-spine-glow" x="-4%" y="-80%" width="108%" height="260%">
+                                        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                                        <feMerge>
+                                            <feMergeNode in="blur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                    <filter id="home-ishikawa-soft" x="-8%" y="-8%" width="116%" height="116%">
+                                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.08"/>
+                                    </filter>
+                                </defs>
+                                <rect width="520" height="272" rx="12" fill="#f8fafc"/>
+                                <pattern id="home-ishikawa-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+                                    <circle cx="1" cy="1" r="0.65" fill="#cbd5e1" opacity="0.45"/>
+                                </pattern>
+                                <rect x="8" y="8" width="504" height="256" rx="8" fill="url(#home-ishikawa-grid)" opacity="0.55"/>
+                                {# Arête centrale — halo + trait principal + jonctions #}
+                                <line x1="36" y1="136" x2="358" y2="136" stroke="#4f46e5" stroke-width="10" stroke-linecap="round" opacity="0.18"/>
+                                <g filter="url(#home-ishikawa-spine-glow)">
+                                    <line x1="36" y1="136" x2="358" y2="136" stroke="url(#home-ishikawa-spine)" stroke-width="5.5" stroke-linecap="round"/>
+                                </g>
+                                <circle cx="92" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <circle cx="158" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <circle cx="224" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <circle cx="108" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <circle cx="178" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <circle cx="268" cy="136" r="3.5" fill="#4f46e5" stroke="#fff" stroke-width="1.5"/>
+                                <polygon points="358,136 378,126 378,146" fill="#3730a3"/>
+                                <line x1="358" y1="136" x2="378" y2="136" stroke="#3730a3" stroke-width="5" stroke-linecap="round"/>
+                                <line x1="92" y1="136" x2="68" y2="58" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="68" y1="58" x2="48" y2="42" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="68" y1="58" x2="88" y2="44" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="34" y="28" width="72" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="70" y="43" text-anchor="middle" fill="#334155" font-size="10" font-weight="600" font-family="system-ui,sans-serif">Méthode</text>
+                                    <rect x="26" y="52" width="88" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="70" y="64" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">SOP non suivie</text>
+                                </g>
+                                <line x1="158" y1="136" x2="148" y2="52" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="148" y1="52" x2="128" y2="38" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="148" y1="52" x2="168" y2="40" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="118" y="24" width="64" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="150" y="39" text-anchor="middle" fill="#334155" font-size="10" font-weight="600" font-family="system-ui,sans-serif">Matière</text>
+                                    <rect x="108" y="48" width="84" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="150" y="60" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">Lot non conforme</text>
+                                </g>
+                                <line x1="224" y1="136" x2="236" y2="54" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="236" y1="54" x2="218" y2="40" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="236" y1="54" x2="254" y2="42" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="206" y="26" width="62" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="237" y="41" text-anchor="middle" fill="#334155" font-size="10" font-weight="600" font-family="system-ui,sans-serif">Milieu</text>
+                                    <rect x="198" y="50" width="78" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="237" y="62" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">Temp. atelier</text>
+                                </g>
+                                <line x1="108" y1="136" x2="88" y2="214" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="88" y1="214" x2="68" y2="228" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="88" y1="214" x2="108" y2="230" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="48" y="216" width="68" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="82" y="231" text-anchor="middle" fill="#334155" font-size="10" font-weight="600" font-family="system-ui,sans-serif">Machine</text>
+                                    <rect x="38" y="240" width="88" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="82" y="252" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">Réglage presse</text>
+                                </g>
+                                <line x1="178" y1="136" x2="172" y2="218" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="172" y1="218" x2="152" y2="234" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="172" y1="218" x2="192" y2="232" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="128" y="220" width="88" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="172" y="235" text-anchor="middle" fill="#334155" font-size="9" font-weight="600" font-family="system-ui,sans-serif">Main-d'œuvre</text>
+                                    <rect x="118" y="244" width="98" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="167" y="256" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">Charge équipe</text>
+                                </g>
+                                <line x1="268" y1="136" x2="284" y2="216" stroke="#64748b" stroke-width="1.75" stroke-linecap="round"/>
+                                <line x1="284" y1="216" x2="266" y2="232" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <line x1="284" y1="216" x2="302" y2="228" stroke="#64748b" stroke-width="1.25" stroke-linecap="round"/>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="248" y="218" width="72" height="22" rx="6" fill="#fff" stroke="#e2e8f0"/>
+                                    <text x="284" y="233" text-anchor="middle" fill="#334155" font-size="10" font-weight="600" font-family="system-ui,sans-serif">Matériel</text>
+                                    <rect x="238" y="242" width="86" height="18" rx="5" fill="#f1f5f9" stroke="#e2e8f0"/>
+                                    <text x="281" y="254" text-anchor="middle" fill="#64748b" font-size="8" font-family="system-ui,sans-serif">Usure outillage</text>
+                                </g>
+                                <g filter="url(#home-ishikawa-soft)">
+                                    <rect x="378" y="110" width="124" height="52" rx="10" fill="#4f46e5"/>
+                                    <text x="440" y="132" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" font-family="system-ui,sans-serif" opacity="0.85">EFFET</text>
+                                    <text x="440" y="150" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="system-ui,sans-serif">Écart qualité</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <footer class="home-hero-tool-preview__footer" aria-hidden="true">
+                            <span class="home-hero-tool-preview__status">6 branches · 12 causes</span>
+                            <span class="home-hero-tool-preview__status home-hero-tool-preview__status--live">En ligne</span>
+                        </footer>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
