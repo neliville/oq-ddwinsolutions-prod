@@ -217,12 +217,67 @@ final class DashboardLayout
      */
     public static function fromVisibilityMap(array $visibility): self
     {
-        $byId = [];
-        foreach (DashboardWidgetId::DEFAULT_ORDER as $id) {
-            $byId[$id] = (bool) ($visibility[$id] ?? false);
+        return self::fromOrderedIdsAndVisibility(DashboardWidgetId::DEFAULT_ORDER, $visibility);
+    }
+
+    /**
+     * @param list<string>           $orderedIds
+     * @param array<string, bool>   $visibility
+     */
+    public static function fromOrderedIdsAndVisibility(array $orderedIds, array $visibility): self
+    {
+        $widgets = [];
+        $seen = [];
+
+        foreach ($orderedIds as $id) {
+            if (!is_string($id) || !DashboardWidgetId::isKnown($id) || isset($seen[$id])) {
+                continue;
+            }
+            $widgets[] = [
+                'id' => $id,
+                'visible' => (bool) ($visibility[$id] ?? false),
+            ];
+            $seen[$id] = true;
         }
 
-        return self::buildFromVisibilityById($byId);
+        foreach (DashboardWidgetId::DEFAULT_ORDER as $id) {
+            if (isset($seen[$id])) {
+                continue;
+            }
+            $widgets[] = [
+                'id' => $id,
+                'visible' => (bool) ($visibility[$id] ?? false),
+            ];
+        }
+
+        return new self($widgets);
+    }
+
+    /**
+     * @param list<array{id: string, visible: bool}> $widgets
+     */
+    public static function fromWidgetEntries(array $widgets): self
+    {
+        $visibility = [];
+        $orderedIds = [];
+        foreach ($widgets as $widget) {
+            $id = $widget['id'] ?? null;
+            if (!is_string($id) || !DashboardWidgetId::isKnown($id)) {
+                continue;
+            }
+            $orderedIds[] = $id;
+            $visibility[$id] = (bool) ($widget['visible'] ?? false);
+        }
+
+        return self::fromOrderedIdsAndVisibility($orderedIds, $visibility);
+    }
+
+    /**
+     * @return list<WidgetEntry>
+     */
+    public function getWidgetEntries(): array
+    {
+        return $this->widgets;
     }
 
     /**

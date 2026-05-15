@@ -100,15 +100,7 @@
         <twig:Tabs:Content value="dashboard">
             <twig:Card class="border-border/80 shadow-sm">
                 <twig:Card:Content class="p-5 sm:p-6 space-y-4">
-                    {{ form_start(dashboard_form, { attr: { class: 'space-y-3' } }) }}
-                        {% for field in dashboard_form %}
-                            {{ form_row(field) }}
-                        {% endfor %}
-                        <p class="text-xs text-muted-foreground">Décochez un bloc pour le masquer sur votre tableau de bord. Par défaut, tout reste visible.</p>
-                        <div class="flex justify-end pt-2">
-                            <twig:Button type="submit" variant="default">Enregistrer</twig:Button>
-                        </div>
-                    {{ form_end(dashboard_form) }}
+                    {% include 'preferences/_dashboard_layout_form.html.twig' %}
                 </twig:Card:Content>
             </twig:Card>
         </twig:Tabs:Content>

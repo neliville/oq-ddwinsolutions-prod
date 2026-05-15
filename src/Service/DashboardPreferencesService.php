@@ -53,6 +53,31 @@ final class DashboardPreferencesService
     }
 
     /**
+     * @return list<array{id: string, label: string, visible: bool}>
+     */
+    public function getWidgetEntriesForUi(UserPreferences $preferences): array
+    {
+        $entries = [];
+        foreach ($this->getDashboardLayout($preferences)->getWidgetEntries() as $widget) {
+            $entries[] = [
+                'id' => $widget['id'],
+                'label' => DashboardWidgetId::label($widget['id']),
+                'visible' => $widget['visible'],
+            ];
+        }
+
+        return $entries;
+    }
+
+    /**
+     * @param list<array{id: string, visible: bool}> $widgets
+     */
+    public function applyWidgetEntries(UserPreferences $preferences, array $widgets): void
+    {
+        $this->applyDashboardLayout($preferences, DashboardLayout::fromWidgetEntries($widgets));
+    }
+
+    /**
      * @param FormInterface<mixed> $form
      */
     public function applyVisibilityFromSubmittedForm(UserPreferences $preferences, FormInterface $form): void
@@ -64,7 +89,20 @@ final class DashboardPreferencesService
             $visibility[$key] = $control->isSubmitted() && (bool) $control->getData();
         }
 
-        $this->applyDashboardLayout($preferences, DashboardLayout::fromVisibilityMap($visibility));
+        $orderRaw = '';
+        if ($form->has('widget_order')) {
+            $orderRaw = (string) $form->get('widget_order')->getData();
+        }
+        $orderedIds = array_values(array_filter(array_map('trim', explode(',', $orderRaw))));
+
+        if ($orderedIds === []) {
+            $orderedIds = $this->getDashboardLayout($preferences)->getOrderedWidgetIds();
+        }
+
+        $this->applyDashboardLayout(
+            $preferences,
+            DashboardLayout::fromOrderedIdsAndVisibility($orderedIds, $visibility),
+        );
     }
 
     /**

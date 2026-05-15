@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Form\Preference;
 
+use App\Dashboard\DashboardLayout;
 use App\Entity\UserPreferences;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -39,6 +41,12 @@ final class UserDashboardPreferencesFormType extends AbstractType
                 'data' => $prefs->isDashboardSectionVisible($key),
             ]);
         }
+
+        $layout = DashboardLayout::fromStored($prefs->getDashboardLayout());
+        $builder->add('widget_order', HiddenType::class, [
+            'mapped' => false,
+            'data' => implode(',', $layout->getOrderedWidgetIds()),
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

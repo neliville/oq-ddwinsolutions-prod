@@ -69,6 +69,17 @@ final class DashboardLayoutTest extends TestCase
         $this->assertSame(1, $restored->toStorage()['version']);
     }
 
+    public function testFromOrderedIdsAndVisibilityPreservesOrder(): void
+    {
+        $layout = DashboardLayout::fromOrderedIdsAndVisibility(
+            ['pdca', 'deadlines', 'capa'],
+            ['pdca' => true, 'deadlines' => true, 'capa' => false],
+        );
+
+        $this->assertSame(['pdca', 'deadlines', 'capa'], array_slice($layout->getOrderedWidgetIds(), 0, 3));
+        $this->assertFalse($layout->isWidgetVisible('capa'));
+    }
+
     public function testVisibleWidgetsByPlacementZone(): void
     {
         $layout = DashboardLayout::fromLegacyVisibilityMap([

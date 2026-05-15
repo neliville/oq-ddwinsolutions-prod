@@ -123,6 +123,7 @@ final class PreferencesController extends AbstractController
             'notification_form' => $notificationForm->createView(),
             'export_form' => $exportForm->createView(),
             'dashboard_form' => $dashboardForm->createView(),
+            'dashboard_widget_entries' => $this->dashboardPreferencesService->getWidgetEntriesForUi($prefs),
         ]);
     }
 

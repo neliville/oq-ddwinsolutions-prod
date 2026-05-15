@@ -62,6 +62,21 @@ final class DashboardWidgetId
         return in_array($id, self::DEFAULT_ORDER, true);
     }
 
+    public static function label(string $id): string
+    {
+        return match ($id) {
+            self::DEADLINES => 'Urgence et délais',
+            self::CAPA => 'CAPA — vue synthétique',
+            self::RISKS => 'Risques',
+            self::AUDITS => 'Audits',
+            self::PDCA => 'PDCA',
+            self::ANOMALIES => 'Décisions / anomalies',
+            self::KPI_STATS => 'KPI et statistiques outils',
+            self::KPI_AI => 'Espace assistances IA',
+            default => $id,
+        };
+    }
+
     public static function placementZone(string $id): ?string
     {
         if (in_array($id, self::PLACEMENT_BEFORE_GRID, true)) {
