@@ -1,7 +1,6 @@
 {# Composant pour afficher les messages flash de manière accessible #}
-{# Stratégie feedback : ce composant est la source unique pour les messages Symfony (flash).
-   Ne pas dupliquer le même contenu en « toast » client sans retirer le flash ou sans règle métier explicite.
-   Une future couche Toast pourra réutiliser les mêmes variants twig:Alert. #}
+{# Stratégie feedback : alertes pour les pages publiques (invité).
+   Espace connecté : voir flash_toast_bridge.html.twig (appNotify / Toastify). #}
 {# Usage:
     {% include 'components/flash_messages.html.twig' %}
 

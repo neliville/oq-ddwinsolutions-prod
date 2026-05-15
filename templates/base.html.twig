@@ -275,7 +275,11 @@
     <main id="main-content" class="w-full max-w-full overflow-x-hidden" tabindex="-1">
         {# Messages flash Symfony : rendus en premier pour consommer le sac avant tout {% for %} local dans les blocs enfants. #}
         <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
-            {% include 'components/flash_messages.html.twig' %}
+            {% if app.user %}
+                {% include 'components/flash_toast_bridge.html.twig' %}
+            {% else %}
+                {% include 'components/flash_messages.html.twig' %}
+            {% endif %}
         </div>
         {% block body %}
             {% block content %}{% endblock %}

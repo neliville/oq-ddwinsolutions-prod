@@ -12,6 +12,7 @@ use App\Form\Preference\UserNotificationPreferencesFormType;
 use App\Form\Preference\UserProfessionalPreferencesFormType;
 use App\Form\Preference\UserQhsePreferencesFormType;
 use App\Repository\UserPreferencesRepository;
+use App\Service\DashboardPreferencesService;
 use App\Service\PasswordResetRequestOutcome;
 use App\Service\PasswordResetRequestProcessor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,7 @@ final class PreferencesController extends AbstractController
         private readonly UserPreferencesRepository $userPreferencesRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly PasswordResetRequestProcessor $passwordResetRequestProcessor,
+        private readonly DashboardPreferencesService $dashboardPreferencesService,
     ) {
     }
 
@@ -196,12 +198,10 @@ final class PreferencesController extends AbstractController
         if (isset($data['user_dashboard_preferences'])) {
             $dashboardForm->handleRequest($request);
             if ($dashboardForm->isSubmitted() && $dashboardForm->isValid()) {
-                $visibility = [];
-                foreach (UserPreferences::dashboardSectionKeys() as $key) {
-                    $field = 'dash_'.$key;
-                    $visibility[$key] = (bool) $dashboardForm->get($field)->getData();
-                }
-                $prefs->setDashboardVisibility($visibility);
+                $this->dashboardPreferencesService->applyVisibility(
+                    $prefs,
+                    $this->dashboardPreferencesService->resolveVisibilityFromSubmittedForm($dashboardForm),
+                );
                 $prefs->touchUpdatedAt();
                 $this->entityManager->flush();
                 $this->addFlash('success', 'Affichage du tableau de bord mis à jour.');

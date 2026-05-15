@@ -1,0 +1,25 @@
+{# Pont flash → Toastify (appNotify) pour l'espace connecté — ne pas dupliquer avec twig:Alert. #}
+{% set flashTypes = types|default([
+    'success', 'error', 'warning', 'info', 'danger',
+    'contact_success', 'profile_success', 'reset_password_error',
+]) %}
+
+{% set toastMessages = [] %}
+{% for label in flashTypes %}
+    {% for message in app.flashes(label) %}
+        {% if label == 'contact_success' or label == 'profile_success' or label == 'success' %}
+            {% set toastType = 'success' %}
+        {% elseif label == 'reset_password_error' or label == 'error' or label == 'danger' %}
+            {% set toastType = 'error' %}
+        {% elseif label == 'warning' %}
+            {% set toastType = 'warning' %}
+        {% else %}
+            {% set toastType = 'info' %}
+        {% endif %}
+        {% set toastMessages = toastMessages|merge([{ message: message, type: toastType }]) %}
+    {% endfor %}
+{% endfor %}
+
+{% if toastMessages is not empty %}
+    <div data-controller="flash-toast" data-flash-toast-messages-value="{{ toastMessages|json_encode|e('html_attr') }}" class="sr-only" aria-hidden="true"></div>
+{% endif %}
