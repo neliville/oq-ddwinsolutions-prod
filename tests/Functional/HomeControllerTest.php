@@ -176,7 +176,7 @@ class HomeControllerTest extends WebTestCase
         $this->assertTrue($this->hasHref($finalCtaHrefs, [$router->generate('app_register')]));
     }
 
-    public function testHomePageSocialProofUsesQuantifiedCredibility(): void
+    public function testHomePageSocialProofUsesFactualToolFirstCredibility(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
@@ -185,12 +185,17 @@ class HomeControllerTest extends WebTestCase
         $statValues = $socialProof->filter('.social-stat__value')->each(
             static fn ($node): string => trim(preg_replace('/\s+/', ' ', $node->text()) ?? '')
         );
+        $statLabels = $socialProof->filter('.social-stat__label')->each(
+            static fn ($node): string => trim(preg_replace('/\s+/', ' ', $node->text()) ?? '')
+        );
 
         $this->assertResponseIsSuccessful();
         $this->assertSame(1, $socialProof->count());
         $this->assertCount(3, $statValues);
-        $this->assertMatchesRegularExpression('/\d/', $statValues[0] ?? '');
-        $this->assertMatchesRegularExpression('/\d/', $statValues[1] ?? '');
+        $this->assertSame(['6 outils', 'Sans inscription', 'Exports PDF'], $statValues);
+        $this->assertStringContainsString('méthodes terrain qse immédiatement utilisables', mb_strtolower($statLabels[0] ?? ''));
+        $this->assertStringContainsString('démarrer rapidement vos analyses', mb_strtolower($statLabels[1] ?? ''));
+        $this->assertStringContainsString('synthèses prêtes pour vos audits', mb_strtolower($statLabels[2] ?? ''));
         $this->assertStringContainsString('ishikawa', $socialProofText);
         $this->assertStringContainsString('équipes', $socialProofText);
     }
