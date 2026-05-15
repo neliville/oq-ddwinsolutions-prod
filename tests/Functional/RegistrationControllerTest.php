@@ -34,14 +34,61 @@ class RegistrationControllerTest extends WebTestCase
         
         $client->submit($form);
 
-        // Après inscription, redirection vers la page de bienvenue (compte créé)
-        $this->assertResponseRedirects('/bienvenue');
+        $this->assertResponseRedirects('/dashboard');
 
-        // Vérifier que l'utilisateur a été créé
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['email' => $uniqueEmail]);
         $this->assertNotNull($user);
         $this->assertInstanceOf(User::class, $user);
+
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertNotNull(static::getContainer()->get('security.token_storage')->getToken());
+    }
+
+    public function testRegistrationRedirectsToDashboardWithAuthenticatedUser(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/register');
+
+        $uniqueEmail = 'test-auth-' . uniqid() . '@example.com';
+        $form = $crawler->filter('form[name="registration_form"]')->form([
+            'registration_form[email]' => $uniqueEmail,
+            'registration_form[plainPassword][first]' => 'Test123456!',
+            'registration_form[plainPassword][second]' => 'Test123456!',
+        ]);
+
+        $client->submit($form);
+
+        $this->assertResponseRedirects('/dashboard');
+        $client->followRedirect();
+
+        $this->assertResponseIsSuccessful();
+        $token = static::getContainer()->get('security.token_storage')->getToken();
+        $this->assertNotNull($token);
+        $this->assertInstanceOf(User::class, $token->getUser());
+        $this->assertSame($uniqueEmail, $token->getUser()->getUserIdentifier());
+    }
+
+    public function testRegistrationCanTriggerOnboardingOnDashboard(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/register');
+
+        $uniqueEmail = 'test-onboarding-' . uniqid() . '@example.com';
+        $form = $crawler->filter('form[name="registration_form"]')->form([
+            'registration_form[email]' => $uniqueEmail,
+            'registration_form[plainPassword][first]' => 'Test123456!',
+            'registration_form[plainPassword][second]' => 'Test123456!',
+        ]);
+
+        $client->submit($form);
+        $this->assertResponseRedirects('/dashboard');
+        $crawler = $client->followRedirect();
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('[data-controller="onboarding-wizard"]');
+        $this->assertSelectorExists('[data-onboarding-wizard-csrf-value]');
     }
 
     public function testRegistrationSendsWelcomeEmail(): void
@@ -216,18 +263,13 @@ class RegistrationControllerTest extends WebTestCase
 
     /**
      * Test pour vérifier qu'on ne peut pas créer un compte avec un email déjà utilisé.
-     * 
-     * Note: Le formulaire ne valide pas actuellement les emails dupliqués,
-     * donc Doctrine lève une exception d'intégrité de contrainte.
-     * Le test vérifie que cette exception est bien levée.
      */
-    public function testRegistrationWithDuplicateEmailThrowsException(): void
+    public function testRegistrationWithDuplicateEmailShowsFormError(): void
     {
         $client = static::createClient();
         $container = static::getContainer();
         $entityManager = $container->get('doctrine')->getManager();
         
-        // Étape 1 : Créer un utilisateur existant directement avec un email unique
         $uniqueEmail = 'test-duplicate-' . uniqid() . '@example.com';
         $passwordHasher = $container->get('security.user_password_hasher');
         $existingUser = new User();
@@ -237,15 +279,10 @@ class RegistrationControllerTest extends WebTestCase
         $entityManager->persist($existingUser);
         $entityManager->flush();
         
-        // S'assurer que l'utilisateur a été créé
         $userRepository = $container->get(UserRepository::class);
         $createdUser = $userRepository->findOneBy(['email' => $uniqueEmail]);
         $this->assertNotNull($createdUser, 'L\'utilisateur doit être créé avant le test de duplication');
 
-        // Étape 2 : Tenter de créer un compte avec le même email via le formulaire
-        // Le client ne suit pas automatiquement les exceptions, on doit les intercepter
-        $client->catchExceptions(false);
-        
         $crawler = $client->request('GET', '/register');
         $form = $crawler->filter('form[name="registration_form"]')->form([
             'registration_form[email]' => $uniqueEmail,
@@ -253,37 +290,19 @@ class RegistrationControllerTest extends WebTestCase
             'registration_form[plainPassword][second]' => 'Test123456!',
         ]);
 
-        // Soumettre le formulaire - devrait lever une exception d'intégrité
-        try {
-            $client->submit($form);
-            // Si aucune exception n'est levée, le test doit échouer
-            $this->fail('Une exception d\'intégrité de contrainte devrait être levée pour un email dupliqué');
-        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
-            // C'est le comportement attendu : une exception d'intégrité est levée
-            $this->assertTrue(
-                str_contains($e->getMessage(), 'Duplicate entry')
-                || str_contains($e->getMessage(), 'UNIQUE constraint failed'),
-                'Le message d\'erreur doit indiquer une violation de contrainte unique.'
-            );
-            $count = $userRepository->createQueryBuilder('u')
-                ->select('COUNT(u.id)')
-                ->where('u.email = :email')
-                ->setParameter('email', $uniqueEmail)
-                ->getQuery()
-                ->getSingleScalarResult();
-            $this->assertSame('1', (string) $count, 'L\'email dupliqué ne doit pas créer un nouvel utilisateur.');
-        } catch (\Exception $e) {
-            // Si c'est une autre exception, vérifier qu'elle est liée à l'intégrité
-            if (str_contains($e->getMessage(), 'Duplicate entry') || 
-                str_contains($e->getMessage(), 'UNIQ_IDENTIFIER_EMAIL') ||
-                str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
-                // C'est aussi un comportement acceptable
-                $this->assertTrue(true);
-            } else {
-                // Sinon, c'est une erreur inattendue
-                throw $e;
-            }
-        }
+        $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertSelectorExists('form[name="registration_form"]');
+        $this->assertSelectorTextContains('body', 'Un compte existe déjà avec cette adresse email.');
+
+        $count = $userRepository->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.email = :email')
+            ->setParameter('email', $uniqueEmail)
+            ->getQuery()
+            ->getSingleScalarResult();
+        $this->assertSame('1', (string) $count, 'L\'email dupliqué ne doit pas créer un nouvel utilisateur.');
     }
 
     public function testRegistrationRedirectsLoggedInUsers(): void

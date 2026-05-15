@@ -15,6 +15,7 @@ use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -30,6 +31,7 @@ class RegistrationController extends AbstractController
         private readonly TrackingEventRecorder $trackingEventRecorder,
         private readonly UserInvitationRepository $userInvitationRepository,
         private readonly UserInvitationService $userInvitationService,
+        private readonly Security $security,
     ) {
     }
 
@@ -89,19 +91,24 @@ class RegistrationController extends AbstractController
                 'web',
             );
 
-            // Envoyer l'email de bienvenue
+            $welcomeEmailSent = false;
             try {
                 $this->mailerService->sendWelcomeEmail($user);
+                $welcomeEmailSent = true;
             } catch (\Exception $e) {
                 $this->logger->error('Erreur lors de l\'envoi de l\'email de bienvenue', ['exception' => $e]);
             }
 
             $this->addFlash(
                 'success',
-                'Votre compte a été créé avec succès ! Un email de bienvenue vous a été envoyé.'
+                $welcomeEmailSent
+                    ? 'Votre compte a été créé avec succès ! Un email de bienvenue vous a été envoyé.'
+                    : 'Votre compte a bien été créé. Vous êtes maintenant connecté à votre espace.'
             );
 
-            return $this->redirectToRoute('app_bienvenue');
+            $loginResponse = $this->security->login($user, 'form_login', 'main');
+
+            return $loginResponse ?? $this->redirectToRoute('app_dashboard_index');
         }
 
         return $this->render('registration/register.html.twig', [
