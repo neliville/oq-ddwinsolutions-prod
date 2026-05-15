@@ -192,10 +192,10 @@ class HomeControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSame(1, $socialProof->count());
         $this->assertCount(3, $statValues);
-        $this->assertSame(['6 outils', 'Sans inscription', 'Exports PDF'], $statValues);
-        $this->assertStringContainsString('méthodes terrain qse immédiatement utilisables', mb_strtolower($statLabels[0] ?? ''));
-        $this->assertStringContainsString('démarrer rapidement vos analyses', mb_strtolower($statLabels[1] ?? ''));
-        $this->assertStringContainsString('synthèses prêtes pour vos audits', mb_strtolower($statLabels[2] ?? ''));
+        $this->assertSame(['6 outils', '0 €', 'PDF'], $statValues);
+        $this->assertStringContainsString('méthodes terrain qse', mb_strtolower($statLabels[0] ?? ''));
+        $this->assertStringContainsString('pas de carte bancaire', mb_strtolower($statLabels[1] ?? ''));
+        $this->assertStringContainsString('exports prêts pour l\'audit', mb_strtolower($statLabels[2] ?? ''));
         $this->assertStringContainsString('ishikawa', $socialProofText);
         $this->assertStringContainsString('équipes', $socialProofText);
     }
