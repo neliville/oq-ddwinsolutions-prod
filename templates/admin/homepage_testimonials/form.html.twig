@@ -1,0 +1,119 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}{{ is_edit ? 'Modifier' : 'Nouveau' }} témoignage | Administration{% endblock %}
+
+{% block content %}
+<div class="w-full">
+    <div class="mb-6">
+        <a href="{{ path('app_admin_homepage_testimonials_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors no-underline mb-2">
+            <i data-lucide="arrow-left" width="16" height="16"></i>
+            Retour à la liste
+        </a>
+        <h1 class="text-2xl font-bold mb-1">{{ is_edit ? 'Modifier le témoignage' : 'Nouveau témoignage' }}</h1>
+        <p class="text-muted-foreground mb-0">Contenu affiché dans la section preuve sociale de la homepage.</p>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6">
+        <div class="lg:col-span-8 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm border border-border">
+                <div class="p-6">
+                    {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            {{ form_label(form.fullName, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.fullName) }}
+                            {{ form_errors(form.fullName) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.initials, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.initials) }}
+                            {{ form_help(form.initials) }}
+                            {{ form_errors(form.initials) }}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            {{ form_label(form.jobTitle, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.jobTitle) }}
+                            {{ form_errors(form.jobTitle) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.company, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.company) }}
+                            {{ form_errors(form.company) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.quote, null, { label_attr: { class: 'form-label' } }) }}
+                        {{ form_widget(form.quote) }}
+                        {{ form_errors(form.quote) }}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            {{ form_label(form.rating, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.rating) }}
+                            {{ form_errors(form.rating) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.displayOrder, null, { label_attr: { class: 'form-label' } }) }}
+                            {{ form_widget(form.displayOrder) }}
+                            {{ form_errors(form.displayOrder) }}
+                        </div>
+                        <div class="flex items-end pb-2">
+                            <div class="flex items-center gap-2">
+                                {{ form_widget(form.isActive) }}
+                                {{ form_label(form.isActive, null, { label_attr: { class: 'form-check-label mb-0' } }) }}
+                            </div>
+                            {{ form_errors(form.isActive) }}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity">
+                            <i data-lucide="save" width="16" height="16"></i>
+                            Enregistrer
+                        </button>
+                        <a href="{{ path('app_admin_homepage_testimonials_index') }}" class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-4 py-2 rounded-md font-medium hover:bg-accent transition-colors no-underline">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-4 col-span-12">
+            <div class="rounded-lg bg-card shadow-sm border border-border overflow-hidden">
+                <div class="px-6 py-4 border-b border-border">
+                    <h6 class="m-0 font-semibold">Aperçu carte</h6>
+                </div>
+                <div class="p-6 bg-slate-50/80">
+                    <article class="testimonial-card testimonial-card--preview">
+                        <div class="testimonial-card__inner">
+                            <p class="testimonial-card__rating" aria-hidden="true">
+                                <span class="testimonial-card__stars">★★★★★</span>
+                            </p>
+                            <blockquote class="testimonial-card__quote">
+                                <p class="testimonial-text m-0 text-sm italic text-slate-800">Exemple de citation telle qu’affichée sur la homepage.</p>
+                            </blockquote>
+                            <footer class="testimonial-card__author">
+                                <span class="testimonial-card__avatar">CD</span>
+                                <div class="testimonial-card__identity">
+                                    <cite class="testimonial-author__name not-italic">Claire D.</cite>
+                                    <span class="testimonial-author__role">Responsable QSE · Industrie</span>
+                                </div>
+                            </footer>
+                        </div>
+                    </article>
+                    <p class="text-xs text-muted-foreground mt-4 mb-0">Les 2 premiers témoignages <strong>actifs</strong> (ordre croissant) sont publiés sur l’accueil.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

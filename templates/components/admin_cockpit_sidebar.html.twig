@@ -93,6 +93,11 @@
                 <i data-lucide="file-cog" width="16" height="16" class="sidebar-item-icon"></i>
                 <span>CMS pages légales</span>
             </a>
+            <a href="{{ path('app_admin_homepage_testimonials_index') }}"
+               class="sidebar-item {{ currentRoute starts with 'app_admin_homepage_testimonials' ? 'active' : '' }}">
+                <i data-lucide="message-square-quote" width="16" height="16" class="sidebar-item-icon"></i>
+                <span>Témoignages homepage</span>
+            </a>
         </div>
 
         <div class="sidebar-section">

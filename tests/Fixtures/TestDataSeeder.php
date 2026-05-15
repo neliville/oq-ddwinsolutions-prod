@@ -5,6 +5,7 @@ namespace App\Tests\Fixtures;
 use App\Entity\BlogPost;
 use App\Entity\Category;
 use App\Entity\CmsPage;
+use App\Entity\HomepageTestimonial;
 use App\Qse\Service\AuditStandardBootstrap;
 use App\Qse\Service\CapaSystemOriginSeeder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +16,7 @@ final class TestDataSeeder
     {
         self::ensureCmsPages($entityManager);
         self::ensureBlogContent($entityManager);
+        self::ensureHomepageTestimonials($entityManager);
         (new CapaSystemOriginSeeder())->seed($entityManager);
         (new AuditStandardBootstrap())->ensure($entityManager);
     }
@@ -81,6 +83,38 @@ final class TestDataSeeder
         $post->setViews(0);
         $entityManager->persist($post);
 
+        $entityManager->flush();
+    }
+
+    private static function ensureHomepageTestimonials(EntityManagerInterface $entityManager): void
+    {
+        $repository = $entityManager->getRepository(HomepageTestimonial::class);
+        if ($repository->count([]) > 0) {
+            return;
+        }
+
+        $claire = (new HomepageTestimonial())
+            ->setFullName('Claire D.')
+            ->setJobTitle('Responsable QSE')
+            ->setCompany('Industrie manufacturière')
+            ->setQuote('L\'Ishikawa en 10 minutes avant ma revue d\'écart : simple, lisible, et l\'export PDF part directement dans le dossier audit.')
+            ->setRating(5)
+            ->setInitials('C')
+            ->setDisplayOrder(1)
+            ->setIsActive(true);
+
+        $marc = (new HomepageTestimonial())
+            ->setFullName('Marc L.')
+            ->setJobTitle('Chef de projet QSE')
+            ->setCompany('PME services')
+            ->setQuote('On commence par les outils gratuits, puis le cockpit quand il faut relier CAPA, risques et audits dans une même vue.')
+            ->setRating(5)
+            ->setInitials('M')
+            ->setDisplayOrder(2)
+            ->setIsActive(true);
+
+        $entityManager->persist($claire);
+        $entityManager->persist($marc);
         $entityManager->flush();
     }
 }

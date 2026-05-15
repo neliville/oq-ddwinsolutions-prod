@@ -664,73 +664,89 @@
     &__author {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin: clamp(1.15rem, 2.5vw, 1.5rem) 0 0;
-      padding-top: clamp(1rem, 2vw, 1.15rem);
-      border-top: 1px solid #f1f5f9;
+      gap: 0.85rem;
+      margin: clamp(1.2rem, 2.5vw, 1.55rem) 0 0;
+      padding: clamp(0.95rem, 2vw, 1.1rem) 0 0;
+      border-top: 1px solid #eef2f7;
       order: 3;
+      background: transparent;
     }
 
     &__avatar {
       flex-shrink: 0;
-      width: 2.625rem;
-      height: 2.625rem;
+      width: 2.75rem;
+      height: 2.75rem;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 0.9375rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #4f46e5;
-      background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 100%);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #4338ca;
+      background: linear-gradient(160deg, #f5f3ff 0%, #e0e7ff 55%, #eef2ff 100%);
       border: 1px solid #c7d2fe;
-      box-shadow: 0 1px 2px rgb(79 70 229 / 0.08);
+      box-shadow: 0 1px 3px rgb(79 70 229 / 0.12);
     }
 
     &__identity {
       min-width: 0;
+      flex: 1;
     }
 
     .testimonial-author__name {
       display: block;
-      font-size: 0.9375rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 700;
       font-style: normal;
-      color: #111827;
+      color: #111827 !important;
       line-height: 1.35;
+      letter-spacing: -0.01em;
     }
 
     .testimonial-author__role {
       display: block;
-      margin-top: 0.2rem;
+      margin-top: 0.25rem;
       font-size: 0.8125rem;
-      font-weight: 400;
-      color: #6b7280;
+      font-weight: 500;
+      color: #6b7280 !important;
       line-height: 1.5;
     }
+  }
+
+  .testimonials-empty {
+    padding-top: 0.5rem;
   }
 }
 
 /*
- * Témoignages — garde-fous lisibilité (pas de footer sombre hérité).
+ * Témoignages — garde-fous lisibilité (évite styles globaux footer/cite sombres).
  */
 #preuve-sociale.social-proof-section .testimonial-card .testimonial-card__inner {
   background-color: #fff;
 }
 
-#preuve-sociale.social-proof-section .testimonial-card footer.testimonial-card__author.home-testimonial-meta {
-  background: transparent;
-  color: inherit;
-  border-top-color: #f1f5f9;
+#preuve-sociale.social-proof-section .testimonial-card footer.testimonial-card__author {
+  background: transparent !important;
+  color: #111827 !important;
+  border-top: 1px solid #eef2f7 !important;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0;
 }
 
 #preuve-sociale.social-proof-section .testimonial-card cite.testimonial-author__name {
-  color: #111827;
+  color: #111827 !important;
+  font-style: normal;
 }
 
 #preuve-sociale.social-proof-section .testimonial-card .testimonial-author__role {
-  color: #6b7280;
+  color: #6b7280 !important;
+}
+
+#preuve-sociale.social-proof-section .testimonial-card .testimonial-card__avatar {
+  color: #4338ca !important;
+  background: linear-gradient(160deg, #f5f3ff 0%, #e0e7ff 55%, #eef2ff 100%) !important;
 }
 
 /* Spécificité renforcée pour la FAQ (évite conflits avec règles génériques) */

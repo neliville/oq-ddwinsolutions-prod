@@ -1,0 +1,120 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Témoignages homepage | Administration{% endblock %}
+
+{% block content %}
+<div class="w-full">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold mb-1">Témoignages homepage</h1>
+            <p class="text-muted-foreground mb-0">Gérer la preuve sociale affichée sur la page d’accueil (max. 2 cartes actives).</p>
+        </div>
+        <a href="{{ path('app_admin_homepage_testimonials_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline shrink-0">
+            <i data-lucide="plus" width="16" height="16"></i>
+            Nouveau témoignage
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="rounded-lg border border-border bg-card p-4">
+            <p class="text-sm text-muted-foreground m-0">Total</p>
+            <p class="text-2xl font-bold m-0 mt-1">{{ total }}</p>
+        </div>
+        <div class="rounded-lg border border-border bg-card p-4">
+            <p class="text-sm text-muted-foreground m-0">Actifs homepage</p>
+            <p class="text-2xl font-bold m-0 mt-1 text-primary">{{ activeCount }}</p>
+        </div>
+        <div class="rounded-lg border border-border bg-card p-4">
+            <p class="text-sm text-muted-foreground m-0">Aperçu live</p>
+            <a href="{{ path('app_home_index') }}#preuve-sociale" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline mt-2">
+                Voir la section
+                <i data-lucide="external-link" width="14" height="14"></i>
+            </a>
+        </div>
+    </div>
+
+    {% if testimonials|length > 0 %}
+    {% embed 'components/admin/list_view_shell.html.twig' with { storage_key: 'admin-homepage-testimonials', list_caption: 'Témoignages' } %}
+        {% block list_table %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm [&_tbody_tr:hover]:bg-accent">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 56px;">Ordre</th>
+                            <th>Nom</th>
+                            <th>Fonction · Entreprise</th>
+                            <th style="width: 72px;">Note</th>
+                            <th style="width: 88px;">Statut</th>
+                            <th>Citation</th>
+                            <th style="width: 160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for testimonial in testimonials %}
+                        <tr>
+                            <td><strong>{{ testimonial.displayOrder }}</strong></td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-xs font-semibold">{{ testimonial.displayInitials }}</span>
+                                    <span class="font-medium">{{ testimonial.fullName }}</span>
+                                </div>
+                            </td>
+                            <td><small class="text-muted-foreground">{{ testimonial.roleLine }}</small></td>
+                            <td>
+                                <span class="text-amber-500 tracking-wider" aria-label="{{ testimonial.rating }} sur 5">
+                                    {% for i in 1..testimonial.rating %}★{% endfor %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if testimonial.isActive %}
+                                    <span class="inline-flex items-center rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-semibold">Actif</span>
+                                {% else %}
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 text-xs font-semibold">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="line-clamp-2 max-w-md">{{ testimonial.quote }}</small>
+                            </td>
+                            <td>
+                                <div class="flex flex-wrap gap-1" role="group">
+                                    <a href="{{ path('app_admin_homepage_testimonials_edit', { id: testimonial.id }) }}"
+                                       class="inline-flex items-center justify-center border border-border text-muted-foreground px-2.5 py-1.5 text-sm rounded-md hover:bg-accent transition-colors no-underline"
+                                       title="Modifier">
+                                        <i data-lucide="edit" width="14" height="14"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_admin_homepage_testimonials_toggle', { id: testimonial.id }) }}" class="inline-flex">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_testimonial_' ~ testimonial.id) }}">
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center border border-border text-muted-foreground px-2.5 py-1.5 text-sm rounded-md hover:bg-accent transition-colors"
+                                                title="{{ testimonial.isActive ? 'Désactiver' : 'Activer' }}">
+                                            <i data-lucide="{{ testimonial.isActive ? 'eye-off' : 'eye' }}" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{{ path('app_admin_homepage_testimonials_delete', { id: testimonial.id }) }}" class="inline-flex"
+                                          onsubmit="return confirm('Supprimer ce témoignage ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_testimonial_' ~ testimonial.id) }}">
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center border border-destructive/40 text-destructive px-2.5 py-1.5 text-sm rounded-md hover:bg-destructive/5 transition-colors"
+                                                title="Supprimer">
+                                            <i data-lucide="trash-2" width="14" height="14"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+    {% else %}
+    <div class="rounded-lg border border-dashed border-border bg-muted/30 p-10 text-center">
+        <p class="text-muted-foreground mb-4">Aucun témoignage pour le moment.</p>
+        <a href="{{ path('app_admin_homepage_testimonials_new') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity no-underline">
+            Créer le premier témoignage
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
