@@ -85,8 +85,24 @@ jobs:
       - name: Vérifier le bundle Ishikawa
         run: test -f assets/react/controllers/IshikawaEditor.js
 
+      - name: Cache importmap vendor (assets/vendor)
+        uses: actions/cache@v4
+        with:
+          path: assets/vendor
+          key: importmap-vendor-${{ hashFiles('importmap.php', 'composer.lock') }}
+          restore-keys: |
+            importmap-vendor-
+
       - name: Importmap install
-        run: php bin/console importmap:install --env=prod --no-debug --no-interaction
+        run: |
+          for attempt in 1 2 3; do
+            if php bin/console importmap:install --env=prod --no-debug --no-interaction; then
+              exit 0
+            fi
+            echo "importmap:install failed (attempt ${attempt}/3), retry in 20s..."
+            sleep 20
+          done
+          exit 1
 
       - name: Tailwind build
         env:
