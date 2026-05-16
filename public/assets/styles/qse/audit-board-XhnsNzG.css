@@ -1,0 +1,285 @@
+/* Audit Management Board — premium layout */
+.audit-kpi-strip {
+  @media (max-width: 639px) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
+.audit-kpi-strip > * {
+  @media (max-width: 639px) {
+    flex: 0 0 min(72vw, 16rem);
+    scroll-snap-align: start;
+  }
+}
+
+.audit-kpi-card--glass {
+  background: linear-gradient(
+    145deg,
+    hsl(var(--card) / 0.95) 0%,
+    hsl(var(--muted) / 0.35) 100%
+  );
+  box-shadow:
+    0 1px 2px hsl(var(--foreground) / 0.04),
+    0 0 0 1px hsl(var(--border) / 0.5),
+    inset 0 1px 0 hsl(var(--background) / 0.6);
+}
+
+.audit-kpi-card--glass:hover {
+  box-shadow:
+    0 8px 24px hsl(var(--primary) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.12);
+}
+
+/* Chaque carte motion-card crée un stacking context : le menu doit monter au niveau du listitem */
+.audit-board__list > [role='listitem'] {
+  position: relative;
+  z-index: 1;
+}
+
+.audit-board__list > [role='listitem']:has(.dropdown-menu.show) {
+  z-index: 100;
+}
+
+.audit-card-row {
+  overflow: visible;
+}
+
+.audit-card-row .dropdown-menu.show {
+  z-index: 110;
+}
+
+.audit-actions-dropdown {
+  position: relative;
+}
+
+/* Menu « … » : contraste et cible tactile sur mobile */
+.audit-actions-trigger {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+@media (max-width: 639px) {
+  .audit-actions-trigger {
+    width: 3rem;
+    height: 3rem;
+    border-color: hsl(var(--border));
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    box-shadow:
+      0 1px 2px hsl(var(--foreground) / 0.06),
+      0 0 0 1px hsl(var(--border) / 0.9);
+  }
+
+  .audit-actions-trigger .icon,
+  .audit-actions-trigger svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2.25;
+  }
+}
+
+.audit-actions-menu__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.audit-actions-menu__item:hover,
+.audit-actions-menu__item:focus-visible {
+  background: hsl(var(--accent));
+  outline: none;
+}
+
+.audit-filters-bar input:focus-visible,
+.audit-filters-bar select:focus-visible {
+  outline: none;
+}
+
+.audit-card-row:focus-within {
+  ring-color: hsl(var(--primary) / 0.25);
+}
+
+.audit-board__list {
+  overflow: visible;
+}
+
+@media (max-width: 1023px) {
+  .audit-board__list > [role='listitem']:has(.dropdown-menu.show) {
+    z-index: 200;
+  }
+
+  .audit-card-row .dropdown-menu.show {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: 1rem !important;
+    top: auto !important;
+    transform: translateX(-50%);
+    width: min(100vw - 2rem, 20rem);
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 210 !important;
+  }
+}
+
+/* Timeline activités — grille aérée, nœuds détachés de la ligne */
+.audit-activity-timeline__list {
+  position: relative;
+  margin: 0;
+  padding: 0.5rem 0 0.5rem 0.25rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.audit-activity-timeline__list::before {
+  content: '';
+  position: absolute;
+  left: 1.125rem;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 2px;
+  border-radius: 1px;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--border) / 0.15) 0%,
+    hsl(var(--border) / 0.85) 12%,
+    hsl(var(--border) / 0.85) 88%,
+    hsl(var(--border) / 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+.audit-activity-timeline__item {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  column-gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .audit-activity-timeline__item {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: 1.5rem;
+  }
+
+  .audit-activity-timeline__list::before {
+    left: 1.25rem;
+  }
+}
+
+.audit-activity-timeline__track {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.375rem;
+  position: relative;
+  z-index: 1;
+}
+
+.audit-activity-timeline__node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 2px solid hsl(var(--background));
+  box-shadow:
+    0 0 0 1px hsl(var(--border) / 0.55),
+    0 1px 2px hsl(var(--foreground) / 0.04);
+}
+
+@media (min-width: 640px) {
+  .audit-activity-timeline__node {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+.audit-activity-timeline__node--success {
+  background: hsl(var(--emerald-500) / 0.12);
+  color: hsl(142 76% 36%);
+}
+
+.dark .audit-activity-timeline__node--success {
+  color: hsl(142 71% 55%);
+}
+
+.audit-activity-timeline__node--danger {
+  background: hsl(var(--destructive) / 0.12);
+  color: hsl(var(--destructive));
+}
+
+.audit-activity-timeline__node--warning {
+  background: hsl(38 92% 50% / 0.12);
+  color: hsl(32 95% 38%);
+}
+
+.dark .audit-activity-timeline__node--warning {
+  color: hsl(43 96% 56%);
+}
+
+.audit-activity-timeline__node--info {
+  background: hsl(199 89% 48% / 0.12);
+  color: hsl(200 98% 39%);
+}
+
+.dark .audit-activity-timeline__node--info {
+  color: hsl(199 89% 65%);
+}
+
+.audit-activity-timeline__node--neutral {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.audit-activity-timeline__card {
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border) / 0.65);
+  background: hsl(var(--card) / 0.55);
+  padding: 0.875rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .audit-activity-timeline__card {
+    padding: 1rem 1.125rem;
+  }
+}
+
+.audit-activity-timeline__item:hover .audit-activity-timeline__card {
+  border-color: hsl(var(--primary) / 0.22);
+  box-shadow: 0 4px 14px hsl(var(--foreground) / 0.04);
+}
+
+.audit-activity-timeline details summary {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-compliance-bar__fill,
+  .audit-card-row {
+    transition: none !important;
+  }
+}

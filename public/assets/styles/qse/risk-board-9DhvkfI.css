@@ -1,0 +1,163 @@
+/* Risk Control Center — premium layout */
+.risk-cockpit {
+  --risk-low: hsl(var(--sky-500) / 0.12);
+  --risk-medium: hsl(38 92% 50% / 0.12);
+  --risk-critical: hsl(350 65% 55% / 0.12);
+  --risk-controlled: hsl(142 55% 45% / 0.12);
+}
+
+.risk-kpi-strip {
+  @media (max-width: 639px) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
+.risk-kpi-strip > * {
+  @media (max-width: 639px) {
+    flex: 0 0 min(72vw, 16rem);
+    scroll-snap-align: start;
+  }
+}
+
+.risk-kpi-card--glass {
+  background: linear-gradient(
+    145deg,
+    hsl(var(--card) / 0.95) 0%,
+    hsl(var(--muted) / 0.35) 100%
+  );
+  box-shadow:
+    0 1px 2px hsl(var(--foreground) / 0.04),
+    0 0 0 1px hsl(var(--border) / 0.5),
+    inset 0 1px 0 hsl(var(--background) / 0.6);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.risk-kpi-card--glass:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 24px hsl(var(--primary) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.12);
+}
+
+.risk-hero {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card)) 45%,
+    hsl(var(--primary) / 0.06) 100%
+  );
+}
+
+.risk-hero__badge--pulse {
+  animation: risk-pulse 3s ease-in-out infinite;
+}
+
+@keyframes risk-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .risk-kpi-card--glass:hover {
+    transform: none;
+  }
+
+  .risk-hero__badge--pulse {
+    animation: none;
+  }
+}
+
+.risk-heatmap-preview__grid {
+  display: grid;
+  grid-template-columns: auto repeat(5, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.risk-heatmap-preview__cell {
+  aspect-ratio: 1;
+  min-height: 2rem;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.risk-heatmap-preview__cell:hover {
+  transform: scale(1.05);
+  z-index: 1;
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.08);
+}
+
+.risk-heatmap-preview__cell--low {
+  background: var(--risk-low);
+  border: 1px solid hsl(var(--sky-500) / 0.25);
+  color: hsl(var(--sky-700));
+}
+
+.dark .risk-heatmap-preview__cell--low {
+  color: hsl(var(--sky-400));
+}
+
+.risk-heatmap-preview__cell--medium {
+  background: var(--risk-medium);
+  border: 1px solid hsl(38 92% 50% / 0.3);
+  color: hsl(32 80% 35%);
+}
+
+.dark .risk-heatmap-preview__cell--medium {
+  color: hsl(38 90% 65%);
+}
+
+.risk-heatmap-preview__cell--high {
+  background: var(--risk-critical);
+  border: 1px solid hsl(350 65% 55% / 0.3);
+  color: hsl(350 55% 40%);
+}
+
+.dark .risk-heatmap-preview__cell--high {
+  color: hsl(350 70% 72%);
+}
+
+.risk-priority-panel__surface {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--card) / 0.98) 0%,
+    hsl(var(--muted) / 0.2) 100%
+  );
+  border: 1px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.04);
+}
+
+.risk-board__list > [role='listitem'] {
+  position: relative;
+  z-index: 1;
+}
+
+.risk-card-row {
+  overflow: visible;
+}
+
+.risk-filters-bar input:focus-visible,
+.risk-filters-bar select:focus-visible {
+  outline: none;
+}

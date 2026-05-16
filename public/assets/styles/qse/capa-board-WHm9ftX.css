@@ -1,0 +1,48 @@
+/* CAPA Management Board */
+.capa-kpi-strip {
+  @media (max-width: 639px) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
+.capa-kpi-strip > * {
+  @media (max-width: 639px) {
+    flex: 0 0 min(72vw, 16rem);
+    scroll-snap-align: start;
+  }
+}
+
+.capa-kpi-card--glass {
+  background: linear-gradient(
+    145deg,
+    hsl(var(--card) / 0.95) 0%,
+    hsl(var(--muted) / 0.35) 100%
+  );
+  box-shadow:
+    0 1px 2px hsl(var(--foreground) / 0.04),
+    0 0 0 1px hsl(var(--border) / 0.5),
+    inset 0 1px 0 hsl(var(--background) / 0.6);
+}
+
+.capa-kpi-card--glass:hover {
+  box-shadow:
+    0 8px 24px hsl(var(--primary) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.12);
+}
+
+.capa-attention-panel {
+  /* hérite du style audit-attention via classes partagées */
+}
+
+.capa-board__list .capa-card-row {
+  overflow: visible;
+}

@@ -1,0 +1,273 @@
+/* Champs date unifiés — wrapper + thème Flatpickr (design tokens) */
+
+.oq-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.oq-date-field__control {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.oq-date-field__icon {
+  position: absolute;
+  left: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+
+.oq-date-field__input {
+  flex: 1;
+  min-width: 0;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  padding-left: 2.5rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.04);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.oq-date-field__input:focus-visible {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.35);
+}
+
+.oq-date-field--compact .oq-date-field__input {
+  height: 2.25rem;
+  font-size: 0.8125rem;
+  padding-left: 2.25rem;
+}
+
+.oq-date-field--compact .oq-date-field__icon {
+  left: 0.5rem;
+}
+
+.oq-date-field--compact > label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+
+.eightd-form-group .oq-date-field {
+  margin-top: 0.25rem;
+}
+
+/* Input natif masqué quand Flatpickr altInput est actif */
+.oq-date-field--ready .oq-date-field__input[type='date'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.oq-date-field--ready .flatpickr-input.form-control,
+.oq-date-field--ready input.oq-date-field__input.form-control {
+  position: relative;
+  width: 100%;
+  height: 2.5rem;
+  clip: auto;
+  margin: 0;
+}
+
+.oq-date-field--compact.oq-date-field--ready .flatpickr-input.form-control,
+.oq-date-field--compact.oq-date-field--ready input.oq-date-field__input.form-control {
+  height: 2.25rem;
+}
+
+.oq-date-field--ready .flatpickr-input {
+  padding-left: 2.5rem;
+  padding-right: 0.75rem;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid hsl(var(--input));
+  background: hsl(var(--background));
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+}
+
+.oq-date-field--compact.oq-date-field--ready .flatpickr-input {
+  padding-left: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.8125rem;
+}
+
+.oq-date-field__input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Plage admin */
+.oq-date-range-field {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+.oq-date-range-field__addon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.75rem;
+  border: 1px solid hsl(var(--input));
+  border-right: 0;
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
+  background: hsl(var(--muted) / 0.35);
+  color: hsl(var(--muted-foreground));
+}
+
+.oq-date-range-field__input {
+  flex: 1;
+  min-width: 0;
+  height: 2.25rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
+  background: hsl(var(--background));
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+}
+
+.oq-date-range-field__input:focus-visible {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.35);
+}
+
+/* Thème calendrier Flatpickr */
+.flatpickr-calendar.flatpickr-oq {
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) + 2px);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow:
+    0 10px 38px hsl(var(--foreground) / 0.12),
+    0 0 0 1px hsl(var(--border) / 0.5);
+  font-family: inherit;
+}
+
+.flatpickr-oq .flatpickr-months {
+  background: hsl(var(--muted) / 0.25);
+  border-bottom: 1px solid hsl(var(--border) / 0.6);
+}
+
+.flatpickr-oq .flatpickr-months .flatpickr-month,
+.flatpickr-oq .flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-oq .flatpickr-current-month input.cur-year {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.flatpickr-oq .flatpickr-weekdays {
+  background: hsl(var(--muted) / 0.15);
+}
+
+.flatpickr-oq span.flatpickr-weekday {
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.flatpickr-oq .flatpickr-day {
+  color: hsl(var(--foreground));
+  border-radius: 0.375rem;
+}
+
+.flatpickr-oq .flatpickr-day:hover,
+.flatpickr-oq .flatpickr-day:focus {
+  background: hsl(var(--muted));
+  border-color: hsl(var(--muted));
+}
+
+.flatpickr-oq .flatpickr-day.today {
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.flatpickr-oq .flatpickr-day.selected,
+.flatpickr-oq .flatpickr-day.startRange,
+.flatpickr-oq .flatpickr-day.endRange,
+.flatpickr-oq .flatpickr-day.selected.inRange,
+.flatpickr-oq .flatpickr-day.startRange.inRange,
+.flatpickr-oq .flatpickr-day.endRange.inRange {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.flatpickr-oq .flatpickr-day.inRange {
+  background: hsl(var(--primary) / 0.12);
+  border-color: transparent;
+  box-shadow: -5px 0 0 hsl(var(--primary) / 0.12), 5px 0 0 hsl(var(--primary) / 0.12);
+}
+
+.flatpickr-oq .flatpickr-day.flatpickr-disabled,
+.flatpickr-oq .flatpickr-day.prevMonthDay,
+.flatpickr-oq .flatpickr-day.nextMonthDay {
+  color: hsl(var(--muted-foreground) / 0.65);
+}
+
+.flatpickr-oq .flatpickr-months .flatpickr-prev-month,
+.flatpickr-oq .flatpickr-months .flatpickr-next-month {
+  fill: hsl(var(--foreground));
+}
+
+.flatpickr-oq .flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-oq .flatpickr-months .flatpickr-next-month:hover {
+  fill: hsl(var(--primary));
+}
+
+.flatpickr-oq .flatpickr-presets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background: hsl(var(--muted) / 0.2);
+  border-bottom: 1px solid hsl(var(--border) / 0.6);
+}
+
+.flatpickr-oq .flatpickr-presets button {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.flatpickr-oq .flatpickr-presets button:hover {
+  background: hsl(var(--muted));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oq-date-field__input,
+  .oq-date-range-field__input {
+    transition: none;
+  }
+}

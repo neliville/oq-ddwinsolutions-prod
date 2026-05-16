@@ -1,0 +1,31 @@
+/* Aide contextuelle — panneaux inline / champ */
+.contextual-help--icon-trigger {
+    display: inline-flex;
+    max-width: 100%;
+}
+
+.contextual-help--wrap {
+    display: block;
+    max-width: 100%;
+}
+
+.contextual-help-panel--inline .font-semibold {
+    color: hsl(var(--foreground));
+}
+
+.contextual-help-panel--inline p {
+    color: hsl(var(--muted-foreground));
+}
+
+.contextual-help__icon-btn:focus-visible {
+    outline: none;
+}
+
+/* Sur tactile : le panneau icon reste visible quand ouvert (état géré par contextual-help + hover-card) */
+@media (hover: none), (pointer: coarse) {
+    .contextual-help--icon-trigger [data-slot='hover-card-content'][data-state='open'] {
+        pointer-events: auto;
+        visibility: visible;
+        opacity: 1;
+    }
+}

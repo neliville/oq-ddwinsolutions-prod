@@ -1,0 +1,87 @@
+/* Formulaire fiche CAPA — sans animations hover / flow */
+.capa-form-page .capa-form-section:focus-within {
+  border-color: hsl(var(--primary) / 0.25);
+}
+
+.capa-form-page .capa-form-section,
+.capa-form-page .capa-form-hero,
+.capa-form-page .capa-context-panel,
+.capa-form-page .capa-origin-quick-add {
+  transition: border-color 0.2s ease;
+}
+
+.capa-form-page .capa-form-section:hover,
+.capa-form-page .capa-form-hero:hover,
+.capa-form-page .capa-context-panel:hover {
+  transform: none;
+  box-shadow: inherit;
+}
+
+.capa-context-panel__timeline {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 2px solid hsl(var(--border) / 0.8);
+}
+
+.capa-context-panel__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding-bottom: 1rem;
+  padding-left: 0.75rem;
+}
+
+.capa-context-panel__step:last-child {
+  padding-bottom: 0;
+}
+
+.capa-context-panel__step::before {
+  content: '';
+  position: absolute;
+  left: -1.3125rem;
+  top: 0.35rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground) / 0.4);
+  border: 2px solid hsl(var(--card));
+}
+
+.capa-context-panel__step--done::before {
+  background: hsl(var(--primary));
+}
+
+.capa-context-panel__step-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.capa-context-panel__step-date {
+  font-size: 0.6875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.capa-save-action-bar--desktop {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.capa-origin-quick-add summary:hover {
+  background: hsl(var(--muted) / 0.25);
+}
+
+.capa-form-page [aria-invalid='true'] {
+  border-color: hsl(var(--destructive)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--destructive) / 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capa-form-page .capa-form-section,
+  .capa-form-page .capa-form-hero,
+  .capa-form-page .capa-context-panel {
+    transition: none;
+  }
+}

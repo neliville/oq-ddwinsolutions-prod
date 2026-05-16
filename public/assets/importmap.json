@@ -16,11 +16,11 @@
         "type": "js"
     },
     "\/assets\/stimulus_app_bootstrap.js": {
-        "path": "\/assets\/stimulus_app_bootstrap-sUWzL25.js",
+        "path": "\/assets\/stimulus_app_bootstrap-ukMGW9Z.js",
         "type": "js"
     },
     "\/assets\/@symfony\/stimulus-bundle\/controllers.js": {
-        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-ESk4XDX.js",
+        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-h92I9ZR.js",
         "type": "js"
     },
     "\/assets\/@symfony\/ux-live-component\/live_controller.js": {
@@ -39,6 +39,30 @@
         "path": "\/assets\/@symfony\/ux-turbo\/turbo_controller-8wQNi2p.js",
         "type": "js"
     },
+    "\/assets\/controllers\/pdca_charts_lazy_controller.js": {
+        "path": "\/assets\/controllers\/pdca_charts_lazy_controller-eGap-Et.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/interactions\/sidebar_interaction_controller.js": {
+        "path": "\/assets\/controllers\/interactions\/sidebar_interaction_controller-9_8NmII.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/reduced-motion.js": {
+        "path": "\/assets\/motion\/reduced-motion-_d9zw13.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/tokens.js": {
+        "path": "\/assets\/motion\/tokens-ksIZPux.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/interactions\/audit_save_pulse_controller.js": {
+        "path": "\/assets\/controllers\/interactions\/audit_save_pulse_controller-MP3ersb.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/interactions\/toast_controller.js": {
+        "path": "\/assets\/controllers\/interactions\/toast_controller-NPR35nM.js",
+        "type": "js"
+    },
     "\/assets\/controllers\/qse_audit_delete_controller.js": {
         "path": "\/assets\/controllers\/qse_audit_delete_controller-u9Yph42.js",
         "type": "js"
@@ -47,8 +71,16 @@
         "path": "\/assets\/controllers\/ux_dialog_controller-XlWi1s4.js",
         "type": "js"
     },
+    "\/assets\/controllers\/password_toggle_controller.js": {
+        "path": "\/assets\/controllers\/password_toggle_controller-nmQrOr5.js",
+        "type": "js"
+    },
     "\/assets\/controllers\/date_range_controller.js": {
-        "path": "\/assets\/controllers\/date_range_controller-FZOjwDR.js",
+        "path": "\/assets\/controllers\/date_range_controller-s8SQBHQ.js",
+        "type": "js"
+    },
+    "\/assets\/js\/flatpickr\/config.js": {
+        "path": "\/assets\/js\/flatpickr\/config--G7eeT5.js",
         "type": "js"
     },
     "\/assets\/controllers\/dashboard_preferences_layout_controller.js": {
@@ -56,7 +88,11 @@
         "type": "js"
     },
     "\/assets\/controllers\/post_save_cta_controller.js": {
-        "path": "\/assets\/controllers\/post_save_cta_controller-IoslkPj.js",
+        "path": "\/assets\/controllers\/post_save_cta_controller-Mmxnv2l.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/gsap.js": {
+        "path": "\/assets\/motion\/gsap-Ctg59p4.js",
         "type": "js"
     },
     "\/assets\/controllers\/alert_dialog_controller.js": {
@@ -68,19 +104,23 @@
         "type": "js"
     },
     "\/assets\/controllers\/tooltip_controller.js": {
-        "path": "\/assets\/controllers\/tooltip_controller-DI5uRvb.js",
+        "path": "\/assets\/controllers\/tooltip_controller-uQjYvG3.js",
         "type": "js"
     },
     "\/assets\/controllers\/dashboard_personalize_controller.js": {
         "path": "\/assets\/controllers\/dashboard_personalize_controller-S8mGLAL.js",
         "type": "js"
     },
-    "\/assets\/controllers\/users_bulk_actions_controller.js": {
-        "path": "\/assets\/controllers\/users_bulk_actions_controller-Yd2Vx2N.js",
+    "\/assets\/controllers\/chart_controller.js": {
+        "path": "\/assets\/controllers\/chart_controller-naJr69U.js",
         "type": "js"
     },
-    "\/assets\/controllers\/notifications_controller.js": {
-        "path": "\/assets\/controllers\/notifications_controller-hi7nvu0.js",
+    "\/assets\/controllers\/charts\/apex_adapter.js": {
+        "path": "\/assets\/controllers\/charts\/apex_adapter-5HP-YV7.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/users_bulk_actions_controller.js": {
+        "path": "\/assets\/controllers\/users_bulk_actions_controller-Yd2Vx2N.js",
         "type": "js"
     },
     "\/assets\/controllers\/admin_list_view_controller.js": {
@@ -91,24 +131,28 @@
         "path": "\/assets\/controllers\/guest_signup_prompt_controller-MwISZtT.js",
         "type": "js"
     },
-    "\/assets\/controllers\/admin_dashboard_charts_controller.js": {
-        "path": "\/assets\/controllers\/admin_dashboard_charts_controller-TZmgQiU.js",
-        "type": "js"
-    },
     "\/assets\/controllers\/filters_panel_controller.js": {
         "path": "\/assets\/controllers\/filters_panel_controller-j4kmW42.js",
         "type": "js"
     },
     "\/assets\/controllers\/tabs_controller.js": {
-        "path": "\/assets\/controllers\/tabs_controller-ujrMeR-.js",
+        "path": "\/assets\/controllers\/tabs_controller-tz4PeDD.js",
         "type": "js"
     },
     "\/assets\/controllers\/audit_cockpit_controller.js": {
-        "path": "\/assets\/controllers\/audit_cockpit_controller-gzYTMsm.js",
+        "path": "\/assets\/controllers\/audit_cockpit_controller-S0iutbE.js",
         "type": "js"
     },
     "\/assets\/controllers\/image_upload_controller.js": {
         "path": "\/assets\/controllers\/image_upload_controller-elR1PK0.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/risk_criticality_controller.js": {
+        "path": "\/assets\/controllers\/risk_criticality_controller-iArFdzA.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/date_field_controller.js": {
+        "path": "\/assets\/controllers\/date_field_controller-w6fVEif.js",
         "type": "js"
     },
     "\/assets\/controllers\/data_table_columns_controller.js": {
@@ -116,7 +160,7 @@
         "type": "js"
     },
     "\/assets\/controllers\/hover_card_controller.js": {
-        "path": "\/assets\/controllers\/hover_card_controller-dWSBses.js",
+        "path": "\/assets\/controllers\/hover_card_controller-jnyxD40.js",
         "type": "js"
     },
     "\/assets\/controllers\/ishikawa_controller.js": {
@@ -132,7 +176,7 @@
         "type": "js"
     },
     "\/assets\/controllers\/flash_toast_controller.js": {
-        "path": "\/assets\/controllers\/flash_toast_controller-3qLfk3A.js",
+        "path": "\/assets\/controllers\/flash_toast_controller-fEti4W8.js",
         "type": "js"
     },
     "\/assets\/controllers\/toggle_controller.js": {
@@ -155,8 +199,64 @@
         "path": "\/assets\/controllers\/app_modal_controller-XjPxpUB.js",
         "type": "js"
     },
-    "\/assets\/controllers\/analytics_charts_controller.js": {
-        "path": "\/assets\/controllers\/analytics_charts_controller-m-Kzbe4.js",
+    "\/assets\/controllers\/audit_form_progress_controller.js": {
+        "path": "\/assets\/controllers\/audit_form_progress_controller-ANzs8xD.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/audit_save_bar_controller.js": {
+        "path": "\/assets\/controllers\/audit_save_bar_controller-o1wlB5_.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/motion_hover_controller.js": {
+        "path": "\/assets\/controllers\/motion\/motion_hover_controller-EqgNZag.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/gsap_counter_controller.js": {
+        "path": "\/assets\/controllers\/motion\/gsap_counter_controller-Urwduex.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/presets.js": {
+        "path": "\/assets\/motion\/presets-nnZkkXm.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/gsap_reveal_controller.js": {
+        "path": "\/assets\/controllers\/motion\/gsap_reveal_controller-FIQ6oh_.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/gsap_stagger_controller.js": {
+        "path": "\/assets\/controllers\/motion\/gsap_stagger_controller-RuX3x8S.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/page_transition_controller.js": {
+        "path": "\/assets\/controllers\/motion\/page_transition_controller-3AOuA_V.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/runtime.js": {
+        "path": "\/assets\/motion\/runtime-BzSWzsk.js",
+        "type": "js"
+    },
+    "\/assets\/motion\/debug.js": {
+        "path": "\/assets\/motion\/debug-LOTc8sh.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/motion_premium_controller.js": {
+        "path": "\/assets\/controllers\/motion\/motion_premium_controller-j1PscuX.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/auto_animate_controller.js": {
+        "path": "\/assets\/controllers\/motion\/auto_animate_controller--rjW44_.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/motion\/home_entrance_controller.js": {
+        "path": "\/assets\/controllers\/motion\/home_entrance_controller-uBMK5Vt.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/contextual_help_controller.js": {
+        "path": "\/assets\/controllers\/contextual_help_controller-Yj4Mjli.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/capa_form_controller.js": {
+        "path": "\/assets\/controllers\/capa_form_controller-NL-Xzf0.js",
         "type": "js"
     },
     "\/assets\/controllers\/confirmation_modal_controller.js": {
@@ -165,6 +265,10 @@
     },
     "\/assets\/controllers\/ishikawa_drag_controller.js": {
         "path": "\/assets\/controllers\/ishikawa_drag_controller-gRqVFS9.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/qse_audit_board_controller.js": {
+        "path": "\/assets\/controllers\/qse_audit_board_controller-70Gwkep.js",
         "type": "js"
     },
     "\/assets\/controllers\/five_why_controller.js": {
@@ -176,11 +280,15 @@
         "type": "js"
     },
     "\/assets\/controllers\/delete_confirmation_controller.js": {
-        "path": "\/assets\/controllers\/delete_confirmation_controller--eluPFm.js",
+        "path": "\/assets\/controllers\/delete_confirmation_controller-0vuPMdn.js",
         "type": "js"
     },
     "\/assets\/controllers\/creations_hub_controller.js": {
         "path": "\/assets\/controllers\/creations_hub_controller-N1W6iaz.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/password_strength_controller.js": {
+        "path": "\/assets\/controllers\/password_strength_controller-3MgxfUi.js",
         "type": "js"
     },
     "\/assets\/controllers\/dropdown_basic_controller.js": {
@@ -262,6 +370,10 @@
     "flatpickr\/dist\/flatpickr.min.css": {
         "path": "\/assets\/vendor\/flatpickr\/dist\/flatpickr.min-9WGATzr.css",
         "type": "css"
+    },
+    "oq\/flatpickr-config": {
+        "path": "\/assets\/js\/flatpickr\/config--G7eeT5.js",
+        "type": "js"
     },
     "@stimulus-components\/checkbox-select-all": {
         "path": "\/assets\/vendor\/@stimulus-components\/checkbox-select-all\/checkbox-select-all.index-lux0QGE.js",
@@ -383,12 +495,56 @@
         "path": "\/assets\/vendor\/zustand\/vanilla\/shallow-UKRxuYd.js",
         "type": "js"
     },
-    "chart.js": {
-        "path": "\/assets\/vendor\/chart.js\/chart.js.index-sEndej9.js",
+    "gsap": {
+        "path": "\/assets\/vendor\/gsap\/gsap.index-4cLX5o_.js",
         "type": "js"
     },
-    "@kurkle\/color": {
-        "path": "\/assets\/vendor\/@kurkle\/color\/color.index-y5ZDtDB.js",
+    "motion": {
+        "path": "\/assets\/vendor\/motion\/motion.index-dyWNySf.js",
+        "type": "js"
+    },
+    "@formkit\/auto-animate": {
+        "path": "\/assets\/vendor\/@formkit\/auto-animate\/auto-animate.index-mKd9nla.js",
+        "type": "js"
+    },
+    "apexcharts": {
+        "path": "\/assets\/vendor\/apexcharts\/apexcharts.index-4fd6tSB.js",
+        "type": "js"
+    },
+    "framer-motion\/dom": {
+        "path": "\/assets\/vendor\/framer-motion\/dom-cjDw0H0.js",
+        "type": "js"
+    },
+    "motion-dom": {
+        "path": "\/assets\/vendor\/motion-dom\/motion-dom.index-ygKOrTy.js",
+        "type": "js"
+    },
+    "motion-utils": {
+        "path": "\/assets\/vendor\/motion-utils\/motion-utils.index-d8QSzKT.js",
+        "type": "js"
+    },
+    "gsap\/ScrollTrigger": {
+        "path": "\/assets\/vendor\/gsap\/ScrollTrigger-Pq5G-Ph.js",
+        "type": "js"
+    },
+    "gsap\/Flip": {
+        "path": "\/assets\/vendor\/gsap\/Flip-or8bSwX.js",
+        "type": "js"
+    },
+    "@floating-ui\/dom": {
+        "path": "\/assets\/vendor\/@floating-ui\/dom\/dom.index-hQxIcjy.js",
+        "type": "js"
+    },
+    "@floating-ui\/core": {
+        "path": "\/assets\/vendor\/@floating-ui\/core\/core.index-IiKqO-_.js",
+        "type": "js"
+    },
+    "@floating-ui\/utils": {
+        "path": "\/assets\/vendor\/@floating-ui\/utils\/utils.index-Ddlj3dy.js",
+        "type": "js"
+    },
+    "@floating-ui\/utils\/dom": {
+        "path": "\/assets\/vendor\/@floating-ui\/utils\/dom-s60yOPl.js",
         "type": "js"
     }
 }
