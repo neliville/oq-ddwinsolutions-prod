@@ -1,79 +1,64 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Bienvenue sur Outils-Qualité — Votre compte est créé !{% endblock %}
-{% block meta_description %}Votre compte Outils-Qualité a été créé avec succès. Connectez-vous pour accéder à vos outils QSE gratuits.{% endblock %}
+{% block meta_description %}Votre compte Outils-Qualité a été créé avec succès. Connectez-vous pour accéder à votre cockpit QSE.{% endblock %}
+{% block seo_robots %}noindex, follow{% endblock %}
 
-{% block content %}
-<main class="bienvenue-page" style="margin-top: 76px;">
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <div class="flex justify-center">
-            <div class="w-full md:max-w-xl lg:max-w-lg">
+{% block body %}
+{% embed 'auth/_layout.html.twig' with { auth_page_modifier: ' auth-page--register', brand_icon: 'party-popper' } %}
+    {% block brand_baseline %}
+        Votre compte est prêt. Connectez-vous pour accéder à votre cockpit QSE et à tous vos modules.
+    {% endblock %}
 
-                {# Card principale #}
-                <div class="rounded-lg bg-card shadow-sm text-center" data-aos="fade-up">
-                    <div class="p-12">
-                        <div class="inline-flex items-center justify-center bg-primary/10 text-primary rounded-xl p-3 mb-6">
-                            <i data-lucide="party-popper" width="32" height="32"></i>
-                        </div>
+    {% block auth_card_modifier %} auth-card--status{% endblock %}
 
-                        <h1 class="text-2xl font-bold mb-2">Bienvenue sur Outils-Qualité !</h1>
-                        <p class="text-muted-foreground mb-6">
-                            Votre compte est prêt. Un email de bienvenue vous a été envoyé —
-                            pensez à vérifier vos <strong>indésirables</strong> si vous ne le voyez pas.
-                        </p>
+    {% block form_panel %}
+        <twig:AuthSuccessState
+            icon="party-popper"
+            title="Bienvenue sur Outils-Qualité !"
+            lead="Votre compte est prêt. Un email de bienvenue vous a été envoyé — pensez à vérifier vos indésirables si vous ne le voyez pas."
+            :steps="[
+                'Connectez-vous avec l’email et le mot de passe choisis à l’inscription.',
+                'Explorez votre cockpit QSE : audits, CAPA, risques et outils d’analyse.',
+                'Exportez vos livrables en PDF, Word ou Excel, prêts pour vos revues.',
+            ]"
+            primaryHref="{{ path('app_login') }}"
+            primaryLabel="Se connecter et commencer"
+        />
 
-                        <a href="{{ path('app_login') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 text-lg rounded-md font-medium hover:opacity-90 transition-opacity no-underline w-full mb-3">
-                            <i data-lucide="log-in" width="18" height="18"></i>
-                            Se connecter et commencer
-                        </a>
-
-                        <p class="text-muted-foreground text-sm mb-0">
-                            Accès immédiat à tous vos outils QSE gratuits.
-                        </p>
+        <div class="mt-10 w-full">
+            <p class="text-center text-muted-foreground text-sm font-semibold uppercase mb-4 tracking-wide">Ce qui vous attend</p>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary border border-border/60">
+                    <div class="bg-primary/10 text-primary rounded-md p-2 shrink-0">
+                        <i data-lucide="git-branch" width="16" height="16" aria-hidden="true"></i>
                     </div>
+                    <span class="text-sm font-semibold text-foreground">Ishikawa 5M</span>
                 </div>
-
-                {# Aperçu des outils #}
-                <div class="mt-12" data-aos="fade-up" data-aos-delay="100">
-                    <p class="text-center text-muted-foreground text-sm font-semibold uppercase mb-3" style="letter-spacing: 0.06em;">Ce qui vous attend</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-1">
-                            <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary">
-                                <div class="bg-primary/10 text-primary rounded-md p-2 shrink-0">
-                                    <i data-lucide="git-branch" width="16" height="16"></i>
-                                </div>
-                                <span class="text-sm font-semibold text-foreground">Ishikawa 5M</span>
-                            </div>
-                        </div>
-                        <div class="col-span-1">
-                            <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary">
-                                <div class="bg-sky-100 text-sky-600 rounded-md p-2 shrink-0">
-                                    <i data-lucide="help-circle" width="16" height="16"></i>
-                                </div>
-                                <span class="text-sm font-semibold text-foreground">5 Pourquoi</span>
-                            </div>
-                        </div>
-                        <div class="col-span-1">
-                            <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary">
-                                <div class="bg-red-100 text-destructive rounded-md p-2 shrink-0">
-                                    <i data-lucide="alert-triangle" width="16" height="16"></i>
-                                </div>
-                                <span class="text-sm font-semibold text-foreground">AMDEC</span>
-                            </div>
-                        </div>
-                        <div class="col-span-1">
-                            <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary">
-                                <div class="bg-amber-100 text-amber-600 rounded-md p-2 shrink-0">
-                                    <i data-lucide="layers" width="16" height="16"></i>
-                                </div>
-                                <span class="text-sm font-semibold text-foreground">Méthode 8D</span>
-                            </div>
-                        </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary border border-border/60">
+                    <div class="bg-sky-100 text-sky-600 rounded-md p-2 shrink-0">
+                        <i data-lucide="help-circle" width="16" height="16" aria-hidden="true"></i>
                     </div>
+                    <span class="text-sm font-semibold text-foreground">5 Pourquoi</span>
                 </div>
-
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary border border-border/60">
+                    <div class="bg-red-100 text-destructive rounded-md p-2 shrink-0">
+                        <i data-lucide="alert-triangle" width="16" height="16" aria-hidden="true"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-foreground">AMDEC</span>
+                </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-secondary border border-border/60">
+                    <div class="bg-amber-100 text-amber-600 rounded-md p-2 shrink-0">
+                        <i data-lucide="layers" width="16" height="16" aria-hidden="true"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-foreground">Méthode 8D</span>
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    {% endblock %}
+
+    {% block info_panel %}
+        <twig:AuthFeaturePanel variant="register" />
+    {% endblock %}
+{% endembed %}
 {% endblock %}

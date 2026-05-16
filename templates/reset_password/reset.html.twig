@@ -1,44 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Définir un nouveau mot de passe - OUTILS-QUALITÉ{% endblock %}
-
 {% block meta_description %}Choisissez un nouveau mot de passe sécurisé pour votre compte OUTILS-QUALITÉ.{% endblock %}
-
 {% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'lock-keyhole' } only %}
+{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'lock-keyhole', resetForm: resetForm } only %}
     {% block brand_baseline %}
-        Dernière étape : définissez un mot de passe robuste pour sécuriser vos prochaines sessions.
+        Dernière étape : définissez un mot de passe robuste pour sécuriser l’accès à votre cockpit QSE.
     {% endblock %}
 
     {% block form_panel %}
         <header>
             <h1 class="auth-card__title">Nouveau mot de passe</h1>
             <p class="auth-card__subtitle">
-                Choisissez un mot de passe respectant les bonnes pratiques ci-contre. Il s’appliquera immédiatement.
+                Choisissez un mot de passe respectant les critères ci-dessous. Il s’appliquera immédiatement.
             </p>
         </header>
 
-        {{ form_start(resetForm, { attr: { class: 'auth-form' } }) }}
+        {{ form_start(resetForm, { attr: { class: 'auth-form space-y-4' } }) }}
             <div class="space-y-2">
-                {{ form_label(resetForm.plainPassword.first) }}
-                {{ form_widget(resetForm.plainPassword.first) }}
+                {{ form_label(resetForm.plainPassword.first, 'Nouveau mot de passe', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {% include 'auth/_password_field.html.twig' with {
+                    field: resetForm.plainPassword.first,
+                    strength: true,
+                    show_compromised: true,
+                } %}
                 {{ form_errors(resetForm.plainPassword.first) }}
-                <div class="auth-terms mt-2">
-                    <strong>Votre mot de passe doit contenir :</strong>
-                    <ul class="mt-2 mb-0 pl-4">
-                        <li>Au moins 8 caractères</li>
-                        <li>Une lettre majuscule et une minuscule</li>
-                        <li>Un chiffre</li>
-                        <li>Un mot de passe non compromis (vérification automatique)</li>
-                    </ul>
-                </div>
             </div>
 
             <div class="space-y-2">
-                {{ form_label(resetForm.plainPassword.second) }}
-                {{ form_widget(resetForm.plainPassword.second) }}
+                {{ form_label(resetForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {% include 'auth/_password_field.html.twig' with {
+                    field: resetForm.plainPassword.second,
+                    strength: false,
+                } %}
                 {{ form_errors(resetForm.plainPassword.second) }}
             </div>
 
@@ -55,28 +51,17 @@
     {% endblock %}
 
     {% block info_panel %}
-        {% include 'reset_password/_info_panel.html.twig' with {
-            title: 'Nos conseils sécurité',
-            subtitle: 'Protégez vos analyses et vos données en adoptant des réflexes simples.',
-            benefits: [
-                {
-                    icon: '🔑',
-                    heading: 'Longueur minimale',
-                    description: 'Utilisez au moins 8 caractères avec majuscules, minuscules et chiffres.',
-                },
-                {
-                    icon: '🧩',
-                    heading: 'Mots de passe uniques',
-                    description: 'Ne réutilisez jamais un mot de passe déjà employé sur un autre service.',
-                },
-                {
-                    icon: '🛡️',
-                    heading: 'Gestionnaire recommandé',
-                    description: 'Un gestionnaire de mots de passe fiable vous aide à stocker et générer des identifiants forts.',
-                },
-            ],
-            meta: 'Besoin d’assistance ? Écrivez-nous à <a class="text-white font-semibold no-underline hover:underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.',
-        } only %}
+        <twig:AuthFeaturePanel
+            variant="reset"
+            title="Nos conseils sécurité"
+            subtitle="Protégez vos analyses et vos données en adoptant des réflexes simples."
+            :benefits="[
+                { icon: 'key-round', heading: 'Longueur minimale', description: 'Au moins 8 caractères avec majuscules, minuscules et chiffres.' },
+                { icon: 'fingerprint', heading: 'Mots de passe uniques', description: 'Ne réutilisez jamais un mot de passe déjà employé ailleurs.' },
+                { icon: 'vault', heading: 'Gestionnaire recommandé', description: 'Un gestionnaire fiable vous aide à stocker des identifiants forts.' },
+            ]"
+            :trust="[]"
+        />
     {% endblock %}
 {% endembed %}
 {% endblock %}

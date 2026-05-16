@@ -1,16 +1,22 @@
-{# Enveloppe reset password — même structure que auth/_layout.html.twig #}
-<div class="auth-page auth-page--reset">
+{# Enveloppe split-screen premium : brand + carte formulaire / panneau marketing #}
+<div class="auth-page{{ auth_page_modifier|default('') }}">
     <div class="auth-page__container container">
         <div class="auth-page__brand">
             <div class="auth-brand">
                 <span class="auth-brand__icon" aria-hidden="true">
-                    <i data-lucide="{{ brand_icon|default('key') }}" width="24" height="24"></i>
+                    {% if brand_icon is defined and brand_icon %}
+                        <i data-lucide="{{ brand_icon }}" width="24" height="24"></i>
+                    {% else %}
+                        <i class="fas fa-chart-line"></i>
+                    {% endif %}
                 </span>
                 <span class="auth-brand__name">OUTILS-QUALITÉ</span>
             </div>
-            <p class="auth-page__baseline">
-                {% block brand_baseline %}{% endblock %}
-            </p>
+            {% if block('brand_baseline') is defined and block('brand_baseline')|trim is not empty %}
+                <p class="auth-page__baseline">
+                    {% block brand_baseline %}{% endblock %}
+                </p>
+            {% endif %}
         </div>
 
         {% block mobile_trust %}{% endblock %}

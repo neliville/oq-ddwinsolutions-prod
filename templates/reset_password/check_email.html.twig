@@ -1,97 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Email de réinitialisation envoyé - OUTILS-QUALITÉ{% endblock %}
-
 {% block meta_description %}Consultez votre messagerie pour finaliser la réinitialisation de votre mot de passe OUTILS-QUALITÉ.{% endblock %}
-
 {% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'mail-check' } only %}
+{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'mail-check', resetToken: resetToken } only %}
     {% block brand_baseline %}
-        Si votre adresse est enregistrée, un email vient de partir vers votre boîte de réception. Suivez les étapes ci-dessous pour retrouver l’accès à votre espace.
+        Si votre adresse est enregistrée, un email vient de partir. Suivez les étapes ci-dessous pour retrouver l’accès à votre cockpit QSE.
     {% endblock %}
 
     {% block auth_card_modifier %} auth-card--status{% endblock %}
     {% block form_panel_modifier %} reset-password-status-panel{% endblock %}
 
     {% block form_panel %}
-        <div class="reset-password-status">
-            <span class="reset-password-status__icon" aria-hidden="true">
-                <i data-lucide="mail-open" width="32" height="32"></i>
-            </span>
-
-            <h1 class="reset-password-status__title">Vérifiez votre messagerie</h1>
-
-            <p class="reset-password-status__lead">
-                Si une adresse correspond dans notre base, un email contenant un lien sécurisé vient d’être envoyé.
-                Ouvrez-le et cliquez sur le bouton de réinitialisation pour continuer.
-            </p>
-
-            <p class="reset-password-expiry">
-                <i data-lucide="clock" width="16" height="16" aria-hidden="true"></i>
-                Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
-            </p>
-
-            <ol class="reset-password-status__steps" aria-label="Prochaines étapes">
-                <li class="reset-password-status__step">
-                    <span class="reset-password-status__step-num" aria-hidden="true">1</span>
-                    <span>Ouvrez l’email envoyé par OUTILS-QUALITÉ (vérifiez les indésirables ou l’onglet Promotions).</span>
-                </li>
-                <li class="reset-password-status__step">
-                    <span class="reset-password-status__step-num" aria-hidden="true">2</span>
-                    <span>Cliquez sur le lien sécurisé pour accéder au formulaire de nouveau mot de passe.</span>
-                </li>
-                <li class="reset-password-status__step">
-                    <span class="reset-password-status__step-num" aria-hidden="true">3</span>
-                    <span>Choisissez un mot de passe robuste, puis connectez-vous à votre tableau de bord.</span>
-                </li>
-            </ol>
-
-            <p class="reset-password-tip">
-                <strong>Pas reçu l’email ?</strong>
-                Attendez quelques minutes, vérifiez les filtres anti-spam ou demandez un nouvel envoi. Pour toute difficulté :
-                <a href="mailto:support@outils-qualite.com" class="text-primary font-semibold no-underline hover:underline">support@outils-qualite.com</a>.
-            </p>
-
-            <div class="reset-password-status__actions">
-                <twig:Button as="a" href="{{ path('app_login') }}" variant="default" class="no-underline w-full sm:w-auto min-h-[44px] gap-2 justify-center">
-                    <i data-lucide="arrow-left" width="18" height="18" aria-hidden="true"></i>
-                    Retour à la connexion
-                </twig:Button>
-                <twig:Button as="a" href="{{ path('app_forgot_password_request') }}" variant="outline" class="no-underline w-full sm:w-auto min-h-[44px] gap-2 justify-center">
-                    <i data-lucide="refresh-cw" width="18" height="18" aria-hidden="true"></i>
-                    Renvoyer l’email
-                </twig:Button>
-            </div>
-        </div>
+        {% set expiry_message = 'Ce lien expire dans ' ~ (resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle')) %}
+        <twig:AuthSuccessState
+            icon="mail-open"
+            title="Vérifiez votre messagerie"
+            lead="Si une adresse correspond dans notre base, un email contenant un lien sécurisé vient d’être envoyé. Ouvrez-le et cliquez sur le bouton de réinitialisation pour continuer."
+            expiry="{{ expiry_message }}"
+            :steps="[
+                'Ouvrez l’email OUTILS-QUALITÉ (vérifiez indésirables et Promotions).',
+                'Cliquez sur le lien sécurisé pour accéder au formulaire de nouveau mot de passe.',
+                'Choisissez un mot de passe robuste, puis connectez-vous à votre cockpit QSE.',
+            ]"
+            tip="Pas reçu l’email ? Attendez quelques minutes, vérifiez les filtres anti-spam ou demandez un nouvel envoi. Besoin d’aide : support@outils-qualite.com."
+            primaryHref="{{ path('app_login') }}"
+            primaryLabel="Retour à la connexion"
+            secondaryHref="{{ path('app_forgot_password_request') }}"
+            secondaryLabel="Renvoyer l’email"
+        />
     {% endblock %}
 
     {% block info_panel %}
-        {% include 'reset_password/_info_panel.html.twig' with {
-            title: 'Que faire maintenant ?',
-            subtitle: 'Le processus est simple et sécurisé. Voici le déroulé complet de la réinitialisation.',
-            timeline_steps: [
-                {
-                    heading: 'Consulter votre boîte mail',
-                    text: 'Recherchez un message de OUTILS-QUALITÉ avec l’objet de réinitialisation de mot de passe.',
-                },
-                {
-                    heading: 'Activer le lien sécurisé',
-                    text: 'Le lien est à usage unique et limité dans le temps pour protéger votre compte.',
-                },
-                {
-                    heading: 'Définir votre nouveau mot de passe',
-                    text: 'Une fois validé, vous serez redirigé vers la page de connexion pour accéder à vos outils.',
-                },
-            ],
-            highlights: [
-                { value: '1&nbsp;h', label: 'validité du lien' },
-                { value: '100&nbsp;%', label: 'chiffré & conforme RGPD' },
-                { value: '24h/24', label: 'support par email' },
-            ],
-            meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Vos identifiants ne sont jamais communiqués par email.',
-        } only %}
+        <twig:AuthFeaturePanel variant="status" />
     {% endblock %}
 {% endembed %}
 {% endblock %}

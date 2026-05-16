@@ -1,0 +1,181 @@
+{# @prop variant 'login'|'register'|'reset'|'status' Preset marketing panneau droit #}
+{# @prop title string|null Surcharge titre #}
+{# @prop subtitle string|null Surcharge sous-titre #}
+{# @prop eyebrow string|null Badge au-dessus du titre #}
+{%- props
+    variant = 'login',
+    title = null,
+    subtitle = null,
+    eyebrow = null,
+    benefits = null,
+    stats = null,
+    trust = null,
+    timeline_steps = null,
+    highlights = null,
+    meta = null,
+-%}
+
+{% set presets = {
+    login: {
+        eyebrow: 'Cockpit QSE unifié',
+        title: 'Pourquoi se connecter ?',
+        subtitle: 'Ce n’est pas qu’un login : c’est l’accès à votre cockpit QSE — audits, CAPA, risques et exports reliés.',
+        benefits: [
+            { icon: 'layout-dashboard', heading: 'Cockpit QSE unifié', description: 'Audits ISO, CAPA et risques dans un même espace, avec suivi PDCA intégré.' },
+            { icon: 'save', heading: 'Sauvegarde automatique', description: 'Vos analyses et diagrammes sont enregistrés en continu, sans perte de travail.' },
+            { icon: 'file-output', heading: 'Exports audit-ready', description: 'PDF, Word et Excel prêts pour vos revues et dossiers de conformité.' },
+            { icon: 'shield-check', heading: 'Sécurité & conformité', description: 'Infrastructure conforme RGPD, hébergée en France, données chiffrées.' },
+        ],
+        stats: [
+            { value: '+15&nbsp;000', label: 'analyses générées' },
+            { value: '98&nbsp;%', label: 'satisfaction utilisateurs' },
+            { value: '24h/24', label: 'accès sécurisé' },
+        ],
+        trust: [
+            { icon: 'shield', label: 'Conforme RGPD' },
+            { icon: 'map-pin', label: 'Hébergement France' },
+            { icon: 'lock', label: 'Chiffrement TLS' },
+            { icon: 'headphones', label: 'Support prioritaire' },
+        ],
+        meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Vos données restent strictement confidentielles.',
+    },
+    register: {
+        eyebrow: 'Accès immédiat',
+        title: 'Ce que vous débloquez',
+        subtitle: 'Créez votre compte et accédez à une plateforme QSE pensée pour les équipes terrain et les responsables conformité.',
+        benefits: [
+            { icon: 'boxes', heading: 'Modules QSE intégrés', description: 'Audits, CAPA, risques, PDCA et outils d’analyse (Ishikawa, 5 Pourquoi, 8D…) en un seul espace.' },
+            { icon: 'users', heading: 'Collaboration équipe', description: 'Partagez vos analyses et pilotez vos actions correctives à plusieurs.' },
+            { icon: 'timer', heading: 'Gain de temps', description: 'Modèles prêts à l’emploi, exports en un clic, tableaux de bord clairs.' },
+            { icon: 'shield-check', heading: 'Confidentialité garantie', description: 'Hébergement français, conformité RGPD, sauvegardes et chiffrement.' },
+        ],
+        stats: [
+            { value: '5+', label: 'modules QSE reliés' },
+            { value: 'Illimité', label: 'sauvegardes & exports' },
+            { value: 'Support', label: 'prioritaire par email' },
+        ],
+        trust: [
+            { icon: 'shield', label: 'Conforme RGPD' },
+            { icon: 'map-pin', label: 'Hébergement France' },
+            { icon: 'zap', label: 'Prêt en quelques minutes' },
+        ],
+        meta: '<i data-lucide="mail" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Besoin d’aide ? <a class="text-white font-semibold no-underline hover:underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>',
+    },
+    reset: {
+        eyebrow: 'Sécurité & assistance',
+        title: 'Réinitialisation sécurisée',
+        subtitle: 'Nous protégeons vos données et vous aidons à retrouver l’accès à votre cockpit QSE en toute sérénité.',
+        benefits: [
+            { icon: 'clock', heading: 'Lien à usage unique', description: 'Chaque lien expire après 1 heure pour limiter les risques d’accès non autorisé.' },
+            { icon: 'lock-keyhole', heading: 'Protection renforcée', description: 'Mots de passe chiffrés, jamais stockés en clair. Gestionnaire de mots de passe recommandé.' },
+            { icon: 'mail-check', heading: 'Processus anti-énumération', description: 'Nous confirmons l’envoi sans révéler si l’adresse existe dans notre base.' },
+        ],
+        trust: [
+            { icon: 'shield', label: 'Conforme RGPD' },
+            { icon: 'lock', label: 'Chiffrement TLS' },
+            { icon: 'headphones', label: 'Support réactif' },
+        ],
+        meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Vos identifiants ne sont jamais partagés ni transmis à des tiers.',
+    },
+    status: {
+        eyebrow: 'Étapes suivantes',
+        title: 'Que faire maintenant ?',
+        subtitle: 'Le processus est simple et sécurisé. Voici le déroulé complet de la réinitialisation.',
+        timeline_steps: [
+            { heading: 'Consulter votre boîte mail', text: 'Recherchez un message OUTILS-QUALITÉ (vérifiez indésirables et Promotions).' },
+            { heading: 'Activer le lien sécurisé', text: 'Lien à usage unique, limité dans le temps pour protéger votre compte.' },
+            { heading: 'Définir votre nouveau mot de passe', text: 'Puis connectez-vous à votre cockpit QSE.' },
+        ],
+        highlights: [
+            { value: '1&nbsp;h', label: 'validité du lien' },
+            { value: '100&nbsp;%', label: 'chiffré & RGPD' },
+            { value: '24h/24', label: 'support email' },
+        ],
+        meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Vos identifiants ne sont jamais communiqués par email.',
+    },
+} %}
+
+{% set preset = presets[variant] ?? presets.login %}
+{% set panel_title = title ?? preset.title %}
+{% set panel_subtitle = subtitle ?? preset.subtitle %}
+{% set panel_eyebrow = eyebrow ?? preset.eyebrow|default(null) %}
+{% set panel_benefits = benefits ?? preset.benefits|default([]) %}
+{% set panel_stats = stats ?? preset.stats|default([]) %}
+{% set panel_trust = trust ?? preset.trust|default([]) %}
+{% set panel_timeline = timeline_steps ?? preset.timeline_steps|default([]) %}
+{% set panel_highlights = highlights ?? preset.highlights|default([]) %}
+{% set panel_meta = meta ?? preset.meta|default(null) %}
+
+<div class="relative auth-feature-panel auth-feature-panel--{{ variant }}">
+    {% if panel_eyebrow %}
+        <span class="auth-feature-panel__eyebrow">{{ panel_eyebrow }}</span>
+    {% endif %}
+
+    <h2 class="auth-info__title">{{ panel_title }}</h2>
+    <p class="auth-info__subtitle">{{ panel_subtitle }}</p>
+
+    {% if panel_timeline|length > 0 %}
+        <ol class="reset-password-timeline" aria-label="Étapes">
+            {% for step in panel_timeline %}
+                <li class="reset-password-timeline__item">
+                    <span class="reset-password-timeline__marker" aria-hidden="true">{{ loop.index }}</span>
+                    <div class="reset-password-timeline__content">
+                        <h3 class="reset-password-timeline__heading">{{ step.heading }}</h3>
+                        <p class="reset-password-timeline__text">{{ step.text }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% elseif panel_benefits|length > 0 %}
+        <ul class="auth-benefits">
+            {% for benefit in panel_benefits %}
+                <li class="auth-benefits__item">
+                    <span class="auth-benefits__icon" aria-hidden="true">
+                        <i data-lucide="{{ benefit.icon|default('check') }}" width="20" height="20"></i>
+                    </span>
+                    <div>
+                        <h3 class="auth-benefits__heading">{{ benefit.heading }}</h3>
+                        <p class="auth-benefits__description">{{ benefit.description|default('')|raw }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if panel_stats|length > 0 %}
+        <div class="auth-highlights mt-6">
+            {% for stat in panel_stats %}
+                <div class="auth-highlight">
+                    <span class="auth-highlight__value">{{ stat.value|raw }}</span>
+                    <span class="auth-highlight__label">{{ stat.label }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if panel_highlights|length > 0 %}
+        <div class="auth-highlights mt-6">
+            {% for highlight in panel_highlights %}
+                <div class="auth-highlight">
+                    <span class="auth-highlight__value">{{ highlight.value|raw }}</span>
+                    <span class="auth-highlight__label">{{ highlight.label }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if panel_trust|length > 0 %}
+        <div class="auth-trust-strip" role="list" aria-label="Garanties">
+            {% for badge in panel_trust %}
+                <span class="auth-trust-badge" role="listitem">
+                    <i data-lucide="{{ badge.icon }}" width="14" height="14" aria-hidden="true"></i>
+                    {{ badge.label }}
+                </span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if panel_meta %}
+        <p class="auth-meta mt-6">{{ panel_meta|raw }}</p>
+    {% endif %}
+</div>

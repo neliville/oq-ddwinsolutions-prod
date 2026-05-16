@@ -1,170 +1,97 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Inscription - OUTILS-QUALITÉ{% endblock %}
-
-{% block meta_description %}Créez votre compte gratuit pour accéder à tous nos outils d'analyse qualité et sauvegarder vos analyses.{% endblock %}
-
-{% block meta_keywords %}inscription, créer un compte, outils qualité, gratuit{% endblock %}
-
+{% block meta_description %}Créez votre compte gratuit pour accéder au cockpit QSE : audits, CAPA, risques et outils d'analyse.{% endblock %}
+{% block meta_keywords %}inscription, créer un compte, cockpit QSE, outils qualité{% endblock %}
 {% block og_title %}Inscription | OUTILS-QUALITÉ{% endblock %}
-
-{% block og_description %}Créez votre compte gratuit pour accéder à tous nos outils d'analyse qualité et sauvegarder vos analyses.{% endblock %}
-
+{% block og_description %}Créez votre compte pour accéder au cockpit QSE et sauvegarder vos analyses en illimité.{% endblock %}
 {% block seo_robots %}noindex, follow{% endblock %}
 
+{% set input_class = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50' %}
+
 {% block body %}
-<div class="auth-page auth-page--register">
-    <div class="auth-page__container container">
-        <div class="auth-page__brand">
-            <div class="auth-brand">
-                <span class="auth-brand__icon">
-                    <i data-lucide="user-plus" width="24" height="24" aria-hidden="true"></i>
-                </span>
-                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+{% embed 'auth/_layout.html.twig' with { auth_page_modifier: ' auth-page--register', brand_icon: 'user-plus' } %}
+    {% block brand_baseline %}
+        Rejoignez Outils-Qualité et accédez à votre cockpit QSE : audits, CAPA, risques et exports audit-ready.
+    {% endblock %}
+
+    {% block mobile_trust %}
+        <div class="auth-page__mobile-trust lg:hidden">
+            <div class="auth-trust-strip" role="list" aria-label="Garanties">
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="shield" width="14" height="14" aria-hidden="true"></i> RGPD</span>
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="map-pin" width="14" height="14" aria-hidden="true"></i> France</span>
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="zap" width="14" height="14" aria-hidden="true"></i> Accès rapide</span>
             </div>
-            <p class="auth-page__baseline">
-                Rejoignez la plateforme de référence pour structurer, analyser et partager vos démarches qualité en toute simplicité.
+        </div>
+    {% endblock %}
+
+    {% block form_panel %}
+        <header>
+            <h1 class="auth-card__title">Créer mon compte</h1>
+            <p class="auth-card__subtitle">
+                En moins d’une minute, accédez à votre cockpit QSE et sauvegardez vos analyses en illimité.
             </p>
-        </div>
+        </header>
 
-        <div class="auth-card">
-            <div class="lg:col-span-6 lg:order-1">
-                <section class="auth-card__panel auth-card__panel--form">
-                    <header>
-                        <h1 class="auth-card__title">Créer un compte</h1>
-                        <p class="auth-card__subtitle">
-                            En moins d’une minute, accédez à l’ensemble des outils OUTILS-QUALITÉ et sauvegardez vos analyses en illimité.
-                        </p>
-                    </header>
+        {{ form_start(registrationForm, {
+            attr: {
+                class: 'auth-form space-y-4',
+                novalidate: 'novalidate',
+            }
+        }) }}
 
-                    {{ form_start(registrationForm, {
-                        'attr': {
-                            'class': 'auth-form needs-validation',
-                            'novalidate': true
-                        }
-                    }) }}
-
-                        <div>
-                            {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.email, {
-                                'attr': {
-                                    'class': 'form-control' ~ (form_errors(registrationForm.email) ? ' is-invalid' : ''),
-                                    'placeholder': 'votre.email@exemple.com'
-                                }
-                            }) }}
-                            {{ form_errors(registrationForm.email) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.plainPassword.first, {
-                                'attr': {
-                                    'class': 'form-control' ~ (form_errors(registrationForm.plainPassword.first) ? ' is-invalid' : ''),
-                                    'placeholder': 'Choisissez un mot de passe sécurisé'
-                                }
-                            }) }}
-                            {{ form_errors(registrationForm.plainPassword.first) }}
-                            <div class="auth-terms mt-2">
-                                <strong>Votre mot de passe doit contenir :</strong>
-                                <ul class="mt-2 mb-0 pl-4">
-                                    <li>Au moins 8 caractères</li>
-                                    <li>Une lettre majuscule et une minuscule</li>
-                                    <li>Un chiffre ou un caractère spécial</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div>
-                            {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(registrationForm.plainPassword.second, {
-                                'attr': {
-                                    'class': 'form-control' ~ (form_errors(registrationForm.plainPassword.second) ? ' is-invalid' : ''),
-                                    'placeholder': 'Confirmez votre mot de passe'
-                                }
-                            }) }}
-                            {{ form_errors(registrationForm.plainPassword.second) }}
-                        </div>
-
-                        <div class="auth-terms">
-                            En créant un compte, vous acceptez nos
-                            <a href="/mentions-legales">mentions légales</a>
-                            et notre <a href="/politique-de-confidentialite">politique de confidentialité</a>.
-                        </div>
-
-                        <button class="auth-form__submit" type="submit">
-                            <i data-lucide="user-plus" width="20" height="20" aria-hidden="true"></i>
-                            Créer mon compte
-                        </button>
-                    {{ form_end(registrationForm) }}
-
-                    <div class="auth-card__footer">
-                        Déjà inscrit ?
-                        <a href="{{ path('app_login') }}">Se connecter</a>
-                    </div>
-                </section>
+            <div class="space-y-2">
+                {{ form_label(registrationForm.email, 'Adresse email', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {{ form_widget(registrationForm.email, {
+                    attr: {
+                        class: input_class ~ (form_errors(registrationForm.email) ? ' border-destructive' : ''),
+                        placeholder: 'votre.email@exemple.com',
+                        autocomplete: 'email',
+                    }
+                }) }}
+                {{ form_errors(registrationForm.email) }}
             </div>
 
-            <div class="lg:col-span-6 lg:order-2">
-                <section class="auth-card__panel auth-card__panel--info">
-                    <div class="relative">
-                        <h2 class="auth-info__title">Ce que vous débloquez</h2>
-                        <p class="auth-info__subtitle">
-                            Des outils professionnels prêts à l’emploi, une interface pensée pour les équipes qualité et un suivi continu de vos analyses.
-                        </p>
-
-                        <ul class="auth-benefits">
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">🧠</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Tous vos outils qualité</h3>
-                                    <p class="auth-benefits__description">Ishikawa, 5 Pourquoi, QQOQCCP, Pareto, AMDEC, 8D… accessibles en un seul espace.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">🤝</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Collaboration facilitée</h3>
-                                    <p class="auth-benefits__description">Sauvegardez, partagez et réutilisez vos analyses avec votre équipe en toute sécurité.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">📈</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Tableau de bord intelligent</h3>
-                                    <p class="auth-benefits__description">Suivez vos dernières créations, vos exports et vos partages depuis une interface claire.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">🛡️</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Confidentialité garantie</h3>
-                                    <p class="auth-benefits__description">Hébergement français, conformité RGPD, sauvegardes quotidiennes et chiffrement avancé.</p>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <div class="auth-highlights mt-6">
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">3&nbsp;min</span>
-                                <span class="auth-highlight__label">pour créer votre premier diagramme</span>
-                            </div>
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">Illimité</span>
-                                <span class="auth-highlight__label">enregistrements & exports</span>
-                            </div>
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">Support</span>
-                                <span class="auth-highlight__label">prioritaire par email</span>
-                            </div>
-                        </div>
-
-                        <p class="auth-meta mt-6">
-                            <i data-lucide="mail-open" width="16" height="16" class="mr-2" aria-hidden="true"></i>Besoin d'aide ? Écrivez-nous à support@outils-qualite.com.
-                        </p>
-                    </div>
-                </section>
+            <div class="space-y-2">
+                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {% include 'auth/_password_field.html.twig' with {
+                    field: registrationForm.plainPassword.first,
+                    strength: true,
+                    show_compromised: false,
+                } %}
+                {{ form_errors(registrationForm.plainPassword.first) }}
             </div>
+
+            <div class="space-y-2">
+                {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {% include 'auth/_password_field.html.twig' with {
+                    field: registrationForm.plainPassword.second,
+                    strength: false,
+                } %}
+                {{ form_errors(registrationForm.plainPassword.second) }}
+            </div>
+
+            <p class="auth-terms text-sm text-muted-foreground">
+                En créant un compte, vous acceptez nos
+                <a href="/mentions-legales" class="text-primary font-semibold no-underline hover:underline">mentions légales</a>
+                et notre <a href="/politique-de-confidentialite" class="text-primary font-semibold no-underline hover:underline">politique de confidentialité</a>.
+            </p>
+
+            <twig:Button type="submit" variant="default" class="w-full min-h-[44px] gap-2">
+                <i data-lucide="user-plus" width="18" height="18" aria-hidden="true"></i>
+                Créer mon compte
+            </twig:Button>
+
+        {{ form_end(registrationForm) }}
+
+        <div class="auth-card__footer">
+            Déjà inscrit ?
+            <a href="{{ path('app_login') }}">Se connecter</a>
         </div>
-    </div>
-</div>
+    {% endblock %}
+
+    {% block info_panel %}
+        <twig:AuthFeaturePanel variant="register" />
+    {% endblock %}
+{% endembed %}
 {% endblock %}

@@ -1,178 +1,128 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion - OUTILS-QUALITÉ{% endblock %}
-
-{% block meta_description %}Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.{% endblock %}
-
-{% block meta_keywords %}connexion, compte utilisateur, outils qualité, sauvegarde analyses{% endblock %}
-
+{% block meta_description %}Connectez-vous à votre cockpit QSE : audits, CAPA, risques et exports audit-ready.{% endblock %}
+{% block meta_keywords %}connexion, cockpit QSE, outils qualité, sauvegarde analyses{% endblock %}
 {% block og_title %}Connexion | OUTILS-QUALITÉ{% endblock %}
-
-{% block og_description %}Connectez-vous à votre compte pour accéder à vos outils qualité et sauvegarder vos analyses.{% endblock %}
-
+{% block og_description %}Connectez-vous à votre cockpit QSE pour piloter audits, CAPA, risques et exports.{% endblock %}
 {% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-<div class="auth-page auth-page--login">
-    <div class="auth-page__container container">
-        <div class="auth-page__brand">
-            <div class="auth-brand">
-                <span class="auth-brand__icon">
-                    <i class="fas fa-chart-line"></i>
-                </span>
-                <span class="auth-brand__name">OUTILS-QUALITÉ</span>
+{% embed 'auth/_layout.html.twig' with { auth_page_modifier: ' auth-page--login' } %}
+    {% block brand_baseline %}
+        Accédez à votre cockpit QSE : analyses sauvegardées, audits, CAPA et risques dans un espace sécurisé.
+    {% endblock %}
+
+    {% block mobile_trust %}
+        <div class="auth-page__mobile-trust lg:hidden" aria-hidden="false">
+            <div class="auth-trust-strip" role="list" aria-label="Garanties">
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="shield" width="14" height="14" aria-hidden="true"></i> RGPD</span>
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="map-pin" width="14" height="14" aria-hidden="true"></i> France</span>
+                <span class="auth-trust-badge" role="listitem"><i data-lucide="lock" width="14" height="14" aria-hidden="true"></i> TLS</span>
             </div>
-            <p class="auth-page__baseline">
-                Votre espace sécurisé pour piloter vos analyses qualité, suivre vos projets et retrouver toutes vos créations.
+        </div>
+    {% endblock %}
+
+    {% block form_panel %}
+        <header>
+            <h1 class="auth-card__title">Connexion</h1>
+            <p class="auth-card__subtitle">
+                Accédez à votre tableau de bord, vos audits ISO, CAPA, risques et exports personnalisés.
             </p>
-        </div>
+        </header>
 
-        <div class="auth-card">
-            <div class="lg:col-span-5 lg:order-1">
-                <section class="auth-card__panel auth-card__panel--form">
-                    <header>
-                        <h1 class="auth-card__title">Connexion</h1>
-                        <p class="auth-card__subtitle">
-                            Accédez instantanément à votre tableau de bord, vos historiques et vos exports personnalisés.
-                        </p>
-                    </header>
-
-                    {% if app.user %}
-                        <twig:Alert variant="success" class="mb-3 px-4 py-3 shadow-sm" role="alert">
-                            <twig:Alert:Description class="!text-current text-sm self-center">
-                                <strong>Vous êtes déjà connecté</strong> en tant que {{ app.user.userIdentifier }}.
-                                <div class="mt-2">
-                                    <twig:Button as="a" href="{{ path('app_logout') }}" variant="outline" size="sm" class="no-underline">Se déconnecter</twig:Button>
-                                </div>
-                            </twig:Alert:Description>
-                        </twig:Alert>
-                    {% else %}
-                        {% if error %}
-                            <twig:Alert variant="destructive" class="mb-3 px-4 py-3 shadow-sm" role="alert">
-                                <twig:Alert:Description class="!text-current text-sm self-center grow">
-                                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                                </twig:Alert:Description>
-                                <twig:Alert:Action>
-                                    <twig:Button variant="ghost" size="icon" type="button" class="text-current opacity-70 hover:opacity-100" onclick="this.closest('[data-slot=alert]').remove()" aria-label="Fermer le message">
-                                        <i data-lucide="x" width="16" height="16"></i>
-                                    </twig:Button>
-                                </twig:Alert:Action>
-                            </twig:Alert>
-                        {% endif %}
-
-                        <form method="post" data-turbo="false" class="auth-form space-y-4">
-                            <div class="space-y-2">
-                                <twig:Label for="username">Adresse email</twig:Label>
-                                <twig:Input
-                                    type="email"
-                                    value="{{ last_username }}"
-                                    name="_username"
-                                    id="username"
-                                    autocomplete="email"
-                                    required
-                                    autofocus
-                                    placeholder="votre.email@exemple.com"
-                                />
-                            </div>
-
-                            <div class="space-y-2">
-                                <twig:Label for="password">Mot de passe</twig:Label>
-                                <twig:Input
-                                    type="password"
-                                    name="_password"
-                                    id="password"
-                                    autocomplete="current-password"
-                                    required
-                                    placeholder="••••••••"
-                                />
-                            </div>
-
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                            <div class="auth-form__actions flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <div class="flex items-center gap-2">
-                                    <twig:Checkbox name="_remember_me" id="_remember_me" />
-                                    <twig:Label for="_remember_me" class="text-sm font-normal cursor-pointer">Se souvenir de moi</twig:Label>
-                                </div>
-                                <twig:Button as="a" href="{{ path('app_forgot_password_request') }}" variant="link" class="no-underline h-auto p-0 text-sm justify-start sm:justify-end">
-                                    Mot de passe oublié ?
-                                </twig:Button>
-                            </div>
-
-                            <twig:Button type="submit" variant="default" class="w-full">
-                                Se connecter
-                            </twig:Button>
-                        </form>
-
-                        <div class="auth-card__footer">
-                            Pas encore de compte ?
-                            <a href="{{ path('app_register') }}">Créer un compte</a>
-                        </div>
-                    {% endif %}
-                </section>
-            </div>
-
-            <div class="lg:col-span-7 lg:order-2">
-                <section class="auth-card__panel auth-card__panel--info">
-                    <div class="relative">
-                        <h2 class="auth-info__title">Pourquoi se connecter ?</h2>
-                        <p class="auth-info__subtitle">
-                            Centralisez vos outils qualité, restez synchronisé avec votre équipe et partagez vos analyses en toute sécurité.
-                        </p>
-
-                        <ul class="auth-benefits">
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">💾</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Sauvegarde automatique</h3>
-                                    <p class="auth-benefits__description">Retrouvez vos diagrammes Ishikawa, 5 Pourquoi, Pareto ou 8D à tout moment.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">📊</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Tableau de bord unifié</h3>
-                                    <p class="auth-benefits__description">Un aperçu clair de vos projets en cours, des exports réalisés et des partages actifs.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">📤</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Exports professionnels</h3>
-                                    <p class="auth-benefits__description">PDF, PNG ou JSON : distribuez vos analyses avec la charte graphique OUTILS-QUALITÉ.</p>
-                                </div>
-                            </li>
-                            <li class="auth-benefits__item">
-                                <span class="auth-benefits__icon">🔒</span>
-                                <div>
-                                    <h3 class="auth-benefits__heading">Sécurité & conformité</h3>
-                                    <p class="auth-benefits__description">Infrastructure conforme RGPD, hébergée en France, données chiffrées et sauvegardées.</p>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <div class="auth-highlights mt-6">
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">+15&nbsp;000</span>
-                                <span class="auth-highlight__label">analyses générées</span>
-                            </div>
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">98&nbsp;%</span>
-                                <span class="auth-highlight__label">d’utilisateurs satisfaits</span>
-                            </div>
-                            <div class="auth-highlight">
-                                <span class="auth-highlight__value">24h/24</span>
-                                <span class="auth-highlight__label">accès à vos exports</span>
-                            </div>
-                        </div>
-
-                        <p class="auth-meta mt-6">
-                            <i class="fas fa-shield-alt mr-2"></i>Conforme RGPD – Vos données restent strictement confidentielles.
-                        </p>
+        {% if app.user %}
+            <twig:Alert variant="success" class="mb-3 px-4 py-3 shadow-sm" role="alert">
+                <twig:Alert:Description class="!text-current text-sm self-center">
+                    <strong>Vous êtes déjà connecté</strong> en tant que {{ app.user.userIdentifier }}.
+                    <div class="mt-2">
+                        <twig:Button as="a" href="{{ path('app_logout') }}" variant="outline" size="sm" class="no-underline">Se déconnecter</twig:Button>
                     </div>
-                </section>
-            </div>
-        </div>
-    </div>
-</div>
+                </twig:Alert:Description>
+            </twig:Alert>
+        {% else %}
+            {% if error %}
+                <twig:Alert variant="destructive" class="mb-3 px-4 py-3 shadow-sm" role="alert">
+                    <twig:Alert:Description class="!text-current text-sm self-center grow">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </twig:Alert:Description>
+                    <twig:Alert:Action>
+                        <twig:Button variant="ghost" size="icon" type="button" class="text-current opacity-70 hover:opacity-100" onclick="this.closest('[data-slot=alert]').remove()" aria-label="Fermer le message">
+                            <i data-lucide="x" width="16" height="16"></i>
+                        </twig:Button>
+                    </twig:Alert:Action>
+                </twig:Alert>
+            {% endif %}
+
+            <form method="post" data-turbo="false" class="auth-form space-y-4">
+                <div class="space-y-2">
+                    <twig:Label for="username">Adresse email</twig:Label>
+                    <twig:Input
+                        type="email"
+                        value="{{ last_username }}"
+                        name="_username"
+                        id="username"
+                        autocomplete="email"
+                        required
+                        autofocus
+                        placeholder="votre.email@exemple.com"
+                    />
+                </div>
+
+                <div class="space-y-2">
+                    <twig:Label for="password">Mot de passe</twig:Label>
+                    <div class="auth-password-field" data-controller="password-toggle">
+                        <div class="auth-password-field__inner">
+                            <twig:Input
+                                type="password"
+                                name="_password"
+                                id="password"
+                                autocomplete="current-password"
+                                required
+                                placeholder="••••••••"
+                                class="pr-10"
+                                data-password-toggle-target="input"
+                            />
+                            <button
+                                type="button"
+                                class="auth-password-field__toggle"
+                                data-action="password-toggle#toggle"
+                                data-password-toggle-target="toggle"
+                                aria-pressed="false"
+                                aria-label="Afficher le mot de passe"
+                            >
+                                <i data-lucide="eye" width="18" height="18" data-password-toggle-target="iconShow" aria-hidden="true"></i>
+                                <i data-lucide="eye-off" width="18" height="18" class="hidden" data-password-toggle-target="iconHide" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="auth-form__actions flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex items-center gap-2">
+                        <twig:Checkbox name="_remember_me" id="_remember_me" />
+                        <twig:Label for="_remember_me" class="text-sm font-normal cursor-pointer">Se souvenir de moi</twig:Label>
+                    </div>
+                    <twig:Button as="a" href="{{ path('app_forgot_password_request') }}" variant="link" class="no-underline h-auto p-0 text-sm justify-start sm:justify-end">
+                        Mot de passe oublié ?
+                    </twig:Button>
+                </div>
+
+                <twig:Button type="submit" variant="default" class="w-full min-h-[44px]">
+                    Se connecter
+                </twig:Button>
+                <p class="auth-card__footer auth-card__footer--inline !mt-4 mb-0">
+                    Pas encore de compte ?
+                    <a href="{{ path('app_register') }}">Créer mon compte</a>
+                </p>
+            </form>
+        {% endif %}
+    {% endblock %}
+
+    {% block info_panel %}
+        <twig:AuthFeaturePanel variant="login" />
+    {% endblock %}
+{% endembed %}
 {% endblock %}

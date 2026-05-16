@@ -1,15 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Mot de passe oublié - OUTILS-QUALITÉ{% endblock %}
-
 {% block meta_description %}Réinitialisez votre mot de passe OUTILS-QUALITÉ en recevant un lien sécurisé par email.{% endblock %}
-
 {% block seo_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'key-round' } only %}
+{% embed 'reset_password/_shell.html.twig' with { brand_icon: 'key-round', requestForm: requestForm } only %}
     {% block brand_baseline %}
-        Un lien sécurisé vous permet de définir un nouveau mot de passe et de retrouver l’accès à vos analyses en toute sérénité.
+        Un lien sécurisé vous permet de définir un nouveau mot de passe et de retrouver l’accès à votre cockpit QSE.
     {% endblock %}
 
     {% block form_panel %}
@@ -33,10 +31,10 @@
             </twig:Alert>
         {% endfor %}
 
-        {{ form_start(requestForm, { attr: { class: 'auth-form' } }) }}
+        {{ form_start(requestForm, { attr: { class: 'auth-form space-y-4' } }) }}
             <div class="space-y-2">
-                {{ form_label(requestForm.email) }}
-                {{ form_widget(requestForm.email) }}
+                {{ form_label(requestForm.email, 'Adresse email', {'label_attr': {'class': 'text-sm font-medium leading-none text-foreground'}}) }}
+                {{ form_widget(requestForm.email, { attr: { class: 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm', placeholder: 'votre.email@exemple.com', autocomplete: 'email' } }) }}
                 {{ form_errors(requestForm.email) }}
             </div>
 
@@ -57,28 +55,7 @@
     {% endblock %}
 
     {% block info_panel %}
-        {% include 'reset_password/_info_panel.html.twig' with {
-            title: 'Sécurité et assistance',
-            subtitle: 'Notre équipe met tout en œuvre pour protéger vos données et vous aider à reprendre le contrôle rapidement.',
-            benefits: [
-                {
-                    icon: '🕒',
-                    heading: 'Lien temporaire',
-                    description: 'Chaque lien est valable 60 minutes afin de garantir la confidentialité de votre compte.',
-                },
-                {
-                    icon: '🔐',
-                    heading: 'Protection renforcée',
-                    description: 'Les mots de passe sont chiffrés et ne sont jamais stockés en clair. Nous recommandons l’utilisation d’un gestionnaire de mots de passe.',
-                },
-                {
-                    icon: '💬',
-                    heading: 'Support réactif',
-                    description: 'Besoin d’aide ? Contactez-nous à <a class="text-white font-semibold no-underline hover:underline" href="mailto:support@outils-qualite.com">support@outils-qualite.com</a>.',
-                },
-            ],
-            meta: '<i data-lucide="shield-check" width="16" height="16" class="inline mr-2 align-text-bottom" aria-hidden="true"></i>Conforme RGPD – Vos identifiants ne sont jamais partagés ni transmis à des tiers.',
-        } only %}
+        <twig:AuthFeaturePanel variant="reset" />
     {% endblock %}
 {% endembed %}
 {% endblock %}
