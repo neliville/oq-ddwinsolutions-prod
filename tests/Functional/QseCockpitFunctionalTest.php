@@ -171,7 +171,7 @@ class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
         $this->client->request('POST', '/dashboard/qse/risque/new?origin=onboarding', [
             '_token' => $csrf,
             'identified_risk' => 'Risque onboarding test',
-            'risk_category' => 'quality',
+            'risk_category' => 'Q',
             'status' => 'identifie',
         ]);
 
@@ -201,7 +201,7 @@ class QseCockpitFunctionalTest extends WebTestCaseWithDatabase
         $this->client->request('POST', '/dashboard/qse/risque/new', [
             '_token' => $csrf,
             'identified_risk' => 'Risque standard test',
-            'risk_category' => 'quality',
+            'risk_category' => 'Q',
             'status' => 'identifie',
         ]);
 

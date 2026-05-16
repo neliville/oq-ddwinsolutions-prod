@@ -16,7 +16,18 @@ final class QsePdcaControllerTest extends WebTestCaseWithDatabase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Cockpit PDCA');
-        $this->assertSelectorTextContains('body', 'CAPA en retard');
+        $this->assertSelectorTextContains('body', 'Score QHSE');
+        $this->assertSelectorTextContains('body', 'À traiter aujourd’hui');
+        $this->assertSelectorTextContains('body', 'Cycle PDCA');
+        $this->assertSelectorTextContains('body', 'Activité récente');
         $this->assertSelectorExists('a[href*="qse/capa"]');
+        $this->assertSelectorExists('.pdca-phase-card__surface');
+        $this->assertSelectorExists('.pdca-priority-panel');
+        $content = (string) $this->client->getResponse()->getContent();
+        $priorityPos = strpos($content, 'pdca-priority-panel');
+        $phasesPos = strpos($content, 'pdca-phases-heading');
+        $this->assertNotFalse($priorityPos);
+        $this->assertNotFalse($phasesPos);
+        $this->assertGreaterThan($phasesPos, $priorityPos, '« À traiter aujourd’hui » doit apparaître sous le cycle PDCA.');
     }
 }

@@ -56,7 +56,7 @@ final class OnboardingActivationRegressionTest extends WebTestCaseWithDatabase
         $this->client->request('POST', '/dashboard/qse/risque/new?origin=onboarding', [
             '_token' => $csrf,
             'identified_risk' => 'Risque onboarding e2e',
-            'risk_category' => 'quality',
+            'risk_category' => 'Q',
             'status' => 'identifie',
         ]);
         $this->assertResponseRedirects();

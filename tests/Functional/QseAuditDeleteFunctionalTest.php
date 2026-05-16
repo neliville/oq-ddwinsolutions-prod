@@ -105,7 +105,7 @@ final class QseAuditDeleteFunctionalTest extends WebTestCaseWithDatabase
         $this->assertResponseIsSuccessful();
         $this->assertCount(1, $crawler->filter('[data-action="click->qse-audit-delete#open"]'));
         $content = (string) $this->client->getResponse()->getContent();
-        $this->assertStringContainsString('Vos audits QSE', $content);
+        $this->assertStringContainsString('Audit Management Board', $content);
         $this->assertStringContainsString('fixed top-[50%] left-[50%]', $content, 'Le dialogue de suppression doit reprendre le positionnement centré des autres dialogs.');
         $this->assertStringNotContainsString('&amp;#x20;', $content, 'Le libellé d’audit ne doit pas être doublement encodé dans les attributs du bouton de suppression.');
         $this->assertStringContainsString('submit->qse-audit-delete#submit', $content, 'Le formulaire de suppression doit être intercepté côté Stimulus.');

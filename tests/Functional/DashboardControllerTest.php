@@ -110,6 +110,25 @@ class DashboardControllerTest extends WebTestCaseWithDatabase
         $this->assertSelectorTextContains('body', 'Pilotage :');
     }
 
+    public function testDashboardSidebarRendersContextualHelp(): void
+    {
+        $user = $this->createDashboardUser('test-dashboard-help-' . uniqid() . '@example.com');
+        /** @var UserPreferencesRepository $prefsRepo */
+        $prefsRepo = $this->entityManager->getRepository(UserPreferences::class);
+        $prefs = $prefsRepo->getOrCreateForUser($user);
+        $prefs->setProfileOnboardingCompleted(true);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/dashboard');
+
+        $this->assertResponseIsSuccessful();
+        $crawler = $this->client->getCrawler();
+        self::assertGreaterThan(0, $crawler->filter('[data-controller="hover-card"]')->count());
+        self::assertGreaterThan(0, $crawler->filter('.sidebar-item[data-slot="hover-card-trigger"]')->count());
+        self::assertSelectorTextContains('body', 'Audits ISO');
+    }
+
     public function testDashboardShowsActivationOnboardingWizardForEligibleUser(): void
     {
         $user = $this->createDashboardUser('test-dashboard-onb-' . uniqid() . '@example.com');

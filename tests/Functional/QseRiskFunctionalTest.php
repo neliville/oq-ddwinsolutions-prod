@@ -29,13 +29,17 @@ final class QseRiskFunctionalTest extends WebTestCaseWithDatabase
             'severity' => '3',
             'probability' => '3',
             'detection' => '2',
-            'risk_level' => '',
             'existing_actions' => '',
             'responsible' => '',
             'status' => 'sous_surveillance',
         ]);
         $this->assertResponseIsSuccessful();
-        self::assertStringContainsString('Un risque critique doit être lié', (string) $this->client->getResponse()->getContent());
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertTrue(
+            str_contains($html, 'Un risque critique doit')
+            || str_contains($html, 'risque&#x20;critique&#x20;doit'),
+            'Le message de validation CAPA obligatoire doit être visible (flash toast ou formulaire).',
+        );
     }
 
     public function testRiskShowLinksCapa(): void
