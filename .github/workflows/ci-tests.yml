@@ -54,6 +54,16 @@ jobs:
           ###> symfony/messenger ###
           MESSENGER_TRANSPORT_DSN=in-memory://
           ###< symfony/messenger ###
+          ###> mautic / download (containers Symfony en tests) ###
+          MAUTIC_URL=
+          MAUTIC_USER=
+          MAUTIC_PASSWORD=
+          MAUTIC_FORM_NEWSLETTER_ID=0
+          MAUTIC_FORM_DOWNLOAD_5M_ID=0
+          DOWNLOAD_SECRET=ci_secret_for_tests_only
+          DOWNLOAD_BASE_PATH=/tmp
+          DOWNLOAD_AUTHORIZE_API_KEY=
+          ###< mautic / download ###
           EOF
 
       - name: Install dependencies (Tailwind + Asset Mapper via composer compile-assets)
@@ -115,6 +125,14 @@ jobs:
           ###> symfony/messenger ###
           MESSENGER_TRANSPORT_DSN=in-memory://
           ###< symfony/messenger ###
+          MAUTIC_URL=
+          MAUTIC_USER=
+          MAUTIC_PASSWORD=
+          MAUTIC_FORM_NEWSLETTER_ID=0
+          MAUTIC_FORM_DOWNLOAD_5M_ID=0
+          DOWNLOAD_SECRET=ci_secret_for_tests_only
+          DOWNLOAD_BASE_PATH=/tmp
+          DOWNLOAD_AUTHORIZE_API_KEY=
           EOF
 
       - name: Install dependencies (Tailwind + Asset Mapper via composer compile-assets)

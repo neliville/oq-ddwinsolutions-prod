@@ -1,5 +1,5 @@
 # Précompile public/assets/ (importmap + Tailwind + asset-map) et pousse le résultat sur la branche courante.
-# Le message de commit contient [skip ci] pour ne pas relancer la CI en boucle (public/assets/ est en paths-ignore).
+# Le message de commit contient [skip ci] pour limiter les relances en boucle.
 name: Précompiler public/assets et commit
 
 on:
@@ -18,24 +18,23 @@ on:
       - 'composer.json'
       - 'config/packages/**'
       - '.github/workflows/compile-public-assets.yml'
-    paths-ignore:
-      - 'public/assets/**'
-
-permissions:
-  contents: write
+      - '!public/assets/**'
 
 concurrency:
   group: compile-public-assets-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   compile-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -63,6 +62,14 @@ jobs:
           APP_EMAIL=compile@localhost
           MAILER_DSN=null://null
           MESSENGER_TRANSPORT_DSN=in-memory://
+          MAUTIC_URL=
+          MAUTIC_USER=
+          MAUTIC_PASSWORD=
+          MAUTIC_FORM_NEWSLETTER_ID=0
+          MAUTIC_FORM_DOWNLOAD_5M_ID=0
+          DOWNLOAD_SECRET=ci_compile_assets_only
+          DOWNLOAD_BASE_PATH=/tmp
+          DOWNLOAD_AUTHORIZE_API_KEY=
           EOF
 
       - name: Composer (prod, sans scripts auto)
@@ -85,7 +92,13 @@ jobs:
           php bin/console asset-map:compile --env=prod --no-debug --no-interaction
 
       - name: Commit public/assets si changements
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'chore(assets): précompilation importmap/tailwind/asset-map [skip ci]'
-          file_pattern: 'public/assets/**'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- public/assets; then
+            echo "Aucun changement dans public/assets — rien à committer."
+            exit 0
+          fi
+          git add public/assets/
+          git commit -m "chore(assets): précompilation importmap/tailwind/asset-map [skip ci]"
+          git push
