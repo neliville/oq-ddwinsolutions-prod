@@ -40,8 +40,8 @@ final class AdminPhase2TrackingTest extends WebTestCaseWithDatabase
         $this->assertResponseIsSuccessful();
         $this->assertGreaterThan(
             0,
-            $crawler->filter('main#main-content.w-full.max-w-full.overflow-x-hidden')->count(),
-            'Le conteneur principal doit borner le débordement horizontal.'
+            $crawler->filter('.flex.min-h-screen.w-full.max-w-full.overflow-x-hidden')->count(),
+            'Le shell admin doit borner le débordement horizontal.'
         );
         $this->assertGreaterThan(
             0,

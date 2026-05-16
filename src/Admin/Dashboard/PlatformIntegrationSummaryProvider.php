@@ -15,7 +15,7 @@ final class PlatformIntegrationSummaryProvider
 {
     public function __construct(
         private readonly MauticClient $mauticClient,
-        private readonly string $mauticUrl,
+        private readonly ?string $mauticUrl,
         private readonly ?string $brevoApiKey,
         private readonly Connection $connection,
     ) {
@@ -33,7 +33,7 @@ final class PlatformIntegrationSummaryProvider
      */
     public function summarize(): array
     {
-        $mauticConfigured = '' !== trim($this->mauticUrl);
+        $mauticConfigured = '' !== trim($this->mauticUrl ?? '');
         $mauticReachable = null;
         $mauticDetail = $mauticConfigured
             ? 'URL Mautic configurée.'

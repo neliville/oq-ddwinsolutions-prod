@@ -64,6 +64,6 @@ final class QseAuditIso14001ChapterOrderingFunctionalTest extends WebTestCaseWit
             str_contains($html, $chapters[0])
             || str_contains($html, htmlspecialchars($chapters[0], \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')),
         );
-        self::assertMatchesRegularExpression('/name="eval\[\d+\]\[score\]"/', $html);
+        self::assertMatchesRegularExpression('/name="eval\[\d+\]\[verdict\]"/', $html);
     }
 }

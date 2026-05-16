@@ -108,7 +108,7 @@ final class QseAuditReferentialRequirementsFunctionalTest extends WebTestCaseWit
         $html = (string) $this->client->getResponse()->getContent();
 
         self::assertStringNotContainsString('Aucune exigence n’est chargée pour ce référentiel', $html);
-        self::assertMatchesRegularExpression('/name="eval\[\d+\]\[score\]"/', $html);
+        self::assertMatchesRegularExpression('/name="eval\[\d+\]\[verdict\]"/', $html);
         self::assertTrue(
             str_contains($html, $chapters[0])
             || str_contains($html, htmlspecialchars($chapters[0], \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')),
