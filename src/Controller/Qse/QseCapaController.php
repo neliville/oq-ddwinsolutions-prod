@@ -8,6 +8,7 @@ use App\Entity\Qse\CAPAAction;
 use App\Entity\Qse\CapaOrigin;
 use App\Entity\User;
 use App\Qse\Enum\CapaStatus;
+use App\Qse\Enum\CapaType;
 use App\Qse\Service\CapaWorkflowValidator;
 use App\Repository\Qse\CAPAActionRepository;
 use App\Repository\Qse\CapaOriginRepository;
@@ -38,9 +39,7 @@ final class QseCapaController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->render('qse/capa/index.html.twig', [
-            'capas' => $this->capaRepository->findByOwner($user),
-        ]);
+        return $this->render('qse/capa/index.html.twig');
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -67,6 +66,14 @@ final class QseCapaController extends AbstractController
             $due = $request->request->getString('due_at');
             $capa->setDueAt($due !== '' ? new \DateTimeImmutable($due) : null);
             $capa->setClosureProof($request->request->getString('closure_proof') ?: null);
+            $capaTypeRaw = $request->request->getString('capa_type');
+            if ($capaTypeRaw !== '' && ($capaType = CapaType::tryFrom($capaTypeRaw)) !== null) {
+                $capa->setCapaType($capaType);
+            }
+            $priorityRaw = $request->request->getString('priority');
+            if (\in_array($priorityRaw, ['haute', 'moyenne', 'basse'], true)) {
+                $capa->setPriority($priorityRaw);
+            }
             $capa->setUpdatedAt(new \DateTimeImmutable());
 
             $originId = $request->request->getInt('origin_id');

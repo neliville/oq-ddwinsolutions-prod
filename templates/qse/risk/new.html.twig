@@ -1,70 +1,45 @@
 {% extends 'base_with_sidebar.html.twig' %}
 
-{% block title %}Nouveau risque | OUTILS-QUALITÉ{% endblock %}
+{% block title %}Créer un risque | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-lg mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-6">Nouveau risque</h1>
-    <form method="post" class="space-y-4">
-        <input type="hidden" name="_token" value="{{ csrf_token('qse_risk_new') }}">
-        <div>
-            <label class="block text-sm font-medium mb-1">Risque identifié</label>
-            <input name="identified_risk" required value="{{ last.identified_risk|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+{% set onboarding_origin = form.origin.vars.data|default(app.request.query.get('origin')) %}
+<div class="risk-cockpit risk-form-page motion-premium w-full max-w-5xl mx-auto px-4 py-6 sm:py-8 pb-28 lg:pb-8">
+    <twig:RiskFormHero :onboardingOrigin="onboarding_origin == 'onboarding' ? 'onboarding' : null" />
+
+    {{ form_start(form, {
+        attr: {
+            id: 'risk-create-form',
+            class: 'space-y-6',
+            novalidate: 'novalidate',
+        },
+    }) }}
+        <div class="sr-only">
+            <input type="hidden" name="_token" value="{{ csrf_token('qse_risk_new') }}">
+            {{ form_widget(form.action) }}
+            {{ form_widget(form.origin) }}
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Description</label>
-            <textarea name="description" rows="3" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">{{ last.description|default('') }}</textarea>
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Processus</label>
-            <input name="concerned_process" value="{{ last.concerned_process|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Catégorie</label>
-            <select name="risk_category" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                {% for c in ['Q','S','E','compliance','customer','supplier'] %}
-                    <option value="{{ c }}" {{ (last.risk_category|default('Q')) == c ? 'selected' : '' }}>{{ c }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-            <div>
-                <label class="block text-xs mb-1">Gravité</label>
-                <input name="severity" type="number" min="1" max="10" value="{{ last.severity|default('') }}" class="w-full rounded-md border border-input px-2 py-2 text-sm">
+
+        <div
+            class="grid grid-cols-1 lg:grid-cols-12 gap-6"
+            data-controller="risk-criticality"
+            data-risk-criticality-medium-threshold-value="{{ constant('App\\Qse\\Service\\RiskCriticalityCalculator::MEDIUM_SCORE_THRESHOLD') }}"
+            data-risk-criticality-critical-threshold-value="{{ constant('App\\Qse\\Service\\RiskCriticalityCalculator::CRITICAL_SCORE_THRESHOLD') }}"
+            data-gsap-reveal
+        >
+            <div class="lg:col-span-8 space-y-6">
+                {% include 'qse/risk/_form_sections.html.twig' %}
             </div>
-            <div>
-                <label class="block text-xs mb-1">Probabilité</label>
-                <input name="probability" type="number" min="1" max="10" value="{{ last.probability|default('') }}" class="w-full rounded-md border border-input px-2 py-2 text-sm">
-            </div>
-            <div>
-                <label class="block text-xs mb-1">Détection</label>
-                <input name="detection" type="number" min="1" max="10" value="{{ last.detection|default('') }}" class="w-full rounded-md border border-input px-2 py-2 text-sm">
+
+            <div class="lg:col-span-4" data-gsap-reveal-item>
+                <twig:RiskCriticalityPanel :calculator="calculator" />
             </div>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Niveau (ex. critical)</label>
-            <input name="risk_level" value="{{ last.risk_level|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Actions existantes</label>
-            <textarea name="existing_actions" rows="2" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">{{ last.existing_actions|default('') }}</textarea>
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Responsable</label>
-            <input name="responsible" value="{{ last.responsible|default('') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Statut</label>
-            <select name="status" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                <option value="identifie">Identifié</option>
-                <option value="en_analyse">En analyse</option>
-                <option value="maitrise">Maîtrisé</option>
-                <option value="sous_surveillance">Sous surveillance (risque critique : CAPA liée obligatoire)</option>
-                <option value="critique">Critique</option>
-                <option value="cloture">Clôturé</option>
-            </select>
-        </div>
-        <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold">Créer</button>
-    </form>
+    {{ form_end(form, { render_rest: false }) }}
+
+    <twig:RiskSaveActionBar
+        formId="risk-create-form"
+        :cancelUrl="path('app_qse_risk_index')"
+    />
 </div>
 {% endblock %}

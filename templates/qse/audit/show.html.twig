@@ -81,13 +81,13 @@
                         </div>
                         <div class="flex flex-wrap gap-1.5" role="toolbar" aria-label="Filtres verdict">
                             <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-primary bg-primary text-primary-foreground" data-audit-cockpit-target="filterBtn" data-filter="all" data-action="audit-cockpit#filter">Tous</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="not_evaluated" data-action="audit-cockpit#filter">Non évalué</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="conform" data-action="audit-cockpit#filter">Conforme</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="observation" data-action="audit-cockpit#filter">Obs.</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="to_review" data-action="audit-cockpit#filter">À revoir</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="minor_nc" data-action="audit-cockpit#filter">NC min.</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="major_nc" data-action="audit-cockpit#filter">NC maj.</button>
-                            <button type="button" class="px-2.5 py-1 rounded-md text-xs border border-border bg-background" data-audit-cockpit-target="filterBtn" data-filter="not_applicable" data-action="audit-cockpit#filter">N/A</button>
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'not_evaluated', label: 'Non évalué', help_id: 'help.audit.verdict.not_evaluated' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'conform', label: 'Conforme', help_id: 'help.audit.verdict.conform' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'observation', label: 'Obs.', help_id: 'help.audit.verdict.observation' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'to_review', label: 'À revoir', help_id: 'help.audit.verdict.to_review' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'minor_nc', label: 'NC min.', help_id: 'help.audit.verdict.minor_nc' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'major_nc', label: 'NC maj.', help_id: 'help.audit.verdict.major_nc' } %}
+                            {% include 'components/audit_verdict_filter_button.html.twig' with { filter: 'not_applicable', label: 'N/A', help_id: 'help.audit.verdict.not_applicable' } %}
                         </div>
                     </twig:Card:Content>
                 </twig:Card>

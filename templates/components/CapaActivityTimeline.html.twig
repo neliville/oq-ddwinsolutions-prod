@@ -1,0 +1,52 @@
+{# @prop items list<App\Qse\Dto\ActivityItem> #}
+{%- props items = [] -%}
+{% if items is not empty %}
+<section class="capa-activity-timeline mt-10 audit-activity-timeline" aria-labelledby="capa-timeline-heading" data-controller="gsap-reveal">
+    <header class="mb-5">
+        <h2 id="capa-timeline-heading" class="text-lg font-semibold text-foreground m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:activity" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Activités récentes
+        </h2>
+        <p class="text-sm text-muted-foreground m-0 mt-1.5 max-w-2xl leading-relaxed">
+            Dernières mises à jour sur vos actions correctives et préventives.
+        </p>
+    </header>
+    <ol class="audit-activity-timeline__list" role="list">
+        {% for item in items %}
+            {% set toneClass = {
+                success: 'audit-activity-timeline__node--success',
+                danger: 'audit-activity-timeline__node--danger',
+                warning: 'audit-activity-timeline__node--warning',
+                info: 'audit-activity-timeline__node--info',
+                neutral: 'audit-activity-timeline__node--neutral',
+                emerald: 'audit-activity-timeline__node--success',
+                sky: 'audit-activity-timeline__node--info',
+            }[item.tone] ?? 'audit-activity-timeline__node--neutral' %}
+            <li class="audit-activity-timeline__item" role="listitem">
+                <div class="audit-activity-timeline__track" aria-hidden="true">
+                    <span class="audit-activity-timeline__node {{ toneClass }}">
+                        <twig:ux:icon name="{{ item.icon }}" class="size-4 shrink-0" />
+                    </span>
+                </div>
+                <article class="audit-activity-timeline__card min-w-0">
+                    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        <h3 class="m-0 text-sm font-semibold text-foreground leading-snug">{{ item.label }}</h3>
+                        <time class="text-xs font-medium text-muted-foreground tabular-nums shrink-0" datetime="{{ item.occurredAt|date('c') }}">
+                            {{ item.occurredAt|date('d/m/Y H:i') }}
+                        </time>
+                    </div>
+                    {% if item.description %}
+                        <p class="m-0 mt-2 text-sm text-muted-foreground leading-relaxed">
+                            {% if item.routeName %}
+                                <a href="{{ path(item.routeName, item.routeParams) }}" class="app-inline-link font-medium">{{ item.description }}</a>
+                            {% else %}
+                                {{ item.description }}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </article>
+            </li>
+        {% endfor %}
+    </ol>
+</section>
+{% endif %}

@@ -1,0 +1,23 @@
+{# @prop kpis App\Qse\Risk\ViewModel\RiskBoardKpis #}
+{%- props kpis -%}
+<section
+    class="risk-kpi-strip grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 mb-6"
+    aria-label="Indicateurs risques"
+    data-controller="gsap-stagger"
+>
+    <twig:KpiStatCard label="Risques ouverts" :value="kpis.openRisks" tone="sky" helpId="help.kpi.risk.open" class="risk-kpi-card risk-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:folder-open" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="Risques critiques" :value="kpis.criticalRisks" tone="destructive" helpId="help.kpi.risk.critical" class="risk-kpi-card risk-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:shield-alert" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="En traitement" :value="kpis.inTreatment" tone="amber" helpId="help.kpi.risk.in_treatment" class="risk-kpi-card risk-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:activity" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="Clos ce mois" :value="kpis.closedThisMonth" tone="emerald" helpId="help.kpi.risk.closed_month" class="risk-kpi-card risk-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:circle-check" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+</section>

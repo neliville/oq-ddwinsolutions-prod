@@ -4,49 +4,36 @@
 
 {% block content %}
 {% set onboarding_origin = app.request.query.get('origin') %}
-<div class="w-full max-w-lg mx-auto px-4 py-6">
-    <a href="{{ path('app_qse_audit_pick_standard', onboarding_origin == 'onboarding' ? { origin: 'onboarding' } : {}) }}" class="text-sm app-inline-link app-inline-link--muted">← Autre référentiel</a>
-    <h1 class="text-2xl font-bold mt-2 mb-1">Nouvel audit</h1>
-    <p class="text-sm text-muted-foreground mb-6">Référentiel : <strong>{{ standard.name }}</strong></p>
-    <form method="post" class="space-y-4">
+{% set pickStandardParams = onboarding_origin == 'onboarding' ? { origin: 'onboarding' } : {} %}
+<div class="audit-cockpit audit-form-page motion-premium w-full max-w-5xl mx-auto px-4 py-6 sm:py-8 pb-28 lg:pb-8">
+    <twig:AuditFormHero :standard="standard" :onboardingOrigin="onboarding_origin == 'onboarding' ? 'onboarding' : null" />
+
+    <form
+        method="post"
+        id="audit-create-form"
+        class="space-y-6"
+        data-controller="audit-form-progress"
+        novalidate
+    >
         <input type="hidden" name="_token" value="{{ csrf_token('qse_audit_new') }}">
         <input type="hidden" name="audit_standard_id" value="{{ standard.id }}">
         {% if onboarding_origin == 'onboarding' %}
             <input type="hidden" name="origin" value="onboarding">
         {% endif %}
-        <div>
-            <label class="block text-sm font-medium mb-1" for="companyName">Entreprise</label>
-            <input id="companyName" name="companyName" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" data-gsap-reveal>
+            <div class="lg:col-span-8 space-y-6 order-1">
+                {% include 'qse/audit/_form_sections.html.twig' %}
+            </div>
+            <div class="lg:col-span-4 order-2" data-gsap-reveal-item>
+                {% include 'qse/audit/_aside_helper.html.twig' with { standard: standard } only %}
+            </div>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="concernedSite">Site</label>
-            <input id="concernedSite" name="concernedSite" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Optionnel">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="mainAuditor">Auditeur principal</label>
-            <input id="mainAuditor" name="mainAuditor" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="auditedAt">Date de l’audit</label>
-            <input id="auditedAt" name="auditedAt" type="date" value="{{ 'now'|date('Y-m-d') }}" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="concernedProcess">Processus concerné</label>
-            <input id="concernedProcess" name="concernedProcess" type="text" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Optionnel">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="scope">Périmètre</label>
-            <textarea id="scope" name="scope" rows="2" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Optionnel"></textarea>
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="objective">Objectif</label>
-            <textarea id="objective" name="objective" rows="2" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Optionnel"></textarea>
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1" for="auditVersion">Version du rapport</label>
-            <input id="auditVersion" name="auditVersion" type="text" value="1.0" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-        </div>
-        <button type="submit" class="w-full sm:w-auto bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold text-sm">Créer</button>
     </form>
+
+    <twig:AuditNewSaveActionBar
+        formId="audit-create-form"
+        :cancelUrl="path('app_qse_audit_pick_standard', pickStandardParams)"
+    />
 </div>
 {% endblock %}

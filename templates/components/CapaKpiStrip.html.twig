@@ -1,0 +1,31 @@
+{# @prop kpis App\Qse\Capa\ViewModel\CapaBoardKpis #}
+{%- props kpis -%}
+<section
+    class="capa-kpi-strip grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4 mb-8"
+    aria-label="Indicateurs CAPA"
+    data-controller="gsap-stagger"
+>
+    <twig:KpiStatCard label="Total CAPA" :value="kpis.totalCapas" tone="default" helpId="help.kpi.capa.total" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:list-todo" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="Ouvertes" :value="kpis.openCapas" tone="sky" helpId="help.kpi.capa.open" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:folder-open" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="En retard" :value="kpis.overdue" tone="destructive" helpId="help.kpi.capa.overdue" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:alarm-clock" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="À valider" :value="kpis.awaitingValidation" tone="amber" helpId="help.kpi.capa.awaiting_validation" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:clipboard-check" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="Vérif. en attente" :value="kpis.awaitingVerification" tone="default" helpId="help.kpi.capa.awaiting_verification" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:shield-check" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="Échéance 7 j." :value="kpis.dueNext7Days" tone="emerald" helpId="help.kpi.capa.due_7d" class="capa-kpi-card capa-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:calendar-clock" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+</section>

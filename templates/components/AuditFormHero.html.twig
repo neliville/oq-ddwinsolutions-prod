@@ -1,0 +1,75 @@
+{# @prop standard App\Entity\Qse\AuditStandard #}
+{# @prop onboardingOrigin string|null #}
+{%- props standard, onboardingOrigin = null -%}
+{% set stdCode = standard.code|default('') %}
+{% set stdMeta = {
+    'iso_9001':  { subtitle: 'Management de la qualité', focus: 'Qualité produits & services', icon: 'lucide:badge-check', accent: 'sky' },
+    'iso_14001': { subtitle: 'Management environnemental', focus: 'Impact environnemental', icon: 'lucide:leaf', accent: 'emerald' },
+    'iso_45001': { subtitle: 'Santé & sécurité au travail', focus: 'Sécurité des collaborateurs', icon: 'lucide:hard-hat', accent: 'amber' },
+}[stdCode]|default({ subtitle: standard.description|default(''), focus: 'Conformité', icon: 'lucide:shield-check', accent: 'primary' }) %}
+{% set pickStandardParams = onboardingOrigin == 'onboarding' ? { origin: 'onboarding' } : {} %}
+<section
+    class="audit-form-hero audit-form-hero--accent-{{ stdMeta.accent }} rounded-2xl border border-border/80 p-5 sm:p-6 lg:p-8 shadow-sm ring-1 ring-border/40 mb-6"
+    aria-labelledby="audit-form-hero-heading"
+    data-gsap-reveal-item
+>
+    <nav class="mb-4 text-xs text-muted-foreground" aria-label="Fil d'Ariane">
+        <ol class="flex flex-wrap items-center gap-1.5 m-0 p-0 list-none">
+            <li>
+                <a href="{{ path('app_qse_audit_index') }}" class="app-inline-link app-inline-link--muted no-underline hover:text-foreground">Audit ISO</a>
+            </li>
+            <li aria-hidden="true" class="opacity-50">/</li>
+            <li class="font-medium text-foreground" aria-current="page">Nouveau audit</li>
+        </ol>
+    </nav>
+
+    <div class="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+        <div class="min-w-0 flex-1 flex gap-4 sm:gap-5">
+            <div class="hidden sm:flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20" aria-hidden="true">
+                <twig:ux:icon name="{{ stdMeta.icon }}" class="size-7" />
+            </div>
+            <div class="min-w-0">
+                <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary mb-2">Audit ISO</p>
+                <h1 id="audit-form-hero-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">
+                    Nouvel audit
+                </h1>
+                <p class="text-muted-foreground text-sm sm:text-base mt-3 mb-0 max-w-2xl leading-relaxed">
+                    Référentiel : <strong class="text-foreground font-semibold">{{ standard.name }}</strong>
+                    {% if stdMeta.subtitle %} — {{ stdMeta.subtitle }}{% endif %}
+                </p>
+                <div class="flex flex-wrap gap-2 mt-4" role="list" aria-label="Référentiel et pilotage QSE">
+                    <twig:Badge variant="secondary" class="font-normal">{{ standard.code|upper|replace({'_': ' '}) }}</twig:Badge>
+                    {% if standard.version %}
+                        <twig:Badge variant="outline" class="font-normal">v{{ standard.version }}</twig:Badge>
+                    {% endif %}
+                    <twig:Badge variant="outline" class="font-normal">{{ stdMeta.focus }}</twig:Badge>
+                    <twig:Badge as="a" href="{{ path('app_qse_pdca_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">PDCA</twig:Badge>
+                    <twig:Badge as="a" href="{{ path('app_qse_capa_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">CAPA</twig:Badge>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full xl:w-auto xl:max-w-xs shrink-0">
+            <div class="audit-form-hero__info-glass rounded-xl border border-border/60 p-4 space-y-3">
+                <ul class="m-0 p-0 list-none space-y-2.5 text-sm">
+                    <li class="flex items-center gap-2.5 text-foreground">
+                        <twig:ux:icon name="lucide:clock-3" class="size-4 text-primary shrink-0" aria-hidden="true" />
+                        <span><span class="font-medium">Temps estimé :</span> 2 min</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 text-foreground">
+                        <twig:ux:icon name="lucide:zap" class="size-4 text-primary shrink-0" aria-hidden="true" />
+                        <span><span class="font-medium">Création</span> immédiate</span>
+                    </li>
+                    <li class="flex items-center gap-2.5 text-foreground">
+                        <twig:ux:icon name="lucide:shield-check" class="size-4 text-primary shrink-0" aria-hidden="true" />
+                        <span>Saisie guidée, sans perte de contexte</span>
+                    </li>
+                </ul>
+                <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard', pickStandardParams) }}" variant="outline" size="sm" class="w-full no-underline">
+                    <twig:ux:icon name="lucide:arrow-left" class="size-4 mr-1.5" aria-hidden="true" />
+                    Choisir un autre référentiel
+                </twig:Button>
+            </div>
+        </div>
+    </div>
+</section>

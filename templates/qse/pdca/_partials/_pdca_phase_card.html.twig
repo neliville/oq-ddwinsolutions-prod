@@ -1,0 +1,70 @@
+{# Carte phase PDCA — paramètres : phase, phaseNum, title, description, icon, score, statusLabel, statusTone, rows #}
+{% set accentIcon = {
+    'plan': 'bg-sky-500/12 text-sky-700 dark:text-sky-300',
+    'do': 'bg-teal-500/12 text-teal-700 dark:text-teal-300',
+    'check': 'bg-violet-500/12 text-violet-700 dark:text-violet-300',
+    'act': 'bg-orange-500/12 text-orange-700 dark:text-orange-300',
+}[phase] ?? 'bg-primary/12 text-primary' %}
+{% set accentText = {
+    'plan': 'text-sky-600 dark:text-sky-400',
+    'do': 'text-teal-600 dark:text-teal-400',
+    'check': 'text-violet-600 dark:text-violet-400',
+    'act': 'text-orange-600 dark:text-orange-400',
+}[phase] ?? 'text-primary' %}
+
+<article class="pdca-phase-card flex h-full flex-col">
+    <div class="pdca-phase-card__surface pdca-phase-card__surface--{{ phase }} flex h-full flex-col rounded-2xl">
+        <header class="flex flex-row items-start gap-3 px-5 pb-2 pt-5 text-left sm:px-6 sm:pt-6">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl {{ accentIcon }}" aria-hidden="true">
+                <twig:ux:icon name="{{ icon }}" class="size-5 shrink-0" />
+            </div>
+            <div class="min-w-0 flex-1 space-y-1">
+                <p class="m-0 text-xs font-semibold uppercase tracking-wider {{ accentText }}">Phase {{ phaseNum }}</p>
+                {% set phaseHelpId = 'help.pdca.phase.' ~ phase %}
+                <twig:ContextualHelp helpId="{{ phaseHelpId }}" variant="inline" trigger="icon" class="inline-flex max-w-full">
+                    {% block trigger %}
+                    <h3 class="m-0 text-lg font-bold text-foreground">{{ title }}</h3>
+                    {% endblock %}
+                </twig:ContextualHelp>
+                <p class="m-0 text-xs leading-snug text-muted-foreground sm:text-sm">{{ description }}</p>
+                <div class="flex flex-wrap items-center gap-2 pt-1">
+                    {% if score is not null %}
+                        <twig:Badge variant="secondary" class="tabular-nums text-xs font-semibold">{{ score }}%</twig:Badge>
+                    {% endif %}
+                    {% if statusLabel is defined and statusLabel %}
+                        <twig:Badge variant="{{ statusTone|default('outline') }}" class="text-xs">{{ statusLabel }}</twig:Badge>
+                    {% endif %}
+                </div>
+                {% if score is not null %}
+                    <twig:Progress value="{{ score }}" class="mt-2 h-1.5" aria-label="Score phase {{ title }}" />
+                {% endif %}
+            </div>
+        </header>
+        <div class="flex flex-1 flex-col gap-2 px-5 pb-5 pt-0 sm:px-6 sm:pb-6">
+            {% for row in rows %}
+                {% if row.href is defined and row.href %}
+                    <a href="{{ row.href }}" class="pdca-phase-card__row group flex items-center justify-between gap-3 no-underline">
+                        <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                            <twig:ux:icon name="{{ row.icon }}" class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                            <span class="truncate">{{ row.label }}</span>
+                        </span>
+                        {% if row.badge is defined %}
+                            <twig:Badge variant="{{ row.badgeVariant|default('secondary') }}" class="shrink-0 tabular-nums {{ row.badgeClass|default('') }}">{{ row.badge }}</twig:Badge>
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <div class="pdca-phase-card__row flex items-center justify-between gap-3">
+                        <span class="flex min-w-0 items-center gap-2.5 text-sm font-medium text-foreground">
+                            <twig:ux:icon name="{{ row.icon }}" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                            <span class="truncate">{{ row.label }}</span>
+                        </span>
+                        {% if row.badge is defined %}
+                            <twig:Badge variant="{{ row.badgeVariant|default('secondary') }}" class="shrink-0 tabular-nums {{ row.badgeClass|default('') }}">{{ row.badge }}</twig:Badge>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% block phase_extra %}{% endblock %}
+        </div>
+    </div>
+</article>

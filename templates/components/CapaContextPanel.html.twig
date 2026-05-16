@@ -1,0 +1,162 @@
+{# @prop capa App\Entity\Qse\CAPAAction #}
+{%- props capa -%}
+{% set today = 'now'|date('Y-m-d') %}
+{% set isTerminal = capa.status.value in ['cloturee', 'annulee'] %}
+{% set isOverdue = not isTerminal and capa.dueAt and capa.dueAt|date('Y-m-d') < today %}
+{% set dueSoonLimit = 'now'|date_modify('+7 days')|date('Y-m-d') %}
+{% set isDueSoon = not isTerminal and not isOverdue and capa.dueAt and capa.dueAt|date('Y-m-d') <= dueSoonLimit %}
+{% set nextStepHints = {
+    'brouillon': 'Soumettre en validation pour lancer le circuit.',
+    'a_valider': 'Valider la fiche pour autoriser le démarrage.',
+    'validee': 'Démarrer la mise en œuvre de l\'action.',
+    'en_cours': 'Marquer la mise en œuvre comme terminée.',
+    'reouverte': 'Reprendre la mise en œuvre puis terminer l\'action.',
+    'en_attente_de_verification': 'Renseigner la vérification d\'efficacité puis clôturer.',
+    'cloturee': 'Fiche clôturée — réouverture possible si besoin.',
+    'annulee': 'Fiche annulée — aucune action requise.',
+} %}
+{% set nextStep = nextStepHints[capa.status.value] ?? 'Complétez la fiche et enregistrez.' %}
+{% set criticalityLabels = {
+    'low': 'Faible',
+    'medium': 'Moyenne',
+    'high': 'Élevée',
+    'critical': 'Critique',
+} %}
+{% set priorityLabels = {
+    'haute': 'Haute',
+    'moyenne': 'Moyenne',
+    'basse': 'Basse',
+} %}
+{% set toolLabels = {
+    'ishikawa': 'Ishikawa',
+    'five_why': '5 Pourquoi',
+    'eight_d': '8D',
+    'amdec': 'AMDEC',
+    'pareto': 'Pareto',
+    'qqoqccp': 'QQOQCCP',
+    'risk': 'Risques',
+} %}
+{% set sourceLabel = null %}
+{% set sourceRoute = null %}
+{% set sourceRouteParams = null %}
+{% if capa.sourceAuditEvaluation and capa.sourceAuditEvaluation.audit and capa.sourceAuditEvaluation.audit.id %}
+    {% set audit = capa.sourceAuditEvaluation.audit %}
+    {% set auditDate = audit.auditedAt ? audit.auditedAt|date('d/m/Y') : '' %}
+    {% set company = audit.companyName ?? 'Audit' %}
+    {% set sourceLabel = auditDate ? company ~ ' — ' ~ auditDate : company %}
+    {% set sourceRoute = 'app_qse_audit_show' %}
+    {% set sourceRouteParams = { id: audit.id } %}
+{% elseif capa.sourceTool %}
+    {% set sourceLabel = 'Outil : ' ~ (toolLabels[capa.sourceTool] ?? capa.sourceTool|replace({'_': ' '})|title) %}
+    {% if capa.sourceTool == 'risk' and capa.sourceToolEntityId %}
+        {% set sourceRoute = 'app_qse_risk_show' %}
+        {% set sourceRouteParams = { id: capa.sourceToolEntityId } %}
+    {% endif %}
+{% endif %}
+<aside
+    class="capa-context-panel rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-border/40 overflow-hidden lg:sticky lg:top-[var(--dashboard-sticky-toolbar-top)] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+    aria-labelledby="capa-context-panel-heading"
+>
+    <header class="px-4 py-3 sm:px-5 sm:py-4 border-b border-border/40 bg-muted/10">
+        <h2 id="capa-context-panel-heading" class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:panel-right" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Contexte CAPA
+        </h2>
+        <p class="text-xs text-muted-foreground m-0 mt-1">Statut, échéance et traçabilité</p>
+    </header>
+
+    <div class="p-4 sm:p-5 space-y-5">
+        <div class="rounded-xl border border-border/70 bg-muted/15 p-4 space-y-3">
+            <p class="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">État actuel</p>
+            <twig:CapaStatusBadge :status="capa.status.value" :isOverdue="isOverdue" :isDueSoon="isDueSoon" />
+            <p class="m-0 text-sm text-foreground leading-relaxed">{{ nextStep }}</p>
+        </div>
+
+        <div class="space-y-2">
+            <p class="m-0 text-xs font-medium text-muted-foreground">Échéance</p>
+            {% if capa.dueAt %}
+                {% set dueStr = capa.dueAt|date('Y-m-d') %}
+                {% set daysLeft = ((capa.dueAt|date('U') - ('now'|date('U'))) / 86400)|round(0, 'floor') %}
+                <p class="m-0 text-sm font-semibold tabular-nums text-foreground" data-capa-form-target="contextDueAt">
+                    {{ capa.dueAt|date('d/m/Y') }}
+                </p>
+                <p class="m-0 text-xs {% if isOverdue %}text-destructive font-medium{% elseif isDueSoon %}text-amber-700 dark:text-amber-400{% else %}text-muted-foreground{% endif %}">
+                    {% if isOverdue %}
+                        En retard ({{ daysLeft|abs }} jour{{ daysLeft|abs > 1 ? 's' : '' }})
+                    {% elseif daysLeft == 0 %}
+                        Échéance aujourd'hui
+                    {% elseif daysLeft > 0 %}
+                        J-{{ daysLeft }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="m-0 text-sm text-muted-foreground" data-capa-form-target="contextDueAt">Non définie</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <p class="m-0 text-xs font-medium text-muted-foreground mb-2">Chronologie</p>
+            <ol class="capa-context-panel__timeline m-0 p-0 list-none space-y-0">
+                <li class="capa-context-panel__step capa-context-panel__step--done">
+                    <span class="capa-context-panel__step-label">Création</span>
+                    <span class="capa-context-panel__step-date tabular-nums">{{ capa.createdAt|date('d/m/Y H:i') }}</span>
+                </li>
+                {% if capa.updatedAt %}
+                    <li class="capa-context-panel__step capa-context-panel__step--done">
+                        <span class="capa-context-panel__step-label">Dernière modification</span>
+                        <span class="capa-context-panel__step-date tabular-nums">{{ capa.updatedAt|date('d/m/Y H:i') }}</span>
+                    </li>
+                {% endif %}
+                {% if capa.implementationDoneAt %}
+                    <li class="capa-context-panel__step capa-context-panel__step--done">
+                        <span class="capa-context-panel__step-label">Mise en œuvre terminée</span>
+                        <span class="capa-context-panel__step-date tabular-nums">{{ capa.implementationDoneAt|date('d/m/Y H:i') }}</span>
+                    </li>
+                {% endif %}
+                {% if capa.closedAt %}
+                    <li class="capa-context-panel__step capa-context-panel__step--done">
+                        <span class="capa-context-panel__step-label">Clôture</span>
+                        <span class="capa-context-panel__step-date tabular-nums">{{ capa.closedAt|date('d/m/Y H:i') }}</span>
+                    </li>
+                {% endif %}
+            </ol>
+        </div>
+
+        <div class="space-y-2">
+            <p class="m-0 text-xs font-medium text-muted-foreground">Source</p>
+            {% if sourceLabel %}
+                {% if sourceRoute %}
+                    <a href="{{ path(sourceRoute, sourceRouteParams) }}" class="app-inline-link text-sm font-medium">{{ sourceLabel }}</a>
+                {% else %}
+                    <p class="m-0 text-sm text-foreground">{{ sourceLabel }}</p>
+                {% endif %}
+            {% else %}
+                <p class="m-0 text-sm text-muted-foreground">Création manuelle</p>
+            {% endif %}
+        </div>
+
+        <div class="space-y-2">
+            <p class="m-0 text-xs font-medium text-muted-foreground">Critères</p>
+            <div class="flex flex-wrap gap-2">
+                <span
+                    class="inline-flex items-center rounded-md border border-border/70 bg-muted/30 px-2 py-0.5 text-xs font-medium text-foreground"
+                    data-capa-form-target="contextPriority"
+                >
+                    Priorité : {{ capa.priority ? (priorityLabels[capa.priority] ?? capa.priority) : '—' }}
+                </span>
+                {% if capa.criticality %}
+                    <span class="inline-flex items-center rounded-md border border-border/70 bg-muted/30 px-2 py-0.5 text-xs font-medium text-foreground">
+                        Criticité : {{ criticalityLabels[capa.criticality] ?? capa.criticality|capitalize }}
+                    </span>
+                {% endif %}
+                {% if capa.pdcaPhase %}
+                    <span class="inline-flex items-center rounded-md border border-border/70 bg-muted/30 px-2 py-0.5 text-xs font-medium text-foreground">
+                        PDCA : {{ capa.pdcaPhase.value|upper }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</aside>

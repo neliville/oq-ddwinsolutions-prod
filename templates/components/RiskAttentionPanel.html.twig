@@ -1,0 +1,54 @@
+{# @prop items list<array> #}
+{%- props items = [] -%}
+<section class="risk-priority-panel mb-6" aria-labelledby="risk-priority-heading" data-controller="gsap-reveal">
+    <div class="risk-priority-panel__surface rounded-2xl overflow-hidden">
+        <header class="px-4 py-3 sm:px-5 sm:py-4 border-b border-border/30">
+            <div class="flex items-center gap-2">
+                <twig:ux:icon name="lucide:flame" class="size-5 text-rose-600 dark:text-rose-400 shrink-0" aria-hidden="true" />
+                <h2 id="risk-priority-heading" class="m-0 text-base font-semibold text-foreground">À traiter aujourd’hui</h2>
+            </div>
+            <p class="text-xs sm:text-sm mt-1 mb-0 text-muted-foreground">Priorités issues de votre cartographie des risques.</p>
+        </header>
+        <div>
+            {% if items|length > 0 %}
+                <ul class="m-0 p-0 list-none divide-y divide-border/30" role="list">
+                    {% for item in items %}
+                        <li class="px-4 py-3.5 sm:px-5 sm:py-4 transition-colors hover:bg-muted/15">
+                            <div class="min-w-0">
+                                <p class="m-0 text-sm font-semibold text-foreground flex items-center gap-2 flex-wrap">
+                                    {{ item.label }}
+                                    <twig:Badge variant="{{ item.tone == 'destructive' ? 'destructive' : 'outline' }}" class="tabular-nums text-xs {{ item.tone == 'amber' ? 'border-amber-500/50 bg-amber-500/10' : (item.tone == 'destructive' ? '' : '') }}">{{ item.count }}</twig:Badge>
+                                </p>
+                                <p class="m-0 mt-1 text-xs text-muted-foreground leading-relaxed">{{ item.detail }}</p>
+                            </div>
+                            <div class="mt-2.5 flex flex-wrap gap-2">
+                                <twig:Button
+                                    as="a"
+                                    href="{{ path(item.route, item.routeParams|default({})) }}"
+                                    variant="{{ item.tone == 'destructive' ? 'destructive' : 'default' }}"
+                                    size="sm"
+                                    class="no-underline text-xs motion-cta"
+                                >
+                                    {{ item.cta_primary }}
+                                </twig:Button>
+                                {% if item.cta_secondary %}
+                                    <twig:Button as="a" href="{{ path(item.route, item.routeParams|default({})) }}" variant="outline" size="sm" class="no-underline text-xs">
+                                        {{ item.cta_secondary }}
+                                    </twig:Button>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <twig:Empty class="py-8 px-4">
+                    <twig:Empty:Media>
+                        <twig:ux:icon name="lucide:circle-check" class="size-9 text-emerald-600" />
+                    </twig:Empty:Media>
+                    <twig:Empty:Title>Rien d’urgent</twig:Empty:Title>
+                    <twig:Empty:Description>Vos risques prioritaires sont à jour. Continuez le pilotage via la matrice.</twig:Empty:Description>
+                </twig:Empty>
+            {% endif %}
+        </div>
+    </div>
+</section>

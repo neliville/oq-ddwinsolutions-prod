@@ -1,0 +1,67 @@
+{# @prop filterOptions array #}
+{# @prop search string #}
+{# @prop status string #}
+{# @prop criticality string #}
+{# @prop sort string #}
+{%- props
+    filterOptions = { statuses: [], criticalities: [] },
+    search = '',
+    status = '',
+    criticality = '',
+    sort = 'recent',
+-%}
+<div class="risk-filters-bar rounded-xl border border-border/80 bg-card/80 backdrop-blur-sm p-4 shadow-sm ring-1 ring-border/40 mb-6">
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <label class="relative flex-1 min-w-0">
+                <span class="sr-only">Rechercher un risque</span>
+                <twig:ux:icon name="lucide:search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <input
+                    type="search"
+                    data-model="search"
+                    value="{{ search }}"
+                    placeholder="Rechercher risque, processus, responsable…"
+                    class="flex h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    autocomplete="off"
+                />
+            </label>
+            <button
+                type="button"
+                class="inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                data-action="live#action"
+                data-live-action-param="resetFilters"
+            >
+                Réinitialiser
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Statut
+                <select data-model="status" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Tous</option>
+                    {% for st in filterOptions.statuses %}
+                        <option value="{{ st.value }}" {% if status == st.value %}selected{% endif %}>{{ st.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Criticité
+                <select data-model="criticality" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    {% for c in filterOptions.criticalities %}
+                        <option value="{{ c.value }}" {% if criticality == c.value %}selected{% endif %}>{{ c.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Tri
+                <select data-model="sort" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Plus récents</option>
+                    <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Plus anciens</option>
+                    <option value="score_desc" {% if sort == 'score_desc' %}selected{% endif %}>Score décroissant</option>
+                    <option value="score_asc" {% if sort == 'score_asc' %}selected{% endif %}>Score croissant</option>
+                    <option value="review_soon" {% if sort == 'review_soon' %}selected{% endif %}>Révision proche</option>
+                </select>
+            </label>
+        </div>
+    </div>
+</div>

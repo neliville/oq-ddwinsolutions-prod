@@ -1,0 +1,19 @@
+<details class="capa-origin-quick-add group rounded-xl border border-border/80 bg-card shadow-sm">
+    <summary class="cursor-pointer list-none px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+        <div class="min-w-0">
+            <h2 class="text-base font-semibold m-0">Mes origines personnalisées</h2>
+            <p class="text-xs text-muted-foreground m-0 mt-1">Créez un libellé pour réutiliser une origine métier hors liste système.</p>
+        </div>
+        <twig:ux:icon name="lucide:chevron-down" class="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+    </summary>
+    <div class="px-4 pb-4 sm:px-6 sm:pb-6 pt-0 border-t border-border/40">
+        <form method="post" action="{{ path('app_qse_capa_origin_create') }}" class="flex flex-col sm:flex-row flex-wrap gap-3 items-end mt-4">
+            <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_origin_new') }}">
+            <div class="flex-1 min-w-[12rem] space-y-2 w-full sm:w-auto">
+                <twig:Label for="origin-name">Nom affiché</twig:Label>
+                <twig:Input name="name" id="origin-name" required maxlength="255" placeholder="Ex. Réunion direction" />
+            </div>
+            <twig:Button type="submit" variant="outline" class="w-full sm:w-auto shrink-0">Ajouter</twig:Button>
+        </form>
+    </div>
+</details>

@@ -1,0 +1,48 @@
+{# @prop capa App\Entity\Qse\CAPAAction #}
+{%- props capa -%}
+{% set today = 'now'|date('Y-m-d') %}
+{% set isTerminal = capa.status.value in ['cloturee', 'annulee'] %}
+{% set isOverdue = not isTerminal and capa.dueAt and capa.dueAt|date('Y-m-d') < today %}
+{% set dueSoonLimit = 'now'|date_modify('+7 days')|date('Y-m-d') %}
+{% set isDueSoon = not isTerminal and not isOverdue and capa.dueAt and capa.dueAt|date('Y-m-d') <= dueSoonLimit %}
+<section class="capa-form-hero capa-hero rounded-2xl border border-border/80 p-5 sm:p-6 lg:p-8 shadow-sm ring-1 ring-border/40 mb-6" aria-labelledby="capa-form-hero-heading">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div class="min-w-0 flex-1">
+            <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary mb-2">Plan d'action CAPA</p>
+            <h1 id="capa-form-hero-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">
+                {{ capa.title ?: 'Nouvelle CAPA' }}
+            </h1>
+            <p class="text-muted-foreground text-sm sm:text-base mt-3 mb-0 max-w-2xl leading-relaxed">
+                Fiche #{{ capa.id }} — pilotez le cycle de vie de l'action corrective, préventive ou de maîtrise.
+            </p>
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+                <twig:CapaStatusBadge :status="capa.status.value" :isOverdue="isOverdue" :isDueSoon="isDueSoon" />
+                <twig:Badge variant="outline" class="font-normal">{{ capa.capaType.value|qse_capa_type_label }}</twig:Badge>
+                {% if capa.origin %}
+                    <twig:Badge variant="secondary" class="font-normal">{{ capa.origin.name }}</twig:Badge>
+                {% endif %}
+            </div>
+            <div class="flex flex-wrap gap-2 mt-4" role="list" aria-label="Liens avec le pilotage QSE">
+                <twig:Badge as="a" href="{{ path('app_qse_pdca_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    PDCA
+                </twig:Badge>
+                <twig:Badge as="a" href="{{ path('app_qse_audit_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    Audits
+                </twig:Badge>
+                <twig:Badge as="a" href="{{ path('app_qse_risk_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    Risques
+                </twig:Badge>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-4">
+                {% include 'collaboration/_share_dialog.html.twig' with { dialog_id: 'collab_share_capa_' ~ capa.id, target_type: 'capa', target_id: capa.id } %}
+                {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_capa_' ~ capa.id, source: 'capa', capa_id: capa.id, trigger_label: 'Inviter un collaborateur' } %}
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2 shrink-0 w-full lg:w-auto">
+            <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" variant="outline" class="no-underline w-full sm:w-auto">
+                <twig:ux:icon name="lucide:layout-list" class="size-4 mr-1.5" aria-hidden="true" />
+                Retour aux CAPA
+            </twig:Button>
+        </div>
+    </div>
+</section>

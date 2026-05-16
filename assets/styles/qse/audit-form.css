@@ -1,0 +1,122 @@
+/* Formulaire création audit — premium layout */
+.audit-form-page .audit-form-section {
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.audit-form-page .audit-form-section:hover {
+  box-shadow:
+    0 4px 14px hsl(var(--foreground) / 0.06),
+    0 0 0 1px hsl(var(--border) / 0.5);
+}
+
+.audit-form-page .audit-form-section:focus-within {
+  border-color: hsl(var(--primary) / 0.25);
+}
+
+.audit-form-hero {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card)) 45%,
+    hsl(var(--primary) / 0.06) 100%
+  );
+}
+
+.audit-form-hero--accent-sky {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card)) 50%,
+    hsl(199 89% 48% / 0.08) 100%
+  );
+}
+
+.audit-form-hero--accent-emerald {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card)) 50%,
+    hsl(142 71% 45% / 0.08) 100%
+  );
+}
+
+.audit-form-hero--accent-amber {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card)) 50%,
+    hsl(38 92% 50% / 0.08) 100%
+  );
+}
+
+.audit-form-hero__info-glass {
+  background: hsl(var(--background) / 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.audit-form-step-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+}
+
+.audit-form-field-group.is-filled .audit-form-field-group__label {
+  color: hsl(var(--foreground));
+}
+
+.audit-form-field-group.is-filled input:not([type='date']),
+.audit-form-field-group.is-filled textarea {
+  border-color: hsl(var(--primary) / 0.35);
+}
+
+.audit-form-helper-card {
+  border-left-width: 3px;
+}
+
+.audit-form-helper-card--sky {
+  border-left-color: hsl(199 89% 48% / 0.7);
+}
+
+.audit-form-helper-card--emerald {
+  border-left-color: hsl(142 71% 45% / 0.7);
+}
+
+.audit-form-helper-card--amber {
+  border-left-color: hsl(38 92% 50% / 0.7);
+}
+
+.audit-form-helper-card--primary {
+  border-left-color: hsl(var(--primary) / 0.7);
+}
+
+.audit-form-aside-sticky {
+  position: sticky;
+  top: var(--dashboard-sticky-toolbar-top, 4.5rem);
+}
+
+.audit-form-save-action-bar--desktop {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-form-page .audit-form-section {
+    transition: none;
+  }
+
+  .audit-form-page .audit-form-section:hover {
+    box-shadow: inherit;
+  }
+}

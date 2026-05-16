@@ -1,0 +1,109 @@
+<div {{ attributes.defaults({ class: 'capa-board w-full' }) }}>
+    {% set vm = this.viewModel %}
+
+    <twig:CapaKpiStrip :kpis="vm.kpis" />
+
+    <twig:CapaAttentionPanel :items="vm.attentionItems" />
+
+    <twig:CapaFiltersBar
+        :filterOptions="vm.filterOptions"
+        :search="search"
+        :status="status"
+        :capaType="capaType"
+        :criticality="criticality"
+        :overdueOnly="overdueOnly"
+        :dueFrom="dueFrom"
+        :dueTo="dueTo"
+        :sort="sort"
+    />
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <form method="post" action="{{ path('app_qse_capa_new') }}" class="m-0">
+            <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_new') }}">
+            <twig:Button type="submit" variant="default" class="w-full sm:w-auto">
+                <twig:ux:icon name="lucide:plus" class="size-4 mr-1.5" aria-hidden="true" />
+                Nouvelle CAPA
+            </twig:Button>
+        </form>
+        <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="outline" class="no-underline w-full sm:w-auto">
+            Voir les audits
+        </twig:Button>
+    </div>
+
+    <div aria-live="polite" aria-atomic="true" class="sr-only" id="capa-board-live-region">
+        {{ vm.totalCount }} CAPA affichée(s)
+    </div>
+
+    {% if vm.totalCount == 0 and search == '' and status == '' and capaType == '' and criticality == '' and not overdueOnly %}
+        <twig:Empty class="my-8">
+            <twig:Empty:Header>
+                <twig:Empty:Title>Aucune action CAPA</twig:Empty:Title>
+                <twig:Empty:Description>
+                    Créez une CAPA depuis un audit (NC mineure ou majeure), vos outils d’analyse, ou en créant une action autonome.
+                </twig:Empty:Description>
+            </twig:Empty:Header>
+            <twig:Empty:Content>
+                <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                    <form method="post" action="{{ path('app_qse_capa_new') }}" class="m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_new') }}">
+                        <twig:Button type="submit" variant="default">Nouvelle CAPA</twig:Button>
+                    </form>
+                    <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="outline" class="no-underline">
+                        Nouvel audit
+                    </twig:Button>
+                </div>
+            </twig:Empty:Content>
+        </twig:Empty>
+    {% elseif vm.rows is empty %}
+        <twig:Empty class="my-8">
+            <twig:Empty:Header>
+                <twig:Empty:Title>Aucune CAPA ne correspond</twig:Empty:Title>
+                <twig:Empty:Description>Modifiez les filtres ou créez une nouvelle action corrective.</twig:Empty:Description>
+            </twig:Empty:Header>
+            <twig:Empty:Content>
+                <form method="post" action="{{ path('app_qse_capa_new') }}" class="m-0">
+                    <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_new') }}">
+                    <twig:Button type="submit" variant="default">Nouvelle CAPA</twig:Button>
+                </form>
+            </twig:Empty:Content>
+        </twig:Empty>
+    {% else %}
+        <div class="capa-board__list space-y-3 mb-6" role="list">
+            {% for row in vm.rows %}
+                <div role="listitem">
+                    <twig:CapaCardRow :row="row" />
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if vm.totalPages > 1 %}
+            <nav class="flex flex-wrap items-center justify-center gap-2 mb-8" aria-label="Pagination des CAPA">
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page <= 1 %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page - 1 }}"
+                >
+                    Précédent
+                </button>
+                <span class="text-sm text-muted-foreground tabular-nums px-2">
+                    Page {{ vm.page }} / {{ vm.totalPages }}
+                </span>
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page >= vm.totalPages %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page + 1 }}"
+                >
+                    Suivant
+                </button>
+            </nav>
+        {% endif %}
+    {% endif %}
+
+    <twig:CapaActivityTimeline :items="vm.activityItems" />
+</div>

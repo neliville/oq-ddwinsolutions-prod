@@ -1,0 +1,20 @@
+{# @prop status string #}
+{# @prop label string #}
+{# @prop requiresCapa bool #}
+{%- props status = '', label = '', requiresCapa = false -%}
+{% set classes = {
+    identifie: 'border-sky-500/40 bg-sky-500/10 text-sky-800 dark:text-sky-300',
+    en_analyse: 'border-violet-500/40 bg-violet-500/10 text-violet-800 dark:text-violet-300',
+    maitrise: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300',
+    sous_surveillance: 'border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300',
+    critique: 'border-rose-500/40 bg-rose-500/10 text-rose-800 dark:text-rose-300',
+    cloture: 'border-border bg-muted/50 text-muted-foreground',
+}[status] ?? 'border-border bg-secondary/50 text-secondary-foreground' %}
+<span class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium {{ classes }}">
+    {{ label }}
+</span>
+{% if requiresCapa %}
+    <span class="inline-flex items-center rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-800 dark:text-amber-300 ml-1">
+        CAPA requise
+    </span>
+{% endif %}

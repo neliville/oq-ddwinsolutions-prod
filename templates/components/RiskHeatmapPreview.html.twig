@@ -1,0 +1,64 @@
+{# @prop preview array #}
+{%- props preview -%}
+<section
+    id="risk-matrix-preview"
+    class="risk-heatmap-preview rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-border/40 overflow-hidden mb-6 scroll-mt-24"
+    aria-labelledby="risk-matrix-heading"
+    data-controller="gsap-reveal"
+>
+    <header class="px-4 py-3 sm:px-5 sm:py-4 border-b border-border/40 bg-muted/10">
+        <h2 id="risk-matrix-heading" class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:grid-3x3" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Matrice Probabilité × Gravité
+        </h2>
+        <p class="text-xs text-muted-foreground m-0 mt-1">Échelle normalisée 1–5 · les valeurs saisies au-delà sont ramenées pour la cartographie.</p>
+    </header>
+    <div class="p-4 sm:p-5">
+        {% if preview.hasData %}
+            <div class="risk-heatmap-preview__grid mb-4" role="img" aria-label="Heatmap des risques par probabilité et gravité">
+                <div class="text-[0.65rem] font-medium text-muted-foreground"></div>
+                {% for p in 1..5 %}
+                    <div class="text-center text-[0.65rem] font-medium text-muted-foreground py-1">P{{ p }}</div>
+                {% endfor %}
+                {% for s in 5..1 %}
+                    <div class="flex items-center text-[0.65rem] font-medium text-muted-foreground pr-1">G{{ s }}</div>
+                    {% for p in 1..5 %}
+                        {% set key = p ~ '-' ~ s %}
+                        {% set cell = preview.grid[key] %}
+                        {% set zoneClass = {
+                            low: 'risk-heatmap-preview__cell--low',
+                            medium: 'risk-heatmap-preview__cell--medium',
+                            high: 'risk-heatmap-preview__cell--high',
+                        }[cell.zone] ?? 'risk-heatmap-preview__cell--low' %}
+                        <div
+                            class="risk-heatmap-preview__cell {{ zoneClass }}"
+                            title="Probabilité {{ p }}, Gravité {{ s }} : {{ cell.count }} risque(s)"
+                        >
+                            {% if cell.count > 0 %}{{ cell.count }}{% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="rounded-xl border border-dashed border-border/70 bg-muted/15 px-4 py-10 text-center">
+                <twig:ux:icon name="lucide:layout-grid" class="size-10 mx-auto text-muted-foreground/50 mb-3" aria-hidden="true" />
+                <p class="m-0 text-sm font-medium text-foreground">Votre matrice apparaîtra ici</p>
+                <p class="m-0 mt-1 text-xs text-muted-foreground">Renseignez probabilité et gravité lors de la création d’un risque.</p>
+            </div>
+        {% endif %}
+        <div class="flex flex-wrap gap-3 justify-center sm:justify-start text-xs mt-4">
+            <span class="inline-flex items-center gap-1.5">
+                <span class="size-3 rounded risk-heatmap-preview__cell--low border" aria-hidden="true"></span>
+                Faible
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+                <span class="size-3 rounded risk-heatmap-preview__cell--medium border" aria-hidden="true"></span>
+                Moyen
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+                <span class="size-3 rounded risk-heatmap-preview__cell--high border" aria-hidden="true"></span>
+                Critique
+            </span>
+        </div>
+    </div>
+</section>

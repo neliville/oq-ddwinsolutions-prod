@@ -6,6 +6,7 @@ namespace App\Controller\Qse;
 
 use App\Entity\User;
 use App\Qse\Enum\CapaStatus;
+use App\Qse\Service\PdcaCockpitDataProvider;
 use App\Repository\Qse\AuditPlanRepository;
 use App\Repository\Qse\AuditRepository;
 use App\Repository\Qse\CAPAActionRepository;
@@ -28,6 +29,7 @@ final class QsePdcaController extends AbstractController
         private readonly CAPAActionRepository $capaRepository,
         private readonly RiskMatrixEntryRepository $riskRepository,
         private readonly CockpitMetricsRepository $cockpitMetricsRepository,
+        private readonly PdcaCockpitDataProvider $pdcaCockpitDataProvider,
     ) {
     }
 
@@ -54,27 +56,40 @@ final class QsePdcaController extends AbstractController
         $auditsByStandard = $this->auditRepository->countGroupedByAuditStandardForOwner($user);
         $cockpit = $this->cockpitMetricsRepository->getMetrics($user);
 
+        $plan = [
+            'qqoqccp' => $toolCounts['qqoqccpRecords'],
+            'amdec' => $toolCounts['amdecRecords'],
+            'audit_plans' => \count($this->auditPlanRepository->findByOwner($user)),
+            'risks' => \count($this->riskRepository->findByOwner($user, 500)),
+        ];
+        $do = [
+            'capa_open' => $openCapa,
+        ];
+        $check = [
+            'audits' => \count($this->auditRepository->findByOwner($user)),
+            'audits_by_standard' => $auditsByStandard,
+            'pareto' => $toolCounts['paretoRecords'],
+        ];
+        $act = [
+            'ishikawa' => $toolCounts['ishikawaRecords'],
+            'five_why' => $toolCounts['fiveWhyRecords'],
+            'eight_d' => $toolCounts['eightDRecords'],
+        ];
+
+        $premium = $this->pdcaCockpitDataProvider->build($user, $cockpit, $plan, $do, $check, $act);
+
         return $this->render('qse/pdca/index.html.twig', [
-            'plan' => [
-                'qqoqccp' => $toolCounts['qqoqccpRecords'],
-                'amdec' => $toolCounts['amdecRecords'],
-                'audit_plans' => \count($this->auditPlanRepository->findByOwner($user)),
-                'risks' => \count($this->riskRepository->findByOwner($user, 500)),
-            ],
-            'do' => [
-                'capa_open' => $openCapa,
-            ],
-            'check' => [
-                'audits' => \count($this->auditRepository->findByOwner($user)),
-                'audits_by_standard' => $auditsByStandard,
-                'pareto' => $toolCounts['paretoRecords'],
-            ],
-            'act' => [
-                'ishikawa' => $toolCounts['ishikawaRecords'],
-                'five_why' => $toolCounts['fiveWhyRecords'],
-                'eight_d' => $toolCounts['eightDRecords'],
-            ],
+            'plan' => $plan,
+            'do' => $do,
+            'check' => $check,
+            'act' => $act,
             'cockpit' => $cockpit,
+            'score' => $premium['score'],
+            'phaseScores' => $premium['phaseScores'],
+            'pdcaProgress' => $premium['pdcaProgress'],
+            'priority' => $premium['priority'],
+            'charts' => $premium['charts'],
+            'activity' => $premium['activity'],
         ]);
     }
 }

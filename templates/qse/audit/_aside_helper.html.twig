@@ -1,0 +1,87 @@
+{# @param standard App\Entity\Qse\AuditStandard #}
+{% set stdCode = standard.code|default('') %}
+{% set stdMeta = {
+    'iso_9001':  { label: 'ISO 9001', theme: 'Qualité', summary: 'Management de la qualité — exigences sur les produits, services et satisfaction client.', icon: 'lucide:badge-check', accent: 'sky' },
+    'iso_14001': { label: 'ISO 14001', theme: 'Environnement', summary: 'Management environnemental — impacts, conformité réglementaire et amélioration continue.', icon: 'lucide:leaf', accent: 'emerald' },
+    'iso_45001': { label: 'ISO 45001', theme: 'SST', summary: 'Santé et sécurité au travail — prévention des risques et bien-être des collaborateurs.', icon: 'lucide:hard-hat', accent: 'amber' },
+}[stdCode]|default({ label: standard.name, theme: 'Conformité', summary: standard.description|default('Référentiel d’audit sélectionné.'), icon: 'lucide:shield-check', accent: 'primary' }) %}
+
+<aside class="audit-form-aside-sticky space-y-4" aria-label="Aide à la création d’audit">
+    <twig:Card class="motion-card border-border/80 shadow-sm audit-form-helper-card audit-form-helper-card--{{ stdMeta.accent }}" data-gsap-reveal-item>
+        <twig:Card:Header class="p-4 sm:p-5 pb-2">
+            <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                <twig:ux:icon name="lucide:lightbulb" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                Conseils de préparation
+            </h2>
+        </twig:Card:Header>
+        <twig:Card:Content class="p-4 sm:p-5 pt-0">
+            <ul class="m-0 p-0 list-none space-y-2.5 text-sm text-muted-foreground">
+                <li class="flex items-start gap-2">
+                    <twig:ux:icon name="lucide:check-circle-2" class="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>Définir clairement le périmètre (sites, processus, période).</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <twig:ux:icon name="lucide:check-circle-2" class="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>Identifier les interlocuteurs clés avant le terrain.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <twig:ux:icon name="lucide:check-circle-2" class="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>Préparer les preuves documentaires par exigence.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <twig:ux:icon name="lucide:check-circle-2" class="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>Anticiper les non-conformités potentielles et les actions associées.</span>
+                </li>
+            </ul>
+        </twig:Card:Content>
+    </twig:Card>
+
+    <twig:Card class="motion-card border-border/80 shadow-sm audit-form-helper-card audit-form-helper-card--{{ stdMeta.accent }}" data-gsap-reveal-item>
+        <twig:Card:Header class="p-4 sm:p-5 pb-2">
+            <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                <twig:ux:icon name="{{ stdMeta.icon }}" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                Référentiel concerné
+            </h2>
+        </twig:Card:Header>
+        <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-3">
+            <div class="flex flex-wrap items-center gap-2">
+                <twig:Badge variant="secondary">{{ stdMeta.label }}</twig:Badge>
+                <twig:Badge variant="outline">{{ stdMeta.theme }}</twig:Badge>
+            </div>
+            <p class="text-sm text-muted-foreground m-0 leading-relaxed">{{ stdMeta.summary }}</p>
+            {% if standard.description %}
+                <p class="text-xs text-muted-foreground m-0 border-t border-border/60 pt-3">{{ standard.description }}</p>
+            {% endif %}
+        </twig:Card:Content>
+    </twig:Card>
+
+    <twig:Card class="motion-card border-border/80 shadow-sm" data-gsap-reveal-item>
+        <twig:Card:Header class="p-4 sm:p-5 pb-2">
+            <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                <twig:ux:icon name="lucide:gauge" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                Complétude du formulaire
+            </h2>
+        </twig:Card:Header>
+        <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-3">
+            <p class="m-0 text-sm text-muted-foreground">
+                Formulaire complété à
+                <strong class="text-foreground tabular-nums"><span data-audit-form-progress-target="percent">0</span> %</strong>
+            </p>
+            <div
+                class="h-2.5 w-full overflow-hidden rounded-full bg-secondary"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                aria-label="Progression de saisie du formulaire"
+            >
+                <div
+                    class="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+                    data-audit-form-progress-target="bar"
+                    style="width: 0%"
+                ></div>
+            </div>
+            <p class="m-0 text-xs text-muted-foreground">Les champs optionnels enrichissent le rapport mais ne bloquent pas la création.</p>
+        </twig:Card:Content>
+    </twig:Card>
+</aside>

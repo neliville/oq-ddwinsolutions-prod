@@ -1,0 +1,170 @@
+{# @param capa App\Entity\Qse\CAPAAction #}
+{# @param origins list<App\Entity\Qse\CapaOrigin> #}
+
+{% set capa_workflow_step = {
+    'brouillon': 1,
+    'a_valider': 2,
+    'validee': 3,
+    'en_cours': 4,
+    'reouverte': 4,
+    'en_attente_de_verification': 5,
+    'cloturee': 6,
+    'annulee': 0,
+}[capa.status.value] ?? 1 %}
+{% set status = capa.status.value %}
+{% set isTerminal = status in ['cloturee', 'annulee'] %}
+
+<twig:Card class="border-border/80 shadow-sm capa-form-section">
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:clipboard-list" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Identification du plan d'action
+        </h2>
+        <p class="text-xs text-muted-foreground m-0">Titre, type, origine et priorité de la CAPA.</p>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="space-y-2">
+            <twig:Label for="capa-title">Titre</twig:Label>
+            <twig:Input name="title" id="capa-title" value="{{ capa.title }}" required />
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-type">Type CAPA</twig:Label>
+            <twig:Select name="capa_type" id="capa-type">
+                <option value="corrective" {{ capa.capaType.value == 'corrective' ? 'selected' : '' }}>{{ 'corrective'|qse_capa_type_label }}</option>
+                <option value="preventive" {{ capa.capaType.value == 'preventive' ? 'selected' : '' }}>{{ 'preventive'|qse_capa_type_label }}</option>
+                <option value="maitrise" {{ capa.capaType.value == 'maitrise' ? 'selected' : '' }}>{{ 'maitrise'|qse_capa_type_label }}</option>
+            </twig:Select>
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-origin">Origine</twig:Label>
+            <twig:Select name="origin_id" id="capa-origin">
+                {% for o in origins %}
+                    <option value="{{ o.id }}" {{ capa.origin and capa.origin.id == o.id ? 'selected' : '' }}>{{ o.name }}{% if o.kind.value == 'custom' %} (personnalisée){% endif %}</option>
+                {% endfor %}
+            </twig:Select>
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-description">Description</twig:Label>
+            <twig:Textarea name="description" id="capa-description" rows="4">{{ capa.description|default('') }}</twig:Textarea>
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-priority">Priorité</twig:Label>
+            <twig:Select name="priority" id="capa-priority" data-capa-form-target="priority">
+                <option value="" {{ capa.priority is null ? 'selected' : '' }}>— Non définie</option>
+                <option value="haute" {{ capa.priority == 'haute' ? 'selected' : '' }}>Haute</option>
+                <option value="moyenne" {{ capa.priority == 'moyenne' ? 'selected' : '' }}>Moyenne</option>
+                <option value="basse" {{ capa.priority == 'basse' ? 'selected' : '' }}>Basse</option>
+            </twig:Select>
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+<twig:Card class="border-border/80 shadow-sm capa-form-section">
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:user-cog" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Pilotage &amp; échéance
+        </h2>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="space-y-2">
+            <twig:Label for="capa-responsible">Responsable</twig:Label>
+            <twig:Input name="responsible" id="capa-responsible" value="{{ capa.responsible|default('') }}" placeholder="Nom, rôle ou équipe" />
+        </div>
+        <div class="space-y-2">
+            <twig:DateField
+                name="due_at"
+                id="capa-due"
+                value="{{ capa.dueAt ? capa.dueAt|date('Y-m-d') : '' }}"
+                label="Échéance"
+                input:data-capa-form-target="dueAt"
+            />
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-closure">Preuve de clôture (texte)</twig:Label>
+            <twig:Textarea name="closure_proof" id="capa-closure" rows="2">{{ capa.closureProof|default('') }}</twig:Textarea>
+            <p class="text-xs text-muted-foreground m-0">Document ou référence attestant la clôture (optionnel).</p>
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+<twig:Card class="border-border/80 shadow-sm capa-form-section">
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:shield-check" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Vérification d'efficacité
+        </h2>
+        <p class="text-xs text-muted-foreground m-0">Obligatoire avant clôture définitive.</p>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+                <twig:Label for="capa-eff-verif" class="m-0">Vérification d'efficacité</twig:Label>
+                {% if status == 'en_attente_de_verification' %}
+                    <twig:Badge variant="destructive" class="font-normal text-xs">Obligatoire pour clôturer</twig:Badge>
+                {% endif %}
+            </div>
+            <twig:Textarea
+                name="effectiveness_verification"
+                id="capa-eff-verif"
+                rows="3"
+                data-capa-form-target="effectivenessVerification"
+            >{{ capa.effectivenessVerification|default('') }}</twig:Textarea>
+        </div>
+        <div class="space-y-2">
+            <twig:Label for="capa-eff-comment">Commentaire vérification</twig:Label>
+            <twig:Textarea name="effectiveness_comment" id="capa-eff-comment" rows="2">{{ capa.effectivenessComment|default('') }}</twig:Textarea>
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+<twig:Card class="border-border/80 shadow-sm capa-form-section">
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:git-branch" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Workflow
+        </h2>
+        <p class="text-xs text-muted-foreground m-0">
+            Statut actuel : <strong class="text-foreground">{{ status|qse_status_label('capa') }}</strong>.
+            {% if not isTerminal %}
+                Utilisez les transitions ci-dessous ou la barre d'actions.
+            {% endif %}
+        </p>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        {% if capa_workflow_step > 0 %}
+            <twig:CapaWorkflowBar :step="capa_workflow_step" :total="6" :showHelp="false" />
+        {% endif %}
+
+        {% if not isTerminal %}
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Transitions workflow">
+                {% if status == 'brouillon' %}
+                    <twig:Button type="submit" name="workflow_action" value="submit_validation" variant="outline" size="sm">Soumettre en validation</twig:Button>
+                    <twig:Button type="submit" name="workflow_action" value="validate" variant="outline" size="sm">Valider</twig:Button>
+                    <twig:Button type="submit" name="workflow_action" value="cancel" variant="destructive" size="sm" data-capa-form-target="cancelButton">Annuler</twig:Button>
+                {% elseif status == 'a_valider' %}
+                    <twig:Button type="submit" name="workflow_action" value="validate" variant="outline" size="sm">Valider</twig:Button>
+                    <twig:Button type="submit" name="workflow_action" value="cancel" variant="destructive" size="sm" data-capa-form-target="cancelButton">Annuler</twig:Button>
+                {% elseif status == 'validee' %}
+                    <twig:Button type="submit" name="workflow_action" value="start" variant="outline" size="sm">Démarrer</twig:Button>
+                    <twig:Button type="submit" name="workflow_action" value="cancel" variant="destructive" size="sm" data-capa-form-target="cancelButton">Annuler</twig:Button>
+                {% elseif status == 'en_cours' %}
+                    <twig:Button type="submit" name="workflow_action" value="implementation_done" variant="outline" size="sm">Mise en œuvre terminée</twig:Button>
+                    <twig:Button type="submit" name="workflow_action" value="cancel" variant="destructive" size="sm" data-capa-form-target="cancelButton">Annuler</twig:Button>
+                {% elseif status == 'reouverte' %}
+                    <twig:Button type="submit" name="workflow_action" value="implementation_done" variant="outline" size="sm">Mise en œuvre terminée</twig:Button>
+                {% elseif status == 'en_attente_de_verification' %}
+                    <twig:Button type="submit" name="workflow_action" value="close" variant="default" size="sm">Clôturer (après vérification)</twig:Button>
+                {% endif %}
+            </div>
+        {% elseif status == 'cloturee' %}
+            <twig:Button type="submit" name="workflow_action" value="reopen" variant="outline" size="sm">Rouvrir</twig:Button>
+        {% else %}
+            <p class="text-sm text-muted-foreground m-0">Cette CAPA est annulée. Aucune transition disponible.</p>
+        {% endif %}
+
+        <p class="text-xs text-muted-foreground m-0 border-t border-border/40 pt-3">
+            Les boutons de workflow et « Enregistrer les champs » envoient le même formulaire : les champs texte sont toujours transmis au serveur.
+        </p>
+    </twig:Card:Content>
+</twig:Card>

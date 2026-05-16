@@ -1,0 +1,75 @@
+{# @prop row App\Qse\Audit\ViewModel\AuditBoardRow #}
+{%- props row -%}
+{% set a = row.audit %}
+{% set aid = a.id %}
+<article
+    class="audit-card-row group motion-card rounded-xl border border-border/80 bg-card p-4 sm:p-5 shadow-sm ring-1 ring-border/40 transition-all duration-300 hover:-translate-y-px hover:shadow-lg hover:ring-primary/15"
+    aria-label="Audit {{ row.label|e('html_attr') }}"
+>
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+        {# Bloc gauche #}
+        <div class="min-w-0 flex-1 lg:max-w-[35%] space-y-2">
+            <a href="{{ path('app_qse_audit_show', { id: aid }) }}" class="app-inline-link block text-base font-semibold text-foreground truncate">
+                {{ row.label }}
+            </a>
+            <p class="m-0 text-xs text-muted-foreground">
+                <twig:Badge variant="outline" class="font-normal tabular-nums mr-1">{{ row.standardCode|upper }}</twig:Badge>
+                {{ row.standardName }}
+            </p>
+            <dl class="grid grid-cols-1 gap-1 text-xs text-muted-foreground m-0">
+                {% if a.auditedAt %}
+                    <div class="flex gap-2"><dt class="font-medium shrink-0">Date</dt><dd class="m-0 tabular-nums">{{ a.auditedAt|date('d/m/Y') }}</dd></div>
+                {% endif %}
+                {% if a.mainAuditor %}
+                    <div class="flex gap-2"><dt class="font-medium shrink-0">Auditeur</dt><dd class="m-0 truncate">{{ a.mainAuditor }}</dd></div>
+                {% endif %}
+                {% if a.companyName %}
+                    <div class="flex gap-2 sm:hidden"><dt class="font-medium shrink-0">Entreprise</dt><dd class="m-0 truncate">{{ a.companyName }}</dd></div>
+                {% endif %}
+            </dl>
+            <twig:AuditStatusBadge :status="row.status.value" :hasMajorNc="row.hasOpenMajorNc" />
+        </div>
+
+        {# Bloc centre #}
+        <div class="flex-1 min-w-0 lg:max-w-[45%]">
+            <twig:AuditComplianceBar
+                :percent="row.progressPercent"
+                :answered="row.answeredRequirements"
+                :total="row.totalRequirements"
+                :compliance="row.complianceRate"
+            />
+            {% if row.majorNc > 0 or row.minorNc > 0 or row.capaCount > 0 %}
+                <div class="flex flex-wrap gap-2 mt-3 text-xs">
+                    {% if row.majorNc > 0 %}
+                        <span class="inline-flex items-center gap-1 rounded-md bg-destructive/10 px-2 py-0.5 text-destructive font-medium">
+                            {{ row.majorNc }} NC maj.
+                        </span>
+                    {% endif %}
+                    {% if row.minorNc > 0 %}
+                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-amber-800 dark:text-amber-400 font-medium">
+                            {{ row.minorNc }} NC min.
+                        </span>
+                    {% endif %}
+                    {% if row.capaCount > 0 %}
+                        <span class="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-muted-foreground font-medium">
+                            {{ row.capaCount }} CAPA
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {# Bloc droite #}
+        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto lg:justify-end">
+            <twig:Button as="a" href="{{ path('app_qse_audit_show', { id: aid }) }}" variant="default" size="sm" class="no-underline flex-1 min-h-[44px] sm:min-h-0 sm:flex-none">
+                Ouvrir
+            </twig:Button>
+            <twig:AuditActionsMenu
+                :auditId="aid"
+                :auditLabel="row.label"
+                :status="row.status.value"
+                :capaCount="row.capaCount"
+            />
+        </div>
+    </div>
+</article>

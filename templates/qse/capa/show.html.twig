@@ -3,107 +3,45 @@
 {% block title %}CAPA #{{ capa.id }} | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-2xl mx-auto px-4 py-6 space-y-6">
-    <div>
-        <twig:Button as="a" href="{{ path('app_qse_capa_index') }}" variant="ghost" class="text-sm text-muted-foreground h-auto p-0 no-underline hover:text-foreground">← CAPA</twig:Button>
-        <h1 class="text-2xl font-bold mt-2 mb-2">{{ capa.title }}</h1>
-        <p class="text-xs text-muted-foreground mb-0">
-            Type : {{ capa.capaType.value|qse_capa_type_label }}
-            · Origine : {% if capa.origin %}{{ capa.origin.name }}{% else %}—{% endif %}
-        </p>
-        <div class="flex flex-wrap gap-2 mt-3">
-            {% include 'collaboration/_share_dialog.html.twig' with { dialog_id: 'collab_share_capa_' ~ capa.id, target_type: 'capa', target_id: capa.id } %}
-            {% include 'collaboration/_invite_dialog.html.twig' with { dialog_id: 'collab_invite_capa_' ~ capa.id, source: 'capa', capa_id: capa.id, trigger_label: 'Inviter un collaborateur' } %}
-        </div>
-    </div>
+{% set status = capa.status.value %}
+{% set primaryActions = {
+    'brouillon': { value: 'submit_validation', label: 'Soumettre en validation' },
+    'a_valider': { value: 'validate', label: 'Valider' },
+    'validee': { value: 'start', label: 'Démarrer' },
+    'en_cours': { value: 'implementation_done', label: 'Mise en œuvre terminée' },
+    'reouverte': { value: 'implementation_done', label: 'Mise en œuvre terminée' },
+    'en_attente_de_verification': { value: 'close', label: 'Clôturer' },
+    'cloturee': { value: 'reopen', label: 'Rouvrir' },
+} %}
+{% set primary = primaryActions[status] ?? null %}
+<div
+    class="capa-cockpit capa-form-page w-full max-w-5xl mx-auto px-4 py-6 sm:py-8 pb-28 lg:pb-8"
+    data-controller="capa-form"
+>
+    <twig:CapaFormHero :capa="capa" />
 
-    <form method="post" class="space-y-6">
+    <form method="post" id="capa-edit-form" class="space-y-6" novalidate data-capa-form-target="form">
         <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_edit') }}">
 
-        <twig:Card class="border-border/80 shadow-sm">
-            <twig:Card:Header class="space-y-1 p-4 sm:p-6 pb-2">
-                <h2 class="text-base font-semibold m-0">Fiche CAPA</h2>
-                <p class="text-xs text-muted-foreground m-0">Modifiez les champs puis enregistrez ou utilisez le workflow ci-dessous.</p>
-            </twig:Card:Header>
-            <twig:Card:Content class="p-4 sm:p-6 pt-0 space-y-4">
-                <div class="space-y-2">
-                    <twig:Label for="capa-origin">Origine</twig:Label>
-                    <twig:Select name="origin_id" id="capa-origin">
-                        {% for o in origins %}
-                            <option value="{{ o.id }}" {{ capa.origin and capa.origin.id == o.id ? 'selected' : '' }}>{{ o.name }}{% if o.kind.value == 'custom' %} (personnalisée){% endif %}</option>
-                        {% endfor %}
-                    </twig:Select>
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-title">Titre</twig:Label>
-                    <twig:Input name="title" id="capa-title" value="{{ capa.title }}" />
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-description">Description</twig:Label>
-                    <twig:Textarea name="description" id="capa-description" rows="4">{{ capa.description|default('') }}</twig:Textarea>
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-responsible">Responsable</twig:Label>
-                    <twig:Input name="responsible" id="capa-responsible" value="{{ capa.responsible|default('') }}" />
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-due">Échéance</twig:Label>
-                    <twig:Input name="due_at" id="capa-due" type="date" value="{{ capa.dueAt ? capa.dueAt|date('Y-m-d') : '' }}" />
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-closure">Preuve de clôture (texte)</twig:Label>
-                    <twig:Textarea name="closure_proof" id="capa-closure" rows="2">{{ capa.closureProof|default('') }}</twig:Textarea>
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
-
-        <twig:Card class="border-border/80 shadow-sm">
-            <twig:Card:Header class="space-y-1 p-4 sm:p-6 pb-2">
-                <h2 class="text-base font-semibold m-0">Workflow</h2>
-                <p class="text-xs text-muted-foreground m-0">Statut actuel : <strong class="text-foreground">{{ capa.status.value|qse_status_label('capa') }}</strong>. La clôture n’est possible qu’après vérification d’efficacité.</p>
-            </twig:Card:Header>
-            <twig:Card:Content class="p-4 sm:p-6 pt-0 space-y-4">
-                <div class="flex flex-wrap gap-2">
-                    <twig:Button type="submit" name="workflow_action" value="submit_validation" variant="outline" size="sm">Soumettre en validation</twig:Button>
-                    <twig:Button type="submit" name="workflow_action" value="validate" variant="outline" size="sm">Valider</twig:Button>
-                    <twig:Button type="submit" name="workflow_action" value="start" variant="outline" size="sm">Démarrer</twig:Button>
-                    <twig:Button type="submit" name="workflow_action" value="implementation_done" variant="outline" size="sm">Mise en œuvre terminée</twig:Button>
-                    <twig:Button type="submit" name="workflow_action" value="reopen" variant="outline" size="sm">Rouvrir</twig:Button>
-                    <twig:Button type="submit" name="workflow_action" value="cancel" variant="destructive" size="sm">Annuler</twig:Button>
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-eff-verif">Vérification d’efficacité (obligatoire pour clôturer)</twig:Label>
-                    <twig:Textarea name="effectiveness_verification" id="capa-eff-verif" rows="3">{{ capa.effectivenessVerification|default('') }}</twig:Textarea>
-                </div>
-                <div class="space-y-2">
-                    <twig:Label for="capa-eff-comment">Commentaire vérification</twig:Label>
-                    <twig:Textarea name="effectiveness_comment" id="capa-eff-comment" rows="2">{{ capa.effectivenessComment|default('') }}</twig:Textarea>
-                </div>
-                <div class="flex flex-col sm:flex-row flex-wrap gap-2">
-                    <twig:Button type="submit" name="workflow_action" value="close" variant="default">Clôturer (après vérification)</twig:Button>
-                    <twig:Button type="submit" variant="secondary">Enregistrer les champs</twig:Button>
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-8 space-y-6">
+                {% include 'qse/capa/_form_sections.html.twig' with { capa: capa, origins: origins } %}
+            </div>
+            <div class="lg:col-span-4">
+                <twig:CapaContextPanel :capa="capa" />
+            </div>
+        </div>
     </form>
 
-    <twig:Card class="border-border/80 shadow-sm">
-        <twig:Card:Header class="space-y-1 p-4 sm:p-6 pb-2">
-            <h2 class="text-base font-semibold m-0">Mes origines personnalisées</h2>
-            <p class="text-xs text-muted-foreground m-0">Créez un libellé pour réutiliser une origine métier hors liste système.</p>
-        </twig:Card:Header>
-        <twig:Card:Content class="p-4 sm:p-6 pt-0">
-            <form method="post" action="{{ path('app_qse_capa_origin_create') }}" class="flex flex-col sm:flex-row flex-wrap gap-3 items-end">
-                <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_origin_new') }}">
-                <div class="flex-1 min-w-[12rem] space-y-2 w-full sm:w-auto">
-                    <twig:Label for="origin-name">Nom affiché</twig:Label>
-                    <twig:Input name="name" id="origin-name" required maxlength="255" placeholder="Ex. Réunion direction" />
-                </div>
-                <twig:Button type="submit" variant="outline" class="w-full sm:w-auto shrink-0">Ajouter</twig:Button>
-            </form>
-        </twig:Card:Content>
-    </twig:Card>
+    <twig:CapaSaveActionBar
+        formId="capa-edit-form"
+        :cancelUrl="path('app_qse_capa_index')"
+        :primaryActionValue="primary ? primary.value : null"
+        :primaryActionLabel="primary ? primary.label : null"
+    />
 
-    <p class="text-xs text-muted-foreground m-0">Les boutons de workflow et « Enregistrer les champs » envoient le même formulaire : les champs texte sont toujours transmis au serveur.</p>
+    <div class="mt-6">
+        {% include 'qse/capa/_origin_quick_add.html.twig' %}
+    </div>
 </div>
 {% endblock %}

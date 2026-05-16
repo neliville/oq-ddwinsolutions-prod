@@ -3,16 +3,12 @@
 {% block title %}Audits QSE | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div
-    class="w-full max-w-6xl mx-auto px-4 py-6"
-    data-controller="qse-audit-delete"
-    data-qse-audit-delete-delete-url-template-value="{{ path('app_qse_audit_delete', { id: 999999001 }) }}"
->
+<div class="w-full max-w-7xl mx-auto px-4 py-6 sm:py-8">
     <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
         <div class="min-w-0">
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">Vos audits QSE</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">Audit Management Board</h1>
             <p class="text-muted-foreground text-sm sm:text-base mt-2 mb-0 max-w-2xl leading-relaxed">
-                Pilotage par référentiel ISO : conformité globale, statut d’avancement et accès rapide à chaque dossier.
+                Pilotage stratégique par référentiel ISO : conformité, avancement, non-conformités et actions correctives.
             </p>
         </div>
         <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="default" class="no-underline w-full sm:w-auto shrink-0">
@@ -20,124 +16,6 @@
         </twig:Button>
     </header>
 
-    {% if audits is empty %}
-        <twig:Empty>
-            <twig:Empty:Header>
-                <twig:Empty:Title>Aucun audit</twig:Empty:Title>
-                <twig:Empty:Description>Démarrez un audit à partir d’un référentiel ISO chargé dans l’application.</twig:Empty:Description>
-            </twig:Empty:Header>
-            <twig:Empty:Content>
-                <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="default" class="no-underline">Choisir un référentiel</twig:Button>
-            </twig:Empty:Content>
-        </twig:Empty>
-    {% else %}
-        <twig:Card class="border-border/80 shadow-sm overflow-hidden">
-            <twig:Card:Content class="p-0 sm:p-0">
-                <div class="hidden md:block [&_[data-slot=table-container]]:rounded-none">
-                    <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
-                        <caption class="sr-only text-left">Liste de vos audits qualité, triés par date d’audit décroissante.</caption>
-                        <twig:Table:Header>
-                            <twig:Table:Row>
-                                <twig:Table:Head scope="col" class="w-[32%]">Audit</twig:Table:Head>
-                                <twig:Table:Head scope="col" class="whitespace-nowrap">Référentiel</twig:Table:Head>
-                                <twig:Table:Head scope="col" class="text-center whitespace-nowrap">Conformité</twig:Table:Head>
-                                <twig:Table:Head scope="col" class="whitespace-nowrap">Statut</twig:Table:Head>
-                                <twig:Table:Head scope="col" class="text-end w-[1%] whitespace-nowrap">Actions</twig:Table:Head>
-                            </twig:Table:Row>
-                        </twig:Table:Header>
-                        <twig:Table:Body>
-                            {% for a in audits %}
-                                {% set capa_n = audit_capa_counts[a.id] ?? 0 %}
-                                {% set audit_label = (a.companyName|default('Audit')) ~ ' — ' ~ a.auditedAt|date('d/m/Y') %}
-                                <twig:Table:Row class="align-middle">
-                                    <twig:Table:Cell class="font-medium">
-                                        <a href="{{ path('app_qse_audit_show', { id: a.id }) }}" class="app-inline-link font-semibold text-foreground">
-                                            {{- audit_label -}}
-                                        </a>
-                                    </twig:Table:Cell>
-                                    <twig:Table:Cell>
-                                        <twig:Badge variant="outline" class="font-normal tabular-nums">{{ a.auditStandard.code }}</twig:Badge>
-                                    </twig:Table:Cell>
-                                    <twig:Table:Cell class="text-center">
-                                        {% if a.globalComplianceRate is not null %}
-                                            <twig:Badge variant="secondary" class="tabular-nums">{{ a.globalComplianceRate }}&nbsp;%</twig:Badge>
-                                        {% else %}
-                                            <span class="text-muted-foreground text-sm tabular-nums">—</span>
-                                        {% endif %}
-                                    </twig:Table:Cell>
-                                    <twig:Table:Cell>
-                                        <twig:Badge variant="secondary" class="font-medium">{{ a.status.value|qse_status_label('audit_exec') }}</twig:Badge>
-                                    </twig:Table:Cell>
-                                    <twig:Table:Cell class="text-end">
-                                        <div class="inline-flex flex-wrap items-center justify-end gap-1.5">
-                                            <twig:Button as="a" href="{{ path('app_qse_audit_show', { id: a.id }) }}" variant="outline" size="sm" class="no-underline">
-                                                Ouvrir
-                                            </twig:Button>
-                                            <twig:Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                class="text-destructive border-destructive/40 hover:bg-destructive/10"
-                                                data-action="click->qse-audit-delete#open"
-                                                data-audit-id="{{ a.id }}"
-                                                data-delete-url="{{ path('app_qse_audit_delete', { id: a.id }) }}"
-                                                data-capa-count="{{ capa_n }}"
-                                                data-audit-label="{{ audit_label }}"
-                                                data-csrf-token="{{ csrf_token('delete_qse_audit_' ~ a.id) }}"
-                                                aria-label="Supprimer l’audit {{ audit_label }}"
-                                            >
-                                                <twig:ux:icon name="lucide:trash-2" class="size-4 sm:mr-1" aria-hidden="true" />
-                                                <span class="hidden sm:inline">Supprimer</span>
-                                            </twig:Button>
-                                        </div>
-                                    </twig:Table:Cell>
-                                </twig:Table:Row>
-                            {% endfor %}
-                        </twig:Table:Body>
-                    </twig:Table>
-                </div>
-                <div class="space-y-3 p-4 md:hidden" aria-label="Liste audits (vue mobile)">
-                    {% for a in audits %}
-                        {% set capa_n = audit_capa_counts[a.id] ?? 0 %}
-                        {% set audit_label = (a.companyName|default('Audit')) ~ ' — ' ~ a.auditedAt|date('d/m/Y') %}
-                        <article class="rounded-xl border border-border/80 bg-card p-4 shadow-sm ring-1 ring-border/40">
-                            <div class="flex flex-col gap-2">
-                                <a href="{{ path('app_qse_audit_show', { id: a.id }) }}" class="app-inline-link text-base font-semibold text-foreground">{{ audit_label }}</a>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <twig:Badge variant="outline" class="font-normal tabular-nums">{{ a.auditStandard.code }}</twig:Badge>
-                                    {% if a.globalComplianceRate is not null %}
-                                        <twig:Badge variant="secondary" class="tabular-nums">{{ a.globalComplianceRate }}&nbsp;%</twig:Badge>
-                                    {% endif %}
-                                    <twig:Badge variant="secondary">{{ a.status.value|qse_status_label('audit_exec') }}</twig:Badge>
-                                </div>
-                                <div class="flex flex-wrap gap-2 pt-1">
-                                    <twig:Button as="a" href="{{ path('app_qse_audit_show', { id: a.id }) }}" variant="outline" size="sm" class="no-underline">
-                                        Ouvrir
-                                    </twig:Button>
-                                    <twig:Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        class="text-destructive border-destructive/40 hover:bg-destructive/10"
-                                        data-action="click->qse-audit-delete#open"
-                                        data-audit-id="{{ a.id }}"
-                                        data-delete-url="{{ path('app_qse_audit_delete', { id: a.id }) }}"
-                                        data-capa-count="{{ capa_n }}"
-                                        data-audit-label="{{ audit_label }}"
-                                        data-csrf-token="{{ csrf_token('delete_qse_audit_' ~ a.id) }}"
-                                    >
-                                        <twig:ux:icon name="lucide:trash-2" class="size-4 shrink-0 mr-1" aria-hidden="true" />
-                                        Supprimer
-                                    </twig:Button>
-                                </div>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
-    {% endif %}
-
-    {% include 'qse/audit/_delete_dialog.html.twig' %}
+    <twig:AuditBoard />
 </div>
 {% endblock %}

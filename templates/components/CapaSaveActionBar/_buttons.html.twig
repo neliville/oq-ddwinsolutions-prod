@@ -1,0 +1,24 @@
+<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end max-w-5xl mx-auto w-full">
+    <twig:Button as="a" href="{{ cancelUrl }}" variant="outline" class="min-h-11 w-full sm:w-auto order-3 sm:order-1 sm:mr-auto no-underline">
+        Annuler
+    </twig:Button>
+    <button
+        type="submit"
+        form="{{ formId }}"
+        class="min-h-11 w-full sm:w-auto order-2 inline-flex items-center justify-center gap-1.5 rounded-lg border border-transparent bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground shadow-sm transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+    >
+        Enregistrer les champs
+    </button>
+    {% if primaryActionValue and primaryActionLabel %}
+        <button
+            type="submit"
+            name="workflow_action"
+            value="{{ primaryActionValue }}"
+            form="{{ formId }}"
+            class="min-h-11 min-w-[10rem] w-full sm:w-auto order-1 sm:order-3 inline-flex items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+            <twig:ux:icon name="lucide:arrow-right-circle" class="size-4" aria-hidden="true" />
+            {{ primaryActionLabel }}
+        </button>
+    {% endif %}
+</div>

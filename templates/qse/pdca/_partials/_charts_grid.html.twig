@@ -1,0 +1,34 @@
+{# Grille graphiques ApexCharts — kind pdca-cockpit #}
+{% if charts.charts is defined and charts.charts|length > 0 %}
+<section class="pdca-charts-section rounded-2xl overflow-hidden" aria-labelledby="pdca-charts-heading">
+    <div class="border-b border-border/30 bg-muted/10 px-4 py-3 sm:px-5 sm:py-4">
+        <h2 id="pdca-charts-heading" class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:bar-chart-3" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Pilotage visuel QHSE
+        </h2>
+        <p class="text-xs text-muted-foreground m-0 mt-1">Conformité, CAPA, risques et dynamique PDCA.</p>
+    </div>
+    <div
+        class="p-4 sm:p-5 grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3"
+        data-controller="chart pdca-charts-lazy"
+        data-chart-kind-value="pdca-cockpit"
+        data-chart-config-value="{{ charts|json_encode|e('html_attr') }}"
+        data-pdca-charts-lazy-root-value="true"
+    >
+        {% for c in charts.charts %}
+            <div class="pdca-chart-tile rounded-xl p-3 min-h-[14rem] flex flex-col" data-pdca-chart-tile>
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground m-0 mb-2">{{ c.title|default(c.ref) }}</p>
+                <div class="flex-1 min-h-[12rem] w-full relative" data-chart-wrap>
+                    <twig:Skeleton class="absolute inset-0 rounded-md pdca-chart-skeleton" aria-hidden="true" />
+                    <canvas
+                        data-pdca-cockpit-chart-ref="{{ c.ref }}"
+                        class="block h-full w-full max-h-56"
+                        role="img"
+                        aria-label="{{ c.title|default('Graphique') }}"
+                    ></canvas>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,71 @@
+{# Bandeau KPI — rendu statique (pas d’animation GSAP pour éviter les flashs au chargement) #}
+{% set globalScore = score.score ?? null %}
+{% set compliance = cockpit.avgAuditCompliancePercent ?? null %}
+{% set sparkTrend = [62, 68, 71, 74, globalScore ?? 70, globalScore ?? 72]|map(v => v|round) %}
+
+<section class="pdca-hero-kpi" aria-labelledby="pdca-hero-kpi-heading">
+    <h2 id="pdca-hero-kpi-heading" class="sr-only">Indicateurs QHSE synthétiques</h2>
+    <div class="pdca-hero-kpi__grid flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 sm:overflow-visible sm:pb-0 sm:mx-0 sm:px-0">
+        <div class="h-full min-w-[17rem] snap-start sm:min-w-0">
+            <twig:Card class="pdca-kpi-card pdca-kpi-card--hero h-full border-0 shadow-none ring-0 bg-transparent">
+                <twig:Card:Content class="pdca-kpi-card__inner p-5 sm:p-6">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0 flex-1">
+                            <div class="mb-1 flex items-start gap-1.5 min-w-0">
+                                <p class="m-0 flex-1 text-xs font-semibold uppercase tracking-wider text-primary">Score QHSE</p>
+                                <twig:ContextualHelp helpId="help.kpi.pdca.global_score" variant="inline" trigger="icon" class="shrink-0" />
+                            </div>
+                            {% if globalScore is not null %}
+                                <p class="m-0 text-3xl font-bold tabular-nums text-foreground">
+                                    {{ globalScore }}<span class="text-lg font-semibold text-muted-foreground">/100</span>
+                                </p>
+                            {% else %}
+                                <p class="m-0 text-2xl font-bold text-muted-foreground">—</p>
+                                <p class="mt-1 mb-0 text-xs text-muted-foreground">Complétez vos premiers audits pour activer le score.</p>
+                            {% endif %}
+                            {% if pdcaProgress is not null %}
+                                <p class="mt-2 mb-0 text-xs font-medium text-muted-foreground">Progression PDCA <span class="tabular-nums text-foreground">{{ pdcaProgress }}%</span></p>
+                            {% endif %}
+                        </div>
+                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary" aria-hidden="true">
+                            <i data-lucide="gauge" width="24" height="24" class="size-6 shrink-0" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-primary">
+                        {% include 'qse/pdca/_partials/_kpi_sparkline.html.twig' with { values: sparkTrend } only %}
+                    </div>
+                </twig:Card:Content>
+            </twig:Card>
+        </div>
+
+        <div class="h-full min-w-[14rem] snap-start sm:min-w-0">
+            <twig:KpiStatCard class="pdca-kpi-card h-full" label="Conformité audits" value="{{ compliance is not null ? compliance ~ '%' : '—' }}" tone="{{ compliance is not null and compliance < 70 ? 'amber' : 'emerald' }}" helpId="help.kpi.pdca.compliance">
+                <twig:block name="icon"><i data-lucide="shield-check" width="20" height="20" class="size-5 shrink-0" aria-hidden="true"></i></twig:block>
+            </twig:KpiStatCard>
+        </div>
+
+        <div class="h-full min-w-[14rem] snap-start sm:min-w-0">
+            <twig:KpiStatCard class="pdca-kpi-card h-full" label="CAPA ouvertes" value="{{ do.capa_open }}" tone="{{ cockpit.overdueOpenCapas > 0 ? 'destructive' : 'sky' }}" helpId="help.kpi.pdca.capa_open" helperVisible="{{ cockpit.overdueOpenCapas > 0 }}" helper="{{ cockpit.overdueOpenCapas > 0 ? (cockpit.overdueOpenCapas ~ ' en retard') : '' }}">
+                <twig:block name="icon"><i data-lucide="list-todo" width="20" height="20" class="size-5 shrink-0" aria-hidden="true"></i></twig:block>
+            </twig:KpiStatCard>
+        </div>
+
+        <div class="h-full min-w-[14rem] snap-start sm:min-w-0">
+            <twig:KpiStatCard class="pdca-kpi-card h-full" label="Audits en retard" value="{{ cockpit.overdueAuditPlans|default(0) }}" tone="{{ cockpit.overdueAuditPlans > 0 ? 'destructive' : 'default' }}" helpId="help.kpi.pdca.audits_overdue">
+                <twig:block name="icon"><i data-lucide="calendar-clock" width="20" height="20" class="size-5 shrink-0" aria-hidden="true"></i></twig:block>
+            </twig:KpiStatCard>
+        </div>
+
+        <div class="h-full min-w-[14rem] snap-start sm:min-w-0">
+            <twig:KpiStatCard class="pdca-kpi-card h-full" label="Risques majeurs" value="{{ cockpit.criticalRisksWithoutCapa|default(0) }}" tone="{{ cockpit.criticalRisksWithoutCapa > 0 ? 'amber' : 'emerald' }}" helpId="help.kpi.pdca.risks_major">
+                <twig:block name="icon"><i data-lucide="shield-alert" width="20" height="20" class="size-5 shrink-0" aria-hidden="true"></i></twig:block>
+            </twig:KpiStatCard>
+        </div>
+
+        <div class="h-full min-w-[14rem] snap-start sm:min-w-0">
+            <twig:KpiStatCard class="pdca-kpi-card h-full" label="NC ouvertes" value="{{ cockpit.openNonConformEvaluations|default(0) }}" tone="{{ cockpit.openNonConformEvaluations > 0 ? 'destructive' : 'default' }}" helpId="help.kpi.pdca.nc_open">
+                <twig:block name="icon"><i data-lucide="triangle-alert" width="20" height="20" class="size-5 shrink-0" aria-hidden="true"></i></twig:block>
+            </twig:KpiStatCard>
+        </div>
+    </div>
+</section>

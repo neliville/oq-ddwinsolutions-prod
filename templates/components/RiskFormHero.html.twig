@@ -1,0 +1,33 @@
+{# @prop onboardingOrigin string|null #}
+{%- props onboardingOrigin = null -%}
+<section class="risk-form-hero risk-hero rounded-2xl border border-border/80 p-5 sm:p-6 lg:p-8 shadow-sm ring-1 ring-border/40 mb-6" aria-labelledby="risk-form-hero-heading">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between" data-gsap-reveal-item>
+        <div class="min-w-0 flex-1">
+            <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary mb-2">Gestion des risques QSE</p>
+            <h1 id="risk-form-hero-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">
+                Créer un nouveau risque
+            </h1>
+            <p class="text-muted-foreground text-sm sm:text-base mt-3 mb-0 max-w-2xl leading-relaxed">
+                Identifiez, qualifiez et priorisez vos risques qualité, sécurité ou environnement.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4" role="list" aria-label="Liens avec le pilotage QSE">
+                <twig:Badge variant="secondary" class="font-normal">Qualité · Sécurité · Environnement</twig:Badge>
+                <twig:Badge as="a" href="{{ path('app_qse_pdca_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    PDCA
+                </twig:Badge>
+                <twig:Badge as="a" href="{{ path('app_qse_audit_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    Audits
+                </twig:Badge>
+                <twig:Badge as="a" href="{{ path('app_qse_capa_index') }}" variant="outline" class="no-underline font-normal hover:bg-muted/60">
+                    CAPA
+                </twig:Badge>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2 shrink-0 w-full lg:w-auto">
+            <twig:Button as="a" href="{{ path('app_qse_risk_index') }}#risk-matrix-preview" variant="outline" class="no-underline w-full sm:w-auto">
+                <twig:ux:icon name="lucide:grid-3x3" class="size-4 mr-1.5" aria-hidden="true" />
+                Retour à la matrice
+            </twig:Button>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,44 @@
+{# @prop kpis App\Qse\Audit\ViewModel\AuditBoardKpis #}
+{%- props kpis -%}
+<section
+    class="audit-kpi-strip grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4 mb-8"
+    aria-label="Indicateurs audits"
+    data-controller="gsap-stagger"
+>
+    <twig:KpiStatCard label="Total audits" :value="kpis.totalAudits" tone="default" helpId="help.kpi.audit.total" class="audit-kpi-card audit-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:clipboard-list" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="En cours" :value="kpis.inProgress" tone="sky" helpId="help.kpi.audit.in_progress" class="audit-kpi-card audit-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:play-circle" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="En retard" :value="kpis.overdue" tone="destructive" helpId="help.kpi.audit.overdue" class="audit-kpi-card audit-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:alarm-clock" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    {% set complianceTone = kpis.avgCompliancePercent is null ? 'default' : (kpis.avgCompliancePercent >= 80 ? 'emerald' : (kpis.avgCompliancePercent >= 60 ? 'amber' : 'destructive')) %}
+    <twig:KpiStatCard
+        label="Conformité moy."
+        :value="kpis.avgCompliancePercent is not null ? (kpis.avgCompliancePercent|number_format(1, ',', ' ') ~ ' %') : '—'"
+        :tone="complianceTone"
+        helpId="help.kpi.audit.compliance_avg"
+        class="audit-kpi-card audit-kpi-card--glass motion-card"
+    >
+        {% block icon %}<twig:ux:icon name="lucide:gauge" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard label="NC majeures" :value="kpis.openMajorNc" helpId="help.kpi.audit.major_nc" tone="destructive" class="audit-kpi-card audit-kpi-card--glass motion-card">
+        {% block icon %}<twig:ux:icon name="lucide:shield-alert" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+
+    <twig:KpiStatCard
+        label="Progression globale"
+        :value="(kpis.globalProgressPercent|number_format(1, ',', ' ')) ~ ' %'"
+        helpId="help.kpi.audit.progress"
+        tone="default"
+        class="audit-kpi-card audit-kpi-card--glass motion-card"
+    >
+        {% block icon %}<twig:ux:icon name="lucide:trending-up" class="size-5" />{% endblock %}
+    </twig:KpiStatCard>
+</section>

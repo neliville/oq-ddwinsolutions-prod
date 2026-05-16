@@ -1,0 +1,45 @@
+{# @prop row App\Qse\Risk\ViewModel\RiskBoardRow #}
+{%- props row -%}
+<article
+    class="risk-card-row group motion-card rounded-xl border border-border/80 bg-card p-4 sm:p-5 shadow-sm ring-1 ring-border/40 transition-all duration-300 hover:-translate-y-px hover:shadow-lg hover:ring-primary/15"
+    aria-label="Risque {{ row.label|e('html_attr') }}"
+>
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
+        <div class="min-w-0 flex-1 space-y-2">
+            <a href="{{ path('app_qse_risk_show', { id: row.id }) }}" class="app-inline-link block text-base font-semibold text-foreground">
+                {{ row.label }}
+            </a>
+            <div class="flex flex-wrap items-center gap-2">
+                <twig:RiskCriticalityBadge :level="row.criticalityLevel" :label="row.criticalityLabel" />
+                <twig:RiskStatusBadge :status="row.status.value" :label="row.statusLabel" :requiresCapa="row.requiresCapa" />
+            </div>
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground m-0">
+                {% if row.responsible %}
+                    <div><dt class="inline font-medium">Propriétaire</dt> <dd class="inline m-0">{{ row.responsible }}</dd></div>
+                {% endif %}
+                {% if row.reviewAt %}
+                    <div>
+                        <dt class="inline font-medium">Révision</dt>
+                        <dd class="inline m-0 tabular-nums {{ row.reviewOverdue ? 'text-rose-700 dark:text-rose-400 font-medium' : '' }}">
+                            {{ row.reviewAt|date('d/m/Y') }}{% if row.reviewOverdue %} (en retard){% endif %}
+                        </dd>
+                    </div>
+                {% endif %}
+            </dl>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+            <div class="text-center min-w-[4rem]">
+                <p class="m-0 text-[0.65rem] uppercase tracking-wide text-muted-foreground">Score</p>
+                <p class="m-0 text-xl font-bold tabular-nums text-foreground">{{ row.criticalityScore ?? '—' }}</p>
+            </div>
+            {% if row.capaCount > 0 %}
+                <twig:Badge variant="outline" class="tabular-nums">{{ row.capaCount }} CAPA</twig:Badge>
+            {% else %}
+                <span class="text-xs text-muted-foreground">Sans CAPA</span>
+            {% endif %}
+            <twig:Button as="a" href="{{ path('app_qse_risk_show', { id: row.id }) }}" variant="default" size="sm" class="no-underline flex-1 sm:flex-none">
+                Ouvrir
+            </twig:Button>
+        </div>
+    </div>
+</article>

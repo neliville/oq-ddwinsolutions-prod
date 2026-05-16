@@ -1,0 +1,85 @@
+<div {{ attributes.defaults({
+    class: 'audit-board w-full',
+    'data-controller': 'qse-audit-board qse-audit-delete',
+    'data-qse-audit-delete-delete-url-template-value': path('app_qse_audit_delete', { id: 999999001 }),
+    'data-qse-audit-board-share-url-template-value': path('app_qse_audit_share', { id: 999999001 }),
+}) }}>
+    {% set vm = this.viewModel %}
+
+    <twig:AuditKpiStrip :kpis="vm.kpis" />
+
+    <twig:AuditAttentionPanel :items="vm.attentionItems" />
+
+    <twig:AuditFiltersBar
+        :filterOptions="vm.filterOptions"
+        :search="search"
+        :status="status"
+        :standardCode="standardCode"
+        :auditor="auditor"
+        :complianceMin="complianceMin"
+        :dateFrom="dateFrom"
+        :dateTo="dateTo"
+        :sort="sort"
+    />
+
+    <div aria-live="polite" aria-atomic="true" class="sr-only" id="audit-board-live-region">
+        {{ vm.totalCount }} audit(s) affiché(s)
+    </div>
+
+    {% if vm.rows is empty %}
+        <twig:Empty class="my-8">
+            <twig:Empty:Header>
+                <twig:Empty:Title>Aucun audit ne correspond</twig:Empty:Title>
+                <twig:Empty:Description>Modifiez les filtres ou créez un nouvel audit à partir d’un référentiel ISO.</twig:Empty:Description>
+            </twig:Empty:Header>
+            <twig:Empty:Content>
+                <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="default" class="no-underline">
+                    Choisir un référentiel
+                </twig:Button>
+            </twig:Empty:Content>
+        </twig:Empty>
+    {% else %}
+        <div class="audit-board__list space-y-3 mb-6" role="list">
+            {% for row in vm.rows %}
+                <div role="listitem">
+                    <twig:AuditCardRow :row="row" />
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if vm.totalPages > 1 %}
+            <nav class="flex flex-wrap items-center justify-center gap-2 mb-8" aria-label="Pagination des audits">
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page <= 1 %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page - 1 }}"
+                >
+                    Précédent
+                </button>
+                <span class="text-sm text-muted-foreground tabular-nums px-2">
+                    Page {{ vm.page }} / {{ vm.totalPages }}
+                </span>
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page >= vm.totalPages %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page + 1 }}"
+                >
+                    Suivant
+                </button>
+            </nav>
+        {% endif %}
+    {% endif %}
+
+    <twig:AuditActivityTimeline :entries="vm.timelineEntries" />
+
+    <div data-live-ignore>
+        {% include 'qse/audit/_delete_dialog.html.twig' %}
+        {% include 'qse/audit/_share_dialog.html.twig' %}
+    </div>
+</div>

@@ -1,0 +1,40 @@
+{# @prop kpis App\Qse\Risk\ViewModel\RiskBoardKpis #}
+{%- props kpis -%}
+<section class="risk-hero rounded-2xl border border-border/80 p-5 sm:p-6 lg:p-8 shadow-sm ring-1 ring-border/40 mb-6" aria-labelledby="risk-hero-heading">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div class="min-w-0 flex-1">
+            <p class="m-0 text-xs font-semibold uppercase tracking-wider text-primary mb-2">Risk Control Center</p>
+            <h1 id="risk-hero-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">
+                Gestion des Risques QSE
+            </h1>
+            <p class="text-muted-foreground text-sm sm:text-base mt-3 mb-0 max-w-2xl leading-relaxed">
+                Pilotez vos risques critiques, leur criticité, leur traitement et leur impact sur votre PDCA.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4" role="list" aria-label="Synthèse rapide">
+                <twig:Badge variant="secondary" class="tabular-nums {{ kpis.openRisks > 0 ? '' : 'opacity-70' }}">
+                    {{ kpis.openRisks }} actif{{ kpis.openRisks > 1 ? 's' : '' }}
+                </twig:Badge>
+                <twig:Badge
+                    variant="outline"
+                    class="tabular-nums border-rose-500/40 bg-rose-500/10 text-rose-800 dark:text-rose-300 {{ kpis.criticalRisks > 0 ? 'risk-hero__badge--pulse' : '' }}"
+                >
+                    {{ kpis.criticalRisks }} critique{{ kpis.criticalRisks > 1 ? 's' : '' }}
+                </twig:Badge>
+                <twig:Badge variant="outline" class="tabular-nums border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300">
+                    {{ kpis.inTreatment }} en traitement
+                </twig:Badge>
+                <twig:Badge variant="outline" class="tabular-nums border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300">
+                    {{ kpis.closedThisMonth }} clos ce mois
+                </twig:Badge>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2 shrink-0 w-full lg:w-auto">
+            <twig:Button as="a" href="{{ path('app_qse_risk_new') }}" variant="default" class="no-underline motion-cta w-full sm:w-auto">
+                Nouveau risque
+            </twig:Button>
+            <twig:Button as="a" href="#risk-matrix-preview" variant="outline" class="no-underline w-full sm:w-auto">
+                Voir la matrice
+            </twig:Button>
+        </div>
+    </div>
+</section>

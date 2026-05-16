@@ -1,0 +1,99 @@
+{# @prop filterOptions array #}
+{# @prop search string #}
+{# @prop status string #}
+{# @prop standardCode string #}
+{# @prop auditor string #}
+{# @prop complianceMin string #}
+{# @prop dateFrom string #}
+{# @prop dateTo string #}
+{# @prop sort string #}
+{%- props
+    filterOptions = { standards: [], auditors: [], statuses: [] },
+    search = '',
+    status = '',
+    standardCode = '',
+    auditor = '',
+    complianceMin = '',
+    dateFrom = '',
+    dateTo = '',
+    sort = 'recent',
+-%}
+<div class="audit-filters-bar rounded-xl border border-border/80 bg-card/80 backdrop-blur-sm p-4 shadow-sm ring-1 ring-border/40 mb-6">
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <label class="relative flex-1 min-w-0">
+                <span class="sr-only">Rechercher un audit</span>
+                <twig:ux:icon name="lucide:search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <input
+                    type="search"
+                    data-model="search"
+                    value="{{ search }}"
+                    placeholder="Rechercher entreprise, auditeur, référentiel…"
+                    class="flex h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    autocomplete="off"
+                />
+            </label>
+            <button
+                type="button"
+                class="inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                data-action="live#action"
+                data-live-action-param="resetFilters"
+            >
+                Réinitialiser
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Statut
+                <select data-model="status" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Tous</option>
+                    {% for st in filterOptions.statuses %}
+                        <option value="{{ st.value }}" {% if status == st.value %}selected{% endif %}>{{ st.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Norme ISO
+                <select data-model="standardCode" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Toutes</option>
+                    {% for std in filterOptions.standards %}
+                        <option value="{{ std.code }}" {% if standardCode == std.code %}selected{% endif %}>{{ std.code|upper }} — {{ std.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Auditeur
+                <select data-model="auditor" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Tous</option>
+                    {% for name in filterOptions.auditors %}
+                        <option value="{{ name }}" {% if auditor == name %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Conformité min. (%)
+                <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    data-model="complianceMin"
+                    value="{{ complianceMin }}"
+                    placeholder="ex. 70"
+                    class="h-9 rounded-lg border border-input bg-background px-2 text-sm"
+                />
+            </label>
+            <twig:DateField name="dateFrom" value="{{ dateFrom }}" label="Du" :compact="true" dataModel="dateFrom" />
+            <twig:DateField name="dateTo" value="{{ dateTo }}" label="Au" :compact="true" dataModel="dateTo" />
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-medium text-muted-foreground">Tri :</span>
+            <select data-model="sort" class="h-8 rounded-lg border border-input bg-background px-2 text-sm" aria-label="Tri des audits">
+                <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Plus récents</option>
+                <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Plus anciens</option>
+                <option value="compliance_desc" {% if sort == 'compliance_desc' %}selected{% endif %}>Conformité ↓</option>
+                <option value="compliance_asc" {% if sort == 'compliance_asc' %}selected{% endif %}>Conformité ↑</option>
+                <option value="company" {% if sort == 'company' %}selected{% endif %}>Entreprise A→Z</option>
+            </select>
+        </div>
+    </div>
+</div>

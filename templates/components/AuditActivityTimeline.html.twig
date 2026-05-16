@@ -1,0 +1,61 @@
+{# @prop entries list<array> #}
+{%- props entries = [] -%}
+{% if entries is not empty %}
+<section class="audit-activity-timeline mt-10" aria-labelledby="audit-timeline-heading" data-controller="gsap-reveal">
+    <header class="mb-5">
+        <h2 id="audit-timeline-heading" class="text-lg font-semibold text-foreground m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:activity" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Activités récentes
+        </h2>
+        <p class="text-sm text-muted-foreground m-0 mt-1.5 max-w-2xl leading-relaxed">
+            Historique des dernières actions enregistrées sur vos audits (saisies, partages, archivages, duplications).
+        </p>
+    </header>
+    <ol class="audit-activity-timeline__list" role="list" aria-label="Activités récentes sur vos audits">
+        {% for entry in entries %}
+            {% set toneClass = {
+                success: 'audit-activity-timeline__node--success',
+                danger: 'audit-activity-timeline__node--danger',
+                warning: 'audit-activity-timeline__node--warning',
+                info: 'audit-activity-timeline__node--info',
+                neutral: 'audit-activity-timeline__node--neutral',
+            }[entry.tone] ?? 'audit-activity-timeline__node--neutral' %}
+            <li class="audit-activity-timeline__item" role="listitem">
+                <div class="audit-activity-timeline__track" aria-hidden="true">
+                    <span class="audit-activity-timeline__node {{ toneClass }}">
+                        <twig:ux:icon name="{{ entry.icon }}" class="size-4 shrink-0" />
+                    </span>
+                </div>
+                <article class="audit-activity-timeline__card min-w-0">
+                    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        <h3 class="m-0 text-sm font-semibold text-foreground leading-snug">{{ entry.title }}</h3>
+                        <time
+                            class="text-xs font-medium text-muted-foreground tabular-nums shrink-0"
+                            datetime="{{ entry.iso8601 }}"
+                            title="{{ entry.date }} à {{ entry.time }}"
+                        >
+                            {{ entry.relative }}
+                        </time>
+                    </div>
+                    {% if entry.detail %}
+                        <p class="m-0 mt-2 text-sm text-muted-foreground leading-relaxed">{{ entry.detail }}</p>
+                    {% endif %}
+                    {% if entry.auditLabel or entry.actor %}
+                        <p class="m-0 mt-2 text-xs text-muted-foreground leading-relaxed">
+                            {% if entry.auditLabel %}
+                                <a href="{{ path('app_qse_audit_show', { id: entry.auditId }) }}" class="app-inline-link font-medium">{{ entry.auditLabel }}</a>
+                            {% endif %}
+                            {% if entry.auditLabel and entry.actor %}
+                                <span class="mx-1.5 text-muted-foreground/60" aria-hidden="true">·</span>
+                            {% endif %}
+                            {% if entry.actor %}
+                                <span>{{ entry.actor }}</span>
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </article>
+            </li>
+        {% endfor %}
+    </ol>
+</section>
+{% endif %}

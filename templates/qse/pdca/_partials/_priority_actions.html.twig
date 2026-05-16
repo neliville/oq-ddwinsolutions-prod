@@ -1,0 +1,47 @@
+{# Bloc « À traiter aujourd’hui » — sous le cycle PDCA #}
+<section class="pdca-priority-panel" aria-labelledby="pdca-priority-heading">
+    <div class="pdca-priority-panel__surface rounded-2xl overflow-hidden">
+        <header class="px-5 py-4 sm:px-6 sm:py-5 border-b border-border/30">
+            <div class="flex items-center gap-2">
+                <twig:ux:icon name="lucide:flame" class="size-5 text-destructive shrink-0" aria-hidden="true" />
+                <h2 id="pdca-priority-heading" class="m-0 text-base font-semibold text-foreground">À traiter aujourd’hui</h2>
+            </div>
+            <p class="text-xs sm:text-sm mt-1 mb-0 text-muted-foreground">Actions prioritaires issues de votre cockpit QSE.</p>
+        </header>
+        <div>
+            {% if priority|length > 0 %}
+                <ul class="m-0 p-0 list-none divide-y divide-border/30" role="list">
+                    {% for item in priority %}
+                        <li class="px-4 py-3.5 sm:px-6 sm:py-4 transition-colors hover:bg-muted/15">
+                            <div class="min-w-0 flex-1">
+                                <p class="m-0 text-sm font-semibold text-foreground flex items-center gap-2 flex-wrap">
+                                    {{ item.label }}
+                                    <twig:Badge variant="{{ item.tone == 'destructive' ? 'destructive' : (item.tone == 'amber' ? 'outline' : 'secondary') }}" class="tabular-nums text-xs {{ item.tone == 'amber' ? 'border-amber-500/50 bg-amber-500/10' : '' }}">{{ item.count }}</twig:Badge>
+                                </p>
+                                <p class="m-0 mt-1 text-xs text-muted-foreground leading-relaxed">{{ item.detail }}</p>
+                            </div>
+                            <div class="mt-2.5 flex flex-wrap gap-2">
+                                <twig:Button as="a" href="{{ path(item.route) }}" variant="{{ item.tone == 'destructive' ? 'destructive' : 'default' }}" size="sm" class="no-underline text-xs">
+                                    {{ item.cta_primary }}
+                                </twig:Button>
+                                {% if item.cta_secondary %}
+                                    <twig:Button as="a" href="{{ path(item.route) }}" variant="outline" size="sm" class="no-underline text-xs">
+                                        {{ item.cta_secondary }}
+                                    </twig:Button>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <twig:Empty class="py-10 px-5">
+                    <twig:Empty:Media>
+                        <twig:ux:icon name="lucide:circle-check" class="size-10 text-emerald-600" />
+                    </twig:Empty:Media>
+                    <twig:Empty:Title>Rien d’urgent</twig:Empty:Title>
+                    <twig:Empty:Description>Votre cockpit est à jour. Continuez le pilotage via les phases PDCA.</twig:Empty:Description>
+                </twig:Empty>
+            {% endif %}
+        </div>
+    </div>
+</section>

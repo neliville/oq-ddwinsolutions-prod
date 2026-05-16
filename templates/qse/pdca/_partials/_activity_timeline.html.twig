@@ -1,0 +1,50 @@
+{# Timeline activité récente premium #}
+<section class="pdca-activity-section rounded-2xl overflow-hidden" aria-labelledby="pdca-activity-heading">
+    <div class="border-b border-border/30 bg-muted/10 px-4 py-3 sm:px-5 sm:py-4">
+        <h2 id="pdca-activity-heading" class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:activity" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Activité récente
+        </h2>
+        <p class="text-xs text-muted-foreground m-0 mt-1">Dernières mises à jour sur vos modules QSE.</p>
+    </div>
+    {% if activity|length > 0 %}
+        <ol class="relative m-0 p-4 sm:p-5 list-none space-y-0" role="list">
+            {% for item in activity %}
+                {% set toneRing = {
+                    'sky': 'border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-400',
+                    'emerald': 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+                    'violet': 'border-violet-500/40 bg-violet-500/10 text-violet-700 dark:text-violet-400',
+                    'amber': 'border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400',
+                    'orange': 'border-orange-500/40 bg-orange-500/10 text-orange-700 dark:text-orange-400',
+                    'destructive': 'border-destructive/40 bg-destructive/10 text-destructive',
+                }[item.tone] ?? 'border-border bg-muted/30 text-muted-foreground' %}
+                <li class="relative flex gap-3 pb-6 last:pb-0 {% if not loop.last %}before:absolute before:left-[1.125rem] before:top-10 before:bottom-0 before:w-px before:bg-border/60{% endif %}">
+                    <div class="relative z-[1] flex size-9 shrink-0 items-center justify-center rounded-full border {{ toneRing }}" aria-hidden="true">
+                        <twig:ux:icon name="{{ item.icon }}" class="size-4" />
+                    </div>
+                    <div class="min-w-0 flex-1 pt-0.5">
+                        <p class="m-0 text-sm font-medium text-foreground">{{ item.label }}</p>
+                        <p class="m-0 mt-0.5 text-sm text-muted-foreground truncate" title="{{ item.description }}">{{ item.description }}</p>
+                        <p class="m-0 mt-1 text-xs text-muted-foreground">
+                            <time datetime="{{ item.occurredAt|date('c') }}">{{ item.occurredAt|time_ago }}</time>
+                        </p>
+                        {% if item.routeName %}
+                            <twig:Button as="a" href="{{ path(item.routeName, item.routeParams) }}" variant="ghost" size="sm" class="mt-2 h-8 px-2 text-xs no-underline">
+                                Voir
+                            </twig:Button>
+                        {% elseif item.toolIndexRoute and item.toolRecordId %}
+                            <twig:Button as="a" href="{{ path(item.toolIndexRoute) ~ '?load=' ~ item.toolRecordId }}" variant="ghost" size="sm" class="mt-2 h-8 px-2 text-xs no-underline">
+                                Voir
+                            </twig:Button>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <twig:Empty class="py-10 px-5">
+            <twig:Empty:Title>Aucune activité récente</twig:Empty:Title>
+            <twig:Empty:Description>Créez un audit, une CAPA ou une analyse pour alimenter cette timeline.</twig:Empty:Description>
+        </twig:Empty>
+    {% endif %}
+</section>

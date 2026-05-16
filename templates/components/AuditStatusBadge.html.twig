@@ -1,0 +1,24 @@
+{# @prop status string Valeur AuditExecutionStatus #}
+{# @prop hasMajorNc bool Afficher badge NC majeure en complément #}
+{%- props status = 'brouillon', hasMajorNc = false -%}
+{%- set statusMap = {
+    brouillon: { class: 'bg-muted text-muted-foreground border-border/60', icon: 'lucide:file-edit', label: 'Brouillon' },
+    prepare: { class: 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/20', icon: 'lucide:clipboard-list', label: 'Préparation' },
+    en_cours: { class: 'bg-primary/10 text-primary border-primary/20', icon: 'lucide:play-circle', label: 'En cours' },
+    termine: { class: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20', icon: 'lucide:check-circle-2', label: 'Terminé' },
+    valide: { class: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20', icon: 'lucide:badge-check', label: 'Validé' },
+    archive: { class: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-400 border-zinc-500/20', icon: 'lucide:archive', label: 'Archivé' },
+} -%}
+{%- set cfg = statusMap[status] ?? statusMap.brouillon -%}
+<span class="inline-flex flex-wrap items-center gap-1.5">
+    <span class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium {{ cfg.class }}">
+        <twig:ux:icon name="{{ cfg.icon }}" class="size-3 shrink-0" aria-hidden="true" />
+        {{ cfg.label }}
+    </span>
+    {% if hasMajorNc %}
+        <span class="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
+            <twig:ux:icon name="lucide:shield-alert" class="size-3 shrink-0" aria-hidden="true" />
+            NC majeure
+        </span>
+    {% endif %}
+</span>

@@ -1,0 +1,161 @@
+{% set inputClass = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50' %}
+
+{# STEP 1 — Informations générales #}
+<twig:Card class="motion-card border-border/80 shadow-sm audit-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2">
+        <div class="flex items-start gap-3">
+            <span class="audit-form-step-pill" aria-hidden="true">1</span>
+            <div class="min-w-0 space-y-1">
+                <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:building-2" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                    Informations générales
+                </h2>
+                <p class="text-xs text-muted-foreground m-0">Identifiez l’organisation, le site et l’auditeur pour structurer le rapport.</p>
+            </div>
+        </div>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="audit-form-field-group pref-field-group">
+            <label class="audit-form-field-group__label block text-sm font-medium mb-1" for="companyName">Entreprise</label>
+            <input
+                id="companyName"
+                name="companyName"
+                type="text"
+                class="{{ inputClass }}"
+                data-audit-form-progress-target="field"
+                autocomplete="organization"
+            >
+        </div>
+        <div class="audit-form-field-group pref-field-group">
+            <label class="audit-form-field-group__label block text-sm font-medium mb-1" for="concernedSite">Site</label>
+            <input
+                id="concernedSite"
+                name="concernedSite"
+                type="text"
+                class="{{ inputClass }}"
+                placeholder="Optionnel"
+                data-audit-form-progress-target="field"
+            >
+        </div>
+        <div class="audit-form-field-group pref-field-group">
+            <div class="flex items-start gap-1.5 mb-1">
+                <label class="audit-form-field-group__label block text-sm font-medium" for="mainAuditor">Auditeur principal</label>
+                <twig:ContextualHelp helpId="help.audit.field.main_auditor" variant="inline" trigger="icon" class="shrink-0" />
+            </div>
+            <input
+                id="mainAuditor"
+                name="mainAuditor"
+                type="text"
+                class="{{ inputClass }}"
+                data-audit-form-progress-target="field"
+                autocomplete="name"
+            >
+        </div>
+        <div class="audit-form-field-group pref-field-group">
+            <twig:DateField
+                name="auditedAt"
+                id="auditedAt"
+                value="{{ 'now'|date('Y-m-d') }}"
+                label="Date de l’audit"
+                :required="true"
+                inputClass="{{ inputClass }}"
+            />
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+{# STEP 2 — Périmètre & objectifs #}
+<twig:Card class="motion-card border-border/80 shadow-sm audit-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2">
+        <div class="flex items-start gap-3">
+            <span class="audit-form-step-pill" aria-hidden="true">2</span>
+            <div class="min-w-0 space-y-1">
+                <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:scan-search" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                    Périmètre &amp; objectifs
+                </h2>
+                <p class="text-xs text-muted-foreground m-0">Cadrez le champ d’investigation et l’intention de l’audit.</p>
+            </div>
+        </div>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="audit-form-field-group pref-field-group">
+            <div class="flex items-start gap-1.5 mb-1">
+                <label class="audit-form-field-group__label block text-sm font-medium" for="concernedProcess">Processus concerné</label>
+                <twig:ContextualHelp helpId="help.audit.field.concerned_process" variant="inline" trigger="icon" class="shrink-0" />
+            </div>
+            <input
+                id="concernedProcess"
+                name="concernedProcess"
+                type="text"
+                class="{{ inputClass }}"
+                placeholder="Optionnel"
+                data-audit-form-progress-target="field"
+            >
+        </div>
+        <div class="audit-form-field-group pref-field-group">
+            <div class="flex items-start gap-1.5 mb-1">
+                <label class="audit-form-field-group__label block text-sm font-medium" for="scope">Périmètre</label>
+                <twig:ContextualHelp helpId="help.audit.field.scope" variant="inline" trigger="icon" class="shrink-0" />
+            </div>
+            <textarea
+                id="scope"
+                name="scope"
+                rows="3"
+                class="{{ inputClass }}"
+                placeholder="Optionnel"
+                data-audit-form-progress-target="field"
+            ></textarea>
+        </div>
+        <div class="audit-form-field-group pref-field-group">
+            <div class="flex items-start gap-1.5 mb-1">
+                <label class="audit-form-field-group__label block text-sm font-medium" for="objective">Objectif</label>
+                <twig:ContextualHelp helpId="help.audit.field.objective" variant="inline" trigger="icon" class="shrink-0" />
+            </div>
+            <textarea
+                id="objective"
+                name="objective"
+                rows="3"
+                class="{{ inputClass }}"
+                placeholder="Optionnel"
+                data-audit-form-progress-target="field"
+            ></textarea>
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+{# STEP 3 — Paramètres du rapport #}
+<twig:Card class="motion-card border-border/80 shadow-sm audit-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2">
+        <div class="flex items-start gap-3">
+            <span class="audit-form-step-pill" aria-hidden="true">3</span>
+            <div class="min-w-0 space-y-1">
+                <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:file-cog" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                    Paramètres du rapport
+                </h2>
+                <p class="text-xs text-muted-foreground m-0">Version du document et options complémentaires à venir.</p>
+            </div>
+        </div>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        <div class="audit-form-field-group pref-field-group">
+            <div class="flex items-start gap-1.5 mb-1">
+                <label class="audit-form-field-group__label block text-sm font-medium" for="auditVersion">Version du rapport</label>
+                <twig:ContextualHelp helpId="help.audit.field.audit_version" variant="inline" trigger="icon" class="shrink-0" />
+            </div>
+            <input
+                id="auditVersion"
+                name="auditVersion"
+                type="text"
+                value="1.0"
+                class="{{ inputClass }}"
+                data-audit-form-progress-target="field"
+            >
+        </div>
+        <div class="rounded-lg border border-dashed border-border/80 bg-muted/30 px-4 py-3 text-xs text-muted-foreground">
+            <p class="m-0 font-medium text-foreground/80">Options à venir</p>
+            <p class="m-0 mt-1">Modèles de rapport, pièces jointes et paramètres d’export seront disponibles prochainement.</p>
+        </div>
+    </twig:Card:Content>
+</twig:Card>

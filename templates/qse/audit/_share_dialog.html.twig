@@ -1,0 +1,54 @@
+<dialog
+    id="audit-share-dialog"
+    class="audit-share-dialog fixed top-[50%] left-[50%] z-[200] m-0 w-[min(100%,28rem)] max-w-[calc(100vw-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-xl border border-border bg-card p-0 text-foreground shadow-2xl backdrop:bg-black/55 backdrop:backdrop-blur-[2px]"
+    data-qse-audit-board-target="shareDialog"
+    aria-labelledby="audit-share-dialog-title"
+    data-action="click->qse-audit-board#backdropCloseShare"
+>
+    <form
+        method="post"
+        class="flex flex-col"
+        data-qse-audit-board-target="shareForm"
+        data-turbo="false"
+    >
+        <div class="border-b border-border/80 px-5 py-4">
+            <h2 id="audit-share-dialog-title" class="text-lg font-semibold text-foreground m-0">Partager l’audit</h2>
+            <p class="text-sm text-muted-foreground m-0 mt-1" data-qse-audit-board-target="shareLead">
+                Créez un lien sécurisé en lecture seule.
+            </p>
+        </div>
+        <div class="space-y-4 px-5 py-4">
+            <input type="hidden" name="_token" value="" />
+            <label class="flex flex-col gap-1.5 text-sm">
+                <span class="font-medium text-foreground">E-mail du destinataire <span class="text-muted-foreground font-normal">(optionnel)</span></span>
+                <input
+                    type="email"
+                    name="invitedEmail"
+                    class="h-10 rounded-lg border border-input bg-background px-3 text-sm"
+                    placeholder="collaborateur@entreprise.fr"
+                    autocomplete="email"
+                />
+            </label>
+            <label class="flex flex-col gap-1.5 text-sm">
+                <span class="font-medium text-foreground">Durée du lien</span>
+                <select name="ttlDays" class="h-10 rounded-lg border border-input bg-background px-3 text-sm">
+                    <option value="7">7 jours</option>
+                    <option value="30" selected>30 jours</option>
+                </select>
+            </label>
+            <input type="hidden" name="accessLevel" value="lecture_seule" />
+            <label class="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="sendEmail" value="1" class="rounded border-input" />
+                <span>Envoyer le lien par e-mail</span>
+            </label>
+        </div>
+        <div class="flex flex-col-reverse gap-2 border-t border-border/80 px-5 py-4 sm:flex-row sm:justify-end">
+            <twig:Button type="button" variant="outline" data-action="click->qse-audit-board#closeShare">
+                Annuler
+            </twig:Button>
+            <twig:Button type="submit" variant="default">
+                Créer le lien
+            </twig:Button>
+        </div>
+    </form>
+</dialog>

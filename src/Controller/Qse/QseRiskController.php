@@ -9,10 +9,12 @@ use App\Application\Analytics\TrackingEventType;
 use App\Entity\Qse\CAPAAction;
 use App\Entity\Qse\RiskMatrixEntry;
 use App\Entity\User;
-use App\Qse\Enum\RiskCategory;
+use App\Form\Qse\RiskMatrixEntryFormType;
 use App\Qse\Enum\RiskEntryStatus;
 use App\Qse\Service\RiskCapaPolicy;
+use App\Qse\Service\RiskCriticalityCalculator;
 use App\Repository\Qse\CAPAActionRepository;
+use App\Qse\Risk\ViewModel\RiskBoardViewModelFactory;
 use App\Repository\Qse\RiskMatrixEntryRepository;
 use App\Repository\UserPreferencesRepository;
 use App\Service\Onboarding\OnboardingActivationService;
@@ -32,9 +34,11 @@ final class QseRiskController extends AbstractController
         private readonly CAPAActionRepository $capaRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly RiskCapaPolicy $riskCapaPolicy,
+        private readonly RiskCriticalityCalculator $riskCriticalityCalculator,
         private readonly TrackingEventRecorder $trackingEventRecorder,
         private readonly UserPreferencesRepository $userPreferencesRepository,
         private readonly OnboardingActivationService $onboardingActivationService,
+        private readonly RiskBoardViewModelFactory $riskBoardViewModelFactory,
     ) {
     }
 
@@ -47,7 +51,7 @@ final class QseRiskController extends AbstractController
         }
 
         return $this->render('qse/risk/index.html.twig', [
-            'risks' => $this->riskRepository->findByOwner($user),
+            'shell' => $this->riskBoardViewModelFactory->buildCockpitShell($user),
         ]);
     }
 
@@ -59,29 +63,22 @@ final class QseRiskController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->isMethod('POST')) {
-            if (!$this->isCsrfTokenValid('qse_risk_new', (string) $request->request->get('_token'))) {
-                throw $this->createAccessDeniedException();
-            }
-            $entry = new RiskMatrixEntry();
-            $entry->setOwner($user);
-            $entry->setIdentifiedRisk($request->request->getString('identified_risk'));
-            $entry->setDescription($request->request->getString('description') ?: null);
-            $entry->setConcernedProcess($request->request->getString('concerned_process') ?: null);
-            $entry->setRiskCategory(RiskCategory::tryFrom($request->request->getString('risk_category')) ?? RiskCategory::QUALITY);
-            $entry->setSeverity($this->nullableInt($request->request->get('severity')));
-            $entry->setProbability($this->nullableInt($request->request->get('probability')));
-            $entry->setDetection($this->nullableInt($request->request->get('detection')));
-            $s = $entry->getSeverity();
-            $p = $entry->getProbability();
-            $d = $entry->getDetection();
-            if ($s !== null && $p !== null && $d !== null) {
-                $entry->setCriticalityScore($s * $p * $d);
-            }
-            $entry->setRiskLevel($request->request->getString('risk_level') ?: null);
-            $entry->setExistingActions($request->request->getString('existing_actions') ?: null);
-            $entry->setResponsible($request->request->getString('responsible') ?: null);
-            $entry->setStatus(RiskEntryStatus::tryFrom($request->request->getString('status')) ?? RiskEntryStatus::IDENTIFIE);
+        $entry = new RiskMatrixEntry();
+        $entry->setOwner($user);
+
+        $origin = $this->resolveOnboardingOrigin($request);
+        $form = $this->createForm(RiskMatrixEntryFormType::class, $entry, [
+            'action' => $request->getUri(),
+        ]);
+        if ($origin !== '') {
+            $form->get('origin')->setData($origin);
+        }
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->riskCriticalityCalculator->applyToEntry($entry);
+
             try {
                 if ($entry->getStatus() === RiskEntryStatus::SOUS_SURVEILLANCE) {
                     $this->riskCapaPolicy->assertCanActivateCriticalRisk($entry);
@@ -89,8 +86,12 @@ final class QseRiskController extends AbstractController
             } catch (\InvalidArgumentException $e) {
                 $this->addFlash('danger', $e->getMessage());
 
-                return $this->render('qse/risk/new.html.twig', ['last' => $request->request->all()]);
+                return $this->render('qse/risk/new.html.twig', [
+                    'form' => $form,
+                    'calculator' => $this->riskCriticalityCalculator,
+                ]);
             }
+
             $this->entityManager->persist($entry);
             $this->entityManager->flush();
 
@@ -103,6 +104,9 @@ final class QseRiskController extends AbstractController
                 'web',
             );
 
+            $action = (string) $form->get('action')->getData();
+            $continueAfterSave = $action === 'save_continue';
+
             if ($this->isOnboardingOrigin($request) && $user instanceof User) {
                 $preferences = $this->userPreferencesRepository->getOrCreateForUser($user);
                 $this->onboardingActivationService->markFirstActionCompleted($preferences);
@@ -111,10 +115,19 @@ final class QseRiskController extends AbstractController
                 return $this->redirectToRoute('app_dashboard_index', ['activation' => 'risk_created']);
             }
 
+            if ($continueAfterSave) {
+                $this->addFlash('success', 'Risque enregistré. Vous pouvez en créer un autre.');
+
+                return $this->redirectToRoute('app_qse_risk_new');
+            }
+
             return $this->redirectToRoute('app_qse_risk_show', ['id' => $entry->getId()]);
         }
 
-        return $this->render('qse/risk/new.html.twig', ['last' => []]);
+        return $this->render('qse/risk/new.html.twig', [
+            'form' => $form,
+            'calculator' => $this->riskCriticalityCalculator,
+        ]);
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -155,21 +168,17 @@ final class QseRiskController extends AbstractController
         ]);
     }
 
-    private function nullableInt(mixed $v): ?int
+    private function resolveOnboardingOrigin(Request $request): string
     {
-        if ($v === null || $v === '') {
-            return null;
+        if ($request->query->getString('origin') === 'onboarding') {
+            return 'onboarding';
         }
 
-        return (int) $v;
+        return $request->request->getString('origin');
     }
 
     private function isOnboardingOrigin(Request $request): bool
     {
-        if ($request->query->getString('origin') === 'onboarding') {
-            return true;
-        }
-
-        return $request->request->getString('origin') === 'onboarding';
+        return $this->resolveOnboardingOrigin($request) === 'onboarding';
     }
 }

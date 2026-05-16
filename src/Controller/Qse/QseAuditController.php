@@ -11,7 +11,13 @@ use App\Entity\User;
 use App\Entity\Qse\Audit;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\Qse\AuditStandard;
+use App\Collaboration\SharedAccessLevel;
+use App\Collaboration\SharedAccessService;
+use App\Collaboration\SharedResourceType;
+use App\Entity\Qse\AuditActivityLog;
 use App\Qse\Audit\ViewModel\AuditCockpitViewModelFactory;
+use App\Qse\Service\AuditArchiver;
+use App\Qse\Service\AuditDuplicator;
 use App\Qse\Enum\AuditVerdict;
 use App\Qse\Event\AuditEvaluationSavedEvent;
 use App\Qse\Export\AuditDocumentExporter;
@@ -57,6 +63,9 @@ final class QseAuditController extends AbstractController
         private readonly AuditCockpitViewModelFactory $auditCockpitViewModelFactory,
         private readonly AuditSpreadsheetExporter $auditSpreadsheetExporter,
         private readonly AuditDocumentExporter $auditDocumentExporter,
+        private readonly AuditDuplicator $auditDuplicator,
+        private readonly AuditArchiver $auditArchiver,
+        private readonly SharedAccessService $sharedAccessService,
         private readonly AuditEvaluationAutoCapaService $autoCapaService,
     ) {
     }
@@ -65,18 +74,11 @@ final class QseAuditController extends AbstractController
     public function index(): Response
     {
         $user = $this->getUser();
-        if (!\is_object($user)) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
-        $audits = $this->auditRepository->findByOwner($user);
-        $ids = array_values(array_filter(array_map(static fn (Audit $a): ?int => $a->getId(), $audits)));
-        $auditCapaCounts = $this->capaActionRepository->countLinkedToAuditIds($ids);
-
-        return $this->render('qse/audit/index.html.twig', [
-            'audits' => $audits,
-            'audit_capa_counts' => $auditCapaCounts,
-        ]);
+        return $this->render('qse/audit/index.html.twig');
     }
 
     #[Route('/referentiel', name: 'pick_standard', methods: ['GET'])]
@@ -411,6 +413,125 @@ final class QseAuditController extends AbstractController
             'id' => $audit->getId(),
             'chapter' => $chapter,
         ]);
+    }
+
+    #[Route('/{id}/duplicate', name: 'duplicate', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function duplicate(Request $request, int $id): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        if (!$this->isCsrfTokenValid('duplicate_qse_audit_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+        $clone = $this->auditDuplicator->duplicate($audit, $user);
+        $this->addFlash('success', 'Audit dupliqué. Vous pouvez reprendre la saisie sur la copie.');
+
+        return $this->redirectToRoute('app_qse_audit_show', ['id' => $clone->getId()]);
+    }
+
+    #[Route('/{id}/archive', name: 'archive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function archive(Request $request, int $id): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        if (!$this->isCsrfTokenValid('archive_qse_audit_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+        $this->auditArchiver->archive($audit, $user);
+        $this->addFlash('success', 'Audit archivé.');
+
+        return $this->redirectToRoute('app_qse_audit_index');
+    }
+
+    #[Route('/{id}/unarchive', name: 'unarchive', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function unarchive(Request $request, int $id): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        if (!$this->isCsrfTokenValid('unarchive_qse_audit_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+        $this->auditArchiver->unarchive($audit, $user);
+        $this->addFlash('success', 'Audit restauré.');
+
+        return $this->redirectToRoute('app_qse_audit_index');
+    }
+
+    #[Route('/{id}/share', name: 'share', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function share(Request $request, int $id): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+        if (!$this->isCsrfTokenValid('share_qse_audit_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+        $audit = $this->auditRepository->findOneOwnedBy($id, $user);
+        if (!$audit instanceof Audit) {
+            throw $this->createNotFoundException();
+        }
+
+        $invitedEmail = trim((string) $request->request->get('invitedEmail', ''));
+        if ($invitedEmail !== '' && !filter_var($invitedEmail, FILTER_VALIDATE_EMAIL)) {
+            $this->addFlash('danger', 'Adresse e-mail invalide.');
+
+            return $this->redirectToRoute('app_qse_audit_index');
+        }
+
+        $ttlDays = (int) $request->request->get('ttlDays', 30);
+        if (!\in_array($ttlDays, [7, 30], true)) {
+            $ttlDays = 30;
+        }
+        $level = SharedAccessLevel::tryFrom((string) $request->request->get('accessLevel', 'lecture_seule'))
+            ?? SharedAccessLevel::LECTURE_SEULE;
+        $sendEmail = $request->request->getBoolean('sendEmail');
+
+        try {
+            $out = $this->sharedAccessService->createShare(
+                $user,
+                SharedResourceType::AUDIT,
+                (int) $audit->getId(),
+                $level,
+                $ttlDays,
+                $invitedEmail !== '' ? $invitedEmail : null,
+                $sendEmail,
+            );
+        } catch (\InvalidArgumentException) {
+            $this->addFlash('danger', 'Impossible de partager cet audit.');
+
+            return $this->redirectToRoute('app_qse_audit_index');
+        }
+
+        $log = new AuditActivityLog();
+        $log->setAudit($audit);
+        $log->setActor($user);
+        $log->setAction('audit_shared');
+        $log->setPayload(['share_url' => $out['shareUrl']]);
+        $this->entityManager->persist($log);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Lien de partage créé : ' . $out['shareUrl']);
+
+        return $this->redirectToRoute('app_qse_audit_index');
     }
 
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['POST'])]

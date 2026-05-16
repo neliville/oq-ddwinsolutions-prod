@@ -1,0 +1,36 @@
+{# @param field FormView #}
+{# @param help_id string #}
+{% set value = field.vars.value %}
+<div class="risk-scale-field">
+    <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="flex items-center gap-1.5 min-w-0">
+            {{ form_label(field, null, { label_attr: { class: 'text-sm font-medium m-0' } }) }}
+            <twig:ContextualHelp helpId="{{ help_id }}" variant="field" trigger="icon" class="shrink-0" />
+        </div>
+        <span class="risk-scale-field__value text-sm font-semibold tabular-nums text-primary" data-risk-scale-display="{{ field.vars.id }}">
+            {{ value is not null ? value : '—' }}
+        </span>
+    </div>
+    <input
+        type="range"
+        id="{{ field.vars.id }}"
+        name="{{ field.vars.full_name }}"
+        min="1"
+        max="10"
+        step="1"
+        {% if value is not null %}value="{{ value }}"{% endif %}
+        class="risk-scale-field__range w-full"
+        data-risk-criticality-target="{{ field.vars.attr['data-risk-criticality-target']|default('') }}"
+        aria-valuemin="1"
+        aria-valuemax="10"
+        {% if value is not null %}aria-valuenow="{{ value }}"{% endif %}
+        aria-describedby="{{ field.vars.id }}-help"
+    />
+    {% if field.vars.errors|length > 0 %}
+        <div id="{{ field.vars.id }}-help" class="text-sm text-destructive mt-1" role="alert">
+            {% for error in field.vars.errors %}{{ error.message }}{% endfor %}
+        </div>
+    {% else %}
+        <p id="{{ field.vars.id }}-help" class="sr-only">Échelle de 1 (faible) à 10 (élevé)</p>
+    {% endif %}
+</div>

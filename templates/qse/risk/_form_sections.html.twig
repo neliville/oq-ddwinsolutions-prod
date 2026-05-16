@@ -1,0 +1,92 @@
+{# @param form FormView #}
+
+{# §1 Identification #}
+<twig:Card class="motion-card border-border/80 shadow-sm risk-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:scan-search" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Identification du risque
+        </h2>
+        <p class="text-xs text-muted-foreground m-0">Décrivez le risque et son contexte processus.</p>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        {% include 'components/form/field_with_contextual_help.html.twig' with { field: form.identified_risk, help_id: 'help.risk.field.identified_risk' } %}
+        <div class="pref-field-group">
+            {{ form_label(form.description, null, { label_attr: { class: 'block text-sm font-medium mb-1' } }) }}
+            {{ form_widget(form.description) }}
+        </div>
+        <div class="pref-field-group">
+            {{ form_label(form.concerned_process, null, { label_attr: { class: 'block text-sm font-medium mb-1' } }) }}
+            {{ form_widget(form.concerned_process) }}
+        </div>
+        {% include 'components/form/field_with_contextual_help.html.twig' with { field: form.risk_category, help_id: 'help.risk.field.category' } %}
+    </twig:Card:Content>
+</twig:Card>
+
+<twig:Card class="motion-card border-border/80 shadow-sm risk-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:activity" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Analyse de criticité
+        </h2>
+        <p class="text-xs text-muted-foreground m-0">Gravité, probabilité et détection — le niveau est calculé automatiquement.</p>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {% include 'qse/risk/_scale_field.html.twig' with { field: form.severity, help_id: 'help.risk.field.severity' } %}
+            {% include 'qse/risk/_scale_field.html.twig' with { field: form.probability, help_id: 'help.risk.field.probability' } %}
+            {% include 'qse/risk/_scale_field.html.twig' with { field: form.detection, help_id: 'help.risk.field.detection' } %}
+        </div>
+    </twig:Card:Content>
+</twig:Card>
+
+{# §3 Actions existantes #}
+<twig:Card class="motion-card border-border/80 shadow-sm risk-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:shield-check" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Actions existantes
+        </h2>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0">
+        {% include 'components/form/field_with_contextual_help.html.twig' with { field: form.existing_actions, help_id: 'help.risk.field.existing_actions' } %}
+    </twig:Card:Content>
+</twig:Card>
+
+{# §4 Pilotage #}
+<twig:Card class="motion-card border-border/80 shadow-sm risk-form-section" data-gsap-reveal-item>
+    <twig:Card:Header class="p-4 sm:p-5 pb-2 space-y-1">
+        <h2 class="text-base font-semibold m-0 flex items-center gap-2">
+            <twig:ux:icon name="lucide:user-cog" class="size-5 text-primary shrink-0" aria-hidden="true" />
+            Pilotage &amp; suivi
+        </h2>
+    </twig:Card:Header>
+    <twig:Card:Content class="p-4 sm:p-5 pt-0 space-y-4">
+        {% include 'components/form/field_with_contextual_help.html.twig' with { field: form.responsible, help_id: 'help.risk.field.responsible' } %}
+        <div class="pref-field-group">
+            {% include 'components/form/field_with_contextual_help.html.twig' with { field: form.status, help_id: 'help.risk.field.status' } %}
+            {% set statusValue = form.status.vars.data.value ?? 'identifie' %}
+            <div class="mt-2 flex flex-wrap items-center gap-2" data-risk-status-preview>
+                <span class="text-xs text-muted-foreground">Aperçu :</span>
+                <twig:RiskStatusBadge :status="statusValue" :label="statusValue|qse_status_label('risk')" />
+            </div>
+            <div
+                class="hidden mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-900 dark:text-amber-200"
+                data-risk-surveillance-hint
+                role="status"
+            >
+                Un risque critique en « sous surveillance » doit être lié à au moins une CAPA après création.
+            </div>
+        </div>
+        <div class="pref-field-group">
+            <twig:DateField
+                name="review_at"
+                id="{{ form.review_at.vars.id }}"
+                value="{{ form.review_at.vars.value ? form.review_at.vars.value|date('Y-m-d') : '' }}"
+                label="{{ form.review_at.vars.label }}"
+            />
+            {{ form_errors(form.review_at) }}
+            <p class="text-xs text-muted-foreground mt-1 m-0">Date de prochaine revue du risque (optionnel).</p>
+        </div>
+    </twig:Card:Content>
+</twig:Card>

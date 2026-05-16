@@ -1,0 +1,31 @@
+{# @prop percent float Progression 0-100 #}
+{# @prop answered int Exigences traitées #}
+{# @prop total int Total exigences #}
+{# @prop compliance float|null Taux conformité global #}
+{%- props percent = 0, answered = 0, total = 0, compliance = null -%}
+{%- set pct = percent|round(0) -%}
+{%- set barTone = compliance is not null ? (compliance >= 80 ? 'bg-emerald-500' : (compliance >= 60 ? 'bg-amber-500' : 'bg-destructive')) : 'bg-primary' -%}
+<div class="space-y-1.5 min-w-0">
+    <div class="flex items-center justify-between gap-2 text-xs">
+        <span class="font-medium text-muted-foreground">Conformité</span>
+        <span class="tabular-nums font-semibold text-foreground">
+            {% if compliance is not null %}{{ compliance|round(0) }}&nbsp;%{% else %}-{% endif %}
+        </span>
+    </div>
+    <div
+        class="relative h-2.5 w-full overflow-hidden rounded-full bg-muted/80 ring-1 ring-border/40"
+        role="progressbar"
+        aria-valuenow="{{ pct }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Progression de saisie {{ pct }} pour cent"
+    >
+        <div
+            class="audit-compliance-bar__fill h-full rounded-full {{ barTone }} transition-all duration-700 ease-out"
+            style="width: {{ pct }}%"
+        ></div>
+    </div>
+    <p class="m-0 text-[11px] text-muted-foreground tabular-nums">
+        <span class="font-medium text-foreground">{{ answered }}</span> / {{ total }} exigences
+    </p>
+</div>

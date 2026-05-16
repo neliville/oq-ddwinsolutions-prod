@@ -1,0 +1,71 @@
+{# @prop calculator App\Qse\Service\RiskCriticalityCalculator #}
+{%- props calculator -%}
+<aside
+    class="risk-criticality-panel rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-border/40 overflow-hidden lg:sticky lg:top-[var(--dashboard-sticky-toolbar-top)] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+    aria-labelledby="risk-criticality-panel-heading"
+>
+    <header class="px-4 py-3 sm:px-5 sm:py-4 border-b border-border/40 bg-muted/10">
+        <div class="flex items-start justify-between gap-2">
+            <div>
+                <h2 id="risk-criticality-panel-heading" class="text-base font-semibold m-0 flex items-center gap-2">
+                    <twig:ux:icon name="lucide:gauge" class="size-5 text-primary shrink-0" aria-hidden="true" />
+                    Criticité en direct
+                </h2>
+                <p class="text-xs text-muted-foreground m-0 mt-1">Score G × P × D · matrice normalisée 1–5</p>
+            </div>
+            <twig:ContextualHelp helpId="help.risk.field.criticality" variant="inline" trigger="icon" class="shrink-0" />
+        </div>
+    </header>
+
+    <div class="p-4 sm:p-5 space-y-5">
+        <div class="rounded-xl border border-border/70 bg-muted/15 p-4 text-center" aria-live="polite" aria-atomic="true">
+            <p class="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">Score criticité</p>
+            <p class="m-0 mt-1 text-3xl font-bold tabular-nums text-foreground" data-risk-criticality-target="scoreDisplay">—</p>
+            <div class="mt-3 flex justify-center" data-risk-criticality-target="badgeWrap">
+                <span class="inline-flex items-center rounded-md border border-border bg-muted/40 px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                    Renseignez G, P et D
+                </span>
+            </div>
+        </div>
+
+        <div data-risk-criticality-target="capaAlert" class="hidden rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-900 dark:text-amber-200" role="status">
+            <p class="m-0 font-medium">Risque critique</p>
+            <p class="m-0 mt-1 text-amber-800/90 dark:text-amber-200/90">En statut « sous surveillance », une CAPA liée sera obligatoire.</p>
+        </div>
+
+        <div>
+            <p class="m-0 text-xs font-medium text-muted-foreground mb-2">Position sur la matrice (aperçu)</p>
+            <div
+                class="risk-criticality-panel__matrix"
+                role="img"
+                aria-label="Aperçu de position sur la matrice probabilité par gravité"
+                data-risk-criticality-target="matrix"
+            >
+                {% for s in 5..1 %}
+                    {% for p in 1..5 %}
+                        <div
+                            class="risk-criticality-panel__cell risk-heatmap-preview__cell--low"
+                            data-p="{{ p }}"
+                            data-s="{{ s }}"
+                            data-risk-criticality-target="cell"
+                        ></div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="flex flex-wrap gap-3 justify-center text-xs mt-3">
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="size-3 rounded risk-heatmap-preview__cell--low border" aria-hidden="true"></span>
+                    Faible
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="size-3 rounded risk-heatmap-preview__cell--medium border" aria-hidden="true"></span>
+                    Modéré
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="size-3 rounded risk-heatmap-preview__cell--high border" aria-hidden="true"></span>
+                    Élevé
+                </span>
+            </div>
+        </div>
+    </div>
+</aside>

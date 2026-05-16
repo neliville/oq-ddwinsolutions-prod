@@ -1,0 +1,65 @@
+<div {{ attributes.defaults({ class: 'risk-board w-full' }) }}>
+    {% set vm = this.viewModel %}
+
+    <twig:RiskFiltersBar
+        :filterOptions="vm.filterOptions"
+        :search="search"
+        :status="status"
+        :criticality="criticality"
+        :sort="sort"
+    />
+
+    <div aria-live="polite" aria-atomic="true" class="sr-only" id="risk-board-live-region">
+        {{ vm.totalCount }} risque(s) affiché(s)
+    </div>
+
+    {% if vm.rows is empty %}
+        <twig:Empty class="my-8">
+            <twig:Empty:Header>
+                <twig:Empty:Title>Aucun risque ne correspond</twig:Empty:Title>
+                <twig:Empty:Description>Modifiez les filtres ou créez un nouveau risque pour alimenter votre matrice.</twig:Empty:Description>
+            </twig:Empty:Header>
+            <twig:Empty:Content>
+                <twig:Button as="a" href="{{ path('app_qse_risk_new') }}" variant="default" class="no-underline motion-cta">
+                    Nouveau risque
+                </twig:Button>
+            </twig:Empty:Content>
+        </twig:Empty>
+    {% else %}
+        <div class="risk-board__list space-y-3 mb-6" role="list">
+            {% for row in vm.rows %}
+                <div role="listitem">
+                    <twig:RiskCardRow :row="row" />
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if vm.totalPages > 1 %}
+            <nav class="flex flex-wrap items-center justify-center gap-2 mb-8" aria-label="Pagination des risques">
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page <= 1 %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page - 1 }}"
+                >
+                    Précédent
+                </button>
+                <span class="text-sm text-muted-foreground tabular-nums px-2">
+                    Page {{ vm.page }} / {{ vm.totalPages }}
+                </span>
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center rounded-lg border border-border px-3 text-sm disabled:opacity-40"
+                    {% if vm.page >= vm.totalPages %}disabled{% endif %}
+                    data-action="live#action"
+                    data-live-action-param="goToPage"
+                    data-live-go-to-page-param="{{ vm.page + 1 }}"
+                >
+                    Suivant
+                </button>
+            </nav>
+        {% endif %}
+    {% endif %}
+</div>

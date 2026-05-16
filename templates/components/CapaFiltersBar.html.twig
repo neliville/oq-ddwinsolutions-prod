@@ -1,0 +1,85 @@
+{# @prop filterOptions array #}
+{%- props
+    filterOptions = { statuses: [], types: [], criticalities: [] },
+    search = '',
+    status = '',
+    capaType = '',
+    criticality = '',
+    overdueOnly = false,
+    dueFrom = '',
+    dueTo = '',
+    sort = 'recent',
+-%}
+<div class="capa-filters-bar rounded-xl border border-border/80 bg-card/80 backdrop-blur-sm p-4 shadow-sm ring-1 ring-border/40 mb-6">
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <label class="relative flex-1 min-w-0">
+                <span class="sr-only">Rechercher une CAPA</span>
+                <twig:ux:icon name="lucide:search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <input
+                    type="search"
+                    data-model="search"
+                    value="{{ search }}"
+                    placeholder="Rechercher titre, responsable, origine…"
+                    class="flex h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    autocomplete="off"
+                />
+            </label>
+            <button
+                type="button"
+                class="inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                data-action="live#action"
+                data-live-action-param="resetFilters"
+            >
+                Réinitialiser
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Statut
+                <select data-model="status" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Tous</option>
+                    {% for st in filterOptions.statuses %}
+                        <option value="{{ st.value }}" {% if status == st.value %}selected{% endif %}>{{ st.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Type
+                <select data-model="capaType" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Tous</option>
+                    {% for t in filterOptions.types %}
+                        <option value="{{ t.value }}" {% if capaType == t.value %}selected{% endif %}>{{ t.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+                Criticité
+                <select data-model="criticality" class="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground">
+                    <option value="">Toutes</option>
+                    {% for c in filterOptions.criticalities %}
+                        <option value="{{ c }}" {% if criticality == c %}selected{% endif %}>{{ c|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <twig:DateField name="dueFrom" value="{{ dueFrom }}" label="Échéance du" :compact="true" dataModel="dueFrom" />
+            <twig:DateField name="dueTo" value="{{ dueTo }}" label="Au" :compact="true" dataModel="dueTo" />
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+            <label class="inline-flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                <input type="checkbox" data-model="overdueOnly" {% if overdueOnly %}checked{% endif %} class="size-4 rounded border-input" />
+                En retard uniquement
+            </label>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-medium text-muted-foreground">Tri :</span>
+                <select data-model="sort" class="h-8 rounded-lg border border-input bg-background px-2 text-sm" aria-label="Tri des CAPA">
+                    <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Plus récentes</option>
+                    <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Plus anciennes</option>
+                    <option value="due_asc" {% if sort == 'due_asc' %}selected{% endif %}>Échéance ↑</option>
+                    <option value="due_desc" {% if sort == 'due_desc' %}selected{% endif %}>Échéance ↓</option>
+                    <option value="title" {% if sort == 'title' %}selected{% endif %}>Titre A→Z</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

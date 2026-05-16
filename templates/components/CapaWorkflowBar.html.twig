@@ -1,0 +1,22 @@
+{# @prop step int #}
+{# @prop total int #}
+{# @prop showHelp bool Affiche l'aide contextuelle (HoverCard) — désactivé sur la fiche CAPA #}
+{%- props step = 1, total = 6, showHelp = true -%}
+{% set percent = total > 0 ? (100 * step / total)|round(0) : 0 %}
+<div class="capa-workflow-bar w-full">
+    <div class="flex items-center justify-between gap-2 mb-1.5 text-xs text-muted-foreground">
+        {% if showHelp %}
+            <twig:ContextualHelp helpId="help.capa.workflow" variant="inline" trigger="icon">
+                {% block trigger %}
+                <span class="font-medium">Avancement workflow</span>
+                {% endblock %}
+            </twig:ContextualHelp>
+        {% else %}
+            <span class="font-medium text-foreground">Avancement workflow</span>
+        {% endif %}
+        <span class="tabular-nums">{{ step }}/{{ total }}</span>
+    </div>
+    <div class="h-2 w-full overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="h-full rounded-full bg-primary" style="width: {{ percent }}%"></div>
+    </div>
+</div>

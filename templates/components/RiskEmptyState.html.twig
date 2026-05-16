@@ -1,0 +1,26 @@
+<section class="risk-empty-state rounded-2xl border border-dashed border-border/80 bg-gradient-to-b from-muted/20 to-card p-8 sm:p-10 text-center shadow-sm ring-1 ring-border/40 mb-6" aria-labelledby="risk-empty-heading">
+    <div class="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-5" aria-hidden="true">
+        <twig:ux:icon name="lucide:shield-alert" class="size-8" />
+    </div>
+    <h2 id="risk-empty-heading" class="text-xl font-semibold text-foreground m-0">Votre matrice de risques est vide</h2>
+    <p class="text-muted-foreground text-sm sm:text-base mt-2 mb-0 max-w-lg mx-auto leading-relaxed">
+        Commencez par identifier vos risques qualité, sécurité ou environnement.
+    </p>
+    <ul class="mt-6 mb-0 p-0 list-none text-left max-w-md mx-auto space-y-2.5 text-sm text-muted-foreground">
+        <li class="flex items-start gap-2">
+            <twig:ux:icon name="lucide:check" class="size-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <span>Priorisation automatique selon la criticité</span>
+        </li>
+        <li class="flex items-start gap-2">
+            <twig:ux:icon name="lucide:check" class="size-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <span>Lien avec audits et actions CAPA</span>
+        </li>
+        <li class="flex items-start gap-2">
+            <twig:ux:icon name="lucide:check" class="size-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <span>Pilotage PDCA centralisé</span>
+        </li>
+    </ul>
+    <twig:Button as="a" href="{{ path('app_qse_risk_new') }}" variant="default" class="no-underline motion-cta mt-8">
+        Créer mon premier risque
+    </twig:Button>
+</section>

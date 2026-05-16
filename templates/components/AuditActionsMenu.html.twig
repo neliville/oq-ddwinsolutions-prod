@@ -1,0 +1,109 @@
+{# @prop auditId int #}
+{# @prop auditLabel string #}
+{# @prop status string #}
+{# @prop capaCount int #}
+{%- props auditId = 0, auditLabel = '', status = 'brouillon', capaCount = 0 -%}
+{% set menuId = 'audit-actions-' ~ auditId %}
+<div class="dropdown audit-actions-dropdown relative" data-controller="dropdown-basic">
+    <button
+        type="button"
+        id="{{ menuId }}"
+        class="audit-actions-trigger inline-flex shrink-0 items-center justify-center rounded-lg border border-border bg-muted/50 text-foreground shadow-sm ring-1 ring-border/60 hover:bg-accent hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors"
+        data-dropdown-basic-target="button"
+        data-action="click->dropdown-basic#toggle keydown.arrow-down->dropdown-basic#openWithKeyboard"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label="Actions pour {{ auditLabel|e('html_attr') }}"
+    >
+        <twig:ux:icon name="lucide:more-horizontal" class="size-5 sm:size-4" aria-hidden="true" />
+    </button>
+    <ul
+        class="dropdown-menu dropdown-menu-end audit-actions-menu absolute right-0 z-[110] mt-1 min-w-[12rem] rounded-xl border border-border bg-popover p-1 shadow-xl"
+        data-dropdown-basic-target="menu"
+        hidden
+        role="menu"
+        aria-labelledby="{{ menuId }}"
+    >
+        <li role="none">
+            <a href="{{ path('app_qse_audit_show', { id: auditId }) }}" class="audit-actions-menu__item" role="menuitem">
+                <twig:ux:icon name="lucide:external-link" class="size-4" /> Ouvrir
+            </a>
+        </li>
+        <li role="none">
+            <a href="{{ path('app_qse_audit_show', { id: auditId }) }}" class="audit-actions-menu__item" role="menuitem">
+                <twig:ux:icon name="lucide:play" class="size-4" /> Continuer l’audit
+            </a>
+        </li>
+        <li role="none"><hr class="my-1 border-border/60" role="separator" /></li>
+        <li role="none">
+            <a href="{{ path('app_qse_audit_export_docx', { id: auditId, variant: 'direction' }) }}" class="audit-actions-menu__item" role="menuitem" title="{{ help_description('help.action.export') }}">
+                <twig:ux:icon name="lucide:file-text" class="size-4" /> Export Word
+            </a>
+        </li>
+        <li role="none">
+            <a href="{{ path('app_qse_audit_export_xlsx', { id: auditId }) }}" class="audit-actions-menu__item" role="menuitem" title="{{ help_description('help.action.export') }}">
+                <twig:ux:icon name="lucide:sheet" class="size-4" /> Export Excel
+            </a>
+        </li>
+        <li role="none">
+            <a href="{{ path('app_qse_audit_export_docx', { id: auditId, variant: 'certification' }) }}" class="audit-actions-menu__item" role="menuitem" title="{{ help_description('help.action.generate_report') }}">
+                <twig:ux:icon name="lucide:file-badge" class="size-4" /> Générer rapport
+            </a>
+        </li>
+        <li role="none">
+            <button
+                type="button"
+                class="audit-actions-menu__item w-full"
+                role="menuitem"
+                data-action="click->dropdown-basic#close click->qse-audit-board#openShare"
+                data-audit-id="{{ auditId }}"
+                data-audit-label="{{ auditLabel|e('html_attr') }}"
+                data-share-csrf="{{ csrf_token('share_qse_audit_' ~ auditId) }}"
+                title="{{ help_description('help.action.share') }}"
+            >
+                <twig:ux:icon name="lucide:share-2" class="size-4" /> Partager
+            </button>
+        </li>
+        <li role="none">
+            <form method="post" action="{{ path('app_qse_audit_duplicate', { id: auditId }) }}" class="m-0" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('duplicate_qse_audit_' ~ auditId) }}" />
+                <button type="submit" class="audit-actions-menu__item w-full" role="menuitem" title="{{ help_description('help.action.duplicate') }}">
+                    <twig:ux:icon name="lucide:copy" class="size-4" /> Dupliquer
+                </button>
+            </form>
+        </li>
+        <li role="none">
+            {% if status == 'archive' %}
+                <form method="post" action="{{ path('app_qse_audit_unarchive', { id: auditId }) }}" class="m-0" data-turbo="false">
+                    <input type="hidden" name="_token" value="{{ csrf_token('unarchive_qse_audit_' ~ auditId) }}" />
+                    <button type="submit" class="audit-actions-menu__item w-full" role="menuitem">
+                        <twig:ux:icon name="lucide:archive-restore" class="size-4" /> Désarchiver
+                    </button>
+                </form>
+            {% else %}
+                <form method="post" action="{{ path('app_qse_audit_archive', { id: auditId }) }}" class="m-0" data-turbo="false">
+                    <input type="hidden" name="_token" value="{{ csrf_token('archive_qse_audit_' ~ auditId) }}" />
+                    <button type="submit" class="audit-actions-menu__item w-full" role="menuitem" title="{{ help_description('help.action.archive') }}">
+                        <twig:ux:icon name="lucide:archive" class="size-4" /> Archiver
+                    </button>
+                </form>
+            {% endif %}
+        </li>
+        <li role="none"><hr class="my-1 border-border/60" role="separator" /></li>
+        <li role="none">
+            <button
+                type="button"
+                class="audit-actions-menu__item w-full text-destructive hover:bg-destructive/10"
+                role="menuitem"
+                data-action="click->qse-audit-delete#open"
+                data-audit-id="{{ auditId }}"
+                data-delete-url="{{ path('app_qse_audit_delete', { id: auditId }) }}"
+                data-capa-count="{{ capaCount }}"
+                data-audit-label="{{ auditLabel|e('html_attr') }}"
+                data-csrf-token="{{ csrf_token('delete_qse_audit_' ~ auditId) }}"
+            >
+                <twig:ux:icon name="lucide:trash-2" class="size-4" /> Supprimer
+            </button>
+        </li>
+    </ul>
+</div>

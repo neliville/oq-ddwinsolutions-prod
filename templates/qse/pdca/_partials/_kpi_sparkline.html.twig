@@ -1,0 +1,20 @@
+{# Micro sparkline SVG — values: list<int|float> #}
+{% if values is defined and values|length > 1 %}
+{% set maxVal = values|reduce((carry, v) => v > carry ? v : carry, values[0]) %}
+{% set minVal = values|reduce((carry, v) => v < carry ? v : carry, values[0]) %}
+{% set range = maxVal - minVal %}
+{% set range = range > 0 ? range : 1 %}
+{% set w = 64 %}
+{% set h = 24 %}
+{% set step = (w - 4) / (values|length - 1) %}
+<svg class="block shrink-0 opacity-80" width="{{ w }}" height="{{ h }}" viewBox="0 0 {{ w }} {{ h }}" aria-hidden="true" focusable="false">
+    <polyline
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        points="{% for i, v in values %}{{ 2 + i * step }},{{ h - 2 - ((v - minVal) / range) * (h - 4) }}{% if not loop.last %} {% endif %}{% endfor %}"
+    />
+</svg>
+{% endif %}
