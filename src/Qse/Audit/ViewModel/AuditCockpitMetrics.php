@@ -15,7 +15,17 @@ final readonly class AuditCockpitMetrics
      * @param array<string, int> $verdictCounts
      * @param array<string, array{chapter: string, total: int, answered: int, conformRate: ?float, verdictCounts: array<string, int>}> $chapterSummaries
      * @param array<string, mixed> $chartConfig
-     * @param list<array{time: string, label: string}> $timelinePreview
+     * @param list<array{
+     *     action: string,
+     *     time: string,
+     *     date: string,
+     *     iso8601: string,
+     *     title: string,
+     *     detail: ?string,
+     *     icon: string,
+     *     tone: string,
+     *     actor: ?string
+     * }> $timelinePreview
      */
     public function __construct(
         public int $totalRequirements,

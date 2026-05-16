@@ -5,7 +5,16 @@ import { Controller } from '@hotwired/stimulus';
  * enregistrement + navigation (fetch + redirection avec ancre).
  */
 export default class extends Controller {
-    static targets = ['status', 'statusDirty', 'statusIdle', 'primarySave', 'barDesktop', 'barMobile'];
+    static targets = [
+        'status',
+        'statusDirty',
+        'statusIdle',
+        'primarySave',
+        'barDesktop',
+        'barMobile',
+        'shortcutModWin',
+        'shortcutModMac',
+    ];
     static values = {
         formId: { type: String, default: 'audit-chapter-form' },
     };
@@ -31,6 +40,7 @@ export default class extends Controller {
 
         this._syncStatus();
         this._scrollToHash();
+        this._applyOsShortcutHint();
     }
 
     disconnect() {
@@ -117,6 +127,12 @@ export default class extends Controller {
         const dirty = this._dirty;
         this.statusDirtyTargets.forEach((el) => el.classList.toggle('hidden', !dirty));
         this.statusIdleTargets.forEach((el) => el.classList.toggle('hidden', dirty));
+        this.element.dispatchEvent(
+            new CustomEvent('audit-save-bar:dirty', {
+                bubbles: true,
+                detail: { dirty },
+            }),
+        );
     }
 
     _onBeforeUnload(e) {
@@ -133,8 +149,14 @@ export default class extends Controller {
         return this.element.contains(el) || !!this.form?.contains(el);
     }
 
+    /**
+     * Raccourci d’enregistrement : Ctrl/⌘ + Entrée (UX-safe, pattern SaaS standard
+     * Slack/GitHub/Linear/Notion). N’interfère ni avec le navigateur ni avec la
+     * frappe libre dans les <textarea> (Enter seul reste un saut de ligne).
+     */
     _onKey(e) {
-        if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') {
+        const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
+        if (!isEnter || !(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey) {
             return;
         }
         if (!this._inScope(document.activeElement)) {
@@ -205,6 +227,20 @@ export default class extends Controller {
             /* fallback navigate */
         }
         form.requestSubmit();
+    }
+
+    /**
+     * Bascule l’affichage des keycaps Ctrl ↔ ⌘ selon la plateforme. Sans JS,
+     * on reste sur Ctrl par défaut (fallback sûr).
+     */
+    _applyOsShortcutHint() {
+        const ua = (navigator.userAgent || navigator.platform || '').toLowerCase();
+        const isMac = /(mac|iphone|ipad|ipod)/.test(ua);
+        if (!isMac) {
+            return;
+        }
+        this.shortcutModWinTargets.forEach((el) => el.classList.add('hidden'));
+        this.shortcutModMacTargets.forEach((el) => el.classList.remove('hidden'));
     }
 
     _scrollToHash() {

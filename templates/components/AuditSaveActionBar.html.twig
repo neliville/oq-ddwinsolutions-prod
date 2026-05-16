@@ -28,10 +28,24 @@
                 class="min-h-11 min-w-[10rem] flex-1 sm:flex-none gap-1.5 rounded-lg border border-transparent bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 inline-flex items-center justify-center shrink-0"
                 form="{{ formId }}"
                 data-audit-save-bar-target="primarySave"
+                data-audit-save-pulse-target="primarySave"
             >
                 Enregistrer
             </button>
         </div>
     </div>
-    <p class="text-[10px] text-muted-foreground m-0 hidden sm:block">Raccourci&nbsp;: <kbd class="rounded border border-border px-1 py-0.5 font-mono text-[10px]">Ctrl</kbd> + <kbd class="rounded border border-border px-1 py-0.5 font-mono text-[10px]">S</kbd> (ou <kbd class="rounded border border-border px-1 py-0.5 font-mono text-[10px]">⌘</kbd> + <kbd class="rounded border border-border px-1 py-0.5 font-mono text-[10px]">S</kbd> sur Mac)</p>
+    {# Keycaps premium (style Linear/Notion). L’affichage Win/Mac est géré côté CSS via :is() pour rester sans JS. #}
+    {% set kbd = 'inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-border/80 bg-muted/60 px-1.5 font-sans text-[10.5px] font-semibold text-foreground/80 shadow-[inset_0_-1px_0_rgba(0,0,0,0.04)] tabular-nums' %}
+    <p class="m-0 hidden sm:flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground" data-audit-save-bar-target="shortcutHint">
+        <span class="inline-flex items-center gap-1 text-muted-foreground/90">
+            <twig:ux:icon name="lucide:keyboard" class="size-3.5" aria-hidden="true" />
+            <span>Enregistrer</span>
+        </span>
+        <span class="inline-flex items-center gap-1" aria-label="Raccourci clavier : Ctrl plus Entrée (Windows et Linux), Commande plus Entrée (macOS)">
+            <kbd class="{{ kbd }}" data-audit-save-bar-target="shortcutModWin"><span aria-hidden="true">Ctrl</span></kbd>
+            <kbd class="{{ kbd }} hidden" data-audit-save-bar-target="shortcutModMac"><span aria-hidden="true">⌘</span></kbd>
+            <span class="text-muted-foreground/60" aria-hidden="true">+</span>
+            <kbd class="{{ kbd }}"><span aria-hidden="true">Entrée</span></kbd>
+        </span>
+    </p>
 </div>
