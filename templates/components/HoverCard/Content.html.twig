@@ -1,11 +1,21 @@
-{# Panneau à droite du déclencheur (sidebar gauche), style proche d’un libellé Miro. #}
+{# Panneau HoverCard — positionné via portal + Floating UI (hover_card_controller). #}
+{# @prop showArrow bool Afficher la flèche de pointage. Defaults to `true` #}
 {# @block content The content revealed on hover #}
+{%- props showArrow = true -%}
 <span
     role="tooltip"
-    class="{{ ('pointer-events-none invisible absolute left-full top-1/2 z-[1080] ml-2 mt-0 w-[min(17rem,calc(100vw-20rem))] max-w-[min(17rem,calc(100vw-20rem))] -translate-y-1/2 translate-x-0 rounded-lg border border-zinc-600/90 bg-zinc-900 px-3 py-2.5 text-left text-xs text-zinc-50 opacity-0 shadow-xl outline-none transition-opacity duration-150 in-data-[state=open]:pointer-events-auto in-data-[state=open]:visible in-data-[state=open]:opacity-100 ' ~ attributes.render('class'))|tailwind_merge }}"
+    class="{{ ('oq-floating-panel oq-floating-panel--hover-card w-[min(17rem,calc(100vw-2rem))] max-w-xs rounded-lg border border-zinc-600/90 bg-zinc-900 px-3 py-2.5 text-left text-xs text-zinc-50 shadow-xl outline-none ' ~ attributes.render('class'))|tailwind_merge }}"
     {{ attributes.defaults({
         'data-slot': 'hover-card-content',
+        'data-state': 'closed',
     }) }}
 >
     {%- block content %}{% endblock -%}
+    {%- if showArrow -%}
+        <span
+            data-hover-card-target="arrow"
+            aria-hidden="true"
+            class="oq-floating-arrow oq-floating-arrow--dark absolute size-2 rotate-45 border border-zinc-600/90 bg-zinc-900"
+        ></span>
+    {%- endif -%}
 </span>

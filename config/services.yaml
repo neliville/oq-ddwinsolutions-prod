@@ -31,6 +31,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Help\HelpContentProvider:
+        arguments:
+            $configPath: '%kernel.project_dir%/config/help/contextual_help.yaml'
+
     # Menu builders
     App\Menu\Builder\MainMenuBuilder:
         tags:

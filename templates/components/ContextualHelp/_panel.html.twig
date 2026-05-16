@@ -1,0 +1,14 @@
+{# Panneau de contenu d’aide — @param entry App\Help\HelpEntry #}
+{% if entry.badge %}
+    <twig:Badge variant="secondary" class="mb-1.5 text-[10px] font-medium uppercase tracking-wide">{{ entry.badge }}</twig:Badge>
+{% endif %}
+<span class="block font-semibold leading-tight">{{ entry.title }}</span>
+<p class="mt-1.5 mb-0 text-[11px] leading-snug font-normal opacity-90">{{ entry.description }}</p>
+{% if entry.example %}
+    <p class="mt-1.5 mb-0 text-[10px] leading-snug italic opacity-75">{{ entry.example }}</p>
+{% endif %}
+{% if entry.learnMoreUrl %}
+    <a href="{{ entry.learnMoreUrl }}" class="mt-2 inline-flex text-[11px] font-medium underline underline-offset-2 opacity-90 hover:opacity-100">
+        En savoir plus
+    </a>
+{% endif %}

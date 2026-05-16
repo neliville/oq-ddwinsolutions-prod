@@ -1,0 +1,623 @@
+# Registre central — aide contextuelle (Hover Card)
+# Clés : help.{domaine}.{sujet}
+
+# --- Navigation utilisateur ---
+help.nav.dashboard:
+  title: Tableau de bord
+  description: 'Vue d’ensemble : urgences QSE, CAPA, risques, audits, indicateurs et raccourcis vers vos outils.'
+  badge: Espace connecté
+
+help.nav.tool.ishikawa:
+  title: Analyse des causes
+  description: Identifiez les causes racines avec un diagramme Ishikawa 5M / 6M.
+  badge: Outil
+
+help.nav.tool.five_why:
+  title: Méthode 5 Pourquoi
+  description: Remontez progressivement à l’origine d’un problème terrain.
+  badge: Outil
+
+help.nav.tool.qqoqccp:
+  title: Analyse QQOQCCP
+  description: Cadrez rapidement une situation avec les bonnes questions.
+  badge: Outil
+
+help.nav.tool.amdec:
+  title: Analyse AMDEC
+  description: Hiérarchisez les risques et priorisez vos actions.
+  badge: Outil
+
+help.nav.tool.pareto:
+  title: Diagramme Pareto
+  description: Identifiez les causes qui concentrent l’essentiel des effets.
+  badge: Outil
+
+help.nav.tool.eightd:
+  title: Méthode 8D
+  description: Structurez la résolution d’un problème en 8 étapes.
+  badge: Outil
+
+help.nav.pdca:
+  title: Cockpit PDCA
+  description: Gardez une vue synthétique sur vos priorités QSE.
+  badge: Pilotage QSE
+
+help.nav.audit:
+  title: Audits ISO
+  description: Pilotez vos audits et votre conformité par référentiel.
+  badge: Pilotage QSE
+
+help.nav.capa:
+  title: CAPA
+  description: 'Suivez vos actions correctives, responsables et échéances ; reliez-les aux risques et aux audits.'
+  badge: Pilotage QSE
+
+help.nav.risk:
+  title: Risques
+  description: Centralisez vos risques et leur criticité.
+  badge: Pilotage QSE
+
+help.nav.creations:
+  title: Mes créations
+  description: 'Diagrammes et analyses enregistrés : reprendre, dupliquer ou exporter vos travaux.'
+  badge: Contenus
+
+help.nav.blog:
+  title: Blog QSE
+  description: Articles et bonnes pratiques qualité, sécurité, environnement et amélioration continue.
+  badge: Contenus
+
+help.nav.profile:
+  title: Mon profil
+  description: Modifier votre adresse email et les paramètres de base du compte.
+  badge: Compte
+
+help.nav.preferences:
+  title: Préférences
+  description: 'Profil étendu, pilotage QHSE, notifications, exports et affichage du tableau de bord.'
+  badge: Compte
+
+# --- Navigation admin (sidebar utilisateur, section admin) ---
+help.nav.admin.dashboard:
+  title: Administration
+  description: Synthèse globale du site, accès rapides et indicateurs réservés aux administrateurs.
+  badge: Admin
+
+help.nav.admin.users:
+  title: Utilisateurs
+  description: 'Comptes, rôles et accès : ouvrez le sous-menu pour gérer la liste des utilisateurs.'
+  badge: Admin
+
+help.nav.admin.users.list:
+  title: Liste des utilisateurs
+  description: Rechercher, filtrer et administrer les comptes inscrits.
+  badge: Admin
+
+help.nav.admin.blog:
+  title: Articles Blog
+  description: Rédaction, catégories et tags pour le blog public.
+  badge: Admin
+
+help.nav.admin.blog.list:
+  title: Liste des articles
+  description: Publier, modifier ou archiver les articles.
+  badge: Admin
+
+help.nav.admin.blog.new:
+  title: Nouvel article
+  description: Créer un brouillon avec l’éditeur et la SEO.
+  badge: Admin
+
+help.nav.admin.categories:
+  title: Catégories
+  description: Organiser le blog par thématiques.
+  badge: Admin
+
+help.nav.admin.tags:
+  title: Tags
+  description: Mots-clés transverses pour filtrer le contenu.
+  badge: Admin
+
+help.nav.admin.messages:
+  title: Messages
+  description: Contacts, abonnés newsletter et leads marketing.
+  badge: Admin
+
+help.nav.admin.contact:
+  title: Messages de contact
+  description: 'Formulaire site : lire et répondre aux demandes.'
+  badge: Admin
+
+help.nav.admin.newsletter:
+  title: Newsletter
+  description: Inscrits et désinscriptions.
+  badge: Admin
+
+help.nav.admin.leads:
+  title: Leads
+  description: Prospects issus des outils et campagnes.
+  badge: Admin
+
+help.nav.admin.cms:
+  title: CMS
+  description: Pages légales et contenus statiques affichés sur le site public.
+  badge: Admin
+
+help.nav.admin.cms.privacy:
+  title: Politique de confidentialité
+  description: RGPD et traitement des données.
+  badge: Admin
+
+help.nav.admin.cms.terms:
+  title: Conditions d’utilisation
+  description: CGU et usage du service.
+  badge: Admin
+
+help.nav.admin.cms.legal:
+  title: Mentions légales
+  description: Éditeur, hébergeur et informations légales.
+  badge: Admin
+
+help.nav.admin.stats:
+  title: Statistiques
+  description: Trafic, usages des outils, exports et journaux d’administration.
+  badge: Admin
+
+help.nav.admin.stats.summary:
+  title: Synthèse
+  description: Vue consolidée des indicateurs clés.
+  badge: Admin
+
+help.nav.admin.stats.traffic:
+  title: Trafic & audiences
+  description: Pages vues, sources et comportements.
+  badge: Admin
+
+help.nav.admin.stats.sharing:
+  title: Partages Ishikawa
+  description: Liens publics temporaires et consultations.
+  badge: Admin
+
+help.nav.admin.stats.exports:
+  title: Exports (fichiers)
+  description: Historique des exports PDF/JSON téléchargés.
+  badge: Admin
+
+help.nav.admin.stats.tools:
+  title: Outils & créations
+  description: Fréquence d’usage et contenus produits par outil.
+  badge: Admin
+
+help.nav.admin.stats.logs:
+  title: Logs d’administration
+  description: Traçabilité des actions sensibles réservées aux admins.
+  badge: Admin
+
+# --- Navigation admin cockpit (sidebar dédiée) ---
+help.admin.nav.dashboard:
+  title: Dashboard global
+  description: Synthèse plateforme, inscriptions, exports et signaux d’usage récents.
+  badge: Admin
+
+help.admin.nav.users:
+  title: Comptes
+  description: Gestion des utilisateurs inscrits et de leurs accès.
+  badge: Admin
+
+help.admin.nav.tool_usage:
+  title: Créations par outil
+  description: Volume de sauvegardes et répartition par outil qualité.
+  badge: Admin
+
+help.admin.nav.leads:
+  title: Leads
+  description: Prospects captés via les outils et formulaires.
+  badge: Admin
+
+help.admin.nav.capa:
+  title: Pilotage CAPA
+  description: Vue transverse des CAPA sur la plateforme.
+  badge: Admin
+
+help.admin.nav.audit_standards:
+  title: Référentiels (standards)
+  description: Normes ISO et référentiels d’audit disponibles.
+  badge: Admin
+
+help.admin.nav.audit_requirements:
+  title: Exigences
+  description: Bibliothèque d’exigences liées aux référentiels.
+  badge: Admin
+
+help.admin.nav.audit_import:
+  title: Import CSV exigences
+  description: Mise à jour en masse des exigences depuis un fichier.
+  badge: Admin
+
+help.admin.nav.risk:
+  title: Matrice des risques
+  description: Vue agrégée des risques enregistrés sur la plateforme.
+  badge: Admin
+
+help.admin.nav.blog:
+  title: Articles blog
+  description: Modération et publication des articles.
+  badge: Admin
+
+help.admin.nav.analytics:
+  title: Synthèse analytics
+  description: Indicateurs consolidés trafic, outils et conversion.
+  badge: Admin
+
+help.admin.nav.platform_health:
+  title: Santé & intégrations
+  description: État des services tiers et intégrations techniques.
+  badge: Admin
+
+# --- KPI QSE ---
+help.kpi.audit.total:
+  title: Total audits
+  caption: Tous statuts
+  description: Nombre d’audits enregistrés sur votre périmètre, tous statuts confondus.
+  badge: KPI
+
+help.kpi.audit.in_progress:
+  title: En cours
+  caption: Saisie active
+  description: Audits en préparation ou saisie active des exigences.
+  badge: KPI
+
+help.kpi.audit.overdue:
+  title: En retard
+  caption: Brouillons
+  description: Brouillons sans activité depuis plus de 30 jours.
+  badge: KPI
+
+help.kpi.audit.compliance_avg:
+  title: Conformité moyenne
+  caption: Audits calculés
+  description: Moyenne des taux de conformité sur les audits ayant un calcul renseigné.
+  badge: KPI
+
+help.kpi.audit.major_nc:
+  title: NC majeures
+  caption: Ouvertes
+  description: Non-conformités majeures encore ouvertes sur vos audits en cours.
+  badge: KPI
+
+help.kpi.audit.progress:
+  title: Progression globale
+  caption: Part des exigences
+  description: Part des exigences évaluées par rapport au total du référentiel.
+  badge: KPI
+
+help.kpi.capa.total:
+  title: Total CAPA
+  caption: Enregistrées
+  description: Ensemble des actions correctives et préventives enregistrées.
+  badge: KPI
+
+help.kpi.capa.open:
+  title: CAPA ouvertes
+  caption: En cours
+  description: Actions hors statuts clôturés ou annulés.
+  badge: KPI
+
+help.kpi.capa.overdue:
+  title: CAPA en retard
+  caption: Échéance dépassée
+  description: Actions dont l’échéance est dépassée.
+  badge: KPI
+
+help.kpi.capa.awaiting_validation:
+  title: À valider
+  caption: En attente
+  description: Actions soumises en attente de validation par un responsable.
+  badge: KPI
+
+help.kpi.capa.awaiting_verification:
+  title: Vérification efficacité
+  caption: Efficacité
+  description: Actions réalisées dont l’efficacité doit encore être contrôlée.
+  badge: KPI
+
+help.kpi.capa.due_7d:
+  title: Échéance 7 jours
+  caption: Sous 7 jours
+  description: Actions à traiter dans les sept prochains jours.
+  badge: KPI
+
+help.kpi.risk.open:
+  title: Risques ouverts
+  caption: Actifs
+  description: Risques hors statut clôturé.
+  badge: KPI
+
+help.kpi.risk.critical:
+  title: Risques critiques
+  caption: Score élevé
+  description: Score de criticité ≥ 12 ou statut critique.
+  badge: KPI
+
+help.kpi.risk.in_treatment:
+  title: En traitement
+  caption: Surveillés
+  description: Risques identifiés, en analyse ou sous surveillance.
+  badge: KPI
+
+help.kpi.risk.closed_month:
+  title: Clos ce mois
+  caption: Ce mois-ci
+  description: Risques clôturés selon la date de dernière mise à jour.
+  badge: KPI
+
+help.kpi.pdca.global_score:
+  title: Score QHSE global
+  caption: Synthèse QHSE
+  description: Synthèse pondérée de vos indicateurs audits, CAPA, risques et NC. Se renseigne avec vos premiers audits complétés.
+  badge: KPI
+
+help.kpi.pdca.compliance:
+  title: Conformité audits
+  caption: Audits terminés
+  description: Moyenne de conformité sur les audits terminés.
+  badge: KPI
+
+help.kpi.pdca.capa_open:
+  title: CAPA ouvertes
+  caption: Actions en cours
+  description: Actions correctives en cours sur le périmètre PDCA.
+  badge: KPI
+
+help.kpi.pdca.audits_overdue:
+  title: Audits en retard
+  caption: Non réalisés
+  description: Programmes d’audit non réalisés à la date prévue.
+  badge: KPI
+
+help.kpi.pdca.risks_major:
+  title: Risques majeurs
+  caption: Sans CAPA
+  description: Risques critiques sans CAPA liée.
+  badge: KPI
+
+help.kpi.pdca.nc_open:
+  title: NC ouvertes
+  caption: À traiter
+  description: Évaluations en non-conformité encore à traiter.
+  badge: KPI
+
+help.admin.kpi.te_users:
+  title: Utilisateurs actifs (TE)
+  description: Compteurs uniques agrégés côté produit pour les usages connectés récents. Proxy d’attention, pas le trafic web brut.
+  badge: KPI
+
+help.admin.kpi.capa_entities:
+  title: Entités CAPA vs événements
+  description: Le premier chiffre compte les enregistrements QSE créés ; le second regroupe les signaux Tracking. Les deux peuvent diverger.
+  badge: KPI
+
+# --- Verdicts audit ---
+help.audit.verdict.not_evaluated:
+  title: Non évalué
+  description: Exigence pas encore notée. À compléter avant clôture de l’audit.
+  badge: Verdict
+
+help.audit.verdict.conform:
+  title: Conforme
+  description: Exigence respectée, preuves suffisantes.
+  badge: Verdict
+
+help.audit.verdict.observation:
+  title: Observation
+  description: Point d’amélioration sans écart formel. Une CAPA peut être proposée manuellement.
+  badge: Verdict
+
+help.audit.verdict.minor_nc:
+  title: NC mineure
+  description: Écart limité n’affectant pas la conformité globale. Déclenche en général une CAPA.
+  badge: Verdict
+  example: 'Ex. : enregistrement incomplet sur un point secondaire.'
+
+help.audit.verdict.major_nc:
+  title: NC majeure
+  description: Écart significatif pouvant remettre en cause la conformité. Déclenche en général une CAPA.
+  badge: Verdict
+  example: 'Ex. : absence de procédure documentée sur un point critique.'
+
+help.audit.verdict.to_review:
+  title: À revoir
+  description: Évaluation provisoire à confirmer après complément d’information.
+  badge: Verdict
+
+help.audit.verdict.not_applicable:
+  title: N/A
+  description: Exigence hors périmètre de l’audit ou non applicable à l’organisation.
+  badge: Verdict
+
+# --- Création audit (formulaire nouveau) ---
+help.audit.field.main_auditor:
+  title: Auditeur principal
+  description: Personne qui conduit l’audit sur le terrain ou en interne. Indiquez le nom complet ou la fonction (ex. responsable qualité, auditeur interne certifié).
+  badge: Audit
+  example: 'Ex. : Marie Dupont — Responsable QSE'
+
+help.audit.field.concerned_process:
+  title: Processus concerné
+  description: Processus ou activité audité (production, achats, RH, maintenance…). Aide à cadrer les exigences du référentiel sur le terrain.
+  badge: Audit
+  example: 'Ex. : Processus achats & approvisionnements'
+
+help.audit.field.scope:
+  title: Périmètre
+  description: 'Limites de l’audit : sites, départements, produits, période couverte. Un périmètre clair évite les ambiguïtés lors de la saisie des exigences.'
+  badge: Audit
+  example: 'Ex. : Site de Lyon — atelier assemblage — T1 2026'
+
+help.audit.field.objective:
+  title: Objectif
+  description: 'Finalité de l’audit : initial, surveillance, renouvellement, fournisseur, suite à une NC… Précise le contexte pour le rapport.'
+  badge: Audit
+  example: 'Ex. : Audit de surveillance avant renouvellement ISO 9001'
+
+help.audit.field.audit_version:
+  title: Version du rapport
+  description: Numéro de version du rapport d’audit (1.0 à la création). Incrémentez lors des révisions du document exporté.
+  badge: Audit
+  example: 'Ex. : 1.0 — brouillon initial'
+
+# --- PDCA ---
+help.pdca.phase.plan:
+  title: Plan
+  description: Anticiper les risques, structurer les analyses et programmer les audits.
+  badge: PDCA
+
+help.pdca.phase.do:
+  title: Do
+  description: Déployer les actions correctives et traiter les CAPA ouvertes.
+  badge: PDCA
+
+help.pdca.phase.check:
+  title: Check
+  description: Mesurer les résultats via audits, indicateurs et analyses.
+  badge: PDCA
+
+help.pdca.phase.act:
+  title: Act
+  description: Analyser les causes racines et standardiser les actions efficaces.
+  badge: PDCA
+
+# --- CAPA workflow ---
+help.capa.workflow:
+  title: Avancement workflow
+  description: Progression dans le cycle de vie CAPA (création → réalisation → vérification d’efficacité).
+  badge: CAPA
+
+# --- Risques ---
+help.risk.criticality:
+  title: Criticité
+  description: Score combinant gravité, probabilité et maîtrise. Sert à prioriser le plan d’actions.
+  badge: Risque
+
+help.risk.matrix:
+  title: Matrice des risques
+  description: Représentation visuelle gravité × probabilité pour identifier les zones critiques.
+  badge: Risque
+
+help.risk.field.identified_risk:
+  title: Risque identifié
+  description: Intitulé court et explicite du risque tel qu’il apparaîtra dans votre registre et votre matrice.
+  badge: Risque
+
+help.risk.field.severity:
+  title: Gravité
+  description: Impact potentiel sur la conformité, la sécurité ou l’environnement si le risque se matérialise.
+  badge: Risque
+
+help.risk.field.probability:
+  title: Probabilité
+  description: Fréquence ou vraisemblance d’occurrence du risque dans le contexte actuel du processus.
+  badge: Risque
+
+help.risk.field.detection:
+  title: Détection
+  description: Capacité à détecter le risque avant qu’il n’ait d’effet (contrôles, audits, indicateurs). Une détection faible augmente le score.
+  badge: Risque
+
+help.risk.field.criticality:
+  title: Criticité
+  description: Score G×P×D calculé automatiquement. Sert à prioriser les actions et à alimenter la matrice des risques.
+  badge: Risque
+
+help.risk.field.category:
+  title: Catégorie
+  description: Domaine QSE concerné (qualité, sécurité, environnement, conformité, client, fournisseur).
+  badge: Risque
+
+help.risk.field.status:
+  title: Statut
+  description: Étape de traitement du risque. Un risque critique en « sous surveillance » doit être lié à au moins une CAPA.
+  badge: Risque
+
+help.risk.field.existing_actions:
+  title: Actions existantes
+  description: Mesures de maîtrise déjà déployées avant toute action corrective supplémentaire.
+  badge: Risque
+
+help.risk.field.responsible:
+  title: Responsable
+  description: Personne ou équipe chargée du suivi et de la mise à jour de la fiche risque.
+  badge: Risque
+
+# --- Actions sensibles ---
+help.action.export:
+  title: Export
+  description: Génère un fichier (PDF, Word, Excel…) à partir des données courantes. Vérifiez le branding dans Préférences.
+  badge: Action
+
+help.action.duplicate:
+  title: Dupliquer
+  description: Crée une copie pour réutiliser la structure sans modifier l’original.
+  badge: Action
+
+help.action.archive:
+  title: Archiver
+  description: Retire l’élément des vues actives tout en conservant l’historique.
+  badge: Action
+
+help.action.share:
+  title: Partager
+  description: Génère un lien temporaire de consultation (selon les droits configurés).
+  badge: Action
+
+help.action.generate_report:
+  title: Générer rapport
+  description: Produit un document de synthèse formaté pour diffusion ou certification.
+  badge: Action
+
+# --- Préférences ---
+help.pref.export.display_name:
+  title: Nom affiché
+  description: Apparaît en en-tête de vos exports PDF et documents générés.
+  badge: Export
+
+help.pref.export.job_title:
+  title: Fonction affichée
+  description: Libellé de poste sous le nom sur les documents exportés.
+  badge: Export
+
+help.pref.export.company:
+  title: Société
+  description: Raison sociale affichée sur les exports officiels.
+  badge: Export
+
+help.pref.export.pdf_footer:
+  title: Pied de page PDF
+  description: Texte en bas de chaque page PDF exportée (mentions, contact, référence).
+  badge: Export
+
+help.pref.qhse.primary_standard:
+  title: Norme de référence
+  description: Référentiel ISO principal pour orienter tableaux de bord et suggestions.
+  badge: QHSE
+
+help.pref.qhse.priority:
+  title: Priorité QHSE
+  description: Met en avant Qualité, Sécurité ou Environnement dans votre cockpit.
+  badge: QHSE
+
+help.pref.qhse.piloting_focus:
+  title: Orientation pilotage
+  description: Influence le message d’accueil et les raccourcis du tableau de bord.
+  badge: QHSE
+
+# --- Dashboard widgets ---
+help.dashboard.widget.deadlines:
+  title: Échéances QSE
+  description: Synthèse des retards et échéances proches sur CAPA, audits et risques.
+  badge: Widget
+
+help.dashboard.widget.layout:
+  title: Disposition du tableau de bord
+  description: Choisissez quels widgets afficher et dans quel ordre.
+  badge: Widget

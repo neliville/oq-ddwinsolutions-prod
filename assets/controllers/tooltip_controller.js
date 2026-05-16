@@ -1,18 +1,26 @@
 import { Controller } from '@hotwired/stimulus';
+import { computePosition, autoUpdate, offset, flip, shift, arrow } from '@floating-ui/dom';
 
+/**
+ * Tooltip — portal vers body + Floating UI (même stack que hover-card).
+ */
 export default class extends Controller {
     static values = {
-        delayDuration: Number,
-        // Using targets does not work if the elements are moved in the DOM (document.body.appendChild)
-        // and using outlets does not work either if elements are children of the controller element.
+        delayDuration: { type: Number, default: 0 },
         wrapperSelector: String,
         contentSelector: String,
         arrowSelector: String,
     };
+
     static targets = ['trigger', 'wrapper'];
 
     connect() {
         this.initialized = false;
+        this.openTimeout = null;
+        this.closeTimeout = null;
+        this.cleanupAutoUpdate = null;
+        this.isPortaled = false;
+
         this.wrapperElement = document.querySelector(this.wrapperSelectorValue);
         this.contentElement = document.querySelector(this.contentSelectorValue);
         this.arrowElement = document.querySelector(this.arrowSelectorValue);
@@ -21,48 +29,45 @@ export default class extends Controller {
             return;
         }
 
-        this.side = this.wrapperElement.getAttribute('data-side') || 'top';
-        this.sideOffset = parseInt(this.wrapperElement.getAttribute('data-side-offset'), 10) || 0;
+        this.placement = this.wrapperElement.getAttribute('data-side') || 'top';
+        this.sideOffset = parseInt(this.wrapperElement.getAttribute('data-side-offset'), 10) || 6;
 
-        this.showTimeout = null;
-        this.hideTimeout = null;
+        this.boundTurboBeforeCache = this.#onTurboBeforeCache.bind(this);
+        document.addEventListener('turbo:before-cache', this.boundTurboBeforeCache);
 
-        document.body.appendChild(this.wrapperElement);
+        this.#portalWrapper();
         this.initialized = true;
     }
 
     disconnect() {
+        this.#forceHide();
         this.#clearTimeouts();
-
-        if (this.wrapperElement && this.wrapperElement.parentNode === document.body) {
-            this.element.appendChild(this.wrapperElement);
-        }
+        this.#stopAutoUpdate();
+        document.removeEventListener('turbo:before-cache', this.boundTurboBeforeCache);
+        this.#unportalWrapper();
     }
 
     wrapperTargetConnected() {
-        // This case appear when live component rerender.
-        // Because original wrapper is moved on body, the Smart rerender algorithm recreate a new wrapper.
-        if (this.wrapperElement) {
-            this.wrapperElement.remove();
-            this.connect();
+        if (this.wrapperElement && this.isPortaled) {
+            this.#unportalWrapper();
+            this.wrapperElement = this.wrapperTarget;
+            this.contentElement = this.wrapperElement.querySelector('[data-slot="tooltip-content"]');
+            this.arrowElement = this.wrapperElement.querySelector('[data-tooltip-target="arrow"]');
+            this.#portalWrapper();
         }
     }
 
     show() {
-        if (!this.initialized) {
+        if (!this.initialized || !this.hasTriggerTarget) {
             return;
         }
 
         this.#clearTimeouts();
+        const delay = this.delayDurationValue ?? 0;
 
-        const delay = this.hasDelayDurationValue ? this.delayDurationValue : 0;
-
-        this.showTimeout = setTimeout(() => {
-            this.wrapperElement.setAttribute('open', '');
-            this.contentElement.setAttribute('open', '');
-            this.arrowElement.setAttribute('open', '');
-            this.#positionElements();
-            this.showTimeout = null;
+        this.openTimeout = window.setTimeout(() => {
+            this.#open();
+            this.openTimeout = null;
         }, delay);
     }
 
@@ -72,60 +77,141 @@ export default class extends Controller {
         }
 
         this.#clearTimeouts();
-        this.wrapperElement.removeAttribute('open');
-        this.contentElement.removeAttribute('open');
-        this.arrowElement.removeAttribute('open');
+        this.closeTimeout = window.setTimeout(() => {
+            this.#close();
+            this.closeTimeout = null;
+        }, 80);
+    }
+
+    #open() {
+        if (!this.wrapperElement || !this.hasTriggerTarget) {
+            return;
+        }
+
+        this.wrapperElement.dataset.state = 'open';
+        this.contentElement.dataset.state = 'open';
+
+        this.#updatePosition();
+        this.#startAutoUpdate();
+    }
+
+    #close() {
+        if (!this.wrapperElement) {
+            return;
+        }
+
+        this.#stopAutoUpdate();
+        this.wrapperElement.dataset.state = 'closed';
+        this.contentElement.dataset.state = 'closed';
+        this.wrapperElement.style.left = '';
+        this.wrapperElement.style.top = '';
+    }
+
+    #forceHide() {
+        this.#clearTimeouts();
+        if (this.wrapperElement?.dataset.state === 'open') {
+            this.#close();
+        }
+    }
+
+    #portalWrapper() {
+        if (this.isPortaled || !this.wrapperElement) {
+            return;
+        }
+
+        this.placeholder = document.createElement('template');
+        this.placeholder.setAttribute('data-tooltip-placeholder', '');
+        this.wrapperElement.parentNode?.insertBefore(this.placeholder, this.wrapperElement);
+
+        document.body.appendChild(this.wrapperElement);
+        this.wrapperElement.dataset.portaled = 'true';
+        this.wrapperElement.dataset.state = 'closed';
+        this.isPortaled = true;
+    }
+
+    #unportalWrapper() {
+        if (!this.isPortaled || !this.wrapperElement) {
+            return;
+        }
+
+        if (this.placeholder?.parentNode) {
+            this.placeholder.parentNode.insertBefore(this.wrapperElement, this.placeholder);
+            this.placeholder.remove();
+        }
+
+        this.placeholder = null;
+        delete this.wrapperElement.dataset.portaled;
+        this.isPortaled = false;
+    }
+
+    #updatePosition() {
+        if (!this.hasTriggerTarget || !this.wrapperElement) {
+            return;
+        }
+
+        const middleware = [
+            offset(this.sideOffset),
+            flip({ padding: 8 }),
+            shift({ padding: 8 }),
+            arrow({ element: this.arrowElement }),
+        ];
+
+        computePosition(this.triggerTarget, this.wrapperElement, {
+            strategy: 'fixed',
+            placement: this.placement,
+            middleware,
+        }).then(({ x, y, placement, middlewareData }) => {
+            Object.assign(this.wrapperElement.style, {
+                position: 'fixed',
+                left: `${x}px`,
+                top: `${y}px`,
+            });
+
+            const side = placement.split('-')[0];
+            this.wrapperElement.dataset.side = side;
+            this.contentElement.dataset.side = side;
+            this.arrowElement.dataset.side = side;
+
+            if (middlewareData.arrow) {
+                const { x: arrowX, y: arrowY } = middlewareData.arrow;
+                Object.assign(this.arrowElement.style, {
+                    left: arrowX != null ? `${arrowX}px` : '',
+                    top: arrowY != null ? `${arrowY}px` : '',
+                });
+            }
+        });
+    }
+
+    #startAutoUpdate() {
+        if (!this.hasTriggerTarget || !this.wrapperElement) {
+            return;
+        }
+
+        this.#stopAutoUpdate();
+        this.cleanupAutoUpdate = autoUpdate(this.triggerTarget, this.wrapperElement, () => {
+            this.#updatePosition();
+        });
+    }
+
+    #stopAutoUpdate() {
+        if (this.cleanupAutoUpdate) {
+            this.cleanupAutoUpdate();
+            this.cleanupAutoUpdate = null;
+        }
+    }
+
+    #onTurboBeforeCache() {
+        this.#forceHide();
     }
 
     #clearTimeouts() {
-        if (this.showTimeout) {
-            clearTimeout(this.showTimeout);
-            this.showTimeout = null;
+        if (this.openTimeout) {
+            clearTimeout(this.openTimeout);
+            this.openTimeout = null;
         }
-        if (this.hideTimeout) {
-            clearTimeout(this.hideTimeout);
-            this.hideTimeout = null;
-        }
-    }
-
-    #positionElements() {
-        const triggerRect = this.triggerTarget.getBoundingClientRect();
-        const contentRect = this.contentElement.getBoundingClientRect();
-        const arrowRect = this.arrowElement.getBoundingClientRect();
-
-        let wrapperLeft = 0;
-        let wrapperTop = 0;
-        let arrowLeft = null;
-        let arrowTop = null;
-        switch (this.side) {
-            case 'left':
-                wrapperLeft = triggerRect.left - contentRect.width - arrowRect.width / 2 - this.sideOffset;
-                wrapperTop = triggerRect.top - contentRect.height / 2 + triggerRect.height / 2;
-                arrowTop = contentRect.height / 2 - arrowRect.height / 2;
-                break;
-            case 'top':
-                wrapperLeft = triggerRect.left - contentRect.width / 2 + triggerRect.width / 2;
-                wrapperTop = triggerRect.top - contentRect.height - arrowRect.height / 2 - this.sideOffset;
-                arrowLeft = contentRect.width / 2 - arrowRect.width / 2;
-                break;
-            case 'right':
-                wrapperLeft = triggerRect.right + arrowRect.width / 2 + this.sideOffset;
-                wrapperTop = triggerRect.top - contentRect.height / 2 + triggerRect.height / 2;
-                arrowTop = contentRect.height / 2 - arrowRect.height / 2;
-                break;
-            case 'bottom':
-                wrapperLeft = triggerRect.left - contentRect.width / 2 + triggerRect.width / 2;
-                wrapperTop = triggerRect.bottom + arrowRect.height / 2 + this.sideOffset;
-                arrowLeft = contentRect.width / 2 - arrowRect.width / 2;
-                break;
-        }
-
-        this.wrapperElement.style.transform = `translate3d(${wrapperLeft}px, ${wrapperTop}px, 0)`;
-        if (arrowLeft !== null) {
-            this.arrowElement.style.left = `${arrowLeft}px`;
-        }
-        if (arrowTop !== null) {
-            this.arrowElement.style.top = `${arrowTop}px`;
+        if (this.closeTimeout) {
+            clearTimeout(this.closeTimeout);
+            this.closeTimeout = null;
         }
     }
 }

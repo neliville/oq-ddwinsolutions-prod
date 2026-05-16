@@ -1,0 +1,95 @@
+/**
+ * Couche flottante globale — HoverCard / Tooltip (portal vers body + Floating UI).
+ * z-index : 70 (sous dialogs ~100, au-dessus sticky ~50).
+ */
+
+.oq-floating-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease,
+    visibility 0s linear 150ms;
+}
+
+.oq-floating-panel[data-portaled='true'] {
+  visibility: hidden;
+}
+
+.oq-floating-panel[data-state='open'] {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease,
+    visibility 0s;
+}
+
+/* Panneau fermé encore dans le DOM (avant portal) — pas de clip ni de place au layout */
+[data-slot='hover-card-content'][data-state='closed']:not([data-portaled='true']) {
+  position: absolute;
+  width: max-content;
+  max-width: min(17rem, calc(100vw - 2rem));
+  left: 0;
+  top: 0;
+  z-index: -1;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.oq-floating-arrow {
+  position: absolute;
+  pointer-events: none;
+}
+
+.oq-floating-arrow--dark {
+  border-color: rgb(82 82 91 / 0.9);
+  background-color: rgb(24 24 27);
+}
+
+.oq-floating-arrow--card {
+  border: 1px solid hsl(var(--border) / 0.8);
+  background-color: hsl(var(--card) / 0.95);
+}
+
+/* Tooltip (wrapper portaled) */
+[data-slot='tooltip-wrapper'][data-portaled='true'] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+[data-slot='tooltip-wrapper'][data-portaled='true'][data-state='open'] {
+  pointer-events: auto;
+}
+
+[data-slot='tooltip-content'][data-state='closed'] {
+  opacity: 0;
+  transform: scale(0.95);
+  visibility: hidden;
+}
+
+[data-slot='tooltip-content'][data-state='open'] {
+  opacity: 1;
+  transform: scale(1);
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oq-floating-panel,
+  [data-slot='tooltip-content'] {
+    transition: none;
+    transform: none;
+  }
+}

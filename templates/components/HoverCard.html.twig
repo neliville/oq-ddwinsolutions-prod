@@ -1,15 +1,30 @@
 {# @prop openDelay number Delay in milliseconds before showing the content. Defaults to `0` #}
 {# @prop closeDelay number Delay in milliseconds before hiding the content. Defaults to `0` #}
+{# @prop placement string Floating UI placement (top, bottom, left, right, …). Defaults to `top` #}
+{# @prop offset number Distance in px from the trigger. Defaults to `8` #}
+{# @prop interactive bool Keep open when hovering the panel. Defaults to `false` #}
+{# @prop arrow bool Show positioning arrow. Defaults to `true` #}
 {# @block content The hover card structure, typically a `HoverCard:Trigger` and `HoverCard:Content` #}
-{%- props openDelay = 0, closeDelay = 0 -%}
+{%- props
+    openDelay = 0,
+    closeDelay = 0,
+    placement = 'top',
+    offset = 8,
+    interactive = false,
+    arrow = true,
+-%}
 <span
-    class="{{ ('relative block max-w-full ' ~ attributes.render('class'))|tailwind_merge }}"
+    class="{{ ('block max-w-full ' ~ attributes.render('class'))|tailwind_merge }}"
     {{ attributes.defaults({
         'data-slot': 'hover-card',
         'data-controller': 'hover-card',
         'data-hover-card-open-delay-value': openDelay,
         'data-hover-card-close-delay-value': closeDelay,
-        'data-action': 'mouseenter->hover-card#show mouseleave->hover-card#hide',
+        'data-hover-card-placement-value': placement,
+        'data-hover-card-offset-value': offset,
+        'data-hover-card-interactive-value': interactive ? 'true' : 'false',
+        'data-hover-card-arrow-value': arrow ? 'true' : 'false',
+        'data-action': 'mouseenter->hover-card#show mouseleave->hover-card#hide focusin->hover-card#show focusout->hover-card#hide',
     }) }}
 >
     {%- block content %}{% endblock -%}

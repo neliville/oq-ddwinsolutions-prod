@@ -1,0 +1,87 @@
+{# Aide contextuelle premium — wrapper HoverCard + registre help.*
+   @prop helpId string|null Clé métier (config/help/contextual_help.yaml)
+   @prop entry App\Help\HelpEntry|null Entrée pré-résolue (prioritaire sur helpId)
+   @prop variant 'sidebar'|'inline'|'field' Positionnement et thème du panneau
+   @prop trigger 'wrap'|'icon' wrap = slot trigger seul ; icon = slot trigger + bouton ? après
+   @prop openDelay number Délai ouverture ms
+   @prop closeDelay number Délai fermeture ms
+   @prop contentClass string|null Classes additionnelles sur le panneau
+   @block trigger Contenu déclencheur (lien sidebar ou libellé KPI)
+#}
+{%- props
+    helpId = null,
+    entry = null,
+    variant = 'sidebar',
+    trigger = 'wrap',
+    openDelay = 160,
+    closeDelay = 120,
+    contentClass = null,
+-%}
+{%- set helpEntry = entry ?? (helpId ? help(helpId) : null) -%}
+{%- if helpEntry is null -%}
+    {%- block trigger %}{%- endblock -%}
+{%- else -%}
+{%- set panelId = 'ctx-help-' ~ helpEntry.id|replace({'.': '-'}) ~ '-' ~ random(100000, 999999) -%}
+{%- set isSidebar = variant == 'sidebar' -%}
+{%- set placement = isSidebar ? 'right' : 'top' -%}
+{%- set panelVisual = isSidebar
+    ? 'oq-floating-panel--sidebar w-[min(17rem,calc(100vw-20rem))] max-w-[min(17rem,calc(100vw-20rem))] border-zinc-600/90 bg-zinc-900 text-zinc-50'
+    : 'oq-floating-panel--inline contextual-help-panel--inline w-[min(16rem,calc(100vw-2rem))] max-w-xs border-border/80 bg-card/95 text-card-foreground backdrop-blur-sm'
+-%}
+{%- set panelClasses = ('oq-floating-panel oq-floating-panel--hover-card ' ~ panelVisual ~ ' ' ~ (contentClass|default('')))|tailwind_merge -%}
+
+<div
+    class="contextual-help {{ trigger == 'icon' ? 'contextual-help--icon-trigger' : 'contextual-help--wrap' }} {{ attributes.render('class')|default('') }}"
+    data-controller="contextual-help"
+    data-contextual-help-variant-value="{{ variant }}"
+    data-contextual-help-trigger-value="{{ trigger }}"
+    data-contextual-help-panel-id-value="{{ panelId }}"
+>
+    <twig:HoverCard
+        :openDelay="openDelay"
+        :closeDelay="closeDelay"
+        placement="{{ placement }}"
+        :offset="8"
+        :interactive="true"
+        :arrow="true"
+        class="block w-full max-w-full min-w-0"
+    >
+        <div
+            class="{{ trigger == 'icon' ? 'inline-flex items-center gap-1.5 min-w-0' : 'contents' }}"
+            {% if trigger != 'icon' %}data-contextual-help-target="trigger" data-slot="hover-card-trigger"{% endif %}
+        >
+            {%- block trigger %}{%- endblock -%}
+            {%- if trigger == 'icon' -%}
+            <button
+                type="button"
+                class="contextual-help__icon-btn inline-flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                data-slot="hover-card-trigger"
+                data-contextual-help-target="trigger"
+                data-action="click->contextual-help#toggle focus->hover-card#show blur->hover-card#hide keydown.escape->contextual-help#close"
+                aria-expanded="false"
+                aria-controls="{{ panelId }}"
+                aria-label="Aide : {{ helpEntry.title|e('html_attr') }}"
+            >
+                <twig:ux:icon name="lucide:circle-help" class="size-3.5" aria-hidden="true" />
+            </button>
+            {%- endif -%}
+        </div>
+
+        <span
+            id="{{ panelId }}"
+            role="tooltip"
+            data-slot="hover-card-content"
+            data-contextual-help-target="panel"
+            data-state="closed"
+            class="{{ panelClasses }}"
+        >
+            {% include 'components/ContextualHelp/_panel.html.twig' with { entry: helpEntry } only %}
+            <span
+                data-hover-card-target="arrow"
+                aria-hidden="true"
+                class="oq-floating-arrow {{ isSidebar ? 'oq-floating-arrow--dark' : 'oq-floating-arrow--card' }} absolute size-2 rotate-45"
+            ></span>
+        </span>
+    </twig:HoverCard>
+</div>
+{%- endif -%}
