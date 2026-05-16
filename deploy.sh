@@ -77,6 +77,21 @@ else
     fi
 fi
 
+# 2.9 Manifests assets compilés : ne jamais bloquer le pull (recompilés à l'étape 9)
+echo -e "\n${YELLOW}2.9 Manifests assets (importmap / manifest)...${NC}"
+COMPILED_ASSET_META=(
+    public/assets/importmap.json
+    public/assets/manifest.json
+    public/assets/entrypoint.app.json
+)
+for f in "${COMPILED_ASSET_META[@]}"; do
+    if [[ -f "$f" ]] && ! git diff --quiet -- "$f" 2>/dev/null; then
+        echo -e "${YELLOW}   Reset ${f} (fichier généré, recompilé plus tard)${NC}"
+        git checkout -- "$f" 2>/dev/null || true
+    fi
+done
+echo -e "${GREEN}   ✓ Manifests prêts pour le pull${NC}"
+
 # 3. Récupérer les dernières modifications
 echo -e "\n${YELLOW}3. Récupération des dernières modifications depuis GitHub...${NC}"
 git fetch origin main
