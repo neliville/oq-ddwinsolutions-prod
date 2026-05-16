@@ -107,22 +107,9 @@
     {# Import map + app.js : DOIT être dans le head pour que @hotwired/turbo soit résolu avant tout chargement de module #}
     {% block importmap %}{{ importmap('app') }}{% endblock %}
 
-    <!-- Font Awesome et AOS : différés, non bloquants -->
+    <!-- Font Awesome : différé, non bloquant -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"></noscript>
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
-    {# Après la déclaration AOS : garde le contenu lisible si init JS est tardive ou si .aos-animate n'est jamais appliqué (blog, ressources, etc.). #}
-    <style>
-        #main-content [data-aos^="fade"][data-aos^="fade"],
-        #main-content [data-aos^="zoom"][data-aos^="zoom"],
-        body.layout-dashboard .main-content [data-aos^="fade"][data-aos^="fade"],
-        body.layout-dashboard .main-content [data-aos^="zoom"][data-aos^="zoom"] {
-            opacity: 1 !important;
-            transform: translate3d(0, 0, 0) scale(1) !important;
-            pointer-events: auto !important;
-        }
-    </style>
 
     {% block head %}{% endblock %}
 
@@ -208,7 +195,7 @@
     <!-- End Matomo Code -->
 </head>
 
-<body{% block body_attributes %}{% endblock %}>
+<body class="motion-premium{% block body_class %}{% endblock %}" data-controller="motion-premium"{% block body_attrs %}{% endblock %}>
     {# Skip link pour accessibilité - visible uniquement au focus clavier #}
     <a href="#main-content"
        class="absolute top-2 left-2 -translate-y-[200%] focus:translate-y-0 z-[9999] inline-flex items-center bg-primary text-primary-foreground px-4 py-2 rounded-md no-underline transition-transform duration-150 font-medium">
@@ -272,8 +259,8 @@
     {% endif %}
 
     {# Un seul <main id="main-content"> : toujours ici ; les pages qui redéfinissent block body s’y insèrent (évite double main + lien d’évitement cassé). #}
-    <main id="main-content" class="w-full max-w-full overflow-x-hidden" tabindex="-1">
-        {# Invités : alertes dans le flux principal. Connectés : pont toast après notifications (fin de page). #}
+    <main id="main-content" class="w-full max-w-full" tabindex="-1" data-controller="page-transition">
+        {# Invités : alertes dans le flux principal. Connectés : flash → appNotify → toast Motion. #}
         {% if not app.user %}
             <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
                 {% include 'components/flash_messages.html.twig' %}
@@ -320,10 +307,10 @@
         };
     </script>
 
-    {# Ancre globale pour les notifications Toastify (Stimulus `notifications`) #}
-    <div data-controller="notifications" class="hidden" aria-hidden="true"></div>
+    {# Toasts Motion (Stimulus `toast`) — après appNotify pour que flash-toast fonctionne. #}
+    <div id="app-motion-toast-host" class="fixed top-4 right-4 z-[10050] flex flex-col gap-2 pointer-events-none w-[min(22rem,calc(100vw-2rem))]" data-controller="toast" aria-live="polite" role="region" aria-label="Notifications"></div>
 
-    {# Flash connecté : après appNotify + notifications pour que les toasts s’affichent (préférences, audits, etc.). #}
+    {# Flash connecté : après appNotify + hôte toast pour affichage (préférences, audits, etc.). #}
     {% if app.user %}
         <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
             {% include 'components/flash_toast_bridge.html.twig' %}
@@ -369,50 +356,32 @@
             lucide.createIcons();
         }
 
-        function runAos(firstLoad) {
-            if (typeof AOS === 'undefined') return;
-            if (firstLoad) {
-                AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 100 });
-            } else {
-                // Sur navigation Turbo : refresh immédiat sans réinitialiser (évite le flash opacity:0)
-                AOS.refreshHard();
+        function loadLucide(callback) {
+            if (typeof lucide !== 'undefined') {
+                callback();
+                return;
             }
+            var s1 = document.createElement('script');
+            s1.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
+            s1.onload = function () { callback(); };
+            document.body.appendChild(s1);
         }
 
-        function loadAndRun(callback) {
-            var loaded = {
-                lucide: typeof lucide !== 'undefined',
-                aos: typeof AOS !== 'undefined'
-            };
-            function done() { if (loaded.lucide && loaded.aos) callback(); }
-
-            if (!loaded.lucide) {
-                var s1 = document.createElement('script');
-                s1.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
-                s1.onload = function () { loaded.lucide = true; done(); };
-                document.body.appendChild(s1);
-            }
-            if (!loaded.aos) {
-                var s2 = document.createElement('script');
-                s2.src = 'https://unpkg.com/aos@2.3.1/dist/aos.js';
-                s2.onload = function () { loaded.aos = true; done(); };
-                document.body.appendChild(s2);
-            }
-            done();
-        }
-
-        // Premier chargement : télécharge les scripts si nécessaire, puis init
         function onFirstLoad() {
             document.documentElement.classList.remove('is-loading');
-            if (window._ncReady)   { runIcons(); runAos(false); return; }
-            if (window._ncLoading) { return; }
+            if (window._ncReady) {
+                runIcons();
+                return;
+            }
+            if (window._ncLoading) {
+                return;
+            }
             window._ncLoading = true;
             function go() {
-                loadAndRun(function () {
-                    window._ncReady   = true;
+                loadLucide(function () {
+                    window._ncReady = true;
                     window._ncLoading = false;
                     runIcons();
-                    runAos(true);
                 });
             }
             typeof requestIdleCallback !== 'undefined'
@@ -420,27 +389,23 @@
                 : setTimeout(go, 100);
         }
 
-        // Navigation Turbo : turbo:render s'exécute AVANT turbo:load, dès que le DOM
-        // est remplacé — c'est le moment le plus tôt pour animer les éléments [data-aos]
-        // et éviter le flash de contenu invisible.
         function onTurboRender() {
-            if (!window._ncReady) return;
+            if (!window._ncReady) {
+                return;
+            }
             runIcons();
-            runAos(false);
         }
 
-        // Attacher les écouteurs une seule fois (ils persistent via document, pas via body)
         if (!window._ncListeners) {
             window._ncListeners = true;
             document.addEventListener('turbo:render', onTurboRender);
-            document.addEventListener('turbo:load',   onFirstLoad);
-        }
-
-        // Déclenchement au premier chargement de la page (avant tout turbo:load)
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', onFirstLoad);
-        } else {
-            onFirstLoad();
+            if (typeof Turbo !== 'undefined') {
+                document.addEventListener('turbo:load', onFirstLoad);
+            } else if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', onFirstLoad);
+            } else {
+                onFirstLoad();
+            }
         }
     })();
     </script>

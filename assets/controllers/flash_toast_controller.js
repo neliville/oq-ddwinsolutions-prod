@@ -1,9 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Affiche les messages flash Symfony via appNotify / Toastify (layout connecté).
+ * Affiche les messages flash Symfony via appNotify / toast Motion (layout connecté).
  * L’affichage est différé : flash-toast est souvent placé avant le contrôleur
- * `notifications` dans le DOM ; sans délai, l’événement app:notification part avant l’écouteur.
+ * `toast` dans le DOM ; sans délai, l’événement app:notification part avant l’écouteur.
  */
 export default class extends Controller {
     static values = {
@@ -19,7 +19,7 @@ export default class extends Controller {
             clearTimeout(this._showTimer);
         }
 
-        // Macrotâche : laisse Stimulus connecter tous les contrôleurs (dont notifications).
+        // Macrotâche : laisse Stimulus connecter tous les contrôleurs (dont toast).
         this._showTimer = window.setTimeout(() => this.showMessages(), 0);
     }
 
