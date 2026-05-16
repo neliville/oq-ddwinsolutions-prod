@@ -171,39 +171,20 @@ export default class extends Controller {
     }
 
     /**
-     * Charge Toastify depuis CDN si nécessaire
-     */
-    /**
-     * Affiche une notification cohérente avec celles utilisées pour Ishikawa / exports PDF.
-     * Utilise en priorité le contrôleur Stimulus `notifications` s'il est présent,
-     * puis les helpers globaux partagés.
+     * Affiche une notification (Motion / `app:notification`).
      */
     showNotification(message, type = 'info') {
-        const notificationsElement = document.querySelector('[data-controller*="notifications"]');
-        if (notificationsElement && this.application) {
-            const notificationsController = this.application.getControllerForElementAndIdentifier(
-                notificationsElement,
-                'notifications'
-            );
-
-            if (notificationsController && typeof notificationsController.show === 'function') {
-                notificationsController.show(message, type);
-                return;
-            }
-        }
-
         if (typeof window.appNotify === 'function') {
             window.appNotify(message, type);
             return;
         }
 
-        if (window.showNotification) {
-            window.showNotification(message, type);
-        } else if (window.showToast) {
-            window.showToast(message, type);
-        } else {
-            console.error('Notification non affichée:', message);
-        }
+        document.dispatchEvent(
+            new CustomEvent('app:notification', {
+                bubbles: true,
+                detail: { message, type },
+            }),
+        );
     }
 }
 

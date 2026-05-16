@@ -1,12 +1,34 @@
-{# Liens principaux de la sidebar avec Hover Card (aperçu à droite). #}
-{% set is_active = currentRoute starts with route_prefix %}
-<twig:HoverCard openDelay="160" closeDelay="120" class="block w-full max-w-full">
+{# Liens principaux de la sidebar avec aide contextuelle (Hover Card). #}
+{% set is_active = active_if is defined ? active_if : (route_prefix is defined and (currentRoute starts with route_prefix)) %}
+{% set _help_id = help_id|default(null) %}
+{% set _use_legacy = _help_id is null and hover_title is defined and hover_text is defined %}
+
+{% if _help_id %}
+{% set _help_entry = help(_help_id) %}
+<twig:HoverCard openDelay="160" closeDelay="120" placement="right" :interactive="true" class="block w-full max-w-full">
     <a href="{{ href }}"
        class="sidebar-item{{ is_active ? ' active' : '' }}"
        {% if is_active %}aria-current="page"{% endif %}
        data-sidebar-item-label="{{ label|e('html_attr') }}"
        data-slot="hover-card-trigger"
-       data-action="focus->hover-card#show blur->hover-card#hide"
+    >
+        <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
+        <span class="sidebar-item-label">{{ label }}</span>
+        {% if badge_text is defined and badge_text %}
+            <span class="sidebar-item-badge{% if badge_variant is defined and badge_variant %} sidebar-item-badge--{{ badge_variant|e('html_attr') }}{% endif %}">{{ badge_text }}</span>
+        {% endif %}
+    </a>
+    <twig:HoverCard:Content>
+        {% include 'components/ContextualHelp/_panel_sidebar.html.twig' with { entry: _help_entry } only %}
+    </twig:HoverCard:Content>
+</twig:HoverCard>
+{% elseif _use_legacy %}
+<twig:HoverCard openDelay="160" closeDelay="120" placement="right" :interactive="true" class="block w-full max-w-full">
+    <a href="{{ href }}"
+       class="sidebar-item{{ is_active ? ' active' : '' }}"
+       {% if is_active %}aria-current="page"{% endif %}
+       data-sidebar-item-label="{{ label|e('html_attr') }}"
+       data-slot="hover-card-trigger"
     >
         <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
         <span class="sidebar-item-label">{{ label }}</span>
@@ -19,3 +41,16 @@
         <p class="mt-1.5 mb-0 text-[11px] leading-snug font-normal text-zinc-300">{{ hover_text }}</p>
     </twig:HoverCard:Content>
 </twig:HoverCard>
+{% else %}
+<a href="{{ href }}"
+   class="sidebar-item{{ is_active ? ' active' : '' }}"
+   {% if is_active %}aria-current="page"{% endif %}
+   data-sidebar-item-label="{{ label|e('html_attr') }}"
+>
+    <i data-lucide="{{ icon|e('html_attr') }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
+    <span class="sidebar-item-label">{{ label }}</span>
+    {% if badge_text is defined and badge_text %}
+        <span class="sidebar-item-badge{% if badge_variant is defined and badge_variant %} sidebar-item-badge--{{ badge_variant|e('html_attr') }}{% endif %}">{{ badge_text }}</span>
+    {% endif %}
+</a>
+{% endif %}

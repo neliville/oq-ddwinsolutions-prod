@@ -21,3 +21,7 @@
 {% for widgetId in dashboard_widgets.stats_section %}
     {{ include('dashboard/widgets/_widget_' ~ widgetId ~ '.html.twig') }}
 {% endfor %}
+
+{% if user_dashboard_charts is defined %}
+    {% include 'dashboard/widgets/_widget_dashboard_charts.html.twig' %}
+{% endif %}

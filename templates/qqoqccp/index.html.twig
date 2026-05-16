@@ -47,7 +47,7 @@
         } %}
         <input type="hidden" id="qqoqccpAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+        <div class="page-header tool-page-header--compact">
             <h1 class="page-title">Analyse QQOQCCP (5W2H)</h1>
             <p class="lead">Checklist complète pour cadrer tout projet ou problème : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi — avec suggestions selon votre contexte.</p>
             {% include 'components/tool_meta_hints.html.twig' with {
@@ -64,7 +64,7 @@
         </div>
 
         {% if not app.user %}
-        <div class="flex items-center justify-center gap-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 mb-4 text-center" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="50">
+        <div class="flex items-center justify-center gap-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 mb-4 text-center" role="alert" aria-live="polite">
             <i data-lucide="info" width="18" height="18" class="mr-2 shrink-0" aria-hidden="true"></i>
             <span><strong>Vous n'êtes pas connecté.</strong>
             <a href="{{ path('app_login') }}" class="font-medium underline hover:no-underline text-yellow-900">Connectez-vous</a> pour sauvegarder vos analyses et les retrouver facilement.</span>
@@ -73,7 +73,7 @@
 
         {% include 'components/tool_help/qqoqccp_accordion.html.twig' %}
 
-        <section class="qqoqccp-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-4" data-aos="fade-up" data-aos-delay="120" role="toolbar" aria-label="Actions disponibles">
+        <section class="qqoqccp-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-4" role="toolbar" aria-label="Actions disponibles">
             <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newQqoqccpAnalysis()" aria-label="Réinitialiser l'analyse QQOQCCP">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
@@ -107,7 +107,7 @@
             {% include 'components/coming_soon_download.html.twig' %}
         </div>
 
-        <section class="qqoqccp-form" data-aos="fade-up" data-aos-delay="200" id="qqoqccpForm">
+        <section class="qqoqccp-form" id="qqoqccpForm">
             <div class="qqoqccp-question qqoqccp-question--subject">
                 <label class="qqoqccp-question__label" for="qqoqccpSubject">Sujet ou titre de l'analyse</label>
                 <input type="text" id="qqoqccpSubject" class="form-control" placeholder="Ex : Retards de livraison aux clients" oninput="updateQqoqccpField('subject', this.value)">
@@ -191,7 +191,7 @@
             </div>
         </section>
 
-        <section id="qqoqccpResults" class="qqoqccp-results" style="display:none;" data-aos="fade-up" data-aos-delay="240">
+        <section id="qqoqccpResults" class="qqoqccp-results" style="display:none;">
             <div id="qqoqccpReportContainer" class="qqoqccp-report">
                 <div class="qqoqccp-report__header">
                     <h2 id="qqoqccpReportTitle">Rapport QQOQCCP</h2>

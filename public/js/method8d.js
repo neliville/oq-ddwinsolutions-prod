@@ -339,6 +339,39 @@
             .join('');
     };
 
+    const renderDateFieldHtml = ({ id, disciplineId, fieldKey, value }) => {
+        const dataAttrs = disciplineId
+            ? `data-discipline="${disciplineId}" data-field="${fieldKey}"`
+            : '';
+        return `
+            <div class="oq-date-field" data-controller="date-field">
+                <div class="oq-date-field__control">
+                    <span class="oq-date-field__icon" aria-hidden="true">
+                        <i data-lucide="calendar" width="16" height="16"></i>
+                    </span>
+                    <input
+                        type="date"
+                        id="${id}"
+                        data-date-field-target="input"
+                        class="oq-date-field__input"
+                        ${dataAttrs}
+                        value="${value || ''}"
+                    >
+                </div>
+            </div>
+        `;
+    };
+
+    const initDateFieldsIn = async (root) => {
+        if (typeof window.oqInitDateFields !== 'function') {
+            return;
+        }
+        await window.oqInitDateFields(root);
+        if (typeof window.lucide !== 'undefined' && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons({ nodes: root.querySelectorAll('[data-lucide]') });
+        }
+    };
+
     const renderDisciplines = () => {
         const container = elements.disciplines();
         if (!container) return;
@@ -349,10 +382,18 @@
                     .map((field) => {
                         const value = state.disciplines[discipline.id][field.key] ?? '';
                         const helper = field.helper ? `<span class="helper">${field.helper}</span>` : '';
+                        const fieldId = `eightd-${discipline.id}-${field.key}`;
                         const input =
                             field.type === 'textarea'
-                                ? `<textarea id="eightd-${discipline.id}-${field.key}" data-discipline="${discipline.id}" data-field="${field.key}" placeholder="${field.placeholder || ''}">${value}</textarea>`
-                                : `<input type="${field.type === 'date' ? 'date' : 'text'}" id="eightd-${discipline.id}-${field.key}" data-discipline="${discipline.id}" data-field="${field.key}" placeholder="${field.placeholder || ''}" value="${value}">`;
+                                ? `<textarea id="${fieldId}" data-discipline="${discipline.id}" data-field="${field.key}" placeholder="${field.placeholder || ''}">${value}</textarea>`
+                                : field.type === 'date'
+                                    ? renderDateFieldHtml({
+                                        id: fieldId,
+                                        disciplineId: discipline.id,
+                                        fieldKey: field.key,
+                                        value,
+                                    })
+                                    : `<input type="text" id="${fieldId}" data-discipline="${discipline.id}" data-field="${field.key}" placeholder="${field.placeholder || ''}" value="${value}">`;
 
                         return `
                             <div class="eightd-form-group">
@@ -396,6 +437,7 @@
             .join('');
 
         renderTeamMembers();
+        void initDateFieldsIn(container);
     };
 
     const updateGeneralInputs = () => {
@@ -1038,7 +1080,21 @@
     window.newEightDAnalysis = newEightDAnalysis;
     window.updateEightDField = updateEightDField;
 
+    const ensureDateFieldsReady = () =>
+        new Promise((resolve) => {
+            if (typeof window.oqInitDateFields === 'function') {
+                resolve();
+                return;
+            }
+            document.addEventListener('oq:date-fields-ready', () => resolve(), { once: true });
+            setTimeout(resolve, 3000);
+        });
+
     document.addEventListener('DOMContentLoaded', () => {
+        void ensureDateFieldsReady().then(() => {
+            void initDateFieldsIn(document);
+        });
+
         renderAll();
         showResults(false);
 

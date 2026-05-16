@@ -1,6 +1,8 @@
-<section id="pourquoi-compte" class="home-landing-section bg-background" aria-labelledby="home-why-account-heading">
+<section id="pourquoi-compte" class="home-landing-section home-section-premium home-section-premium--account" aria-labelledby="home-why-account-heading">
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow home-section-premium__glow--account" aria-hidden="true"></div>
     <div class="container max-w-6xl mx-auto">
-        <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-12" data-aos="fade-up">
+        <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-12" data-home-section-intro>
             <twig:Badge variant="outline" class="mb-3">Compte gratuit</twig:Badge>
             <h2 id="home-why-account-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">
                 Pourquoi créer un compte gratuit ?
@@ -11,33 +13,36 @@
         </header>
 
         <div class="grid gap-5 sm:grid-cols-3 max-w-5xl mx-auto">
-            <twig:Card class="border-border/80 shadow-sm h-full" data-aos="fade-up" data-aos-delay="0">
-                <twig:Card:Header class="space-y-2 pb-2">
+            <twig:Card class="home-benefit-card motion-card border-border/80 h-full" data-home-reveal>
+                <twig:Card:Header class="space-y-3 pb-2">
+                    <span class="home-benefit-card__icon" aria-hidden="true"><i data-lucide="cloud-upload"></i></span>
                     <twig:Card:Title class="text-lg">Sauvegarde cloud sécurisée</twig:Card:Title>
                     <twig:Card:Description>Vos analyses sont hébergées en France et retrouvables sur tous vos appareils.</twig:Card:Description>
                 </twig:Card:Header>
             </twig:Card>
-            <twig:Card class="border-border/80 shadow-sm h-full" data-aos="fade-up" data-aos-delay="50">
-                <twig:Card:Header class="space-y-2 pb-2">
+            <twig:Card class="home-benefit-card motion-card border-border/80 h-full" data-home-reveal>
+                <twig:Card:Header class="space-y-3 pb-2">
+                    <span class="home-benefit-card__icon" aria-hidden="true"><i data-lucide="history"></i></span>
                     <twig:Card:Title class="text-lg">Historique et exports</twig:Card:Title>
                     <twig:Card:Description>Reprenez vos travaux, exportez en PDF pour vos dossiers et audits ISO.</twig:Card:Description>
                 </twig:Card:Header>
             </twig:Card>
-            <twig:Card class="border-border/80 shadow-sm h-full" data-aos="fade-up" data-aos-delay="100">
-                <twig:Card:Header class="space-y-2 pb-2">
+            <twig:Card class="home-benefit-card motion-card border-border/80 h-full" data-home-reveal>
+                <twig:Card:Header class="space-y-3 pb-2">
+                    <span class="home-benefit-card__icon home-benefit-card__icon--primary" aria-hidden="true"><i data-lucide="layout-dashboard"></i></span>
                     <twig:Card:Title class="text-lg">Cockpit QHSE optionnel</twig:Card:Title>
                     <twig:Card:Description>Audits ISO, CAPA et risques dans une même vue de priorités quand vous structurez votre pilotage.</twig:Card:Description>
                 </twig:Card:Header>
             </twig:Card>
         </div>
 
-        <div class="mt-10 text-center" data-aos="fade-up">
+        <div class="mt-10 text-center" data-home-reveal>
             {% if is_granted('ROLE_USER') %}
-                <twig:Button as="a" href="{{ path('app_dashboard_index') }}" size="lg" class="no-underline">
+                <twig:Button as="a" href="{{ path('app_dashboard_index') }}" size="lg" class="motion-cta--pulse no-underline">
                     Ouvrir mon cockpit QHSE
                 </twig:Button>
             {% else %}
-                <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="no-underline">
+                <twig:Button as="a" href="{{ path('app_register') }}" size="lg" class="motion-cta--pulse no-underline">
                     Créer mon compte gratuit
                 </twig:Button>
                 <p class="m-0 mt-3 text-sm text-muted-foreground">2 minutes · Toujours gratuit pour démarrer · Pas de carte bancaire</p>

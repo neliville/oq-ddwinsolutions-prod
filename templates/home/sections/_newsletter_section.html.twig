@@ -1,12 +1,14 @@
-<section id="newsletter" class="newsletter-wrapper">
+<section id="newsletter" class="newsletter-wrapper home-section-premium home-section-premium--newsletter">
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow home-section-premium__glow--newsletter" aria-hidden="true"></div>
     <div class="container">
         <div class="newsletter-card">
-            <div class="newsletter-content">
+            <div class="newsletter-content" data-home-section-intro>
                 <span class="newsletter-badge">Newsletter</span>
                 <h2>Une méthode QSE concrète chaque lundi</h2>
                 <p>Outils terrain, méthodes QSE, retours d'expérience — une fois par semaine, sans remplissage.</p>
             </div>
-            <div class="newsletter-form-container">
+            <div class="newsletter-form-container" data-home-reveal>
                 {% include 'components/newsletter-form.html.twig' %}
             </div>
         </div>

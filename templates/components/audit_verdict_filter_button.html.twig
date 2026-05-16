@@ -1,0 +1,11 @@
+{# Bouton filtre verdict cockpit audit — @param filter string @param label string @param help_id string|null #}
+{% set btn_class = 'px-2.5 py-1 rounded-md text-xs border border-border bg-background' %}
+{% if help_id is defined and help_id %}
+<twig:ContextualHelp helpId="{{ help_id }}" variant="inline" trigger="wrap" class="inline-block">
+    {% block trigger %}
+    <button type="button" class="{{ btn_class }}" data-audit-cockpit-target="filterBtn" data-filter="{{ filter }}" data-action="audit-cockpit#filter">{{ label }}</button>
+    {% endblock %}
+</twig:ContextualHelp>
+{% else %}
+<button type="button" class="{{ btn_class }}" data-audit-cockpit-target="filterBtn" data-filter="{{ filter }}" data-action="audit-cockpit#filter">{{ label }}</button>
+{% endif %}

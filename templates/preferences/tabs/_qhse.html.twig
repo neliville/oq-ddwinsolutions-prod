@@ -5,9 +5,15 @@
 
 {{ form_start(qhse_form, { attr: { class: 'pref-form' } }) }}
     <div class="pref-form-grid">
-        <div class="pref-field-group">{{ form_row(qhse_form.primaryStandard) }}</div>
-        <div class="pref-field-group">{{ form_row(qhse_form.qhsePriority) }}</div>
-        <div class="pref-field-group">{{ form_row(qhse_form.pilotingFocus) }}</div>
+        <div class="pref-field-group">
+            {% include 'components/form/field_with_contextual_help.html.twig' with { field: qhse_form.primaryStandard, help_id: 'help.pref.qhse.primary_standard' } %}
+        </div>
+        <div class="pref-field-group">
+            {% include 'components/form/field_with_contextual_help.html.twig' with { field: qhse_form.qhsePriority, help_id: 'help.pref.qhse.priority' } %}
+        </div>
+        <div class="pref-field-group">
+            {% include 'components/form/field_with_contextual_help.html.twig' with { field: qhse_form.pilotingFocus, help_id: 'help.pref.qhse.piloting_focus' } %}
+        </div>
     </div>
     <p class="pref-form-hint pref-form-hint--spaced">Ces choix influencent l’accueil du tableau de bord (texte d’orientation) et pourront affiner les suggestions futures.</p>
     {% include 'preferences/_form_footer.html.twig' %}

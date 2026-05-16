@@ -2,7 +2,7 @@
 <turbo-frame id="navigation-logs-frame">
     <div class="mt-6">
         <div class="rounded-lg bg-card shadow-sm">
-            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg" data-controller="filters-panel notifications">
+            <div class="px-6 py-4 border-b border-border bg-white rounded-t-lg" data-controller="filters-panel">
                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-3">
                     <div class="flex-1">
                         <h5 class="mb-1">Logs de navigation des utilisateurs</h5>
@@ -36,18 +36,19 @@
                              data-date-range-date-to-value="{{ request.query.get('date_to') }}"
                              class="flex items-center gap-2">
                             <label for="date_range" class="form-label text-sm mb-0 hidden md:block">Période :</label>
-                            <div class="flex" style="width: 300px;">
-                                <span class="inline-flex items-center px-3 border border-r-0 border-border rounded-l-md bg-white">
+                            <div class="oq-date-range-field" style="width: min(20rem, 100%);">
+                                <span class="oq-date-range-field__addon" aria-hidden="true">
                                     <i data-lucide="calendar" width="16" height="16"></i>
                                 </span>
-                                <input type="text"
-                                       id="date_range"
-                                       data-date-range-target="input"
-                                       class="flex-1 min-w-0 border border-border rounded-r-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                                       placeholder="Sélectionner une période"
-                                       readonly
-                                       value="{% if request.query.get('date_from') and request.query.get('date_to') %}{{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}{% endif %}"
-                                       style="background: white; cursor: pointer;">
+                                <input
+                                    type="text"
+                                    id="date_range"
+                                    data-date-range-target="input"
+                                    class="oq-date-range-field__input"
+                                    placeholder="Sélectionner une période"
+                                    readonly
+                                    value="{% if request.query.get('date_from') and request.query.get('date_to') %}{{ request.query.get('date_from')|date('d/m/Y') }} → {{ request.query.get('date_to')|date('d/m/Y') }}{% endif %}"
+                                >
                             </div>
                         </div>
                         <button class="inline-flex items-center justify-center gap-2 border border-border text-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:bg-accent transition-colors"

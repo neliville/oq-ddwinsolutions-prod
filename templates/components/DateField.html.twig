@@ -1,0 +1,53 @@
+{# @prop name string #}
+{# @prop id string|null #}
+{# @prop value string Valeur ISO Y-m-d #}
+{# @prop label string|null #}
+{# @prop required bool #}
+{# @prop min string|null #}
+{# @prop max string|null #}
+{# @prop compact bool Variante barres de filtres #}
+{# @prop dataModel string|null Attribut data-model pour Live Components #}
+{# @prop inputClass string|null Classes additionnelles sur l'input #}
+{%- props
+    name,
+    id = null,
+    value = '',
+    label = null,
+    required = false,
+    min = null,
+    max = null,
+    compact = false,
+    dataModel = null,
+    inputClass = null,
+-%}
+{% set inputId = id ?? ('date_' ~ name ~ '_' ~ random(1000, 9999)) %}
+{% set wrapperClass = ('oq-date-field' ~ (compact ? ' oq-date-field--compact' : ''))|tailwind_merge %}
+<div
+    class="{{ wrapperClass }}"
+    data-controller="date-field"
+    {% if compact %}data-date-field-compact-value="true"{% endif %}
+    {% if min %}data-date-field-min-value="{{ min }}"{% endif %}
+    {% if max %}data-date-field-max-value="{{ max }}"{% endif %}
+>
+    {% if label %}
+        <label for="{{ inputId }}" class="{{ compact ? 'text-xs font-medium text-muted-foreground' : 'block text-sm font-medium mb-1' }}">{{ label }}</label>
+    {% endif %}
+    <div class="oq-date-field__control">
+        <span class="oq-date-field__icon" aria-hidden="true">
+            <twig:ux:icon name="lucide:calendar" class="size-4" />
+        </span>
+        <input
+            type="date"
+            name="{{ name }}"
+            id="{{ inputId }}"
+            value="{{ value }}"
+            data-date-field-target="input"
+            class="{{ ('oq-date-field__input ' ~ (inputClass|default('')))|tailwind_merge }}"
+            {% if required %}required{% endif %}
+            {% if min %}min="{{ min }}"{% endif %}
+            {% if max %}max="{{ max }}"{% endif %}
+            {% if dataModel %}data-model="{{ dataModel }}"{% endif %}
+            {{ attributes }}
+        />
+    </div>
+</div>

@@ -110,3 +110,23 @@ Réserver aux chargements **asynchrones** ou frames Turbo différés ; éviter s
 ## Pagination
 
 Utiliser `twig:Pagination` du kit **uniquement** lorsque la pagination serveur existe et que la volumétrie le justifie (voir audit).
+
+## Aide contextuelle (`twig:ContextualHelp`)
+
+Registre central : [`config/help/contextual_help.yaml`](../config/help/contextual_help.yaml) — clés `help.{domaine}.{sujet}`.
+
+| Besoin | Composant | Exemple |
+|--------|-----------|---------|
+| 1 ligne courte | `twig:Tooltip` | Pastilles métadonnées outils |
+| Titre + description | `twig:ContextualHelp` | Sidebar, KPI, filtres audit |
+| Documentation longue | Accordéon `tool_help_*` | Méthodes qualité |
+
+**Variantes** : `sidebar` (panneau sombre à droite), `inline` / `field` (panneau clair sous le déclencheur).
+
+**Twig** : `help('help.nav.audit')`, `help_title()`, `help_description()`, `help_exists()`.
+
+**KPI** : `helpId` sur `twig:KpiStatCard` — icône `?` + survol ; `helperVisible` pour garder un sous-texte visible si besoin.
+
+**Mobile** : écrans tactiles → icône `?` cliquable (`contextual_help` Stimulus), pas de survol seul.
+
+**Règle** : ne pas envelopper chaque ligne de tableau ; cibler libellés, KPI et actions sensibles uniquement.

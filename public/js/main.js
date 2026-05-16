@@ -17,15 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  const AOS = window.AOS
-  if (AOS) {
-    AOS.init({
-      duration: 800,
-      easing: "ease-in-out",
-      once: true,
-      offset: 100,
-    })
-  }
 })
 
 function scrollToSection(sectionId) {

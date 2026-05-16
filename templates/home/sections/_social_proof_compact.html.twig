@@ -1,32 +1,42 @@
-<section id="preuve-sociale" class="social-proof-section home-landing-social bg-muted/30" aria-labelledby="home-social-heading">
+<section id="preuve-sociale" class="social-proof-section home-landing-social home-section-premium home-section-premium--social" aria-labelledby="home-social-heading">
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow home-section-premium__glow--social" aria-hidden="true"></div>
     <div class="container max-w-6xl mx-auto">
-        <header class="section-header text-center" data-aos="fade-up">
+        <header class="section-header text-center" data-home-section-intro>
             <span class="section-badge">Preuve sociale</span>
             <h2 id="home-social-heading" class="m-0">Utilisé par des équipes QSE qui veulent aller vite sur le terrain</h2>
             <p class="m-0">Des responsables qualité et QSE s'appuient sur nos outils pour analyser, exporter en PDF et structurer leur pilotage quand le besoin mûrit.</p>
         </header>
-        <div class="social-proof-stats max-w-4xl mx-auto">
-            <div class="social-stat">
+
+        <div class="social-proof-stats max-w-4xl mx-auto" role="list">
+            <div class="social-stat motion-card home-stat-card" data-home-reveal role="listitem">
+                <span class="home-stat-card__icon" aria-hidden="true"><i data-lucide="layout-grid"></i></span>
                 <span class="social-stat__value">6 outils</span>
                 <span class="social-stat__label">Méthodes terrain QSE</span>
             </div>
-            <div class="social-stat">
+            <div class="social-stat motion-card home-stat-card" data-home-reveal role="listitem">
+                <span class="home-stat-card__icon" aria-hidden="true"><i data-lucide="badge-check"></i></span>
                 <span class="social-stat__value">0 €</span>
                 <span class="social-stat__label">Pas de carte bancaire</span>
             </div>
-            <div class="social-stat">
+            <div class="social-stat motion-card home-stat-card" data-home-reveal role="listitem">
+                <span class="home-stat-card__icon" aria-hidden="true"><i data-lucide="file-down"></i></span>
                 <span class="social-stat__value">PDF</span>
                 <span class="social-stat__label">Exports prêts pour l'audit</span>
             </div>
         </div>
+
         {% if homepageTestimonials is not empty %}
         <div class="testimonials-grid">
             {% for testimonial in homepageTestimonials %}
-            <article class="testimonial-card" data-aos="fade-up"{% if not loop.first %} data-aos-delay="60"{% endif %}>
+            <article class="testimonial-card motion-card home-testimonial-card" data-home-reveal>
                 <div class="testimonial-card__inner">
-                    <p class="testimonial-card__rating" aria-label="Note {{ testimonial.rating }} sur 5">
-                        <span class="testimonial-card__stars" aria-hidden="true">{% for i in 1..testimonial.rating %}★{% endfor %}</span>
-                    </p>
+                    <div class="testimonial-card__header">
+                        <span class="testimonial-card__quote-icon" aria-hidden="true"><i data-lucide="quote"></i></span>
+                        <p class="testimonial-card__rating" aria-label="Note {{ testimonial.rating }} sur 5">
+                            <span class="testimonial-card__stars" aria-hidden="true">{% for i in 1..testimonial.rating %}★{% endfor %}</span>
+                        </p>
+                    </div>
                     <blockquote class="testimonial-card__quote">
                         <p class="testimonial-text">{{ testimonial.quote }}</p>
                     </blockquote>
@@ -42,7 +52,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <p class="testimonials-empty text-center text-muted-foreground m-0 max-w-xl mx-auto text-sm">
+        <p class="testimonials-empty text-center text-muted-foreground m-0 max-w-xl mx-auto text-sm" data-home-reveal>
             Les retours terrain seront bientôt publiés ici.
         </p>
         {% endif %}

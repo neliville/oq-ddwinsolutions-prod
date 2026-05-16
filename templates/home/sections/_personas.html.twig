@@ -1,6 +1,6 @@
 <section class="home-landing-section py-16 sm:py-20 bg-muted/25" aria-labelledby="home-personas-heading">
     <div class="container max-w-6xl mx-auto px-4">
-        <header class="text-center max-w-3xl mx-auto mb-10" data-aos="fade-up">
+        <header class="text-center max-w-3xl mx-auto mb-10">
             <h2 id="home-personas-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">Pour qui ?</h2>
             <p class="text-muted-foreground mt-3 m-0">
                 Pensé pour les équipes qui veulent structurer leur QHSE sans outil lourd ni complexité inutile.
@@ -18,7 +18,7 @@
                 'Responsable production / maintenance',
             ] %}
             {% for label in roles %}
-                <twig:Card class="border-border/70 shadow-sm" data-aos="fade-up" data-aos-delay="{{ (loop.index0 * 30) % 120 }}">
+                <twig:Card class="border-border/70 shadow-sm">
                     <twig:Card:Content class="py-4 px-4 sm:py-5">
                         <p class="text-sm font-semibold text-foreground m-0">{{ label }}</p>
                     </twig:Card:Content>

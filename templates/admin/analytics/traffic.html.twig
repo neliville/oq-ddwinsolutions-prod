@@ -3,11 +3,12 @@
 {% block title %}Trafic & audiences | Analytics{% endblock %}
 
 {% block content %}
-{# Graphiques Chart.js pilotés par Stimulus (`analytics-charts`) — données : `trafficCharts` #}
+{# Graphiques ApexCharts (`chart` Stimulus) — données : `trafficCharts` #}
 <div
     class="analytics-traffic-page w-full max-w-[100rem] mx-auto space-y-6"
-    data-controller="analytics-charts"
-    data-analytics-charts-config-value="{{ trafficCharts|json_encode|e('html_attr') }}"
+    data-controller="chart"
+    data-chart-kind-value="analytics"
+    data-chart-config-value="{{ trafficCharts|json_encode|e('html_attr') }}"
 >
     <twig:DataPageHeader title="Trafic et audiences" description="Analyse du trafic et des audiences sur la période sélectionnée. La courbe reflète les vues enregistrées jour par jour.">
         <twig:block name="actions">

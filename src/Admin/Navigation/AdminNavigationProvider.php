@@ -19,6 +19,7 @@ final class AdminNavigationProvider
      *         route: string,
      *         route_parameters?: array<string, scalar|null>,
      *         icon: string,
+     *         help_id?: string,
      *         active_when: array{type: string, ...}
      *     }>
      * }>
@@ -34,6 +35,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_dashboard_index',
                         'route_parameters' => [],
                         'icon' => 'layout-dashboard',
+                        'help_id' => 'help.admin.nav.dashboard',
                         'active_when' => ['type' => 'route_exact', 'route' => 'app_admin_dashboard_index'],
                     ],
                 ],
@@ -46,6 +48,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_users_index',
                         'route_parameters' => [],
                         'icon' => 'users',
+                        'help_id' => 'help.admin.nav.users',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_users'],
                     ],
                 ],
@@ -58,6 +61,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_tool_usage_index',
                         'route_parameters' => [],
                         'icon' => 'wrench',
+                        'help_id' => 'help.admin.nav.tool_usage',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_tool_usage'],
                     ],
                     [
@@ -65,6 +69,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_leads_index',
                         'route_parameters' => [],
                         'icon' => 'user-plus',
+                        'help_id' => 'help.admin.nav.leads',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_leads'],
                     ],
                 ],
@@ -77,6 +82,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_qse_capa_overview',
                         'route_parameters' => [],
                         'icon' => 'target',
+                        'help_id' => 'help.admin.nav.capa',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_qse_capa'],
                     ],
                 ],
@@ -89,6 +95,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_qse_audit_standards_index',
                         'route_parameters' => [],
                         'icon' => 'book-marked',
+                        'help_id' => 'help.admin.nav.audit_standards',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_qse_audit_standards'],
                     ],
                     [
@@ -96,6 +103,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_qse_audit_requirements_index',
                         'route_parameters' => [],
                         'icon' => 'list-checks',
+                        'help_id' => 'help.admin.nav.audit_requirements',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_qse_audit_requirements'],
                     ],
                     [
@@ -103,6 +111,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_qse_req_import_index',
                         'route_parameters' => [],
                         'icon' => 'upload',
+                        'help_id' => 'help.admin.nav.audit_import',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_qse_req_import'],
                     ],
                 ],
@@ -115,6 +124,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_qse_risk_overview',
                         'route_parameters' => [],
                         'icon' => 'shield-alert',
+                        'help_id' => 'help.admin.nav.risk',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_qse_risk'],
                     ],
                 ],
@@ -127,6 +137,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_blog_index',
                         'route_parameters' => [],
                         'icon' => 'file-text',
+                        'help_id' => 'help.admin.nav.blog',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_blog'],
                     ],
                     [
@@ -174,6 +185,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_analytics_index',
                         'route_parameters' => [],
                         'icon' => 'pie-chart',
+                        'help_id' => 'help.admin.nav.analytics',
                         'active_when' => ['type' => 'route_exact', 'route' => 'app_admin_analytics_index'],
                     ],
                     [
@@ -207,6 +219,7 @@ final class AdminNavigationProvider
                         'route' => 'app_admin_platform_health_index',
                         'route_parameters' => [],
                         'icon' => 'heart-pulse',
+                        'help_id' => 'help.admin.nav.platform_health',
                         'active_when' => ['type' => 'route_prefix', 'prefix' => 'app_admin_platform_health'],
                     ],
                 ],
@@ -266,6 +279,7 @@ final class AdminNavigationProvider
                     'route' => $item['route'],
                     'route_parameters' => $params,
                     'icon' => $item['icon'],
+                    'help_id' => $item['help_id'] ?? null,
                     'active' => $this->isActive($currentRoute, $request, $item['active_when']),
                 ];
             }

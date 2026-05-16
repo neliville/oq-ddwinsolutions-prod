@@ -2,7 +2,9 @@
 {# @prop value string|number Valeur affichée #}
 {# @prop tone 'default'|'destructive'|'emerald'|'amber'|'sky' Couleur de l’icône #}
 {# @prop delta string|null Variation affichée sous la valeur (+12 %, etc.) #}
-{# @prop helper string|null Texte d’aide discret #}
+{# @prop helper string|null Sous-texte court sous la valeur (prioritaire sur caption du registre) #}
+{# @prop helpId string|null Clé registre aide contextuelle (icône ? + HoverCard) #}
+{# @prop helperVisible bool Afficher helper en texte sous la valeur #}
 {# @prop withIcon bool Afficher l’emplacement icône à droite #}
 {# @block icon Icône (Lucide, ux:icon) — uniquement si withIcon #}
 {%- props
@@ -11,7 +13,10 @@
     tone = 'default',
     delta = null,
     helper = null,
+    helpId = null,
+    helperVisible = false,
     withIcon = true,
+    useCounter = false,
 -%}
 {%- set toneClasses = {
     default: 'bg-primary/10 text-primary',
@@ -21,17 +26,26 @@
     sky: 'bg-sky-500/10 text-sky-700 dark:text-sky-400',
 } -%}
 {%- set iconWrap = toneClasses[tone] ?? toneClasses.default -%}
-<twig:Card class="{{ ('border-border/80 shadow-sm ring-1 ring-border/40 ' ~ attributes.render('class'))|tailwind_merge }}">
+{%- set helpEntry = helpId ? help(helpId) : null -%}
+{%- set effectiveHelper = helper is not same as('') ? helper : null -%}
+{%- set resolvedHelper = effectiveHelper ?? (helpEntry ? helpEntry.caption : null) -%}
+{%- set showInlineHelper = resolvedHelper and (helperVisible or (helpId and effectiveHelper is null and helpEntry and helpEntry.caption)) -%}
+<twig:Card class="{{ ('relative border-border/80 shadow-sm ring-1 ring-border/40 ' ~ attributes.render('class'))|tailwind_merge }}">
     <twig:Card:Content class="p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
-                <p class="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ label }}</p>
-                <p class="m-0 text-2xl font-bold tabular-nums text-foreground">{{ value }}</p>
+                <div class="mb-1 flex items-start gap-1.5 min-w-0">
+                    <p class="m-0 flex-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ label }}</p>
+                    {% if helpId %}
+                        <twig:ContextualHelp helpId="{{ helpId }}" variant="inline" trigger="icon" class="shrink-0" />
+                    {% endif %}
+                </div>
+                <p class="m-0 text-2xl font-bold tabular-nums text-foreground"{% if useCounter %} data-gsap-counter{% if value is not same as('') and value is not same as('—') %} data-gsap-counter-value="{{ value }}"{% endif %}{% endif %}>{{ value }}</p>
                 {% if delta %}
                     <p class="mt-1 mb-0 text-xs font-medium tabular-nums text-muted-foreground">{{ delta }}</p>
                 {% endif %}
-                {% if helper %}
-                    <p class="mt-1 mb-0 text-xs text-muted-foreground">{{ helper }}</p>
+                {% if showInlineHelper %}
+                    <p class="mt-1 mb-0 text-xs text-muted-foreground">{{ resolvedHelper }}</p>
                 {% endif %}
             </div>
             {% if withIcon %}

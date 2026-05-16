@@ -1,0 +1,21 @@
+{# Champ formulaire + icône aide contextuelle
+   @param field FormView
+   @param help_id string Clé registre help.*
+#}
+<div class="pref-field-group mb-3">
+    <div class="flex items-start gap-1.5 mb-1">
+        {{ form_label(field) }}
+        <twig:ContextualHelp helpId="{{ help_id }}" variant="field" trigger="icon" class="shrink-0" />
+    </div>
+    {{ form_widget(field, {
+        attr: {
+            class: 'form-control',
+            'aria-describedby': field.vars.id ~ '-help',
+        }
+    }) }}
+    {% if field.vars.errors|length > 0 %}
+        <div class="text-sm text-destructive mt-1" role="alert">
+            {% for error in field.vars.errors %}{{ error.message }}{% endfor %}
+        </div>
+    {% endif %}
+</div>

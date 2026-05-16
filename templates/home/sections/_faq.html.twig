@@ -1,4 +1,4 @@
-<section class="faq-section" id="faq">
+<section class="faq-section home-section-premium home-section-premium--faq" id="faq">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -39,37 +39,49 @@
         ]
     }
     </script>
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow home-section-premium__glow--faq" aria-hidden="true"></div>
     <div class="container">
-        <div class="section-header" data-aos="fade-up">
+        <header class="section-header" data-home-section-intro>
             <span class="section-badge">FAQ</span>
             <h2>{{ homepage_slots['faq_section_title']|default('Questions fréquentes') }}</h2>
             <p>{{ homepage_slots['faq_section_subtitle']|default("Tout ce qu'il faut savoir pour bien démarrer avec OUTILS-QUALITÉ.") }}</p>
-        </div>
-        <div class="faq-list">
-            <article class="faq-item" data-aos="fade-up" data-aos-delay="0">
-                <h3 class="faq-item__title" id="faq-home-q-1">Les outils sont-ils vraiment gratuits ?</h3>
-                <div class="faq-item__body" id="faq-home-answer-1" role="region" aria-labelledby="faq-home-q-1">
-                    <p>Oui. Les six outils (Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, 8D et Pareto) sont gratuits. Vous pouvez démarrer sans inscription ; un compte gratuit permet de sauvegarder en ligne et d'accéder au cockpit QHSE. Aucune carte bancaire n'est requise pour commencer.</p>
-                </div>
-            </article>
-            <article class="faq-item" data-aos="fade-up" data-aos-delay="50">
-                <h3 class="faq-item__title" id="faq-home-q-2">Mes données sont-elles sécurisées et exportables ?</h3>
-                <div class="faq-item__body" id="faq-home-answer-2" role="region" aria-labelledby="faq-home-q-2">
-                    <p>Vos analyses sont stockées sur des serveurs sécurisés en France. Vous pouvez exporter vos diagrammes au format PDF, JPEG ou JSON à tout moment pour vos audits ou vos archives.</p>
-                </div>
-            </article>
-            <article class="faq-item" data-aos="fade-up" data-aos-delay="100">
-                <h3 class="faq-item__title" id="faq-home-q-3">Puis-je utiliser les outils sans créer de compte ?</h3>
-                <div class="faq-item__body" id="faq-home-answer-3" role="region" aria-labelledby="faq-home-q-3">
-                    <p>Oui. Vous pouvez essayer les outils immédiatement sans inscription. La création d'un compte gratuit permet de sauvegarder vos travaux dans le cloud et de les retrouver sur tous vos appareils.</p>
-                </div>
-            </article>
-            <article class="faq-item" data-aos="fade-up" data-aos-delay="150">
-                <h3 class="faq-item__title" id="faq-home-q-4">Proposez-vous un accompagnement ou une formation ?</h3>
-                <div class="faq-item__body" id="faq-home-answer-4" role="region" aria-labelledby="faq-home-q-4">
-                    <p>Notre équipe QSE répond à vos questions par email. DDWin Solutions propose également des ateliers de prise en main et des formations personnalisées sur demande.</p>
-                </div>
-            </article>
+        </header>
+
+        {% set faq_items = [
+            {
+                value: 'gratuit',
+                title: 'Les outils sont-ils vraiment gratuits ?',
+                body: "Oui. Les six outils (Ishikawa, 5 Pourquoi, QQOQCCP, AMDEC, 8D et Pareto) sont gratuits. Vous pouvez démarrer sans inscription ; un compte gratuit permet de sauvegarder en ligne et d'accéder au cockpit QHSE. Aucune carte bancaire n'est requise pour commencer."
+            },
+            {
+                value: 'donnees',
+                title: 'Mes données sont-elles sécurisées et exportables ?',
+                body: "Vos analyses sont stockées sur des serveurs sécurisés en France. Vous pouvez exporter vos diagrammes au format PDF, JPEG ou JSON à tout moment pour vos audits ou vos archives."
+            },
+            {
+                value: 'sans-compte',
+                title: 'Puis-je utiliser les outils sans créer de compte ?',
+                body: "Oui. Vous pouvez essayer les outils immédiatement sans inscription. La création d'un compte gratuit permet de sauvegarder vos travaux dans le cloud et de les retrouver sur tous vos appareils."
+            },
+            {
+                value: 'formation',
+                title: 'Proposez-vous un accompagnement ou une formation ?',
+                body: "Notre équipe QSE répond à vos questions par email. DDWin Solutions propose également des ateliers de prise en main et des formations personnalisées sur demande."
+            },
+        ] %}
+
+        <div class="home-faq-accordion-wrap" data-home-reveal>
+        <twig:Accordion id="home-faq" class="home-faq-accordion">
+            {% for item in faq_items %}
+                <twig:Accordion:Item value="{{ item.value }}" class="home-faq-accordion__item border-0">
+                    <twig:Accordion:Trigger class="home-faq-accordion__trigger !rounded-none">{{ item.title }}</twig:Accordion:Trigger>
+                    <twig:Accordion:Content class="home-faq-accordion__content !pt-0">
+                        <p class="m-0">{{ item.body }}</p>
+                    </twig:Accordion:Content>
+                </twig:Accordion:Item>
+            {% endfor %}
+        </twig:Accordion>
         </div>
     </div>
 </section>

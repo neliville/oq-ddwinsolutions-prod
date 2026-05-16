@@ -102,6 +102,7 @@ final class DashboardController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', array_merge($toolData, [
+            'user_dashboard_charts' => $this->buildUserDashboardCharts($cockpit, $managerDashboard),
             'show_onboarding_wizard' => $showOnboardingWizard,
             'onboarding_wizard_steps' => $this->buildActivationWizardSteps(),
             'onboarding_wizard_must_open' => $showOnboardingWizard,
@@ -135,6 +136,75 @@ final class DashboardController extends AbstractController
             'activation_nudge_cta_csrf_token_id' => $this->resolveActivationNudgeCtaCsrfTokenId($recommendedAction),
             'activation_nudge_cta_label' => $this->resolveActivationNudgeCtaLabel($recommendedAction),
         ]));
+    }
+
+    /**
+     * Données graphiques Apex (cockpit utilisateur) — sérialisées dans le widget Twig.
+     *
+     * @param array<string, mixed> $cockpit
+     * @param array<string, mixed> $managerDashboard
+     *
+     * @return array{charts: list<array<string, mixed>>}
+     */
+    private function buildUserDashboardCharts(array $cockpit, array $managerDashboard): array
+    {
+        $charts = [];
+
+        $avg = $cockpit['avgAuditCompliancePercent'] ?? null;
+        if ($avg !== null && is_numeric($avg)) {
+            $c = round((float) $avg, 1);
+            $gap = max(0.0, round(100 - $c, 1));
+            $charts[] = [
+                'ref' => 'conformity',
+                'type' => 'donut',
+                'labels' => ['Conformité moyenne (audits)', 'Écart à 100 %'],
+                'series' => [$c, $gap > 0 ? $gap : 0.1],
+                'colors' => ['#4f46e5', '#cbd5e1'],
+            ];
+        }
+
+        $byStatus = $managerDashboard['capas_by_status'] ?? [];
+        $capaLabels = [];
+        $capaSeries = [];
+        $statusLabels = [
+            'brouillon' => 'Brouillon',
+            'a_valider' => 'À valider',
+            'validee' => 'Validée',
+            'en_cours' => 'En cours',
+            'en_attente_de_verification' => 'En vérif.',
+            'reouverte' => 'Rouverte',
+        ];
+        foreach ($byStatus as $key => $list) {
+            $n = \is_array($list) ? \count($list) : 0;
+            if ($n > 0) {
+                $capaLabels[] = $statusLabels[$key] ?? (string) $key;
+                $capaSeries[] = $n;
+            }
+        }
+        if ($capaLabels !== []) {
+            $charts[] = [
+                'ref' => 'capa_status',
+                'type' => 'bar',
+                'labels' => $capaLabels,
+                'series' => $capaSeries,
+                'name' => 'CAPA ouvertes par statut',
+            ];
+        }
+
+        $charts[] = [
+            'ref' => 'attention',
+            'type' => 'bar',
+            'labels' => ['Risques crit. sans CAPA', 'NC ouvertes', 'CAPA en retard', 'CAPA sans resp.'],
+            'series' => [
+                (int) ($cockpit['criticalRisksWithoutCapa'] ?? 0),
+                (int) ($cockpit['openNonConformEvaluations'] ?? 0),
+                (int) ($cockpit['overdueOpenCapas'] ?? 0),
+                (int) ($cockpit['openCapasWithoutResponsible'] ?? 0),
+            ],
+            'name' => 'Charge QSE',
+        ];
+
+        return ['charts' => $charts];
     }
 
     private function resolveActivationHighlight(?string $activationNotice, UserPreferences $userPreferences): ?string

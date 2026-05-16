@@ -34,8 +34,12 @@
 * {
   box-sizing: border-box;
 }
-html, body {
-  overflow-x: hidden;
+html {
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
 }
 
 body {

@@ -24,15 +24,6 @@ function trackExport(tool, format, metadata = {}) {
 document.addEventListener("DOMContentLoaded", () => {
   initializeFiveWhy()
 
-  // Initialiser AOS si disponible
-  const AOS = window.AOS // Declare AOS variable
-  if (typeof AOS !== "undefined") {
-    AOS.init({
-      duration: 800,
-      easing: "ease-in-out",
-      once: true,
-    })
-  }
 })
 
 function initializeFiveWhy() {

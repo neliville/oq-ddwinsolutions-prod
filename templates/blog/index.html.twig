@@ -29,14 +29,14 @@
 <section class="py-12 bg-gradient-primary text-black" style="margin-top: 96px; scroll-margin-top: 96px;">
     <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-12 items-center gap-8">
-            <div class="lg:col-span-8" data-aos="fade-right">
+            <div class="lg:col-span-8">
                 <h1 class="text-5xl font-bold mb-6">Blog Qualité</h1>
                 <p class="text-lg mb-6">
                     Découvrez nos articles, guides pratiques et conseils d'experts pour maîtriser
                     les outils d'amélioration continue et optimiser vos processus qualité.
                 </p>
             </div>
-            <div class="lg:col-span-4" data-aos="fade-left">
+            <div class="lg:col-span-4">
                 {% include 'components/media/responsive_picture.html.twig' with {
                     path: 'img/blog-5why.webp',
                     alt: 'Blog qualité',
@@ -52,7 +52,7 @@
 {% if categories|length > 0 %}
 <section class="py-4 bg-muted">
     <div class="max-w-7xl mx-auto px-4">
-        <div class="flex flex-wrap justify-center gap-2" data-aos="fade-up">
+        <div class="flex flex-wrap justify-center gap-2">
             <a href="{{ path('app_blog_index') }}"
                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-colors no-underline {{ not currentCategory ? 'bg-primary text-primary-foreground' : 'border border-border text-foreground hover:bg-accent' }}">
                 <i class="fas fa-th-large mr-2"></i>Tous les articles
@@ -76,7 +76,7 @@
         <h2 class="text-2xl font-bold mb-6">Articles mis en avant{% if currentCategoryLabel %} <span class="text-muted-foreground text-xl font-normal">— {{ currentCategoryLabel }}</span>{% endif %}</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {% for featuredPost in featuredPosts %}
-            <div data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+            <div>
                 <div class="rounded-lg bg-card shadow-sm h-full flex flex-col overflow-hidden">
                     {% if featuredPost.image %}
                         {% include 'components/media/responsive_picture.html.twig' with {
@@ -121,7 +121,7 @@
         {% if blogPosts|length > 0 %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {% for post in blogPosts %}
-            <div data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
+            <div>
                 <div class="rounded-lg bg-card shadow-sm h-full flex flex-col overflow-hidden">
                     {% if post.image %}
                         {% include 'components/media/responsive_picture.html.twig' with {
@@ -251,7 +251,7 @@
         <h2 class="text-2xl font-bold mb-6">Articles les plus lus{% if currentCategoryLabel %} <span class="text-muted-foreground text-xl font-normal">— {{ currentCategoryLabel }}</span>{% endif %}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {% for post in mostViewedPosts %}
-            <div data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+            <div>
                 <div class="rounded-lg bg-card shadow-sm overflow-hidden">
                     {% if post.image %}
                     <img src="{{ (post.image starts with 'http') ? post.image : asset(post.image) }}" class="w-full h-48 object-cover" alt="{{ post.title }}" loading="lazy" width="400" height="225">
@@ -290,7 +290,7 @@
 <section class="py-12 bg-muted">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-center">
-            <div class="w-full lg:max-w-2xl" data-aos="fade-up">
+            <div class="w-full lg:max-w-2xl">
                 {% include 'components/newsletter-form.html.twig' %}
             </div>
         </div>

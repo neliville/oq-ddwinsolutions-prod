@@ -2,12 +2,16 @@
   "_comment_ishikawa_v2": "build:react / watch:react : optionnel. Regénèrent assets/react/controllers/IshikawaEditor.js depuis assets/react-src/. En prod, seul asset-map:compile (deploy.sh) suffit si ce fichier est à jour dans Git — pas de Node sur le serveur pour servir l’appli.",
   "scripts": {
     "build:react": "cd assets/react-src/build && npm install && npm run build",
-    "watch:react": "cd assets/react-src/build && npm install && npm run watch"
+    "watch:react": "cd assets/react-src/build && npm install && npm run watch",
+    "test:e2e:motion": "PLAYWRIGHT_SKIP_WEBSERVER=1 playwright test tests/e2e/home-motion.spec.ts"
   },
   "dependencies": {
     "@stimulus-components/checkbox-select-all": "^6.1.0",
     "@stimulus-components/dialog": "^1.0.1",
     "@stimulus-components/sortable": "^5.0.3",
     "sortablejs": "^1.15.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
   }
 }

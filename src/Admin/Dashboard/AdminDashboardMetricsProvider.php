@@ -135,6 +135,11 @@ final class AdminDashboardMetricsProvider
             ],
         ];
 
+        $adminGrowthChart = [
+            'labels' => ['Leads (total)', 'Newsletter actifs', 'Inscriptions 7 j'],
+            'values' => [$leadsTotal, $activeSubscribersCount, $registrations7d],
+        ];
+
         return [
             'unreadMessagesCount' => $unreadMessagesCount,
             'messagesToday' => $messagesToday,
@@ -171,6 +176,7 @@ final class AdminDashboardMetricsProvider
             'recentTrackingEvents' => $recentTrackingEvents,
             'platformIntegrationSummary' => $this->platformIntegrationSummaryProvider->summarize(),
             'blogPostsPublishedCount' => $blogPostsPublishedCount,
+            'adminGrowthChart' => $adminGrowthChart,
             'adminDashboardCharts' => $adminDashboardCharts,
         ];
     }

@@ -44,23 +44,34 @@ dialog footer[data-slot="dialog-footer"] a:hover,
 @import "./components/_newsletter.css";
 @import "./components/_mautic-form-newsletter.css";
 @import "./components/_sidebar.css";
+@import "./components/_contextual-help.css";
+@import "./components/_floating.css";
+@import "./motion/_premium.css";
 @import "./components/_confirmation_modal.css";
 @import "./components/_collab-invite-dialog.css";
 @import "./components/_tool_buttons.css";
 @import "./components/_tool_lead_cta.css";
 @import "./components/_cta_ddwin.css";
 @import "./components/_seo_content.css";
+@import "./components/_date-field.css";
 
 /* ─── Pages outils SEO (/outil/*) ────────────────────────────────────── */
 @import "./tools/_tool_seo.css";
 
 /* ─── Site ────────────────────────────────────────────────────────────── */
 @import "./site/home.css";
+@import "./site/_home-landing-premium.css";
 @import "./site/contact.css";
 @import "./site/outils.css";
 @import "./site/_mautic-form-download.css";
 @import "./site/_legal-prose.css";
 @import "./site/dashboard.css";
+@import "./qse/audit-board.css";
+@import "./qse/risk-board.css";
+@import "./qse/risk-form.css";
+@import "./qse/audit-form.css";
+@import "./qse/capa-form.css";
+@import "./qse/capa-board.css";
 @import "./site/preferences.css";
 @import "./site/_inline-links.css";
 @import "./site/_auth.css";
@@ -104,7 +115,7 @@ dialog footer[data-slot="dialog-footer"] a:hover,
 
     /* Slate 100 #f1f5f9 */
     --muted:                    210 40% 96%;
-    --muted-foreground:         215 20% 65%;       /* Slate 400  #94a3b8 */
+    --muted-foreground:         215 16% 47%;       /* Slate 500  #64748b — WCAG AA (4.6:1 sur fond blanc) */
 
     --accent:                   210 40% 96%;
     --accent-foreground:        215 28% 17%;

@@ -14,11 +14,11 @@
 <section class="py-12 bg-gradient-primary text-black" style="margin-top: 76px;" role="banner" aria-labelledby="legal-page-title">
     <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-12 items-center gap-6">
-            <div class="lg:col-span-8" data-aos="fade-right">
+            <div class="lg:col-span-8">
                 <h1 id="legal-page-title" class="text-4xl font-bold mb-6">{{ page.title }}</h1>
                 <p class="text-lg mb-6">{{ meta.description }}</p>
             </div>
-            <div class="lg:col-span-4" data-aos="fade-left">
+            <div class="lg:col-span-4">
                 <figure>
                     {% include 'components/media/responsive_picture.html.twig' with {
                         path: meta.image|default('img/mentions-legales.webp'),

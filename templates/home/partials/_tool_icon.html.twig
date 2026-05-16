@@ -1,0 +1,13 @@
+{# Icône Lucide cohérente pour les cartes outils home #}
+{% set tool = tool|default('ishikawa') %}
+{% set icons = {
+    ishikawa: 'git-branch',
+    fivewhy: 'message-circle-question',
+    qqoqccp: 'clipboard-list',
+    amdec: 'triangle-alert',
+    eightd: 'layers-3',
+    pareto: 'chart-no-axes-column-increasing',
+} %}
+<div class="home-tool-icon home-tool-icon--{{ tool }}" aria-hidden="true">
+    <i data-lucide="{{ icons[tool]|default('wrench') }}"></i>
+</div>

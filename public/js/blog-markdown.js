@@ -12,7 +12,6 @@ class BlogMarkdownReader {
     this.articles = []
     this.currentCategory = "all"
     this.baseUrl = window.location.origin
-    this.AOS = window.AOS // Declare the AOS variable
   }
 
   async init() {
@@ -20,16 +19,6 @@ class BlogMarkdownReader {
     this.renderArticles()
     this.initializeFilters()
     this.initializeRouting()
-
-    // Initialiser AOS si disponible
-    if (this.AOS) {
-      this.AOS.init({
-        duration: 600,
-        easing: "ease-out-cubic",
-        once: true,
-        offset: 50,
-      })
-    }
   }
 
   async loadAllArticles() {
@@ -393,10 +382,6 @@ Le diagramme d'Ishikawa est un outil puissant qui, bien utilisé, peut transform
       grid.appendChild(articleElement)
     })
 
-    // Réinitialiser AOS pour les nouveaux éléments
-    if (this.AOS) {
-      this.AOS.refresh()
-    }
   }
 
   createArticleElement(article, index) {
@@ -404,7 +389,7 @@ Le diagramme d'Ishikawa est un outil puissant qui, bien utilisé, peut transform
     articleDiv.className = "col-lg-4 col-md-6"
 
     articleDiv.innerHTML = `
-      <article class="card border-0 shadow-sm h-100 article-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+      <article class="card border-0 shadow-sm h-100 article-card">
         <div class="card-header pb-4 border-0 bg-white">
           <div class="text-center mb-4">
             <div class="text-4xl mb-3">${article.image}</div>
@@ -963,8 +948,6 @@ function displayArticles(articles) {
 function createArticleCard(article, index) {
   const cardDiv = document.createElement("div")
   cardDiv.className = "col-lg-6 col-xl-4"
-  cardDiv.setAttribute("data-aos", "fade-up")
-  cardDiv.setAttribute("data-aos-delay", (index * 100).toString())
 
   const formattedDate = new Date(article.date).toLocaleDateString("fr-FR", {
     year: "numeric",

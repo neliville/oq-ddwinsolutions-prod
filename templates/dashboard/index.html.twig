@@ -110,10 +110,10 @@
     <div class="grid grid-cols-12 gap-4 sm:gap-6">
 
         {# Colonne gauche #}
-        <div class="col-span-12 lg:col-span-8">
+        <div class="col-span-12 lg:col-span-8" data-controller="gsap-stagger" data-gsap-stagger-child-selector-value=":scope > section, :scope > div.rounded-lg, :scope > div.dashboard-recent-creations">
 
             {# Mes outils disponibles #}
-            <section class="rounded-lg bg-card shadow-sm mb-6 border border-border/50" data-aos="fade-up" aria-labelledby="dashboard-tools-heading">
+            <section class="rounded-lg bg-card shadow-sm mb-6 border border-border/50" aria-labelledby="dashboard-tools-heading">
                 <div class="p-4 sm:p-6">
                     <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-5 sm:mb-6">
                         <h2 id="dashboard-tools-heading" class="text-lg sm:text-xl font-bold mb-0 text-foreground tracking-tight">Mes outils disponibles</h2>
@@ -127,7 +127,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-primary/10 text-primary rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -148,7 +148,7 @@
                         </div>
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-sky-100 text-sky-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -169,7 +169,7 @@
                         </div>
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-secondary text-secondary-foreground rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -190,7 +190,7 @@
                         </div>
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-red-100 text-destructive rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -211,7 +211,7 @@
                         </div>
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-sky-100 text-sky-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -232,7 +232,7 @@
                         </div>
 
                         <div>
-                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card flex flex-col">
+                            <article class="rounded-xl bg-card border border-border h-full dashboard-tool-card motion-card flex flex-col">
                                 <div class="p-4 sm:p-5 flex flex-col flex-1">
                                     <div class="flex items-start mb-3 gap-3">
                                         <div class="bg-amber-100 text-amber-600 rounded-xl p-2.5 shrink-0" aria-hidden="true">
@@ -258,7 +258,7 @@
 
             {# Dernières créations #}
             {% if recentRecords|length > 0 %}
-            <div class="dashboard-recent-creations rounded-xl bg-card border border-border shadow-sm" data-aos="fade-up" data-aos-delay="100">
+            <div class="dashboard-recent-creations rounded-xl bg-card border border-border shadow-sm">
                 <div class="p-6 sm:p-7">
                     <div class="dashboard-recent-creations__header flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-5">
                         <h2 class="dashboard-recent-creations__title font-bold mb-0 text-lg tracking-tight text-foreground">Mes dernières créations</h2>
@@ -305,7 +305,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="rounded-lg bg-card shadow-sm" data-aos="fade-up" data-aos-delay="100">
+            <div class="rounded-lg bg-card shadow-sm">
                 <div class="p-6 text-center py-12">
                     <div class="mb-6" aria-hidden="true">
                         <div class="inline-flex bg-primary/10 text-primary rounded-full p-4">
@@ -342,7 +342,7 @@
         <div class="col-span-12 lg:col-span-4">
 
             {# Compte utilisateur #}
-            <div class="rounded-lg bg-card shadow-sm mb-6" data-aos="fade-up" data-aos-delay="150">
+            <div class="rounded-lg bg-card shadow-sm mb-6">
                 <div class="p-6">
                     <h2 class="text-lg font-semibold mb-6 flex items-center gap-2 text-foreground">
                         <i data-lucide="user-circle" width="20" height="20" class="text-primary shrink-0" aria-hidden="true"></i>
@@ -377,7 +377,7 @@
             </div>
 
             {# Ressources QSE #}
-            <div class="rounded-lg bg-card shadow-sm dashboard-resources-card" data-aos="fade-up" data-aos-delay="250">
+            <div class="rounded-lg bg-card shadow-sm dashboard-resources-card">
                 <div class="p-6">
                     <h2 class="text-lg font-semibold mb-1 flex items-center gap-2 text-foreground">
                         <i data-lucide="book-open" width="20" height="20" class="text-primary shrink-0" aria-hidden="true"></i>

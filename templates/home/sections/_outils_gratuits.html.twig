@@ -1,145 +1,114 @@
-<section id="outils" class="tools-section bg-muted/20" aria-labelledby="home-outils-heading">
+<section id="outils" class="tools-section home-section-premium home-section-premium--tools" aria-labelledby="home-outils-heading">
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow" aria-hidden="true"></div>
     <div class="container">
-        <div class="section-header max-w-3xl mx-auto text-center">
+        <header class="section-header max-w-3xl mx-auto text-center" data-home-section-intro>
             <span class="section-badge">Outils gratuits</span>
             <h2 id="home-outils-heading">Choisissez votre outil et démarrez en 30 secondes</h2>
             <p>6 méthodes QSE en ligne : gratuit, export PDF, sans inscription obligatoire pour commencer.</p>
-        </div>
+        </header>
 
         <div class="tools-showcase max-w-6xl mx-auto">
             <div class="tools-grid">
-                <div class="tool-card tool-card--featured">
-                    <span class="tool-card__featured-badge">Le plus utilisé</span>
-                    <div class="tool-card__featured-head">
-                        <div class="tool-card-icon tool-card-icon--pill primary" aria-hidden="true">
-                            <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                                <line x1="6" y1="20" x2="34" y2="20" stroke="currentColor" stroke-width="2.5" />
-                                <line x1="14" y1="20" x2="9" y2="10" stroke="currentColor" stroke-width="2" />
-                                <line x1="22" y1="20" x2="17" y2="10" stroke="currentColor" stroke-width="2" />
-                                <line x1="14" y1="20" x2="9" y2="30" stroke="currentColor" stroke-width="2" />
-                                <line x1="22" y1="20" x2="17" y2="30" stroke="currentColor" stroke-width="2" />
-                                <circle cx="32" cy="20" r="3" fill="currentColor" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme d'Ishikawa</h3>
-                    <p>Structurez vos causes possibles avec un cadre visuel 5M / 6M, prêt pour vos revues d'écart.</p>
+                <article class="tool-card motion-card tool-card--featured home-tool-card" data-home-reveal>
+                    <span class="tool-card__featured-badge">
+                        <i data-lucide="sparkles" class="tool-card__featured-badge-icon" aria-hidden="true"></i>
+                        Le plus utilisé
+                    </span>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'ishikawa' } %}
+                    <h3 class="home-tool-card__title">Diagramme d'Ishikawa</h3>
+                    <p class="home-tool-card__desc">Structurez vos causes possibles avec un cadre visuel 5M / 6M, prêt pour vos revues d'écart.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Export PDF</span>
-                        <span class="badge">Démarrage immédiat</span>
+                        <span class="home-tool-tag">Sans inscription</span>
+                        <span class="home-tool-tag">Export PDF</span>
+                        <span class="home-tool-tag">Démarrage immédiat</span>
                     </div>
-                    <a href="{{ path('app_ishikawa_index') }}" aria-label="Créer un diagramme d'Ishikawa" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_ishikawa_index') }}" aria-label="Créer un diagramme d'Ishikawa" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
 
-                <div class="tool-card">
-                    <div class="tool-card-icon cyan">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <text x="20" y="28" text-anchor="middle" fill="currentColor" font-size="24" font-weight="700">5?</text>
-                        </svg>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 5 Pourquoi</h3>
-                    <p>Remontez à l'origine d'un problème avec un questionnement simple et directement exploitable.</p>
+                <article class="tool-card motion-card home-tool-card" data-home-reveal>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'fivewhy' } %}
+                    <h3 class="home-tool-card__title">Méthode 5 Pourquoi</h3>
+                    <p class="home-tool-card__desc">Remontez à l'origine d'un problème avec un questionnement simple et directement exploitable.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Export PDF</span>
-                        <span class="badge">Guide intégré</span>
+                        <span class="home-tool-tag">Sans inscription</span>
+                        <span class="home-tool-tag">Export PDF</span>
+                        <span class="home-tool-tag">Guide intégré</span>
                     </div>
-                    <a href="{{ path('app_fivewhy_index') }}" aria-label="Utiliser la méthode 5 Pourquoi" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_fivewhy_index') }}" aria-label="Utiliser la méthode 5 Pourquoi" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
 
-                <div class="tool-card">
-                    <div class="tool-card-icon neutral">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <rect x="10" y="10" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2"></rect>
-                            <path d="M12 16H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                            <path d="M12 20H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                            <circle cx="16" cy="26" r="2" fill="currentColor"></circle>
-                        </svg>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Analyse QQOQCCP</h3>
-                    <p>Cadrez un diagnostic avec les 7 questions essentielles pour formaliser une première analyse.</p>
+                <article class="tool-card motion-card home-tool-card" data-home-reveal>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'qqoqccp' } %}
+                    <h3 class="home-tool-card__title">Analyse QQOQCCP</h3>
+                    <p class="home-tool-card__desc">Cadrez un diagnostic avec les 7 questions essentielles pour formaliser une première analyse.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Rapport généré</span>
-                        <span class="badge">Export PDF</span>
+                        <span class="home-tool-tag">Sans inscription</span>
+                        <span class="home-tool-tag">Rapport généré</span>
+                        <span class="home-tool-tag">Export PDF</span>
                     </div>
-                    <a href="{{ path('app_qqoqccp_index') }}" aria-label="Utiliser l'analyse QQOQCCP" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_qqoqccp_index') }}" aria-label="Utiliser l'analyse QQOQCCP" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
 
-                <div class="tool-card">
-                    <div class="tool-card-icon danger">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <path d="M20 6L4 34H36L20 6Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                            <circle cx="20" cy="27" r="2" fill="currentColor"/>
-                            <path d="M20 15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Analyse AMDEC</h3>
-                    <p>Repérez vos risques prioritaires et hiérarchisez vos actions sur un cas concret.</p>
+                <article class="tool-card motion-card home-tool-card" data-home-reveal>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'amdec' } %}
+                    <h3 class="home-tool-card__title">Analyse AMDEC</h3>
+                    <p class="home-tool-card__desc">Repérez vos risques prioritaires et hiérarchisez vos actions sur un cas concret.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Risque & NPR</span>
-                        <span class="badge">Export PDF</span>
+                        <span class="home-tool-tag">Sans inscription</span>
+                        <span class="home-tool-tag">Risque &amp; NPR</span>
+                        <span class="home-tool-tag">Export PDF</span>
                     </div>
-                    <a href="{{ path('app_amdec_index') }}" aria-label="Utiliser l'analyse AMDEC" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_amdec_index') }}" aria-label="Utiliser l'analyse AMDEC" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
 
-                <div class="tool-card">
-                    <div class="tool-card-icon purple">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <rect x="6" y="6" width="28" height="28" rx="8" stroke="currentColor" stroke-width="2"></rect>
-                            <path d="M14 14H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                            <path d="M12 20H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                            <path d="M14 26H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                        </svg>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Méthode 8D</h3>
-                    <p>Suivez une résolution structurée en 8 étapes pour un cadre formel dès le départ.</p>
+                <article class="tool-card motion-card home-tool-card" data-home-reveal>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'eightd' } %}
+                    <h3 class="home-tool-card__title">Méthode 8D</h3>
+                    <p class="home-tool-card__desc">Suivez une résolution structurée en 8 étapes pour un cadre formel dès le départ.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Suivi progression</span>
-                        <span class="badge">Export PDF & JSON</span>
+                        <span class="home-tool-tag">Suivi progression</span>
+                        <span class="home-tool-tag">Export PDF</span>
+                        <span class="home-tool-tag">Export JSON</span>
                     </div>
-                    <a href="{{ path('app_eightd_index') }}" aria-label="Utiliser la méthode 8D" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_eightd_index') }}" aria-label="Utiliser la méthode 8D" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
 
-                <div class="tool-card">
-                    <div class="tool-card-icon cyan">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-                            <rect x="6" y="24" width="6" height="10" fill="currentColor" />
-                            <rect x="16" y="18" width="6" height="16" fill="currentColor" />
-                            <rect x="26" y="12" width="6" height="22" fill="currentColor" />
-                            <path d="M6 10C14 4 26 4 34 10" stroke="currentColor" stroke-width="2" fill="none" />
-                        </svg>
-                    </div>
-                    <h3 class="m-0 text-xl font-semibold text-foreground">Diagramme de Pareto</h3>
-                    <p>Visualisez les causes qui concentrent l'essentiel de vos problèmes pour prioriser vos actions.</p>
+                <article class="tool-card motion-card home-tool-card" data-home-reveal>
+                    {% include 'home/partials/_tool_icon.html.twig' with { tool: 'pareto' } %}
+                    <h3 class="home-tool-card__title">Diagramme de Pareto</h3>
+                    <p class="home-tool-card__desc">Visualisez les causes qui concentrent l'essentiel de vos problèmes pour prioriser vos actions.</p>
                     <div class="tool-card__tags">
-                        <span class="badge">Sans inscription</span>
-                        <span class="badge">Analyse 80/20</span>
-                        <span class="badge">Export PDF & JSON</span>
+                        <span class="home-tool-tag">Sans inscription</span>
+                        <span class="home-tool-tag">Analyse 80/20</span>
+                        <span class="home-tool-tag">Export PDF</span>
                     </div>
-                    <a href="{{ path('app_pareto_index') }}" aria-label="Utiliser le diagramme de Pareto" class="tool-card__cta inline-flex flex-col items-center gap-1 border border-border bg-background px-4 py-2 rounded-md font-medium text-foreground hover:bg-muted/60 transition-colors no-underline">
+                    <a href="{{ path('app_pareto_index') }}" aria-label="Utiliser le diagramme de Pareto" class="home-tool-card__cta">
                         <span>Utiliser gratuitement</span>
-                        <span class="tool-card__cta-hint text-xs font-normal text-muted-foreground">Sans inscription · PDF</span>
+                        <span class="home-tool-card__cta-hint">Sans inscription · PDF</span>
+                        <i data-lucide="arrow-right" class="home-tool-card__cta-arrow" aria-hidden="true"></i>
                     </a>
-                </div>
+                </article>
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 
 .home-page {
-  color: var(--text-primary);
-  background: var(--bg-primary);
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
 
   /* Sprint UI-1 — échelle unique (respiration globale) */
   --home-section-py: clamp(3.5rem, 6vw, 6.25rem); /* mobile ~56px → desktop ~100px */
@@ -20,20 +20,30 @@
   width: 100%;
 }
 
-/* Jonctions visuelles entre blocs (sans modifier fonds / contenu) */
-.home-page > #outils,
-.home-page > #pourquoi-compte,
-.home-page > #cockpit-qhse,
-.home-page > #preuve-sociale,
-.home-page > #accompagnement,
-.home-page > #newsletter,
-.home-page > #faq {
-  border-top: 1px solid color-mix(in srgb, var(--gray-200) 88%, transparent);
+/* Jonctions : bordures gérées par .home-section-premium (_home-landing-premium.css) */
+
+.home-page > #hero.hero {
+  padding: var(--space-20) 0;
+  background-color: hsl(var(--background));
+  background-image: linear-gradient(
+    180deg,
+    hsl(var(--secondary)) 0%,
+    hsl(var(--background)) 72%
+  );
+  color: hsl(var(--foreground));
+  border-bottom: 1px solid hsl(var(--border) / 0.9);
+}
+
+.dark .home-page > #hero.hero {
+  background-image: linear-gradient(
+    180deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--background)) 72%
+  );
 }
 
 .hero {
   padding: var(--space-20) 0;
-  background: linear-gradient(180deg, var(--gray-50) 0%, var(--bg-primary) 100%);
 
   .hero-grid {
     display: grid;
@@ -487,7 +497,6 @@
 #preuve-sociale.social-proof-section {
   scroll-margin-top: 5.5rem;
   padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(4rem, 8vw, 6.5rem);
-  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--gray-50) 55%, var(--bg-primary) 100%);
 
   .section-header {
     text-align: center;
@@ -730,8 +739,6 @@
   background: transparent !important;
   color: #111827 !important;
   border-top: 1px solid #eef2f7 !important;
-  padding-left: 0;
-  padding-right: 0;
   margin-bottom: 0;
 }
 
@@ -753,7 +760,6 @@
 #faq.faq-section {
   scroll-margin-top: 5.5rem;
   padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(4rem, 8vw, 6.5rem);
-  background: linear-gradient(180deg, var(--gray-50) 0%, var(--bg-primary) 45%, var(--gray-50) 100%);
 
   .section-header {
     text-align: center;
@@ -845,7 +851,6 @@
 
 .tools-section {
   padding: var(--space-20) 0;
-  background: var(--bg-secondary);
 
   .section-header {
     text-align: center;
@@ -1045,7 +1050,6 @@
 
 .expertise-section {
   padding: clamp(3.25rem, 6vw, 5rem) 0;
-  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--gray-50) 45%, var(--bg-secondary) 100%);
 }
 
 /*
@@ -1291,71 +1295,7 @@
   font-weight: 600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-section__intro {
-    animation: expertise-intro-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  }
-
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card {
-    animation: expertise-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  }
-
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card:nth-child(1) { animation-delay: 0.06s; }
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card:nth-child(2) { animation-delay: 0.12s; }
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card:nth-child(3) { animation-delay: 0.18s; }
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card:nth-child(4) { animation-delay: 0.24s; }
-
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-section__footnote {
-    animation: expertise-intro-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s backwards;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-section__intro,
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card,
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-section__footnote {
-    animation: none;
-  }
-
-  #expertise.expertise-section,
-#accompagnement.expertise-section .expertise-card:hover {
-    transform: none;
-  }
-}
-
-@keyframes expertise-intro-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes expertise-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Animations expertise : gérées par GSAP (home-entrance) — keyframes AOS retirés */
 
 .cta-section {
   padding: var(--space-20) 0;

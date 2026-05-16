@@ -6,7 +6,8 @@
     <meta name="turbo-visit-control" content="reload">
 {% endblock %}
 
-{% block body_attributes %}{% if app.user %} class="layout-dashboard"{% endif %} data-turbo="false"{% endblock %}
+{% block body_class %}{% if app.user %} layout-dashboard{% endif %}{% endblock %}
+{% block body_attrs %} data-turbo="false"{% endblock %}
 
 {% block title %}{{ page_title }} — Outils Qualité{% endblock %}
 

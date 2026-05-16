@@ -52,7 +52,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP
 {% endblock %}
 
 {% block body %}
-    <div class="home-page">
+    <div class="home-page" data-controller="home-entrance">
         {% include 'home/sections/_hero_tools_v2.html.twig' with { homepage_slots: homepage_slots|default({}) } %}
         {% include 'home/sections/_outils_gratuits.html.twig' %}
         {% include 'home/sections/_why_account.html.twig' %}

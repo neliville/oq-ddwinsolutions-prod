@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { getGsapRuntime } from '../motion/gsap.js';
 
 export default class extends Controller {
     static targets = ['modal'];
@@ -9,13 +10,28 @@ export default class extends Controller {
     connect() {
         this._onSaved = this._onSaved.bind(this);
         this._onBeforeCache = this._onBeforeCache.bind(this);
+        this._onModalOpen = this._onModalOpen.bind(this);
         document.addEventListener('app:analysis:saved', this._onSaved);
         document.addEventListener('turbo:before-cache', this._onBeforeCache);
+        document.addEventListener('modal:open', this._onModalOpen);
     }
 
     disconnect() {
         document.removeEventListener('app:analysis:saved', this._onSaved);
         document.removeEventListener('turbo:before-cache', this._onBeforeCache);
+        document.removeEventListener('modal:open', this._onModalOpen);
+    }
+
+    async _onModalOpen(event) {
+        if (event.detail?.modalId !== 'postSaveCtaModal') {
+            return;
+        }
+        const modal = document.getElementById('postSaveCtaModal');
+        if (!modal) {
+            return;
+        }
+        const { gsap } = getGsapRuntime();
+        gsap.fromTo(modal, { autoAlpha: 0.92, scale: 0.98 }, { autoAlpha: 1, scale: 1, duration: 0.28, ease: 'power2.out' });
     }
 
     _onBeforeCache() {

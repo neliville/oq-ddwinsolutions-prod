@@ -42,7 +42,7 @@
         } %}
         <input type="hidden" id="paretoAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+        <div class="page-header tool-page-header--compact">
             <h1 class="page-title">Diagramme de Pareto</h1>
             <p class="lead">Identifiez les causes les plus impactantes (Principe 80/20) et concentrez vos efforts d'amélioration là où ils comptent le plus.</p>
             {% include 'components/tool_meta_hints.html.twig' with {
@@ -59,7 +59,7 @@
         </div>
 
         {% if not app.user %}
-        <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
+        <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite">
             <i data-lucide="info" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
             <span><strong>Vous n'êtes pas connecté.</strong>
             <a href="{{ path('app_login') }}" class="font-semibold underline text-yellow-900">Connectez-vous</a> pour sauvegarder vos analyses et les réutiliser facilement.</span>
@@ -68,7 +68,7 @@
 
         {% include 'components/tool_help/pareto_accordion.html.twig' %}
 
-        <section class="pareto-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
+        <section class="pareto-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" role="toolbar" aria-label="Actions disponibles">
             <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newParetoAnalysis()" aria-label="Initialiser une nouvelle analyse Pareto">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
@@ -98,7 +98,7 @@
             {% endif %}
         </section>
 
-        <section class="pareto-form" data-aos="fade-up" data-aos-delay="120">
+        <section class="pareto-form">
             <h2>Saisissez vos causes et occurrences</h2>
             <div class="grid gap-4 md:grid-cols-2 mb-6">
                 <div>
@@ -124,7 +124,7 @@
             </button>
         </section>
 
-        <section id="paretoResults" class="pareto-results" style="display:none;" data-aos="fade-up" data-aos-delay="180">
+        <section id="paretoResults" class="pareto-results" style="display:none;">
             <div class="pareto-chart-container">
                 <canvas id="paretoChart" role="img" aria-label="Diagramme de Pareto"></canvas>
             </div>

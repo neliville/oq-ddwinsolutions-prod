@@ -41,8 +41,11 @@
     {% endif %}
 
     <div class="rounded-lg border border-border bg-muted/30 p-4 sm:p-6 mb-6"
-         data-controller="admin-dashboard-charts"
-         data-admin-dashboard-charts-config-value="{{ adminDashboardCharts|json_encode|e('html_attr') }}">
+         data-controller="chart gsap-stagger"
+         data-chart-kind-value="admin-dashboard"
+         data-chart-config-value="{{ adminDashboardCharts|json_encode|e('html_attr') }}"
+         data-gsap-stagger-child-selector-value=":scope .admin-kpi-stagger > *"
+    >
         <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
             <i data-lucide="radar" width="20" height="20" aria-hidden="true"></i>
             Pilotage produit (7 derniers jours)
@@ -58,35 +61,19 @@
             <a href="{{ path('app_admin_export_analytics_index') }}" class="text-primary underline-offset-4 hover:underline">Exports</a>
         </p>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6">
-            <twig:HoverCard openDelay="200" closeDelay="100" class="block w-full min-w-0">
-                <div tabindex="0" data-slot="hover-card-trigger" data-action="focus->hover-card#show blur->hover-card#hide" class="block w-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    <twig:KpiStatCard label="Utilisateurs actifs (TE)" value="{{ trackingUsers7d }}" tone="default">
-                        <twig:block name="icon"><twig:ux:icon name="lucide:radio" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
-                    </twig:KpiStatCard>
-                </div>
-                <twig:HoverCard:Content class="leading-snug tracking-tight text-zinc-50">
-                    <span class="block font-semibold">Tracking événements (TE)</span>
-                    <p class="mt-1.5 mb-0 font-normal leading-snug text-zinc-300">Compteurs uniques agrégés côté produit pour les usages connectés récents. Utile comme proxy d’attention sur l’outil, pas comme reflet du trafic web brut.</p>
-                </twig:HoverCard:Content>
-            </twig:HoverCard>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6 admin-kpi-stagger">
+            <twig:KpiStatCard label="Utilisateurs actifs (TE)" value="{{ trackingUsers7d }}" tone="default" helpId="help.admin.kpi.te_users">
+                <twig:block name="icon"><twig:ux:icon name="lucide:radio" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+            </twig:KpiStatCard>
             <twig:KpiStatCard label="Inscriptions" value="{{ registrations7d }}" tone="emerald">
                 <twig:block name="icon"><twig:ux:icon name="lucide:user-plus" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
             </twig:KpiStatCard>
             <twig:KpiStatCard label="Exports déclenchés" value="{{ exports7d }}" tone="sky">
                 <twig:block name="icon"><twig:ux:icon name="lucide:download" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
             </twig:KpiStatCard>
-            <twig:HoverCard openDelay="200" closeDelay="100" class="block w-full min-w-0">
-                <div tabindex="0" data-slot="hover-card-trigger" data-action="focus->hover-card#show blur->hover-card#hide" class="block w-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    <twig:KpiStatCard label="CAPA créées" value="{{ capaEntities7d }}" tone="amber" helper="Événements TE : {{ capaEvents7d }}">
-                        <twig:block name="icon"><twig:ux:icon name="lucide:list-checks" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
-                    </twig:KpiStatCard>
-                </div>
-                <twig:HoverCard:Content class="leading-snug tracking-tight text-zinc-50">
-                    <span class="block font-semibold">Entités CAPA vs événements</span>
-                    <p class="mt-1.5 mb-0 font-normal leading-snug text-zinc-300"><strong>{{ capaEntities7d }}</strong> correspond aux enregistrements créés côté QSE ; <strong>{{ capaEvents7d }}</strong> regroupe les signaux Tracking sur la fonctionnalité. Les deux peuvent diverger suivant usage.</p>
-                </twig:HoverCard:Content>
-            </twig:HoverCard>
+            <twig:KpiStatCard label="CAPA créées" value="{{ capaEntities7d }}" tone="amber" helpId="help.admin.kpi.capa_entities" :helperVisible="true" helper="Événements TE : {{ capaEvents7d }}">
+                <twig:block name="icon"><twig:ux:icon name="lucide:list-checks" class="size-6 shrink-0" aria-hidden="true" /></twig:block>
+            </twig:KpiStatCard>
         </div>
 
         <div class="grid gap-6 lg:grid-cols-2 mb-6">
@@ -198,6 +185,21 @@
             {% else %}
                 <p class="text-sm text-muted-foreground mb-0">Aucune donnée agrégée.</p>
             {% endif %}
+        </div>
+    </div>
+
+    <div class="rounded-lg border border-border bg-card p-4 sm:p-6 mb-6 shadow-sm ring-1 ring-border/40"
+         data-controller="chart"
+         data-chart-kind-value="admin-growth"
+         data-chart-config-value="{{ adminGrowthChart|json_encode|e('html_attr') }}"
+    >
+        <h2 class="text-lg font-semibold mb-2 flex items-center gap-2">
+            <i data-lucide="trending-up" width="20" height="20" aria-hidden="true"></i>
+            Leads &amp; croissance plateforme
+        </h2>
+        <p class="text-sm text-muted-foreground mb-4 m-0">Volume leads (Mautic), abonnés newsletter actifs, inscriptions sur 7 jours.</p>
+        <div class="h-64 w-full min-h-[16rem]" data-chart-wrap>
+            <canvas data-admin-growth-chart-ref="main" class="block h-full w-full" role="img" aria-label="Indicateurs acquisition"></canvas>
         </div>
     </div>
 

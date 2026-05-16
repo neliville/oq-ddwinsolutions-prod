@@ -5,8 +5,9 @@
 {% block content %}
 <div
     class="analytics-sharing-page w-full max-w-[100rem] mx-auto space-y-6"
-    data-controller="analytics-charts"
-    data-analytics-charts-config-value="{{ sharingCharts|json_encode|e('html_attr') }}"
+    data-controller="chart"
+    data-chart-kind-value="analytics"
+    data-chart-config-value="{{ sharingCharts|json_encode|e('html_attr') }}"
 >
     <twig:DataPageHeader title="Partages et collaboration" description="Liens Ishikawa partagés, visites agrégées et séries sur la période choisie.">
         <twig:block name="actions">

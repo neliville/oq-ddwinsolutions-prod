@@ -47,7 +47,7 @@
         } %}
         <input type="hidden" id="amdecAnalysisId" value="{{ analysisId ?? '' }}">
 
-        <div class="page-header tool-page-header--compact" data-aos="fade-up">
+        <div class="page-header tool-page-header--compact">
             <h1 class="page-title">Analyse AMDEC</h1>
             <p class="lead">Identifiez les modes de défaillance, mesurez leur criticité (NPR) et priorisez vos actions pour sécuriser vos process.</p>
             {% include 'components/tool_meta_hints.html.twig' with {
@@ -64,7 +64,7 @@
         </div>
 
         {% if not app.user %}
-        <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite" data-aos="fade-up" data-aos-delay="40">
+        <div class="flex items-center justify-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 px-4 py-3 mb-3" role="alert" aria-live="polite">
             <i data-lucide="info" width="18" height="18" class="shrink-0" aria-hidden="true"></i>
             <span><strong>Vous n'êtes pas connecté.</strong>
             <a href="{{ path('app_login') }}" class="font-semibold underline text-yellow-900">Connectez-vous</a> pour sauvegarder vos analyses et les éditer ultérieurement.</span>
@@ -73,7 +73,7 @@
 
         {% include 'components/tool_help/amdec_accordion.html.twig' %}
 
-        <section class="amdec-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" data-aos="fade-up" data-aos-delay="80" role="toolbar" aria-label="Actions disponibles">
+        <section class="amdec-controls tool-actions-bar flex flex-wrap items-center gap-2 mb-3" role="toolbar" aria-label="Actions disponibles">
             <button class="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 text-sm rounded-md font-medium hover:opacity-90 transition-opacity" type="button" onclick="newAmdecAnalysis()" aria-label="Initialiser une nouvelle analyse AMDEC">
                 <i class="fas fa-sync-alt mr-2"></i>Nouvelle analyse
             </button>
@@ -103,7 +103,7 @@
             {% endif %}
         </section>
 
-        <section class="amdec-scale" data-aos="fade-up" data-aos-delay="120">
+        <section class="amdec-scale">
             <article class="amdec-scale__card">
                 <h3>📊 Gravité (G)</h3>
                 <table>
@@ -136,7 +136,7 @@
             </article>
         </section>
 
-        <section class="amdec-form" data-aos="fade-up" data-aos-delay="160" id="amdecForm">
+        <section class="amdec-form" id="amdecForm">
             <h2>Saisie des modes de défaillance</h2>
             <div class="mb-4">
                 <label class="form-label font-semibold" for="amdecSubject">Processus / produit analysé</label>
@@ -152,7 +152,7 @@
             </button>
         </section>
 
-        <section id="amdecResults" class="amdec-results" style="display: none;" data-aos="fade-up" data-aos-delay="200">
+        <section id="amdecResults" class="amdec-results" style="display: none;">
             <div class="amdec-summary">
                 <div class="amdec-summary__card">
                     <h4>Modes de défaillance analysés</h4>

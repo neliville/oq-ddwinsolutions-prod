@@ -16,7 +16,15 @@ export default class extends Controller {
         });
 
         this.tabTargets.forEach((tab) => {
-            tab.dataset.state = tab.dataset.tabId === this.activeTabValue ? 'active' : 'inactive';
+            const isActive = tab.dataset.tabId === this.activeTabValue;
+            tab.dataset.state = isActive ? 'active' : 'inactive';
+            if (isActive && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                import('motion')
+                    .then(({ animate }) => {
+                        animate(tab, { opacity: [0.88, 1] }, { duration: 0.2 });
+                    })
+                    .catch(() => {});
+            }
         });
     }
 }

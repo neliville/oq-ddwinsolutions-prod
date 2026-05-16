@@ -1,6 +1,8 @@
-<section id="cockpit-qhse" class="home-landing-section home-cockpit-upsell bg-muted/30" aria-labelledby="home-cockpit-heading">
+<section id="cockpit-qhse" class="home-landing-section home-cockpit-upsell home-section-premium home-section-premium--cockpit" aria-labelledby="home-cockpit-heading">
+    <div class="home-section-bridge" data-home-section-bridge aria-hidden="true"></div>
+    <div class="home-section-premium__glow home-section-premium__glow--cockpit" aria-hidden="true"></div>
     <div class="container max-w-6xl mx-auto">
-        <header class="home-cockpit-upsell__intro text-center max-w-3xl mx-auto" data-aos="fade-up">
+        <header class="home-cockpit-upsell__intro text-center max-w-3xl mx-auto" data-home-section-intro>
             <twig:Badge variant="outline" class="mb-3">Cockpit QHSE</twig:Badge>
             <h2 id="home-cockpit-heading" class="text-2xl sm:text-3xl font-bold tracking-tight m-0">
                 Quand vos analyses deviennent un pilotage QHSE
@@ -10,8 +12,8 @@
             </p>
         </header>
 
-        <div class="home-cockpit-upsell__zone home-cockpit-upsell__zone--dashboard grid gap-10 lg:grid-cols-2 lg:gap-14 items-center">
-            <div data-aos="fade-up">
+        <div class="home-cockpit-upsell__zone home-cockpit-upsell__zone--dashboard grid gap-10 lg:grid-cols-2 lg:gap-14 items-center" data-home-reveal>
+            <div>
                 <h3 id="home-dashboard-heading" class="text-xl sm:text-2xl font-bold tracking-tight m-0">
                     Le cockpit qui garde vos priorités visibles au quotidien
                 </h3>
@@ -27,21 +29,21 @@
                 </ul>
             </div>
 
-            <div class="js-dashboard-preview rounded-xl border border-border/80 bg-card shadow-sm p-4 sm:p-6" data-aos="fade-up" data-aos-delay="60" aria-hidden="true">
+            <div class="js-dashboard-preview home-cockpit-preview motion-card rounded-xl border border-border/80 bg-card shadow-sm p-4 sm:p-6" aria-hidden="true">
                 <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
                     <span class="text-sm font-semibold">Cockpit</span>
                     <twig:Badge variant="secondary" class="text-xs">Aujourd’hui</twig:Badge>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="rounded-lg bg-destructive/10 border border-destructive/20 p-3">
+                    <div class="rounded-lg bg-destructive/10 border border-destructive/20 p-3 home-cockpit-preview__tile">
                         <p class="text-xs text-muted-foreground m-0">En retard</p>
                         <p class="text-2xl font-bold text-destructive m-0 mt-1">3</p>
                     </div>
-                    <div class="rounded-lg bg-muted/80 p-3">
+                    <div class="rounded-lg bg-muted/80 p-3 home-cockpit-preview__tile">
                         <p class="text-xs text-muted-foreground m-0">CAPA ouvertes</p>
                         <p class="text-2xl font-bold m-0 mt-1">12</p>
                     </div>
-                    <div class="rounded-lg bg-muted/80 p-3 col-span-2">
+                    <div class="rounded-lg bg-primary/5 border border-primary/15 p-3 col-span-2 home-cockpit-preview__tile">
                         <p class="text-xs text-muted-foreground m-0">Prochain audit</p>
                         <p class="text-sm font-medium m-0 mt-1">ISO 9001 — revue dans 9 jours</p>
                     </div>
@@ -50,32 +52,36 @@
         </div>
 
         <div id="fonctionnalites" class="home-cockpit-upsell__zone home-cockpit-upsell__zone--pillars" aria-labelledby="home-value-heading">
-            <header class="home-cockpit-upsell__subhead text-center max-w-3xl mx-auto" data-aos="fade-up">
+            <header class="home-cockpit-upsell__subhead text-center max-w-3xl mx-auto" data-home-section-intro>
                 <h3 id="home-value-heading" class="text-xl sm:text-2xl font-bold tracking-tight m-0">
                     Ce que centralise le cockpit pour piloter votre QHSE
                 </h3>
             </header>
             <div class="grid gap-4 sm:gap-5 sm:grid-cols-2 xl:grid-cols-4 js-kpi-card">
-                <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up">
-                    <twig:Card:Header class="space-y-1 pb-3">
+                <twig:Card class="home-cockpit-pillar motion-card border-border/80 shadow-sm" data-home-reveal>
+                    <twig:Card:Header class="space-y-3 pb-3">
+                        <span class="home-cockpit-pillar__icon" aria-hidden="true"><i data-lucide="search"></i></span>
                         <twig:Card:Title class="text-lg">Analyses</twig:Card:Title>
                         <twig:Card:Description>Reliez causes, écarts et signaux faibles pour traiter ce qui compte en premier.</twig:Card:Description>
                     </twig:Card:Header>
                 </twig:Card>
-                <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="50">
-                    <twig:Card:Header class="space-y-1 pb-3">
+                <twig:Card class="home-cockpit-pillar motion-card border-border/80 shadow-sm" data-home-reveal>
+                    <twig:Card:Header class="space-y-3 pb-3">
+                        <span class="home-cockpit-pillar__icon home-cockpit-pillar__icon--violet" aria-hidden="true"><i data-lucide="clipboard-check"></i></span>
                         <twig:Card:Title class="text-lg">Audits ISO</twig:Card:Title>
                         <twig:Card:Description>Référentiels, constats et échéances visibles pour préparer et suivre la conformité.</twig:Card:Description>
                     </twig:Card:Header>
                 </twig:Card>
-                <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="100">
-                    <twig:Card:Header class="space-y-1 pb-3">
+                <twig:Card class="home-cockpit-pillar motion-card border-border/80 shadow-sm" data-home-reveal>
+                    <twig:Card:Header class="space-y-3 pb-3">
+                        <span class="home-cockpit-pillar__icon home-cockpit-pillar__icon--amber" aria-hidden="true"><i data-lucide="wrench"></i></span>
                         <twig:Card:Title class="text-lg">CAPA</twig:Card:Title>
                         <twig:Card:Description>Constats transformés en actions suivies, avec responsables et relances claires.</twig:Card:Description>
                     </twig:Card:Header>
                 </twig:Card>
-                <twig:Card class="border-border/80 shadow-sm" data-aos="fade-up" data-aos-delay="150">
-                    <twig:Card:Header class="space-y-1 pb-3">
+                <twig:Card class="home-cockpit-pillar motion-card border-border/80 shadow-sm" data-home-reveal>
+                    <twig:Card:Header class="space-y-3 pb-3">
+                        <span class="home-cockpit-pillar__icon home-cockpit-pillar__icon--rose" aria-hidden="true"><i data-lucide="shield-alert"></i></span>
                         <twig:Card:Title class="text-lg">Risques</twig:Card:Title>
                         <twig:Card:Description>Priorisez les expositions critiques et reliez-les au pilotage global.</twig:Card:Description>
                     </twig:Card:Header>
@@ -84,7 +90,7 @@
         </div>
 
         <div id="workflow" class="home-cockpit-upsell__zone home-cockpit-upsell__zone--workflow" aria-labelledby="home-workflow-heading">
-            <header class="home-cockpit-upsell__subhead text-center max-w-3xl mx-auto" data-aos="fade-up">
+            <header class="home-cockpit-upsell__subhead text-center max-w-3xl mx-auto" data-home-section-intro>
                 <h3 id="home-workflow-heading" class="text-xl sm:text-2xl font-bold tracking-tight m-0">
                     Du constat terrain au pilotage structuré
                 </h3>
@@ -92,57 +98,45 @@
                     Trois étapes concrètes, sans perdre le fil entre l'outil gratuit et le cockpit.
                 </p>
             </header>
-            <ol class="grid gap-4 sm:grid-cols-3 list-none m-0 p-0 max-w-4xl mx-auto">
-                <li class="js-workflow-step workflow-step-1" data-aos="fade-up">
-                    <twig:Card class="h-full border-border/80 shadow-sm">
-                        <twig:Card:Header class="pb-2">
-                            <twig:Badge variant="secondary" class="mb-2 w-8 h-8 rounded-full p-0 flex items-center justify-center shrink-0">1</twig:Badge>
-                            <twig:Card:Title class="text-base">Analyser avec un outil</twig:Card:Title>
-                        </twig:Card:Header>
-                        <twig:Card:Content class="text-sm text-muted-foreground pt-0">
-                            Ishikawa, 5 Pourquoi ou Pareto : qualifiez l'écart et posez les causes sur le terrain.
-                        </twig:Card:Content>
-                    </twig:Card>
+            <ol class="home-workflow-steps grid gap-4 sm:grid-cols-3 list-none m-0 p-0 max-w-4xl mx-auto">
+                <li class="js-workflow-step home-workflow-step" data-home-reveal>
+                    <article class="home-workflow-step__card motion-card">
+                        <span class="home-workflow-step__number" aria-hidden="true">1</span>
+                        <h4 class="home-workflow-step__title">Analyser avec un outil</h4>
+                        <p class="home-workflow-step__text">Ishikawa, 5 Pourquoi ou Pareto : qualifiez l'écart et posez les causes sur le terrain.</p>
+                    </article>
                 </li>
-                <li class="js-workflow-step workflow-step-2" data-aos="fade-up" data-aos-delay="40">
-                    <twig:Card class="h-full border-border/80 shadow-sm">
-                        <twig:Card:Header class="pb-2">
-                            <twig:Badge variant="secondary" class="mb-2 w-8 h-8 rounded-full p-0 flex items-center justify-center shrink-0">2</twig:Badge>
-                            <twig:Card:Title class="text-base">Sauvegarder et exporter</twig:Card:Title>
-                        </twig:Card:Header>
-                        <twig:Card:Content class="text-sm text-muted-foreground pt-0">
-                            Compte gratuit : historique cloud et PDF prêts pour vos revues et dossiers d'audit.
-                        </twig:Card:Content>
-                    </twig:Card>
+                <li class="js-workflow-step home-workflow-step" data-home-reveal>
+                    <article class="home-workflow-step__card motion-card">
+                        <span class="home-workflow-step__number" aria-hidden="true">2</span>
+                        <h4 class="home-workflow-step__title">Sauvegarder et exporter</h4>
+                        <p class="home-workflow-step__text">Compte gratuit : historique cloud et PDF prêts pour vos revues et dossiers d'audit.</p>
+                    </article>
                 </li>
-                <li class="js-workflow-step workflow-step-3" data-aos="fade-up" data-aos-delay="80">
-                    <twig:Card class="h-full border-primary/25 bg-card shadow-sm ring-1 ring-primary/10">
-                        <twig:Card:Header class="pb-2">
-                            <twig:Badge class="mb-2 w-8 h-8 rounded-full p-0 flex items-center justify-center shrink-0">3</twig:Badge>
-                            <twig:Card:Title class="text-base">Piloter dans le cockpit</twig:Card:Title>
-                        </twig:Card:Header>
-                        <twig:Card:Content class="text-sm text-muted-foreground pt-0">
-                            Audits, CAPA et risques reliés : une vue unique pour arbitrer vos priorités QHSE.
-                        </twig:Card:Content>
-                    </twig:Card>
+                <li class="js-workflow-step home-workflow-step home-workflow-step--highlight" data-home-reveal>
+                    <article class="home-workflow-step__card motion-card home-workflow-step__card--highlight">
+                        <span class="home-workflow-step__number home-workflow-step__number--primary" aria-hidden="true">3</span>
+                        <h4 class="home-workflow-step__title">Piloter dans le cockpit</h4>
+                        <p class="home-workflow-step__text">Audits, CAPA et risques reliés : une vue unique pour arbitrer vos priorités QHSE.</p>
+                    </article>
                 </li>
             </ol>
         </div>
 
-        <section class="cta-section js-final-cta home-cockpit-upsell__cta" aria-labelledby="home-final-cta-heading">
+        <section class="cta-section js-final-cta home-cockpit-upsell__cta" aria-labelledby="home-final-cta-heading" data-home-reveal>
             <div class="cta-box">
                 <h3 id="home-final-cta-heading" class="js-final-cta-title text-xl sm:text-2xl font-bold m-0">Centralisez votre QHSE dans le cockpit</h3>
                 <p class="js-final-cta-subtitle mt-2 mb-0">Ou continuez sur un outil gratuit si vous n'avez qu'un besoin ponctuel.</p>
                 <div class="cta-buttons flex flex-col sm:flex-row flex-wrap justify-center gap-3 mt-6">
                     {% if is_granted('ROLE_USER') %}
-                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" variant="secondary" size="lg" class="no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
+                        <twig:Button as="a" href="{{ path('app_dashboard_index') }}" variant="secondary" size="lg" class="motion-cta motion-cta--pulse no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
                             Accéder à mon cockpit QHSE
                         </twig:Button>
                         <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" variant="outline" size="lg" class="no-underline border-white/80 text-white bg-transparent hover:bg-white/10 h-11 px-6">
                             Essayer un outil d'abord
                         </twig:Button>
                     {% else %}
-                        <twig:Button as="a" href="{{ path('app_register') }}" variant="secondary" size="lg" class="no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
+                        <twig:Button as="a" href="{{ path('app_register') }}" variant="secondary" size="lg" class="motion-cta motion-cta--pulse no-underline bg-white text-primary hover:bg-white/90 border-0 h-11 px-6">
                             Centraliser mon QHSE dans le cockpit
                         </twig:Button>
                         <twig:Button as="a" href="{{ path('app_ishikawa_index') }}" variant="outline" size="lg" class="no-underline border-white/80 text-white bg-transparent hover:bg-white/10 h-11 px-6">

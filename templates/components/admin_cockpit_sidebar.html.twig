@@ -6,6 +6,16 @@
         <div class="sidebar-section">
             <div class="sidebar-section-label">{{ section.label }}</div>
             {% for item in section.items %}
+            {% if item.help_id %}
+            {% include 'components/admin_sidebar_nav_link.html.twig' with {
+                href: path(item.route, item.route_parameters|default({})),
+                label: item.label,
+                icon: item.icon,
+                help_id: item.help_id,
+                active_if: item.active,
+                currentRoute: app.request.get('_route'),
+            } %}
+            {% else %}
             <a href="{{ path(item.route, item.route_parameters|default({})) }}"
                class="sidebar-item {{ item.active ? 'active' : '' }}"
                {% if item.active %}aria-current="page"{% endif %}
@@ -13,6 +23,7 @@
                 <i data-lucide="{{ item.icon }}" width="16" height="16" class="sidebar-item-icon" aria-hidden="true"></i>
                 <span class="sidebar-item-label">{{ item.label }}</span>
             </a>
+            {% endif %}
             {% endfor %}
         </div>
         {% endfor %}

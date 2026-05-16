@@ -3,13 +3,29 @@
 {% else %}
     {% set is_active = currentRoute starts with route_prefix %}
 {% endif %}
-<twig:HoverCard openDelay="160" closeDelay="120" class="block w-full max-w-full">
+{% set _help_id = help_id|default(null) %}
+{% if _help_id %}
+{% set _help_entry = help(_help_id) %}
+<twig:HoverCard openDelay="160" closeDelay="120" placement="right" :interactive="true" class="block w-full max-w-full">
     <a href="{{ href }}"
        class="sidebar-subitem{{ is_active ? ' active' : '' }}"
        {% if is_active %}aria-current="page"{% endif %}
        data-sidebar-item-label="{{ label|e('html_attr') }}"
        data-slot="hover-card-trigger"
-       data-action="focus->hover-card#show blur->hover-card#hide"
+    >
+        <span class="sidebar-subitem-label">{{ label }}</span>
+    </a>
+    <twig:HoverCard:Content class="w-[min(15rem,calc(100vw-18rem))] max-w-[min(15rem,calc(100vw-18rem))] py-2 text-[11px]">
+        {% include 'components/ContextualHelp/_panel_sidebar.html.twig' with { entry: _help_entry } only %}
+    </twig:HoverCard:Content>
+</twig:HoverCard>
+{% else %}
+<twig:HoverCard openDelay="160" closeDelay="120" placement="right" :interactive="true" class="block w-full max-w-full">
+    <a href="{{ href }}"
+       class="sidebar-subitem{{ is_active ? ' active' : '' }}"
+       {% if is_active %}aria-current="page"{% endif %}
+       data-sidebar-item-label="{{ label|e('html_attr') }}"
+       data-slot="hover-card-trigger"
     >
         <span class="sidebar-subitem-label">{{ label }}</span>
     </a>
@@ -20,3 +36,4 @@
         {% endif %}
     </twig:HoverCard:Content>
 </twig:HoverCard>
+{% endif %}
