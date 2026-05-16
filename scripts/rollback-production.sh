@@ -28,10 +28,10 @@ git reset --hard "${SHA}"
 
 if [[ -n "${LATEST_DB}" && -f .env ]]; then
     echo -e "${YELLOW}Restauration DB depuis ${LATEST_DB}${NC}"
-    # shellcheck disable=SC1091
-    set -a && source .env && set +a
-    DB_NAME=$(php -r 'preg_match("#/([^?]+)#", getenv("DATABASE_URL"), $m); echo $m[1];')
-    gunzip -c "${LATEST_DB}" | mysql -h"${DB_HOST:-127.0.0.1}" -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}"
+    MYSQL_CNF=$(mktemp)
+    trap 'rm -f "${MYSQL_CNF}"' EXIT
+    DB_NAME=$(php scripts/lib/mysql-creds-from-env.php "${MYSQL_CNF}")
+    gunzip -c "${LATEST_DB}" | mysql --defaults-extra-file="${MYSQL_CNF}" "${DB_NAME}"
 else
     echo -e "${YELLOW}Pas de dump DB — rollback code uniquement.${NC}"
 fi

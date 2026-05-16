@@ -16,13 +16,19 @@ if [[ ! -f .env ]]; then
     exit 1
 fi
 
-set -a && source .env && set +a
-DB_NAME=$(php -r 'preg_match("#/([^?]+)#", getenv("DATABASE_URL"), $m); echo $m[1];')
+if grep -q $'\r' .env 2>/dev/null; then
+    echo "ATTENTION: .env contient des fins de ligne Windows (CRLF)." >&2
+    echo "  Corriger sur le serveur : sed -i 's/\\r\$//' .env" >&2
+fi
 
-echo "==> Dump MySQL"
-mysqldump --single-transaction --routines --triggers \
-    -h"${DB_HOST:-127.0.0.1}" -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" \
-    | gzip > "${BACKUP_DIR}/db-pre-premium-${STAMP}.sql.gz"
+MYSQL_CNF=$(mktemp)
+trap 'rm -f "${MYSQL_CNF}"' EXIT
+
+DB_NAME=$(php scripts/lib/mysql-creds-from-env.php "${MYSQL_CNF}")
+
+echo "==> Dump MySQL (${DB_NAME})"
+mysqldump --defaults-extra-file="${MYSQL_CNF}" --single-transaction --routines --triggers \
+    "${DB_NAME}" | gzip > "${BACKUP_DIR}/db-pre-premium-${STAMP}.sql.gz"
 
 echo "==> Archive filesystem critique"
 tar -czf "${BACKUP_DIR}/fs-pre-premium-${STAMP}.tar.gz" \
