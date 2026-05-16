@@ -15,6 +15,11 @@ export default class extends Controller {
         const kind = this.kindValue;
         const config = this.configValue && typeof this.configValue === 'object' ? this.configValue : {};
 
+        // Laisser le layout Tailwind appliquer les hauteurs avant mesure ApexCharts
+        await new Promise((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+        });
+
         try {
             const mod = await import('./charts/apex_adapter.js');
             this._teardown = mod.mount(kind, this.element, config);

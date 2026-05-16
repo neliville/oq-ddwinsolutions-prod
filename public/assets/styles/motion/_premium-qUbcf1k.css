@@ -26,8 +26,8 @@
   .motion-premium .dashboard-tool-card,
   .motion-premium .card:not(.coming-soon),
   .motion-premium .admin-kpi-stagger > *,
-  .motion-premium .layout-admin .rounded-lg.bg-card:not(.admin-chart-card),
-  .motion-premium .layout-admin .rounded-xl.bg-card:not(.admin-chart-card) {
+  .motion-premium .layout-admin .rounded-lg.bg-card:not(.admin-chart-card):not(.admin-growth-chart),
+  .motion-premium .layout-admin .rounded-xl.bg-card:not(.admin-chart-card):not(.admin-growth-chart) {
     transform: translateZ(0) scale(1);
     transform-origin: center center;
     transition:
@@ -69,8 +69,8 @@
   .motion-premium .dashboard-tool-card:hover,
   .motion-premium .card:not(.coming-soon):hover,
   .motion-premium .admin-kpi-stagger > *:hover,
-  .motion-premium .layout-admin .rounded-lg.bg-card:not(.admin-chart-card):hover,
-  .motion-premium .layout-admin .rounded-xl.bg-card:not(.admin-chart-card):hover {
+  .motion-premium .layout-admin .rounded-lg.bg-card:not(.admin-chart-card):not(.admin-growth-chart):hover,
+  .motion-premium .layout-admin .rounded-xl.bg-card:not(.admin-chart-card):not(.admin-growth-chart):hover {
     transform: translateZ(0) scale(1.028);
     box-shadow: var(--motion-shadow-hover);
     border-color: hsl(var(--primary) / 0.32);

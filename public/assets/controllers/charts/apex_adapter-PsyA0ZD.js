@@ -5,17 +5,38 @@ const primary = () => getComputedStyle(document.documentElement).getPropertyValu
 const grid = () => getComputedStyle(document.documentElement).getPropertyValue('--chart-grid').trim() || 'rgba(148, 163, 184, 0.22)';
 const fillPrimary = () => getComputedStyle(document.documentElement).getPropertyValue('--chart-fill-primary').trim() || 'rgba(79, 70, 229, 0.14)';
 
-function replaceCanvasWithDiv(canvas) {
+function getWrapHeight(canvas, fallback = 260) {
     const wrap = canvas.closest('[data-chart-wrap]');
+    if (!wrap) {
+        return fallback;
+    }
+    const fromAttr = parseInt(wrap.getAttribute('data-chart-height') || '', 10);
+    if (!Number.isNaN(fromAttr) && fromAttr > 0) {
+        return fromAttr;
+    }
+    const measured = wrap.getBoundingClientRect().height || wrap.offsetHeight;
+    return Math.max(Math.round(measured), 120) || fallback;
+}
+
+function replaceCanvasWithDiv(canvas) {
+    const height = getWrapHeight(canvas);
     const div = document.createElement('div');
-    div.className = 'block h-full w-full min-h-0';
-    const h = wrap?.offsetHeight || canvas.offsetHeight || 208;
-    const height = Math.max(h, 120);
+    div.className = 'apex-chart-host w-full';
     div.style.height = `${height}px`;
     div.style.minHeight = `${height}px`;
-    div.style.maxHeight = `${height}px`;
     canvas.replaceWith(div);
-    return div;
+    return { host: div, height };
+}
+
+function chartBase(height, extra = {}) {
+    return {
+        chart: {
+            height,
+            toolbar: { show: false },
+            fontFamily: 'inherit',
+            ...extra,
+        },
+    };
 }
 
 function mountAdminDashboardApex(el, cfg) {
@@ -26,9 +47,9 @@ function mountAdminDashboardApex(el, cfg) {
         if (!canvas || !series?.labels?.length) {
             return;
         }
-        const host = replaceCanvasWithDiv(canvas);
+        const { host, height } = replaceCanvasWithDiv(canvas);
         const inst = new ApexCharts(host, {
-            chart: { type: 'line', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: 'inherit' },
+            ...chartBase(height, { type: 'line', zoom: { enabled: false } }),
             series: [{ name: title, data: series.values }],
             xaxis: { categories: series.labels, labels: { style: { colors: muted() } } },
             yaxis: { labels: { style: { colors: muted() } } },
@@ -48,9 +69,9 @@ function mountAdminDashboardApex(el, cfg) {
         if (!canvas || !series?.labels?.length) {
             return;
         }
-        const host = replaceCanvasWithDiv(canvas);
+        const { host, height } = replaceCanvasWithDiv(canvas);
         const inst = new ApexCharts(host, {
-            chart: { type: 'area', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: 'inherit' },
+            ...chartBase(height, { type: 'area', zoom: { enabled: false } }),
             series: [{ name: title, data: series.values }],
             xaxis: { categories: series.labels, labels: { style: { colors: muted() } } },
             yaxis: { labels: { style: { colors: muted() } } },
@@ -81,15 +102,12 @@ function mountAdminDashboardApex(el, cfg) {
         if (!canvas || !series?.labels?.length) {
             return;
         }
-        const host = replaceCanvasWithDiv(canvas);
-        const chartHeight = host.offsetHeight || 256;
+        const { host, height: wrapH } = replaceCanvasWithDiv(canvas);
+        const chartHeight = Math.max(wrapH, series.labels.length * 40 + 56);
+        host.style.height = `${chartHeight}px`;
+        host.style.minHeight = `${chartHeight}px`;
         const inst = new ApexCharts(host, {
-            chart: {
-                type: 'bar',
-                height: chartHeight,
-                toolbar: { show: false },
-                fontFamily: 'inherit',
-            },
+            ...chartBase(chartHeight, { type: 'bar' }),
             plotOptions: { bar: { horizontal: true, borderRadius: 6, barHeight: '72%' } },
             series: [{ name: title, data: series.values }],
             xaxis: {
@@ -129,11 +147,11 @@ function mountUserDashboardApex(el, cfg) {
         if (!canvas) {
             return;
         }
-        const host = replaceCanvasWithDiv(canvas);
+        const { host, height } = replaceCanvasWithDiv(canvas);
 
         if (spec.type === 'donut') {
             const inst = new ApexCharts(host, {
-                chart: { type: 'donut', fontFamily: 'inherit', toolbar: { show: false } },
+                ...chartBase(height, { type: 'donut' }),
                 labels: spec.labels,
                 series: spec.series,
                 legend: { position: 'bottom', labels: { colors: muted() } },
@@ -148,7 +166,7 @@ function mountUserDashboardApex(el, cfg) {
 
         if (spec.type === 'bar') {
             const inst = new ApexCharts(host, {
-                chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'bar' }),
                 plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
                 series: [{ name: spec.name || '', data: spec.series }],
                 xaxis: { categories: spec.labels, labels: { style: { colors: muted() } } },
@@ -180,9 +198,9 @@ function mountAuditCockpitApex(el, cfg) {
 
     const radarCanvas = el.querySelector('[data-audit-cockpit-chart-ref="radar"]');
     if (radarCanvas && radar?.labels?.length && radar?.values?.length) {
-        const host = replaceCanvasWithDiv(radarCanvas);
+        const { host, height } = replaceCanvasWithDiv(radarCanvas);
         const inst = new ApexCharts(host, {
-            chart: { type: 'radar', toolbar: { show: false }, fontFamily: 'inherit' },
+            ...chartBase(height, { type: 'radar' }),
             series: [{ name: 'Conformité (%)', data: radar.values }],
             xaxis: { categories: radar.labels },
             yaxis: { show: false, max: 100, min: 0 },
@@ -205,11 +223,11 @@ function mountAuditCockpitApex(el, cfg) {
 
     const distCanvas = el.querySelector('[data-audit-cockpit-chart-ref="distribution"]');
     if (distCanvas && dist?.labels?.length && dist?.values?.length) {
-        const host = replaceCanvasWithDiv(distCanvas);
+        const { host, height } = replaceCanvasWithDiv(distCanvas);
         const pal = ['#22c55e', '#eab308', '#f97316', '#dc2626', '#94a3b8', '#64748b'];
         const colors = dist.labels.map((_, i) => pal[i % pal.length]);
         const inst = new ApexCharts(host, {
-            chart: { type: 'donut', fontFamily: 'inherit', toolbar: { show: false } },
+            ...chartBase(height, { type: 'donut' }),
             labels: dist.labels,
             series: dist.values,
             colors,
@@ -275,12 +293,12 @@ function mountAnalyticsApex(el, configValue) {
         const variant = spec.colorVariant === 'secondary' ? 'secondary' : 'primary';
         const t = th(variant);
         const datasetLabel = spec.datasetLabel || '';
-        const host = replaceCanvasWithDiv(canvas);
+        const { host, height } = replaceCanvasWithDiv(canvas);
 
         if (spec.kind === 'line') {
             const fill = Boolean(spec.fill);
             const inst = new ApexCharts(host, {
-                chart: { type: 'line', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'line', zoom: { enabled: false } }),
                 series: [{ name: datasetLabel, data: values }],
                 xaxis: { categories: labels, labels: { style: { colors: t.muted } } },
                 yaxis: { labels: { style: { colors: t.muted } } },
@@ -309,7 +327,7 @@ function mountAnalyticsApex(el, configValue) {
 
         if (spec.kind === 'bar') {
             const inst = new ApexCharts(host, {
-                chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'bar' }),
                 plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
                 series: [{ name: datasetLabel, data: values }],
                 xaxis: { categories: labels, labels: { style: { colors: t.muted } } },
@@ -327,7 +345,7 @@ function mountAnalyticsApex(el, configValue) {
             const pal = readPalette();
             const bg = labels.map((_, i) => pal[i % pal.length]);
             const inst = new ApexCharts(host, {
-                chart: { type: 'donut', fontFamily: 'inherit', toolbar: { show: false } },
+                ...chartBase(height, { type: 'donut' }),
                 labels,
                 series: values,
                 colors: bg,
@@ -373,9 +391,9 @@ function mountPdcaCockpitApex(el, cfg) {
         }
 
         if (spec.type === 'donut' && spec.labels?.length && spec.series?.length) {
-            const host = replaceCanvasWithDiv(canvas);
+            const { host, height } = replaceCanvasWithDiv(canvas);
             const inst = new ApexCharts(host, {
-                chart: { type: 'donut', fontFamily: 'inherit', toolbar: { show: false } },
+                ...chartBase(height, { type: 'donut' }),
                 labels: spec.labels,
                 series: spec.series,
                 colors: spec.colors || readPalette(),
@@ -389,9 +407,12 @@ function mountPdcaCockpitApex(el, cfg) {
         }
 
         if (spec.type === 'hbar' && spec.labels?.length) {
-            const host = replaceCanvasWithDiv(canvas);
+            const { host, height: wrapH } = replaceCanvasWithDiv(canvas);
+            const chartHeight = Math.max(wrapH, spec.labels.length * 40 + 56);
+            host.style.height = `${chartHeight}px`;
+            host.style.minHeight = `${chartHeight}px`;
             const inst = new ApexCharts(host, {
-                chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'inherit' },
+                ...chartBase(chartHeight, { type: 'bar' }),
                 plotOptions: { bar: { horizontal: true, borderRadius: 6, barHeight: '72%' } },
                 series: [{ name: spec.name || '', data: spec.series }],
                 xaxis: { categories: spec.labels, labels: { style: { colors: muted() } } },
@@ -406,9 +427,9 @@ function mountPdcaCockpitApex(el, cfg) {
         }
 
         if (spec.type === 'heatmap' && spec.series?.length) {
-            const host = replaceCanvasWithDiv(canvas);
+            const { host, height } = replaceCanvasWithDiv(canvas);
             const inst = new ApexCharts(host, {
-                chart: { type: 'heatmap', toolbar: { show: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'heatmap' }),
                 series: spec.series,
                 plotOptions: {
                     heatmap: {
@@ -434,13 +455,13 @@ function mountPdcaCockpitApex(el, cfg) {
         }
 
         if (spec.type === 'area' && spec.labels?.length) {
-            const host = replaceCanvasWithDiv(canvas);
+            const { host, height } = replaceCanvasWithDiv(canvas);
             const multi = Array.isArray(spec.series) && spec.series[0]?.data;
             const series = multi
                 ? spec.series.map((s) => ({ name: s.name || '', data: s.data }))
                 : [{ name: spec.name || '', data: spec.series }];
             const inst = new ApexCharts(host, {
-                chart: { type: 'area', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'area', zoom: { enabled: false } }),
                 series,
                 xaxis: { categories: spec.labels, labels: { style: { colors: muted() } } },
                 yaxis: { labels: { style: { colors: muted() } } },
@@ -460,9 +481,9 @@ function mountPdcaCockpitApex(el, cfg) {
         }
 
         if (spec.type === 'radar' && spec.labels?.length && spec.values?.length) {
-            const host = replaceCanvasWithDiv(canvas);
+            const { host, height } = replaceCanvasWithDiv(canvas);
             const inst = new ApexCharts(host, {
-                chart: { type: 'radar', toolbar: { show: false }, fontFamily: 'inherit' },
+                ...chartBase(height, { type: 'radar' }),
                 series: [{ name: 'Score phase', data: spec.values }],
                 xaxis: { categories: spec.labels },
                 yaxis: { show: false, max: 100, min: 0 },
@@ -503,9 +524,9 @@ function mountAdminGrowthApex(el, cfg) {
     if (!canvas || !cfg?.labels?.length) {
         return () => {};
     }
-    const host = replaceCanvasWithDiv(canvas);
+    const { host, height } = replaceCanvasWithDiv(canvas);
     const inst = new ApexCharts(host, {
-        chart: { type: 'bar', stacked: Boolean(cfg.stacked), toolbar: { show: false }, fontFamily: 'inherit' },
+        ...chartBase(height, { type: 'bar', stacked: Boolean(cfg.stacked) }),
         series: cfg.series || [{ name: 'Valeur', data: cfg.values || [] }],
         xaxis: { categories: cfg.labels, labels: { style: { colors: muted() } } },
         yaxis: { labels: { style: { colors: muted() } } },

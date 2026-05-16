@@ -83,8 +83,8 @@
                 </twig:Card:Header>
                 <twig:Card:Content>
                     <p class="text-xs text-muted-foreground mb-3 m-0">Nouveaux comptes par jour — tendance brute sur 7&nbsp;jours glissants.</p>
-                    <div class="h-52 w-full min-h-[13rem]" data-chart-wrap>
-                        <canvas data-admin-dashboard-charts-chart-ref="chartRegistrations" class="block h-full max-h-52 w-full" role="img" aria-label="Graphique inscriptions 7 jours"></canvas>
+                    <div class="h-64 w-full" data-chart-wrap data-chart-height="256">
+                        <canvas data-admin-dashboard-charts-chart-ref="chartRegistrations" class="block h-full w-full" role="img" aria-label="Graphique inscriptions 7 jours"></canvas>
                     </div>
                 </twig:Card:Content>
             </twig:Card>
@@ -94,8 +94,8 @@
                 </twig:Card:Header>
                 <twig:Card:Content>
                     <p class="text-xs text-muted-foreground mb-3 m-0">Volume agrégé de vues journalières — corrélé au référent acquisition.</p>
-                    <div class="h-52 w-full min-h-[13rem]" data-chart-wrap>
-                        <canvas data-admin-dashboard-charts-chart-ref="chartVisits" class="block h-full max-h-52 w-full" role="img" aria-label="Graphique visites 7 jours"></canvas>
+                    <div class="h-64 w-full" data-chart-wrap data-chart-height="256">
+                        <canvas data-admin-dashboard-charts-chart-ref="chartVisits" class="block h-full w-full" role="img" aria-label="Graphique visites 7 jours"></canvas>
                     </div>
                 </twig:Card:Content>
             </twig:Card>
@@ -107,7 +107,7 @@
             </twig:Card:Header>
             <twig:Card:Content>
                 <p class="text-xs text-muted-foreground mb-3 m-0">Comparaison ordres de grandeur : actifs événements → engagement cockpit → exports.</p>
-                <div class="h-64 w-full min-h-[16rem]" data-chart-wrap>
+                <div class="h-72 w-full" data-chart-wrap data-chart-height="288">
                     <canvas data-admin-dashboard-charts-chart-ref="chartEngagement" class="block h-full w-full" role="img" aria-label="Graphique activation 7 jours"></canvas>
                 </div>
             </twig:Card:Content>
@@ -188,7 +188,7 @@
         </div>
     </div>
 
-    <div class="rounded-lg border border-border bg-card p-4 sm:p-6 mb-6 shadow-sm ring-1 ring-border/40"
+    <div class="admin-growth-chart rounded-lg border border-border bg-card p-4 sm:p-6 mb-6 shadow-sm ring-1 ring-border/40"
          data-controller="chart"
          data-chart-kind-value="admin-growth"
          data-chart-config-value="{{ adminGrowthChart|json_encode|e('html_attr') }}"
@@ -198,7 +198,7 @@
             Leads &amp; croissance plateforme
         </h2>
         <p class="text-sm text-muted-foreground mb-4 m-0">Volume leads (Mautic), abonnés newsletter actifs, inscriptions sur 7 jours.</p>
-        <div class="h-64 w-full min-h-[16rem]" data-chart-wrap>
+        <div class="h-72 w-full" data-chart-wrap data-chart-height="288">
             <canvas data-admin-growth-chart-ref="main" class="block h-full w-full" role="img" aria-label="Indicateurs acquisition"></canvas>
         </div>
     </div>

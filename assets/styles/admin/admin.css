@@ -49,20 +49,22 @@ body.layout-admin {
     gap: 1rem;
   }
 
-  /* ApexCharts : pas de transform motion sur les cartes graphiques */
+  /* ApexCharts : pas de transform motion ; pas de overflow:hidden (coupe l’axe X) */
   .admin-chart-card,
-  .admin-chart-card [data-chart-wrap] {
+  .admin-growth-chart {
     transform: none !important;
     will-change: auto;
   }
 
-  .admin-chart-card [data-chart-wrap] {
+  [data-chart-wrap] {
     position: relative;
-    overflow: hidden;
+    flex-shrink: 0;
+    overflow: visible;
   }
 
-  .admin-chart-card [data-chart-wrap] > div {
-    max-height: 100%;
+  [data-chart-wrap] .apex-chart-host {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
