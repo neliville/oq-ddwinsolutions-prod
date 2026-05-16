@@ -1,94 +1,18 @@
+# DEPRECATED — Déploiement Azure staging désactivé.
+# Staging / prod : o2switch via SSH → scripts/pre-deploy-backup-o2switch.sh puis ./deploy.sh
+# Voir DEPLOY_O2SWITCH.md et docs/DEPLOY_RUNBOOK_PREMIUM_RELEASE.md
 name: (deprecated) Deploy Symfony to Azure Staging
 
-# Déploiement uniquement depuis la branche main
-# Workflow : feat/* -> tests -> merge vers main -> déploiement automatique
 on:
-  push:
-    branches:
-      - main  # Déploiement uniquement depuis main
-  workflow_dispatch:  # Permet le déploiement manuel depuis n'importe quelle branche
+  workflow_dispatch:
 
 jobs:
-  tests:
-    if: ${{ false }}
-    name: Tests avant déploiement
+  deprecated-notice:
+    name: Workflow désactivé (Azure)
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    
     steps:
-      - name: Récupération du code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql, pdo_sqlite, opcache, zip
-          tools: composer
-
-      - name: Install dependencies
+      - name: Information
         run: |
-          composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
-
-      - name: Run all tests
-        run: |
-          php bin/phpunit --testdox
-
-      - name: Check test results
-        if: failure()
-        run: |
-          echo "❌ Les tests ont échoué. Le déploiement est bloqué."
-          exit 1
-
-  build-and-deploy:
-    if: ${{ false }}
-    name: Build et déploiement
-    runs-on: ubuntu-latest
-    needs: tests
-    if: success()
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Récupération du code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql, opcache, zip
-          tools: composer
-
-      - name: Install dependencies (production)
-        run: |
-          composer install --no-dev --optimize-autoloader --no-interaction
-          php bin/console cache:clear --env=prod --no-interaction
-
-      - name: Préparer l’archive de déploiement
-        run: |
-          zip -r release.zip . -x "**/.git*" "**/.github*" "**/tests/*" "**/var/cache/*" "**/.env*"
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E65F8C8A79A4218AB4131CD9FA3A46F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_592737AC197B41E49E6B691CBA269220 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F087D0869AF4F41A9E666D6D6C2F27D }}
-
-      - name: 'Deploy to Azure Web App (Staging)'
-        if: ${{ false }}
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'outils-qualite-gratuit'
-          slot-name: 'staging'
-          package: release.zip
-
-      - name: Notification de déploiement
-        if: success()
-        run: |
-          echo "✅ Déploiement réussi sur Azure Staging"
-          echo "📦 Branch: ${{ github.ref_name }}"
-          echo "🔗 Commit: ${{ github.sha }}"
-          # TODO: Ajouter une notification (Slack, Email, etc.)
+          echo "::notice title=Workflow déprécié::Le déploiement Azure staging n'est plus utilisé."
+          echo "Déploiement actuel : o2switch (SSH) — ./deploy.sh"
+          echo "Documentation : DEPLOY_O2SWITCH.md, docs/DEPLOY_RUNBOOK_PREMIUM_RELEASE.md"

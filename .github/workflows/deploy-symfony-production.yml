@@ -1,102 +1,18 @@
+# DEPRECATED — Déploiement Azure production désactivé.
+# Production : o2switch via SSH → scripts/pre-deploy-backup-o2switch.sh puis ./deploy.sh
+# Voir DEPLOY_O2SWITCH.md et docs/DEPLOY_RUNBOOK_PREMIUM_RELEASE.md
 name: (deprecated) Deploy Symfony to Azure Production
 
-# Déploiement en production depuis main uniquement
-# Requiert une action manuelle explicite pour éviter les déploiements accidentels
 on:
   workflow_dispatch:
-    inputs:
-      confirm:
-        description: 'Confirmer le déploiement en production (tapez "DEPLOY" pour confirmer)'
-        required: true
-        default: ''
-        type: string
 
 jobs:
-  validate-deployment:
-    if: ${{ false }}
-    name: Validation du déploiement
+  deprecated-notice:
+    name: Workflow désactivé (Azure)
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
     steps:
-      - name: Vérifier la confirmation
+      - name: Information
         run: |
-          if [ "${{ github.event.inputs.confirm }}" != "DEPLOY" ]; then
-            echo "❌ Déploiement annulé. Vous devez taper 'DEPLOY' pour confirmer."
-            exit 1
-          fi
-          echo "✅ Déploiement confirmé"
-
-      - name: Récupération du code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql, pdo_sqlite, opcache, zip
-          tools: composer
-
-      - name: Install dependencies
-        run: |
-          composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
-
-      - name: Run all tests
-        run: |
-          php bin/phpunit --testsuite=all --testdox
-
-      - name: Check test results
-        if: failure()
-        run: |
-          echo "❌ Les tests ont échoué. Le déploiement est bloqué."
-          exit 1
-
-  build-and-deploy:
-    if: ${{ false }}
-    name: Build et déploiement Production
-    runs-on: ubuntu-latest
-    needs: validate-deployment
-    if: success()
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Récupération du code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql, opcache, zip
-          tools: composer
-
-      - name: Install dependencies (production)
-        run: |
-          composer install --no-dev --optimize-autoloader --no-interaction
-          php bin/console cache:clear --env=prod --no-interaction
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E65F8C8A79A4218AB4131CD9FA3A46F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_592737AC197B41E49E6B691CBA269220 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5F087D0869AF4F41A9E666D6D6C2F27D }}
-
-      - name: 'Deploy to Azure Web App (Production)'
-        if: ${{ false }}
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'outils-qualite-gratuit'
-          package: .
-
-      - name: Notification de déploiement
-        if: success()
-        run: |
-          echo "✅ Déploiement réussi en PRODUCTION"
-          echo "📦 Branch: ${{ github.ref_name }}"
-          echo "🔗 Commit: ${{ github.sha }}"
-          echo "👤 Déployé par: ${{ github.actor }}"
-          # TODO: Ajouter une notification (Slack, Email, etc.)
-
+          echo "::notice title=Workflow déprécié::Le déploiement Azure production n'est plus utilisé."
+          echo "Déploiement actuel : o2switch (SSH) — ./deploy.sh"
+          echo "Documentation : DEPLOY_O2SWITCH.md, docs/DEPLOY_RUNBOOK_PREMIUM_RELEASE.md"
