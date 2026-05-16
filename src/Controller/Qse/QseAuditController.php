@@ -17,6 +17,7 @@ use App\Qse\Event\AuditEvaluationSavedEvent;
 use App\Qse\Export\AuditDocumentExporter;
 use App\Qse\Export\AuditSpreadsheetExporter;
 use App\Qse\Service\AuditComplianceCalculator;
+use App\Qse\Service\AuditEvaluationAutoCapaService;
 use App\Qse\Service\AuditEvaluationCapaFactory;
 use App\Qse\Service\AuditEvaluationVerdictHelper;
 use App\Repository\Qse\AuditEvaluationRepository;
@@ -56,6 +57,7 @@ final class QseAuditController extends AbstractController
         private readonly AuditCockpitViewModelFactory $auditCockpitViewModelFactory,
         private readonly AuditSpreadsheetExporter $auditSpreadsheetExporter,
         private readonly AuditDocumentExporter $auditDocumentExporter,
+        private readonly AuditEvaluationAutoCapaService $autoCapaService,
     ) {
     }
 
@@ -298,6 +300,7 @@ final class QseAuditController extends AbstractController
 
         $cockpitMetrics = $this->auditCockpitViewModelFactory->build($audit);
         $chartConfigJson = json_encode($cockpitMetrics->chartConfig, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE);
+        $openCapaByEvaluationId = $this->capaActionRepository->findOpenCapasIndexedByEvaluationForAudit($audit);
 
         if (in_array($audit->getStatus(), [AuditExecutionStatus::TERMINE, AuditExecutionStatus::VALIDE], true)) {
             $this->trackingEventRecorder->record(
@@ -319,6 +322,7 @@ final class QseAuditController extends AbstractController
             'evaluationsByReqId' => $evaluationsByReqId,
             'cockpitMetrics' => $cockpitMetrics,
             'chartConfigJson' => $chartConfigJson,
+            'openCapaByEvaluationId' => $openCapaByEvaluationId,
         ]);
     }
 
@@ -391,6 +395,16 @@ final class QseAuditController extends AbstractController
         $this->complianceCalculator->recalculate($audit);
         $this->entityManager->flush();
 
+        $autoCapasCreated = $this->autoCapaService->pullNewlyCreatedCount();
+        if ($autoCapasCreated > 0) {
+            $this->addFlash(
+                'info',
+                $autoCapasCreated === 1
+                    ? '1 brouillon CAPA a été créé automatiquement pour une NC détectée.'
+                    : sprintf('%d brouillons CAPA ont été créés automatiquement pour les NC détectées.', $autoCapasCreated),
+            );
+        }
+
         $this->addFlash('success', 'Évaluations du chapitre enregistrées.');
 
         return $this->redirectToRoute('app_qse_audit_show', [
@@ -443,6 +457,12 @@ final class QseAuditController extends AbstractController
         $ev = $this->evaluationRepository->find($evaluationId);
         if (!$ev instanceof AuditEvaluation || $ev->getAudit()?->getId() !== $audit->getId() || $ev->getOwner()?->getId() !== $user->getId()) {
             throw $this->createNotFoundException();
+        }
+        $existing = $this->capaActionRepository->findOpenBySourceAuditEvaluation($evaluationId);
+        if ($existing !== null) {
+            $this->addFlash('info', 'Une CAPA ouverte est déjà liée à cette exigence.');
+
+            return $this->redirectToRoute('app_qse_capa_show', ['id' => $existing->getId()]);
         }
         $capa = $this->capaFactory->createDraftFromEvaluation($ev, $user);
         $this->entityManager->persist($capa);

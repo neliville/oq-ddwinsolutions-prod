@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository\Qse;
 
 use App\Entity\Qse\Audit;
+use App\Entity\Qse\AuditEvaluation;
 use App\Entity\Qse\CAPAAction;
 use App\Entity\User;
 use App\Qse\Enum\CapaStatus;
@@ -212,5 +213,73 @@ class CAPAActionRepository extends ServiceEntityRepository
         }
 
         return $merged;
+    }
+
+    public function findOpenBySourceAuditEvaluation(int $evaluationId): ?CAPAAction
+    {
+        $result = $this->createQueryBuilder('c')
+            ->where('c.sourceAuditEvaluation = :evalId')
+            ->andWhere('c.status NOT IN (:closed)')
+            ->setParameter('evalId', $evaluationId)
+            ->setParameter('closed', CapaStatus::terminalStatuses())
+            ->orderBy('c.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result instanceof CAPAAction ? $result : null;
+    }
+
+    /**
+     * @param list<int> $evaluationIds
+     *
+     * @return array<int, CAPAAction> id d’évaluation → CAPA ouverte la plus récente
+     */
+    public function findOpenBySourceAuditEvaluationIds(array $evaluationIds): array
+    {
+        $evaluationIds = array_values(array_unique(array_filter($evaluationIds, static fn (int $v): bool => $v > 0)));
+        if ($evaluationIds === []) {
+            return [];
+        }
+
+        /** @var list<CAPAAction> $capas */
+        $capas = $this->createQueryBuilder('c')
+            ->join('c.sourceAuditEvaluation', 'e')
+            ->addSelect('e')
+            ->where('e.id IN (:ids)')
+            ->andWhere('c.status NOT IN (:closed)')
+            ->setParameter('ids', $evaluationIds)
+            ->setParameter('closed', CapaStatus::terminalStatuses())
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $map = [];
+        foreach ($capas as $capa) {
+            if (!$capa instanceof CAPAAction) {
+                continue;
+            }
+            $evalId = $capa->getSourceAuditEvaluation()?->getId();
+            if ($evalId !== null && !isset($map[$evalId])) {
+                $map[$evalId] = $capa;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * @return array<int, CAPAAction> id d’évaluation → CAPA ouverte
+     */
+    public function findOpenCapasIndexedByEvaluationForAudit(Audit $audit): array
+    {
+        $evaluationIds = [];
+        foreach ($audit->getEvaluations() as $ev) {
+            if ($ev instanceof AuditEvaluation && $ev->getId() !== null) {
+                $evaluationIds[] = $ev->getId();
+            }
+        }
+
+        return $this->findOpenBySourceAuditEvaluationIds($evaluationIds);
     }
 }

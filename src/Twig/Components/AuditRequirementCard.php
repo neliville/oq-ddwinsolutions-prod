@@ -7,6 +7,7 @@ namespace App\Twig\Components;
 use App\Entity\Qse\Audit;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\Qse\AuditRequirement;
+use App\Entity\Qse\CAPAAction;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent('AuditRequirementCard')]
@@ -14,6 +15,7 @@ final class AuditRequirementCard
 {
     public AuditRequirement $requirement;
     public ?AuditEvaluation $evaluation = null;
+    public ?CAPAAction $linkedCapa = null;
     public Audit $audit;
     public bool $readOnly = false;
 

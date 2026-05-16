@@ -18,6 +18,7 @@ final class AuditVerdictExtension extends AbstractExtension
             new TwigFunction('audit_effective_verdict', $this->effectiveVerdict(...)),
             new TwigFunction('audit_verdict_label', $this->verdictLabel(...)),
             new TwigFunction('audit_verdict_suggests_capa', $this->suggestsCapa(...)),
+            new TwigFunction('audit_verdict_requires_auto_capa', $this->requiresAutoCapa(...)),
             new TwigFunction('audit_verdict_choices', static fn (): array => AuditVerdict::orderedChoices()),
         ];
     }
@@ -39,5 +40,10 @@ final class AuditVerdictExtension extends AbstractExtension
     public function suggestsCapa(?AuditVerdict $verdict): bool
     {
         return $verdict?->suggestsCapa() ?? false;
+    }
+
+    public function requiresAutoCapa(?AuditVerdict $verdict): bool
+    {
+        return $verdict?->requiresAutoCapa() ?? false;
     }
 }

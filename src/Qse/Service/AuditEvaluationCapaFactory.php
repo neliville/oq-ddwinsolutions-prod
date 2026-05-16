@@ -14,7 +14,7 @@ use App\Qse\Enum\PdcaPhase;
 use App\Repository\Qse\CapaOriginRepository;
 
 /**
- * Proposition de brouillon CAPA depuis une évaluation d’audit (notes 1 ou 2), sans persistance.
+ * Brouillon CAPA depuis une évaluation d’audit (écarts : NC, observation, à revoir).
  */
 final class AuditEvaluationCapaFactory
 {

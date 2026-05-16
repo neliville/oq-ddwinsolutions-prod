@@ -29,10 +29,16 @@
                         {% else %}
                             <twig:Badge variant="outline" class="shrink-0">Non évalué</twig:Badge>
                         {% endif %}
-                        {% if ev and ev.id and not readOnly and audit_verdict_suggests_capa(v) %}
-                            <twig:Button as="a" href="{{ path('app_qse_audit_suggest_capa', { id: audit.id, evaluationId: ev.id }) }}" variant="outline" size="sm" class="no-underline shrink-0 ms-auto">
-                                CAPA
-                            </twig:Button>
+                        {% if ev and ev.id and not readOnly %}
+                            {% if linkedCapa %}
+                                <twig:Button as="a" href="{{ path('app_qse_capa_show', { id: linkedCapa.id }) }}" variant="outline" size="sm" class="no-underline shrink-0 ms-auto">
+                                    Ouvrir la CAPA
+                                </twig:Button>
+                            {% elseif audit_verdict_suggests_capa(v) %}
+                                <twig:Button as="a" href="{{ path('app_qse_audit_suggest_capa', { id: audit.id, evaluationId: ev.id }) }}" variant="outline" size="sm" class="no-underline shrink-0 ms-auto">
+                                    CAPA
+                                </twig:Button>
+                            {% endif %}
                         {% endif %}
                     </div>
                     <h3 class="text-sm font-semibold text-foreground leading-snug m-0">{{ requirement.requirementText }}</h3>

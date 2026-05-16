@@ -1,67 +1,24 @@
 {% extends 'base_with_sidebar.html.twig' %}
 
-{% block title %}Actions CAPA | OUTILS-QUALITÉ{% endblock %}
+{% block title %}CAPA Management Board | OUTILS-QUALITÉ{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-5xl mx-auto px-4 py-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h1 class="text-2xl font-bold m-0">Actions CAPA</h1>
-        <twig:Button as="a" href="{{ path('app_qse_audit_index') }}" variant="outline" class="no-underline w-full sm:w-auto shrink-0">Voir les audits</twig:Button>
-    </div>
-    {% if capas is empty %}
-        <twig:Empty>
-            <twig:Empty:Header>
-                <twig:Empty:Title>Aucune action CAPA</twig:Empty:Title>
-                <twig:Empty:Description>Créez une CAPA depuis un audit (note 1 ou 2) ou depuis vos outils d’analyse.</twig:Empty:Description>
-            </twig:Empty:Header>
-            <twig:Empty:Content>
-                <twig:Button as="a" href="{{ path('app_qse_audit_pick_standard') }}" variant="default" class="no-underline">Nouvel audit</twig:Button>
-            </twig:Empty:Content>
-        </twig:Empty>
-    {% else %}
-        <twig:Card class="border-border/80 shadow-sm overflow-hidden">
-            <twig:Card:Content class="p-0 sm:p-0">
-                <div class="hidden md:block [&_[data-slot=table-container]]:rounded-none">
-                    <twig:Table class="[&_tbody_tr:hover]:bg-accent/60">
-                    <twig:Table:Header>
-                        <twig:Table:Row>
-                            <twig:Table:Head>Titre</twig:Table:Head>
-                            <twig:Table:Head>Statut</twig:Table:Head>
-                            <twig:Table:Head class="text-end w-[1%] whitespace-nowrap">Voir</twig:Table:Head>
-                        </twig:Table:Row>
-                    </twig:Table:Header>
-                    <twig:Table:Body>
-                        {% for c in capas %}
-                            <twig:Table:Row>
-                                <twig:Table:Cell class="font-medium max-w-[min(28rem,55vw)]">
-                                    <a href="{{ path('app_qse_capa_show', { id: c.id }) }}" class="app-inline-link">{{ c.title }}</a>
-                                </twig:Table:Cell>
-                                <twig:Table:Cell>
-                                    <twig:Badge variant="secondary">{{ c.status.value|qse_status_label('capa') }}</twig:Badge>
-                                </twig:Table:Cell>
-                                <twig:Table:Cell class="text-end">
-                                    <twig:Button as="a" href="{{ path('app_qse_capa_show', { id: c.id }) }}" variant="outline" size="sm" class="no-underline">Ouvrir</twig:Button>
-                                </twig:Table:Cell>
-                            </twig:Table:Row>
-                        {% endfor %}
-                    </twig:Table:Body>
-                </twig:Table>
-                </div>
-                <div class="space-y-3 p-4 md:hidden" aria-label="Liste CAPA (vue mobile)">
-                    {% for c in capas %}
-                        <article class="rounded-xl border border-border/80 bg-card p-4 shadow-sm ring-1 ring-border/40">
-                            <div class="flex flex-col gap-2">
-                                <a href="{{ path('app_qse_capa_show', { id: c.id }) }}" class="app-inline-link text-base font-semibold text-foreground">{{ c.title }}</a>
-                                <twig:Badge variant="secondary" class="w-fit">{{ c.status.value|qse_status_label('capa') }}</twig:Badge>
-                                <twig:Button as="a" href="{{ path('app_qse_capa_show', { id: c.id }) }}" variant="outline" size="sm" class="mt-1 w-fit no-underline">
-                                    Ouvrir
-                                </twig:Button>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            </twig:Card:Content>
-        </twig:Card>
-    {% endif %}
+<div class="w-full max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
+        <div class="min-w-0">
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-foreground m-0">CAPA Management Board</h1>
+            <p class="text-muted-foreground text-sm sm:text-base mt-2 mb-0 max-w-2xl leading-relaxed">
+                Pilotage des actions correctives et préventives : workflow, échéances, criticité et traçabilité des sources.
+            </p>
+        </div>
+        <form method="post" action="{{ path('app_qse_capa_new') }}" class="m-0 shrink-0 w-full sm:w-auto">
+            <input type="hidden" name="_token" value="{{ csrf_token('qse_capa_new') }}">
+            <twig:Button type="submit" variant="default" class="w-full sm:w-auto">
+                Nouvelle CAPA
+            </twig:Button>
+        </form>
+    </header>
+
+    <twig:CapaBoard />
 </div>
 {% endblock %}

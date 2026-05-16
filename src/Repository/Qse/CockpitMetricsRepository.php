@@ -6,6 +6,7 @@ namespace App\Repository\Qse;
 
 use App\Entity\User;
 use App\Qse\Enum\AuditExecutionStatus;
+use App\Qse\Enum\AuditVerdict;
 use App\Qse\Enum\AuditPlanStatus;
 use App\Qse\Enum\CapaStatus;
 use App\Qse\Enum\RiskEntryStatus;
@@ -100,9 +101,9 @@ final class CockpitMetricsRepository
             ->select('COUNT(e.id)')
             ->from(\App\Entity\Qse\AuditEvaluation::class, 'e')
             ->where('e.owner = :owner')
-            ->andWhere('e.score IN (:s)')
+            ->andWhere('e.verdict IN (:verdicts)')
             ->setParameter('owner', $owner)
-            ->setParameter('s', [1, 2])
+            ->setParameter('verdicts', [AuditVerdict::MINOR_NC, AuditVerdict::MAJOR_NC])
             ->getQuery()
             ->getSingleScalarResult();
 

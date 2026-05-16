@@ -8,6 +8,7 @@ use App\Entity\Qse\Audit;
 use App\Entity\Qse\AuditEvaluation;
 use App\Entity\Qse\AuditRequirement;
 use App\Entity\User;
+use App\Qse\Enum\AuditVerdict;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -50,9 +51,9 @@ class AuditEvaluationRepository extends ServiceEntityRepository
         return (int) $this->createQueryBuilder('e')
             ->select('COUNT(e.id)')
             ->where('e.owner = :owner')
-            ->andWhere('e.score IN (:scores)')
+            ->andWhere('e.verdict IN (:verdicts)')
             ->setParameter('owner', $owner)
-            ->setParameter('scores', [1, 2])
+            ->setParameter('verdicts', [AuditVerdict::MINOR_NC, AuditVerdict::MAJOR_NC])
             ->getQuery()
             ->getSingleScalarResult();
     }

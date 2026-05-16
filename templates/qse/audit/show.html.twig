@@ -193,7 +193,8 @@
 
                     {% for req in requirements %}
                         {% set ev = evaluationsByReqId[req.id] ?? null %}
-                        <twig:AuditRequirementCard :requirement="req" :evaluation="ev" :audit="audit" :read-only="false" :expanded="loop.first" />
+                        {% set linkedCapa = ev and ev.id ? (openCapaByEvaluationId[ev.id] ?? null) : null %}
+                        <twig:AuditRequirementCard :requirement="req" :evaluation="ev" :linkedCapa="linkedCapa" :audit="audit" :read-only="false" :expanded="loop.first" />
                     {% endfor %}
                 </form>
 

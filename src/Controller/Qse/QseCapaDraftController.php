@@ -68,4 +68,41 @@ final class QseCapaDraftController extends AbstractController
 
         return $this->redirectToRoute('app_dashboard_index', ['activation' => 'capa_created']);
     }
+
+    #[Route('/dashboard/qse/capa/new', name: 'app_qse_capa_new', methods: ['POST'])]
+    public function newManual(Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('qse_capa_new', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $origin = $this->capaOriginRepository->findOneSystemBySlug('autre');
+        if ($origin === null) {
+            throw $this->createNotFoundException('Origine CAPA « autre » introuvable. Exécutez app:qse:seed-capa-origins.');
+        }
+
+        $capa = new CAPAAction();
+        $capa->setOwner($user);
+        $capa->setTitle('Nouvelle action CAPA');
+        $capa->setCapaType(CapaType::CORRECTIVE);
+        $capa->setStatus(CapaStatus::BROUILLON);
+        $capa->setPdcaPhase(PdcaPhase::DO);
+        $capa->setOrigin($origin);
+        $capa->setMetadata([
+            '_schema' => 1,
+            'source' => 'manual',
+        ]);
+
+        $this->entityManager->persist($capa);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Brouillon CAPA créé. Complétez le titre, l’origine et la vérification d’efficacité avant clôture.');
+
+        return $this->redirectToRoute('app_qse_capa_show', ['id' => $capa->getId()]);
+    }
 }

@@ -9,7 +9,7 @@ use App\Qse\Enum\CapaOriginKind;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Insère ou met à jour les 9 origines système (slug unique, sans propriétaire).
+ * Insère ou met à jour les origines système (slug unique, sans propriétaire).
  */
 final class CapaSystemOriginSeeder
 {
@@ -24,6 +24,7 @@ final class CapaSystemOriginSeeder
         ['name' => 'Audit interne', 'slug' => 'audit-interne'],
         ['name' => 'Matrice des risques', 'slug' => 'matrice-risques'],
         ['name' => 'Onboarding cockpit', 'slug' => 'onboarding-cockpit'],
+        ['name' => 'Autre / Saisie libre', 'slug' => 'autre'],
     ];
 
     public function seed(EntityManagerInterface $em): int

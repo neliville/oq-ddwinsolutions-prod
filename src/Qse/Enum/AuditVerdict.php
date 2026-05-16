@@ -6,7 +6,8 @@ namespace App\Qse\Enum;
 
 /**
  * Verdict d’audit par exigence (grille ISO étendue).
- * Le champ legacy `score` (0–3) reste synchronisé pour compatibilité / CAPA.
+ * Le champ legacy `score` (0–3) reste synchronisé pour compatibilité affichage/export ;
+ * les règles CAPA s’appuient sur {@see requiresAutoCapa()} et {@see suggestsCapa()}.
  */
 enum AuditVerdict: string
 {
@@ -76,6 +77,16 @@ enum AuditVerdict: string
         };
     }
 
+    /** Création automatique de brouillon CAPA à l’enregistrement (NC formelles uniquement). */
+    public function requiresAutoCapa(): bool
+    {
+        return match ($this) {
+            self::MINOR_NC, self::MAJOR_NC => true,
+            default => false,
+        };
+    }
+
+    /** Bouton manuel « CAPA » sur la carte exigence (écarts traitables). */
     public function suggestsCapa(): bool
     {
         return match ($this) {
