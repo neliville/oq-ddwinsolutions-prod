@@ -104,13 +104,27 @@ jobs:
           done
           exit 1
 
+      - name: Cache binaire Tailwind
+        uses: actions/cache@v4
+        with:
+          path: var/tailwind
+          key: tailwind-binary-${{ hashFiles('symfony.lock') }}
+          restore-keys: |
+            tailwind-binary-
+
       - name: Tailwind build
         env:
           TMPDIR: ${{ runner.temp }}/symfony-assets
         run: |
           mkdir -p "${TMPDIR}"
-          php bin/console cache:warmup --env=prod --no-debug --no-interaction
-          php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction -vvv
+          for attempt in 1 2 3; do
+            if php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction -vvv; then
+              exit 0
+            fi
+            echo "tailwind:build failed (attempt ${attempt}/3), retry in 20s..."
+            sleep 20
+          done
+          exit 1
 
       - name: Asset map compile
         env:
