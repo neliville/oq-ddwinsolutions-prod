@@ -6,10 +6,14 @@ const grid = () => getComputedStyle(document.documentElement).getPropertyValue('
 const fillPrimary = () => getComputedStyle(document.documentElement).getPropertyValue('--chart-fill-primary').trim() || 'rgba(79, 70, 229, 0.14)';
 
 function replaceCanvasWithDiv(canvas) {
+    const wrap = canvas.closest('[data-chart-wrap]');
     const div = document.createElement('div');
-    div.className = `${canvas.className} w-full h-full min-h-0`;
-    const h = canvas.closest('[data-chart-wrap]')?.offsetHeight || canvas.offsetHeight || 208;
-    div.style.minHeight = `${Math.max(h, 120)}px`;
+    div.className = 'block h-full w-full min-h-0';
+    const h = wrap?.offsetHeight || canvas.offsetHeight || 208;
+    const height = Math.max(h, 120);
+    div.style.height = `${height}px`;
+    div.style.minHeight = `${height}px`;
+    div.style.maxHeight = `${height}px`;
     canvas.replaceWith(div);
     return div;
 }
@@ -78,8 +82,14 @@ function mountAdminDashboardApex(el, cfg) {
             return;
         }
         const host = replaceCanvasWithDiv(canvas);
+        const chartHeight = host.offsetHeight || 256;
         const inst = new ApexCharts(host, {
-            chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'inherit' },
+            chart: {
+                type: 'bar',
+                height: chartHeight,
+                toolbar: { show: false },
+                fontFamily: 'inherit',
+            },
             plotOptions: { bar: { horizontal: true, borderRadius: 6, barHeight: '72%' } },
             series: [{ name: title, data: series.values }],
             xaxis: {

@@ -77,7 +77,7 @@
         </div>
 
         <div class="grid gap-6 lg:grid-cols-2 mb-6">
-            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card class="admin-chart-card border-border/80 shadow-sm ring-1 ring-border/40">
                 <twig:Card:Header class="pb-2">
                     <twig:Card:Title class="text-base font-semibold tracking-tight">Inscriptions journalières</twig:Card:Title>
                 </twig:Card:Header>
@@ -88,7 +88,7 @@
                     </div>
                 </twig:Card:Content>
             </twig:Card>
-            <twig:Card class="border-border/80 shadow-sm ring-1 ring-border/40">
+            <twig:Card class="admin-chart-card border-border/80 shadow-sm ring-1 ring-border/40">
                 <twig:Card:Header class="pb-2">
                     <twig:Card:Title class="text-base font-semibold tracking-tight">Visites (pages)</twig:Card:Title>
                 </twig:Card:Header>
@@ -101,14 +101,14 @@
             </twig:Card>
         </div>
 
-        <twig:Card class="mb-6 border-border/80 shadow-sm ring-1 ring-border/40">
+        <twig:Card class="admin-chart-card mb-6 border-border/80 shadow-sm ring-1 ring-border/40">
             <twig:Card:Header class="pb-2">
                 <twig:Card:Title class="text-base font-semibold tracking-tight">Entonnoir d’activation (7&nbsp;j)</twig:Card:Title>
             </twig:Card:Header>
             <twig:Card:Content>
                 <p class="text-xs text-muted-foreground mb-3 m-0">Comparaison ordres de grandeur : actifs événements → engagement cockpit → exports.</p>
-                <div class="min-h-[16rem] w-full" data-chart-wrap>
-                    <canvas data-admin-dashboard-charts-chart-ref="chartEngagement" class="block h-full max-h-[16rem] w-full" role="img" aria-label="Graphique activation 7 jours"></canvas>
+                <div class="h-64 w-full min-h-[16rem]" data-chart-wrap>
+                    <canvas data-admin-dashboard-charts-chart-ref="chartEngagement" class="block h-full w-full" role="img" aria-label="Graphique activation 7 jours"></canvas>
                 </div>
             </twig:Card:Content>
         </twig:Card>
