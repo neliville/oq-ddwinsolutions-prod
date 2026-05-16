@@ -82,14 +82,26 @@ jobs:
           npm ci
           npm run build
 
-      - name: Importmap + Tailwind + asset-map
+      - name: Vérifier le bundle Ishikawa
+        run: test -f assets/react/controllers/IshikawaEditor.js
+
+      - name: Importmap install
+        run: php bin/console importmap:install --env=prod --no-debug --no-interaction
+
+      - name: Tailwind build
         env:
           TMPDIR: ${{ runner.temp }}/symfony-assets
         run: |
           mkdir -p "${TMPDIR}"
-          php bin/console importmap:install --env=prod --no-debug --no-interaction
-          php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction
-          php bin/console asset-map:compile --env=prod --no-debug --no-interaction
+          php bin/console cache:warmup --env=prod --no-debug --no-interaction
+          php bin/console tailwind:build --minify --env=prod --no-debug --no-interaction -vvv
+
+      - name: Asset map compile
+        env:
+          TMPDIR: ${{ runner.temp }}/symfony-assets
+        run: |
+          mkdir -p "${TMPDIR}"
+          php bin/console asset-map:compile --env=prod --no-debug --no-interaction -vvv
 
       - name: Commit public/assets si changements
         run: |
