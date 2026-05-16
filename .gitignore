@@ -22,6 +22,10 @@ var/data.db-journal
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+# Playwright / e2e
+/test-results/
+/playwright-report/
+
 # Node / frontend
 /node_modules/
 assets/react-src/build/node_modules/
