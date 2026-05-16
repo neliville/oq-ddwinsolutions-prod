@@ -56,6 +56,9 @@ return [
         'version' => '4.6.13',
         'type' => 'css',
     ],
+    'oq/flatpickr-config' => [
+        'path' => './assets/js/flatpickr/config.js',
+    ],
     '@stimulus-components/checkbox-select-all' => [
         'version' => '6.1.0',
     ],
@@ -146,10 +149,43 @@ return [
     'zustand/vanilla/shallow' => [
         'version' => '5.0.13',
     ],
-    'chart.js' => [
-        'version' => '4.5.1',
+    'gsap' => [
+        'version' => '3.15.0',
     ],
-    '@kurkle/color' => [
-        'version' => '0.3.4',
+    'motion' => [
+        'version' => '12.38.0',
+    ],
+    '@formkit/auto-animate' => [
+        'version' => '0.9.0',
+    ],
+    'apexcharts' => [
+        'version' => '5.12.0',
+    ],
+    'framer-motion/dom' => [
+        'version' => '12.38.0',
+    ],
+    'motion-dom' => [
+        'version' => '12.38.0',
+    ],
+    'motion-utils' => [
+        'version' => '12.36.0',
+    ],
+    'gsap/ScrollTrigger' => [
+        'version' => '3.15.0',
+    ],
+    'gsap/Flip' => [
+        'version' => '3.15.0',
+    ],
+    '@floating-ui/dom' => [
+        'version' => '1.7.6',
+    ],
+    '@floating-ui/core' => [
+        'version' => '1.7.5',
+    ],
+    '@floating-ui/utils' => [
+        'version' => '0.2.11',
+    ],
+    '@floating-ui/utils/dom' => [
+        'version' => '0.2.11',
     ],
 ];
