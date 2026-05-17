@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/tools-seo.css') }}">
+{% endblock %}
+
 {% block title %}{{ tool.name }} - Outil qualité gratuit en ligne{% endblock %}
 
 {% block meta_description %}{{ tool.description }}{% endblock %}

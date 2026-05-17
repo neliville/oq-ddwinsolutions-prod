@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/auth.css') }}">
+{% endblock %}
+
 {% block title %}Connexion - OUTILS-QUALITÉ{% endblock %}
 {% block meta_description %}Connectez-vous à votre cockpit QSE : audits, CAPA, risques et exports audit-ready.{% endblock %}
 {% block meta_keywords %}connexion, cockpit QSE, outils qualité, sauvegarde analyses{% endblock %}

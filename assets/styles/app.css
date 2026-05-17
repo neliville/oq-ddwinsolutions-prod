@@ -1,6 +1,9 @@
 /* ─── Tailwind v4 — full import (Preflight + utilities) ─────────────── */
 @import "tailwindcss";
 
+/* ─── Polices self-hosted ───────────────────────────────────────────── */
+@import "./core/_fonts.css";
+
 /* Variante dark pour les composants UX Toolkit / shadcn (classe .dark sur un ancêtre) */
 @custom-variant dark (&:is(.dark *));
 
@@ -46,7 +49,6 @@ dialog footer[data-slot="dialog-footer"] a:hover,
 @import "./components/_sidebar.css";
 @import "./components/_contextual-help.css";
 @import "./components/_floating.css";
-@import "./motion/_premium.css";
 @import "./components/_confirmation_modal.css";
 @import "./components/_collab-invite-dialog.css";
 @import "./components/_tool_buttons.css";
@@ -55,35 +57,16 @@ dialog footer[data-slot="dialog-footer"] a:hover,
 @import "./components/_seo_content.css";
 @import "./components/_date-field.css";
 
-/* ─── Pages outils SEO (/outil/*) ────────────────────────────────────── */
-@import "./tools/_tool_seo.css";
-
-/* ─── Site ────────────────────────────────────────────────────────────── */
+/* ─── Site (core public) ─────────────────────────────────────────────── */
 @import "./site/home.css";
-@import "./site/_home-landing-premium.css";
 @import "./site/contact.css";
 @import "./site/outils.css";
 @import "./site/_mautic-form-download.css";
 @import "./site/_legal-prose.css";
-@import "./site/dashboard.css";
-@import "./qse/audit-board.css";
-@import "./qse/risk-board.css";
-@import "./qse/risk-form.css";
-@import "./qse/audit-form.css";
-@import "./qse/capa-form.css";
-@import "./qse/capa-board.css";
 @import "./site/preferences.css";
 @import "./site/_inline-links.css";
-@import "./site/_auth.css";
-@import "./site/reset-password.css";
 
-/* ─── Admin ───────────────────────────────────────────────────────────── */
-@import "./admin/admin.css";
-
-/* Mes créations / KPI : couche « components » pour gagner sur les utilitaires Tailwind du même fichier compilé */
-@import "./tools/creations.css" layer(components);
-/* Cartes créations : CSS plat (le nesting &__ du fichier ci-dessus n’est pas aplati par Tailwind v4) */
-@import "./tools/_creation-card-flat.css" layer(components);
+/* Bundles page-specific : assets/styles/bundles/{home-landing,dashboard,qse,tools-seo,auth}.css */
 
 /* ─── Source scanning explicite (templates Twig hors dossier assets) ─ */
 @source "../../templates/**/*.html.twig";

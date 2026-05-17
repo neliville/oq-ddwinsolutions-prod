@@ -1706,7 +1706,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.45rem 0.85rem;
+  padding: 0.5rem 1.35rem;
   border-top: 1px solid var(--gray-200, #e5e7eb);
   background: #fafbfc;
 }

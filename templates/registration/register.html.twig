@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/auth.css') }}">
+{% endblock %}
+
 {% block title %}Inscription - OUTILS-QUALITÉ{% endblock %}
 {% block meta_description %}Créez votre compte gratuit pour accéder au cockpit QSE : audits, CAPA, risques et outils d'analyse.{% endblock %}
 {% block meta_keywords %}inscription, créer un compte, cockpit QSE, outils qualité{% endblock %}

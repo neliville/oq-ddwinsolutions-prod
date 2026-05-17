@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/auth.css') }}">
+{% endblock %}
+
 {% block title %}Mot de passe oublié - OUTILS-QUALITÉ{% endblock %}
 {% block meta_description %}Réinitialisez votre mot de passe OUTILS-QUALITÉ en recevant un lien sécurisé par email.{% endblock %}
 {% block seo_robots %}noindex, follow{% endblock %}

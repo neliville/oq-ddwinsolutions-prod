@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block page_motion %}true{% endblock %}
+
 {% block head %}
     {{ parent() }}
     {% include 'components/turbo_newsletter_no_cache_meta.html.twig' %}
@@ -49,6 +51,7 @@ outil qualité gratuit, diagramme ishikawa, méthode 5 pourquoi, pareto, QQOQCCP
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/home-landing.css') }}">
 {% endblock %}
 
 {% block body %}

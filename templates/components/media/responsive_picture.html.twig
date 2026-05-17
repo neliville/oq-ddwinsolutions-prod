@@ -4,6 +4,7 @@
     {% set normalized_path = is_absolute ? image_path : (image_path starts with '/' ? image_path|slice(1) : image_path) %}
     {% set loading_attr = loading|default('lazy') %}
     {% set decoding_attr = decoding|default('async') %}
+    {% set fetchpriority_attr = fetchpriority|default(null) %}
     {% set width_attr = width|default(null) %}
     {% set height_attr = height|default(null) %}
     {% set img_class = class|default('max-w-full h-auto rounded-xl shadow-lg') %}
@@ -14,6 +15,7 @@
              class="{{ img_class }}"
              loading="{{ loading_attr }}"
              decoding="{{ decoding_attr }}"
+             {% if fetchpriority_attr %}fetchpriority="{{ fetchpriority_attr }}"{% endif %}
              {% if width_attr %}width="{{ width_attr }}"{% endif %}
              {% if height_attr %}height="{{ height_attr }}"{% endif %}>
     {% else %}
@@ -30,6 +32,7 @@
                  class="{{ img_class }}"
                  loading="{{ loading_attr }}"
                  decoding="{{ decoding_attr }}"
+                 {% if fetchpriority_attr %}fetchpriority="{{ fetchpriority_attr }}"{% endif %}
                  {% if width_attr %}width="{{ width_attr }}"{% endif %}
                  {% if height_attr %}height="{{ height_attr }}"{% endif %}>
         </picture>

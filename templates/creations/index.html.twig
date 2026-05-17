@@ -1,5 +1,10 @@
 {% extends 'base_with_sidebar.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/tools-seo.css') }}">
+{% endblock %}
+
 {% block title %}Mes créations | OUTILS-QUALITÉ{% endblock %}
 
 {# Texte brut uniquement : parent capture ce bloc pour seo_description_raw ; pas de balises HTML (sinon meta description vide + OG cassés). #}

@@ -1,5 +1,16 @@
 {% extends 'base.html.twig' %}
 
+{% block page_motion %}true{% endblock %}
+
+{% set _sidebar_route = app.request.attributes.get('_route') %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/dashboard.css') }}">
+    {% if _sidebar_route is not null and (_sidebar_route starts with 'app_qse_' or _sidebar_route starts with 'app_admin_qse_') %}
+        <link rel="stylesheet" href="{{ asset('styles/bundles/qse.css') }}">
+    {% endif %}
+{% endblock %}
+
 {% set show_sidebar_toggle = app.user is not null %}
 {% set show_public_navbar = false %}
 

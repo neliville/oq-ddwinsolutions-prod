@@ -125,7 +125,9 @@ body {
                         path: post.image,
                         alt: post.title,
                         width: 900,
-                        height: 600
+                        height: 600,
+                        loading: 'eager',
+                        fetchpriority: 'high'
                     } %}
                 {% elseif post.category and post.category.icon %}
                 <div class="article-hero-icon-fallback inline-flex items-center justify-center rounded-2xl p-8" aria-hidden="true">
@@ -136,7 +138,9 @@ body {
                         path: 'img/blog-5why.webp',
                         alt: post.title,
                         width: 900,
-                        height: 600
+                        height: 600,
+                        loading: 'eager',
+                        fetchpriority: 'high'
                     } %}
                 {% endif %}
             </div>

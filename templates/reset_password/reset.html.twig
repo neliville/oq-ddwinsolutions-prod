@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/bundles/auth.css') }}">
+{% endblock %}
+
 {% block title %}Définir un nouveau mot de passe - OUTILS-QUALITÉ{% endblock %}
 {% block meta_description %}Choisissez un nouveau mot de passe sécurisé pour votre compte OUTILS-QUALITÉ.{% endblock %}
 {% block seo_robots %}noindex, follow{% endblock %}

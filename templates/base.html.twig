@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="is-loading">
+<html lang="fr" class="is-loading" data-page-motion="{% block page_motion %}false{% endblock %}">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -85,23 +85,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon-32x32.png') }}">
 
-    <!-- Preconnect et DNS-prefetch pour performances optimales -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="https://unpkg.com">
+    <!-- Preconnect CDN (Font Awesome, Lucide) -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <!-- Inter self-hosted (assets/styles/core/_fonts.css) -->
+    <link rel="preload" href="{{ asset('fonts/inter/inter-latin-400-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <style>body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}</style>
 
-    <!-- Fallback immédiat pour le texte (évite FOIT) + Inter chargé en non-bloquant -->
-    <style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}</style>
-    <!-- Google Fonts : entièrement non-bloquant pour réduire le TBT et les requêtes bloquantes -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" media="print" onload="this.media='all'">
-    <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-    </noscript>
-
-    <!-- Custom CSS (critique pour le premier rendu, un seul fichier bloquant) -->
+    <!-- Custom CSS (critique pour le premier rendu) -->
+    <link rel="preload" href="{{ asset('styles/app.css') }}" as="style">
     <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
 
     {# Import map + app.js : DOIT être dans le head pour que @hotwired/turbo soit résolu avant tout chargement de module #}
@@ -178,24 +170,31 @@
 </style>
     {% endblock %}
 
-    <!-- Matomo -->
+    <!-- Matomo (différé — réduit TBT sur le thread principal) -->
     <script>
-      var _paq = window._paq = window._paq || [];
-      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-        var u="//stats.outils-qualite.com/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      (function () {
+        function loadMatomo() {
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['setTrackerUrl', '//stats.outils-qualite.com/matomo.php']);
+          _paq.push(['setSiteId', '1']);
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+          g.async = true;
+          g.src = '//stats.outils-qualite.com/matomo.js';
+          s.parentNode.insertBefore(g, s);
+        }
+        if (typeof requestIdleCallback !== 'undefined') {
+          requestIdleCallback(loadMatomo, { timeout: 3000 });
+        } else {
+          window.addEventListener('load', function () { setTimeout(loadMatomo, 1500); }, { once: true });
+        }
       })();
     </script>
     <!-- End Matomo Code -->
 </head>
 
-<body class="motion-premium{% block body_class %}{% endblock %}" data-controller="motion-premium"{% block body_attrs %}{% endblock %}>
+<body class="{% if block('page_motion') == 'true' %}motion-premium {% endif %}{% block body_class %}{% endblock %}"{% if block('page_motion') == 'true' %} data-controller="motion-premium"{% endif %}{% block body_attrs %}{% endblock %}>
     {# Skip link pour accessibilité - visible uniquement au focus clavier #}
     <a href="#main-content"
        class="absolute top-2 left-2 -translate-y-[200%] focus:translate-y-0 z-[9999] inline-flex items-center bg-primary text-primary-foreground px-4 py-2 rounded-md no-underline transition-transform duration-150 font-medium">
@@ -259,7 +258,7 @@
     {% endif %}
 
     {# Un seul <main id="main-content"> : toujours ici ; les pages qui redéfinissent block body s’y insèrent (évite double main + lien d’évitement cassé). #}
-    <main id="main-content" class="w-full max-w-full" tabindex="-1" data-controller="page-transition">
+    <main id="main-content" class="w-full max-w-full" tabindex="-1"{% if block('page_motion') == 'true' %} data-controller="page-transition"{% endif %}>
         {# Invités : alertes dans le flux principal. Connectés : flash → appNotify → toast Motion. #}
         {% if not app.user %}
             <div class="flash-messages-global mx-auto w-full max-w-6xl px-4 pt-2 sm:pt-3" role="region" aria-label="Messages">
@@ -308,7 +307,7 @@
     </script>
 
     {# Toasts Motion (Stimulus `toast`) — après appNotify pour que flash-toast fonctionne. #}
-    <div id="app-motion-toast-host" class="fixed top-4 right-4 z-[10050] flex flex-col gap-2 pointer-events-none w-[min(22rem,calc(100vw-2rem))]" data-controller="toast" aria-live="polite" role="region" aria-label="Notifications"></div>
+    <div id="app-motion-toast-host" class="fixed top-4 right-4 z-[10050] flex flex-col gap-2 pointer-events-none w-[min(22rem,calc(100vw-2rem))]"{% if block('page_motion') == 'true' %} data-controller="toast"{% endif %} aria-live="polite" role="region" aria-label="Notifications"></div>
 
     {# Flash connecté : après appNotify + hôte toast pour affichage (préférences, audits, etc.). #}
     {% if app.user %}
